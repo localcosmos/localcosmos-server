@@ -55,10 +55,11 @@ This will automatically create the folder ``/opt/localcosmos/localcosmos_private
 
 settings.py
 ^^^^^^^^^^^
-You now have to adjust the contents ``/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py`` to set up your LocalCosmos Private Server.
+You now have to adjust the contents of ``/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py`` to set up your LocalCosmos Private Server.
 Add the following to ``INSTALLED_APPS``
 
-    .. code-block:: python
+	.. code-block:: python
+
 		INSTALLED_APPS = [
 
 			(...)		
@@ -182,9 +183,11 @@ Set localcosmos specific variables
 		LOCALCOSMOS_SPONSORING_API = 'https://staging.localcosmos.org/api/sponsoring/'
 
 
+
 urls.py
 ^^^^^^^
 	.. code-block:: python
+
 		from django.conf import settings
 		from django.contrib import admin
 		from django.urls import path, include
@@ -198,6 +201,7 @@ urls.py
 
 If you plan to run a django development server for settings, add the following at the bottom of ``urls.py``.
 	.. code-block:: python
+
 		# remove this line after development
 		if settings.DEBUG:
 			from django.conf.urls.static import static
@@ -217,6 +221,7 @@ This tutorial covers nginx examples. If you plan to use apache2, you have to tra
 Configure nginx locations according to your django projects ``STATIC_ROOT`` and ``MEDIA_ROOT`` settings in ``settings.py``.
 
 	.. code-block:: sourcecode
+
 		location /media  {
 			alias /var/www/localcosmos/media/;
 		}
@@ -232,15 +237,18 @@ Later, you will install your webapp using the **Server Control Panel** of your L
 
 abstract example:
 	.. code-block:: sourcecode
+
 		LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 
 concrete example:
 	.. code-block:: sourcecode
+
 		/var/www/localcosmos/myapp/www/index.html
 
 
 Create an alias to serve your webapp. If you want to server your app on the root of your domain: 
 	.. code-block:: sourcecode
+
 		location / {
 			alias /var/www/localcosmos/apps/myapp/www;
 		}
@@ -249,6 +257,7 @@ It is very important to remember the url which your webapp will be served at bec
 
 Reserved locations are:
 	.. code-block:: sourcecode
+
 		/server-control-panel
 		/app-admin
 		/api
