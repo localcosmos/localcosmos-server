@@ -6,13 +6,14 @@ This tutorial covers setting up a running LocalCosmos Private Server as a develo
 0. Prerequisites
 ---------------
 
-Install all required server components.
+Install all required server components as described in **Preparing your webserver**.
 
 
 1. Create a new django project
 ------------------------------
 
 **Create a project folder**
+
 Create a folder on your disk where your LocalCosmos Private Server can live. eg: ``/opt/localcosmos``
 
 
@@ -30,6 +31,7 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
 
 **Install django and localcosmos_server**
+
 This will install django, localcosmos_server and its requirements in your created and activated virtualenv. 
    .. code-block:: bash
 
@@ -38,6 +40,7 @@ This will install django, localcosmos_server and its requirements in your create
 
 
 **Create a new django project**
+
 In ``/opt/localcosmos`` execute the following:
    .. code-block:: bash
 
@@ -50,7 +53,8 @@ This will automatically create the folder ``/opt/localcosmos/localcosmos_private
 2. Configure your django project
 --------------------------------
 
-**settings.py**
+settings.py
+^^^^^^^^^^^
 You now have to adjust the contents ``/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py`` to set up your LocalCosmos Private Server.
 Add the following to ``INSTALLED_APPS``
 
@@ -178,7 +182,8 @@ Set localcosmos specific variables
 		LOCALCOSMOS_SPONSORING_API = 'https://staging.localcosmos.org/api/sponsoring/'
 
 
-**urls.py**
+urls.py
+^^^^^^^
 	.. code-block:: python
 		from django.conf import settings
 		from django.contrib import admin
