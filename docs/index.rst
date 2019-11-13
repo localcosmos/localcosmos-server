@@ -14,6 +14,7 @@ Contents:
 
    prepare_webserver
    installation_tutorial
+   deploy_server
 
 
 

@@ -7,6 +7,7 @@ Required server components
 
 * a Linux server with root access
 * nginx or apache2 web server
+* https with a valid certificate
 * python3
 * virtualenv (optional, recommended)
 * PostGis 2.x
