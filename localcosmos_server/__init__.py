@@ -1,0 +1,1 @@
+name = 'localcosmos_server'
