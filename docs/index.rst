@@ -6,12 +6,14 @@
 Welcome to LocalCosmos Private Server's documentation!
 ======================================================
 
+Contents:
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-	prepare_webserver
-	installation_tutorial
+   prepare_webserver
+   installation_tutorial
 
 
 
