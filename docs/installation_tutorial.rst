@@ -18,6 +18,7 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
 
 **Create a python3 virtual environment**
+
    .. code-block:: bash
 
       cd /opt/localcosmos
@@ -25,6 +26,7 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
 
 **Activate the virtual environment**
+
    .. code-block:: bash
 
       source venv/bin/activate
@@ -32,11 +34,12 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
 **Install django and localcosmos_server**
 
-This will install django, localcosmos_server and its requirements in your created and activated virtualenv. 
    .. code-block:: bash
 
       pip install django
       pip install localcosmos_server
+
+This will install django, localcosmos_server and its requirements in your created and activated virtualenv. 
 
 
 **Create a new django project**
@@ -53,8 +56,8 @@ This will automatically create the folder ``/opt/localcosmos/localcosmos_private
 2. Configure your django project
 --------------------------------
 
-settings.py
-^^^^^^^^^^^
+2.1 settings.py
+^^^^^^^^^^^^^^^
 You now have to adjust the contents of ``/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py`` to set up your LocalCosmos Private Server.
 Add the following to ``INSTALLED_APPS``
 
@@ -184,8 +187,8 @@ Set localcosmos specific variables
 
 
 
-urls.py
-^^^^^^^
+2.2 urls.py
+^^^^^^^^^^^
 	.. code-block:: python
 
 		from django.conf import settings
@@ -253,7 +256,7 @@ Create an alias to serve your webapp. If you want to server your app on the root
 			alias /var/www/localcosmos/apps/myapp/www;
 		}
 
-It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel**
+It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
 
 Reserved locations are:
 	.. code-block:: sourcecode
@@ -265,4 +268,25 @@ Reserved locations are:
 		/logout
 		/load-footer-sponsors
 
-You cannot use these locations for your webapps because they are used by your django application.
+You cannot use these locations for your webapps because they are used by the LocalCosmos Private Server django application.
+
+
+4. Migrate database
+-------------------
+In your django project directory, run
+	.. code-block:: bash
+
+		python manage.py migrate
+
+to migrate the database.
+
+
+5. Run the development server
+------------------------------
+In your django project directory, run the following command to start the development server.
+	.. code-block:: bash
+
+		python manage.py runserver 0.0.0.0:8080
+
+
+Now open a browserand navigate to ``http://localhost:8080``.
