@@ -18,7 +18,6 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
 
 **Create a python3 virtual environment**
-
    .. code-block:: bash
 
       cd /opt/localcosmos
@@ -26,14 +25,12 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
 
 **Activate the virtual environment**
-
    .. code-block:: bash
 
       source venv/bin/activate
 
 
 **Install django and localcosmos_server**
-
    .. code-block:: bash
 
       pip install django==2.2
