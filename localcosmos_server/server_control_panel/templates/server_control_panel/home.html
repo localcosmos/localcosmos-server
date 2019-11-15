@@ -1,0 +1,113 @@
+{% extends 'server_control_panel/base.html' %}
+
+{% load i18n static %}
+
+{% block content %}
+	<div class="container">
+
+		<h2>{% trans 'Server Info' %}</h2>
+
+		<div class="row mb-4">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-body">
+						<strong>API URL: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'api_home' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'api_home' %}</a></strong>
+						<div class="alert alert-danger mt-2">{% trans 'Use this url in the App Kit on localcosmos.org to connect your app to this server.' %}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h2>{% trans 'Installed Apps' %}</h2>
+
+		<div class="row">
+			{% if apps %}
+				{% for app in apps %}
+					<div class="col-12 col-md-6 col-lg-4">
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title">{{ app }}</h5>
+								
+								<div class="mb-2">
+									<small><strong>UID: {{ app.uid }}</strong></small>
+								</div>
+
+								{% if app.published_version %}
+									<span class="badge badge-info">{% trans 'version' %}: {{ app.published_version }}</span>
+									<p class="card-text">
+										<div>
+											<a href="{{ app.get_admin_url }}" class="btn btn-sm btn-outline-primary">{% trans 'App admin' %}</a> 
+										</div>
+										<hr>
+										<div>
+											{% trans 'Webapp' %}:
+											{% if app.get_url %}
+												<a href="{{ request.scheme }}://{{ app.get_url }}" target="_blank">{{ request.scheme }}://{{ app.get_url }}</a>
+											{% else %}
+												<span class="badge badge-danger">{% trans 'not available' %}</span>
+											{% endif %}
+										</div>
+										<hr>
+										<div>
+											{% trans 'API Status' %}: <span class="api-status" data-api-status-url="{% url 'scp:app_api_status' app.uid %}"></span>
+										</div>
+										{% if localcosmos_private %}
+										{% else %}
+											<hr>
+											<div>
+												{% trans 'Android' %}:
+												{% if app.apk_url %}
+													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.apk_url }}" download>{% trans 'download' %}</a>
+												{% else %}
+													<span class="badge badge-danger">{% trans 'not available' %}</span>
+												{% endif %}
+											</div>
+											<div>
+												{% trans 'iOS' %}:
+												{% if app.ipa_url %}
+													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.ipa_url }}" download>{% trans 'download' %}</a>
+												{% else %}
+													<span class="badge badge-danger">{% trans 'not available' %}</span>
+												{% endif %}
+											</div>
+										{% endif %}
+									</p>
+								{% else %}
+									<span class="badge badge-info">{% trans 'draft' %}</span>
+									<p class="card-text mt-2">
+										<small>{% trans 'More information will be avaibale when this app has been published.' %}</small>
+									</p>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-12">
+					{% trans 'You have not installed any apps yet.' %}
+				</div>
+			{% endif %}
+		</div>
+		<hr>
+		<div class="row mt-3">
+			<div class="col-12">
+				<a href="{% url 'scp:install_app' %}" class="btn btn-outline-primary">{% trans 'install new App' %}</a>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block extra_script %}
+	<script>
+		var apps = document.getElementsByClassName("api-status");
+
+		each(apps, function(app, iterate){
+			var url = app.getAttribute("data-api-status-url");
+			$.get(url, function(html){
+				$(app).html(html);
+			});
+
+			iterate();
+		});
+	</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load i18n localcosmos_tags %}
+
+<div class="card">
+	<div class="card-header">
+		<strong>{% blocktrans with name=content %}{{ name }} is restricted to the following taxa{% endblocktrans %}</strong>
+	</div>
+	<div class="card-body">
+		{% if restrictions %}
+			{% with restrictions.0|class_name as restriction_class %}
+				<ul>
+					{% for restriction in restrictions %}
+						<li id="ctype-{{ restriction|ctype_id }}-{{ restriction.id }}">
+							{{ restriction.taxon_latname }}
+							{% if restriction.taxon_include_descendants %}<span class="badge badge-info">{% trans 'with descendants' %}</span>{% endif %}
+							{% if restriction.restriction_type == 'exists' %}{% else %}<span class="badge badge-info">{{ restriction.restriction_type }}</span>{% endif %}
+							{% if restriction_class == 'AppContentTaxonomicRestriction' %}
+								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_taxonomic_restriction' restriction.id %}" ajax-target="ModalContent">{% trans 'remove' %}</button>
+							{% elif restriction_class == 'TaxonomicRestriction' %}
+								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_app_taxonomic_restriction' request.app.uid restriction.id %}" ajax-target="ModalContent">{% trans 'remove' %}</button>
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endwith %}
+		{% else %}
+			{% trans 'Usable for all taxa' %}
+		{% endif %}			
+	</div>
+</div>
+<br>
+<h5>{% trans 'add taxonomic restriction' %}</h5>
+<div>
+	{% block form %}
+		{% for field in form %}
+		<div class="form-group {% if field.errors %}has-error{% endif %}">
+				{{ field }}
+				{% if field.help_text %}
+					<small class="form-text text-muted">{{ field.help_text }}</small>
+				{% endif %}
+			</div>
+		{% endfor %}
+
+		{% if form.errors %}
+			<div class="alert alert-danger">
+				{{ form.errors.as_text }}
+			</div>
+		{% endif %}
+	{% endblock %}
+</div>
+<div>
+	<button type="submit" class="btn btn-outline-primary">{% trans 'add taxon to restriction' %}</button>
+</div>
+

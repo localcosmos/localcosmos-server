@@ -1,0 +1,32 @@
+{% load i18n localcosmos_tags %}
+<div class="card">
+	<div class="card-body">
+		<h5 class="card-title">
+			{% if dataset.taxon_latname %}
+				{% get_app_locale dataset.taxon.taxon_uuid as vernacular %}
+					{{ vernacular }} ({{ dataset.taxon_latname }})
+				{% if vernacular %}
+				{% else %}
+					{{ dataset.taxon_latname }}
+				{% endif %}
+			{% else %}
+				{% trans 'Observation without taxon' %}
+			{% endif %}
+		</h5>
+		<h6 class="card-subtitle mb-2 text-muted">{{ dataset.timestamp }}</h6>
+		<p class="card-text">
+			{% if dataset.validation_step == 'completed' %}
+				{% if dataset.is_valid %}
+					<span class="badge badge-success">{% trans 'valid' %}</span>
+				{% else %}
+					<span class="badge badge-danger">{% trans 'invalid' %}</span>
+				{% endif %}
+			{% else %}
+				
+			{% endif %}
+		</p>
+		{% block links %}
+			<a href="{% url 'datasets:edit_dataset' request.app.uid dataset.id %}" class="btn btn-sm btn-outline-primary">{% trans 'show' %}</a>
+		{% endblock %}
+	</div>
+</div>

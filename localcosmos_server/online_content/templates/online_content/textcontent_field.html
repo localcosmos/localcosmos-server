@@ -1,0 +1,28 @@
+{% load i18n static %}
+{% if field.is_hidden %}
+{% else %}
+	<div class="row field-label">
+		<div class="col-6 col-md-8 col-lg-10">
+			{{ field.label }}&nbsp;
+			{% if field.field.language %}
+				<img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+			{% endif %}
+		</div>
+		<div class="col-6 col-md-4 col-lg-2 text-right">
+			{% if cms_object and cms_object.localized_instance.pk and field.value %}
+				<a class="btn btn-danger btn-xs xhr" href="#" role="button" data-url="{% if template_content %}{% url 'DeleteMicroContent' app.uid template_content.id language %}{% else %}{% url 'DeleteMicroContent' app.uid language %}{% endif %}?microcontentcategory={{ cms_object.microcontent_category }}&meta_pk={{ cms_object.meta_instance.pk }}&localized_pk={{ cms_object.localized_instance.pk }}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+			{% endif %}
+		</div>
+	</div>
+{% endif %}
+<div class="row">
+	<div class="col-12">
+		{{ field }}
+		{% if field.help_text %}
+			<small class="form-text text-muted">{{ field.help_text }}</small>
+		{% endif %}
+		{% if field.errors %}
+			<p class="error">{{ field.errors.as_text }}</p>
+		{% endif %}
+	</div>
+</div>

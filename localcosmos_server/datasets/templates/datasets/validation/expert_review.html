@@ -1,0 +1,73 @@
+{% extends 'app_admin/base.html' %}
+{% load i18n static localcosmos_tags %}
+
+{% block extra_head_script %}
+	<link rel="stylesheet" href="{% static 'maps/leaflet/leaflet.css' %}" />
+	<script src="{% static 'maps/leaflet/leaflet.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="container mb-5">
+		<h2>{% trans 'Expert Review' %}</h2>
+
+		{% if review_success %}
+			<div class="row">
+				<div class="col-12">
+					<h4>{% trans 'Thank you for your review' %}</h4>
+					{% if validation_result == 'is_valid' %}
+						{% trans 'You marked this observation as valid.' %}
+					{% elif validation_result == 'is_invalid' %}
+						{% trans 'You marked this observation as invalid.' %}
+					{% endif %}
+				</div>
+				<div class="col-12 my-4">
+					<a href="{% url 'appadmin:home' request.app.uid %}" class="btn btn-outline-primary">{% trans 'back to overview' %}</a>
+				</div>
+			</div>
+		{% else %}
+			<div class="row">
+				<div id="ctype-{{ dataset|ctype_id }}-{{ dataset.id }}" class="col-12">
+					<div class="card">
+						<div class="card-body">
+							<h3>{% trans 'Observation' %} #{{ dataset.id }}</h3>
+							<div class="row my-3">
+								<div class="col-12">
+									{% with form=observation_form %}
+										{% include 'datasets/validation/ajax/dataset_form.html' %}
+									{% endwith %}
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="card">
+						<div class="card-body">
+							<div class="row mb-3">
+								<div class="col-12">
+									<h3>{% trans 'Your review' %}</h3>
+								</div>
+								<div class="col-12">
+									<div class="alert alert-info">
+										{% trans 'Before submitting your review, please try to correct the observation if it contains errors. If you have been able to correct the data, mark the observation as valid.' %}
+									</div>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-12">
+									<form method="POST" action="{% url 'datasets:human_validation' request.app.uid dataset.id validation_step.id %}">{% csrf_token %}
+										{% render_bootstrap_form form %}
+										<div class="row mt-3">
+											<div class="col-12">
+												<button type="submit" class="btn btn-outline-primary">{% trans 'submit review' %}</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

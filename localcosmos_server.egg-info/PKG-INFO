@@ -1,0 +1,19 @@
+Metadata-Version: 2.1
+Name: localcosmos-server
+Version: 0.1
+Summary: LocalCosmos Private Server. Run your own server for localcosmos.org apps.
+Home-page: https://github.com/SiSol-Systems/localcosmos-server
+Author: Thomas Uher
+Author-email: thomas.uher@sisol-systems.com
+License: The MIT License
+Description: # localcosmos-server
+        
+        Private Server for localcosmos.org apps
+        
+Keywords: django,localcosmos,localcosmos server,biodiversity
+Platform: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

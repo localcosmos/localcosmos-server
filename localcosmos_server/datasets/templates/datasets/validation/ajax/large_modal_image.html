@@ -1,0 +1,16 @@
+{% extends 'localcosmos_server/modals/large_modal_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Image' %}{% endblock %}
+
+{% block body %}
+	<div class="row">
+		<div class="col-12">
+			<img src="{{ image_url }}" class="img-fluid" />
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/close.html' %}
+{% endblock %}

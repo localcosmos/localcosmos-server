@@ -1,0 +1,54 @@
+{% extends 'app_admin/base.html' %}
+
+{% load i18n el_pagination_tags %}
+
+{% block content %}
+
+{% paginate 12 datasets %}
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h2>{% trans 'Export' %}</h2>
+			</div>
+			<div class="col-12">
+				{% trans 'Download all observations as .csv' %}<br>
+				<a href="{% url 'datasets:download_datasets_csv' request.app.uid %}" class="btn btn-outline-primary">{% trans 'download' %}</a>
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="col-12">
+				<h2>{% trans 'Observations' %}</h2>
+			</div>
+		</div>
+
+		{% if datasets %}
+			<div class="row">
+				<div class="col-12">				
+					{% show_pages %}
+				</div>
+			</div>
+		{% endif %}
+
+		<div class="row">
+			{% if datasets %}
+				{% for dataset in datasets %}
+					<div class="col-12 col-md-6 col-lg-4 mb-4">
+						{% include 'datasets/ajax/dataset_box.html' %}
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-12">
+					{% trans 'No observations yet.' %}
+				</div>
+			{% endif %}
+		</div>
+
+		{% if datasets %}
+			<div class="row">
+				<div class="col-12">				
+					{% show_pages %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

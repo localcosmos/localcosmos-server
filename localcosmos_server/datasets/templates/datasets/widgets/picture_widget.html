@@ -1,0 +1,28 @@
+{% load i18n static %}
+
+{% if widget.attrs.load_images %}
+	<div class="row">
+		<div class="col">
+			<div id="{{ widget.attrs.id }}_pictures" data-field-uuid="{{ widget.name }}" class="picturewidget-pictures">
+				<img src="{% static 'images/spinner.gif' %}" />
+			</div>
+		</div>
+	</div>
+{% endif %}
+{% if not widget.attrs.readonly %}
+	<div class="row">
+		<div class="col">
+			<a data-toggle="popover" data-placement="top" data-content="{% trans 'in your app this button opens the camera' %}">
+				<img class="appbutton" src="{% static 'app_kit/buttons/camera.svg' %}"width="40" height="auto" />
+			</a>
+			<a data-toggle="popover" data-placement="top" data-content="{% trans 'in your app this button opens the photo album' %}">
+				<img class="appbutton" src="{% static 'app_kit/buttons/album.svg' %}" width="40" height="auto"/>
+			</a>
+		</div>
+	</div>
+{% endif %}
+<script>
+	$(function () {
+		$('[data-toggle="popover"]').popover();
+	});
+</script>

@@ -1,0 +1,14 @@
+{% extends 'localcosmos_server/modals/large_modal_base.html' %}
+{% load localcosmos_tags %}
+
+{% block above %}
+	<form method="POST" action="{% block action %}{% endblock %}" enctype="{% block enctype %}application/x-www-form-urlencoded{% endblock %}" class="xhr">{% csrf_token %}
+{% endblock %}
+
+{% block body %}
+	{% render_bootstrap_form form %}
+{% endblock %}
+
+{% block below %}
+	</form>
+{% endblock %}

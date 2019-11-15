@@ -1,0 +1,93 @@
+{% load i18n static localcosmos_tags %}
+{% if field.is_hidden %}
+	{{ field }}
+{% else %}
+
+	<div id="field-{{ field.id_for_label }}-container" class="form-group {% if field.errors %}has-error{% endif %} {{ field.field.widget|widget_class }}">
+		{% if field.field.widget|widget_class == "CheckboxSelectMultiple" %}
+
+			{{ field.label_tag }}
+			
+			{% if field.field.choices %}
+				{% for choice in field.field.choices %}
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="{{ field.name }}" value="{{ choice.0 }}" {% if choice.0 in field.value %}checked{% endif %}>
+							{{ choice.1 }}
+						</label>
+					</div>
+				{% endfor %}
+			{% else %}
+				{% trans 'no choices found' %}
+			{% endif %}
+		{% elif field.field.widget|widget_class == "CheckboxInput" %}
+			<div class="form-check">
+				{{ field }}
+				<label for="{{ field.id_for_label }}" class="form-check-label">{{ field.label }}</label>
+				{% if field.help_text %}
+					<small class="form-text text-muted">{{ field.help_text|safe }}</small>
+				{% endif %}
+			</div>
+		{% elif field.field.widget|widget_class == "RadioSelect" %}
+			{% for choice in field.field.choices %}
+				<div class="custom-control custom-radio">
+					<input id="{{ field.id_for_label }}_{{ choice.0 }}" type="radio" name="{{ field.name }}" value="{{ choice.0 }}" {% if choice.0 in field.value %}selected{% endif %} class="custom-control-input">
+					<label for="{{ field.id_for_label }}_{{ choice.0 }}" class="custom-control-label">{{ choice.1 }}</label>
+				</div>
+			{% endfor %}
+		{% elif field.field.widget|widget_class == "CropImageInput" %}
+			{{ field.label_tag }}
+			{{ field }}
+		{% elif field.field.widget|widget_class == "TaxonAutocompleteWidget" %}
+			<div>
+				{{ field.label_tag }} {% if field.field.required %}{% else %}<small>({% trans 'optional' %})</small>{% endif %}
+			</div>
+
+			<div>
+				{{ field }}
+
+				{% for error in field.errors %}
+					<span>{{ error }}</span>
+				{% endfor %}
+
+				{% if field.help_text %}
+					<small class="form-text text-muted">{{ field.help_text|safe }}</small>
+				{% endif %}
+			</div>
+			<br>
+		{% elif field.field.widget|widget_class == "AjaxFileInput" %}
+			<div>{{ field.label }}:</div>
+			{% if field.help_text %}
+				<small class="form-text text-muted">{{ field.help_text|safe }}</small>
+			{% endif %}
+			<div>
+				{{ field }}
+			</div>
+		{% elif field.field.widget|widget_class == "TwoStepDiskFileInput" %}
+			<label>{{ field.label }}</label>
+			{% if field.help_text %}
+				<small class="form-text text-muted">{{ field.help_text|safe }}</small>
+			{% endif %}
+			{{ field }}
+		{% else %}
+
+			{{ field.label_tag }} {% if field.field.required %}{% else %}<small>({% trans 'optional' %})</small>{% endif %} {% if field.field.widget|widget_class == "SelectDateWidget" %}<br>{% endif %}
+
+			{% if field.field.language %}
+				<img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+			{% endif %}
+
+			{{ field }}
+
+			{% if field.help_text %}
+				<small class="form-text text-muted">{{ field.help_text|safe }}</small>
+			{% endif %}
+		
+		{% endif %}
+
+		{% if field.errors %}
+			<div class="text-danger">{% for error in field.errors %}{{ error }}<br>{% endfor %}</div>
+		{% endif %}
+
+	</div>
+{% endif %}

@@ -1,0 +1,10 @@
+{% load i18n static %}
+<div class="row justify-content-center">
+	<div class="col-6 col-md-4">
+		<img id="{{ widget.attrs.id }}_preview" {% if current_image %}src="{{ current_image.url }}"{% endif %} class="img-fluid" />
+	</div>
+</div>
+<br>
+<p>
+	{% include "django/forms/widgets/file.html" %}
+</p>

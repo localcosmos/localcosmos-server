@@ -1,0 +1,22 @@
+{% load i18n static %}
+<div id="{{ widget.attrs.id }}-container" class="row">
+	<div class="col-8 col-md-6 col-lg-4 twostepfileupload {% if extra_css_classes %} {{ extra_css_classes }}{% endif %}">
+		
+		{% include 'django/forms/widgets/file.html' %}
+
+		<label {% if instance %}style="background-image:url('{{ instance.image_store.source_image.url }}?_={% now 'U' %}');"{% endif %}></label>
+
+		<div class="btn-group dropup">
+			<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				{% trans 'modify' %}
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">
+				<a class="dropdown-item xhr" data-url="{{ url }}" ajax-target="ModalContent">{% if instance %}{% trans 'change image' %}{% else %}{% trans 'add image' %}{% endif %}</a>
+				{% if instance %}
+					<a class="dropdown-item xhr" data-url="{% url delete_url_name content_type.id instance.pk %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+</div>

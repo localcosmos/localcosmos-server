@@ -1,0 +1,6 @@
+{% load i18n %}
+{% if api_check.success %}
+	<span class="badge badge-success">{% trans 'working' %}</span>
+{% else %}
+	<span class="badge badge-danger">error: {{ api_check.error }}</span>
+{% endif %}

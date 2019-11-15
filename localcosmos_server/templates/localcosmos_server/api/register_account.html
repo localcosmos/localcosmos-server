@@ -1,0 +1,28 @@
+{% load i18n rest_framework %}
+<div class="row justify-content-center">
+	<div class="col-12 col-lg-7 col-xl-6 mb-4">
+		<h2>{% trans 'Register Account' %}</h2>
+	</div>
+</div>
+
+{% if request.method == 'POST' %}
+	{% if not serializer.is_valid %}
+		<div class="row justify-content-center">
+			<div class="col-12 col-lg-7 col-xl-6 mb-4">
+				<div class="alert alert-danger">{% trans 'There have been errors in the data you submitted.' %}</div>
+			</div>
+		</div>
+	{% else %}
+		<div class="row justify-content-center">
+			<div class="col-12 col-lg-7 col-xl-6 mb-4">
+				<div class="alert alert-success">{% blocktrans with username=user.username %}Welcome {{ username }}. Your account has been created successfully and you have been logged in.{% endblocktrans %}</div>
+			</div>
+		</div>
+	{% endif %}
+{% endif %}
+
+<div class="row justify-content-center">
+	<div class="col-12 col-lg-7 col-xl-6">
+		{% render_form serializer %}
+	</div>
+</div>

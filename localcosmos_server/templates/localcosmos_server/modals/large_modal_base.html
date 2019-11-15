@@ -1,0 +1,16 @@
+{% extends 'localcosmos_server/modals/modal_base.html' %}
+{% block init %}
+	<script>
+		// this breaks the modals
+		//$("#ModalContent").empty();
+	</script>
+{% endblock %}
+
+{% block open_modal %}
+	<script>
+		var modal = $("#LargeModal");
+		if (!modal.hasClass("show")){
+			modal.modal("show");
+		}
+	</script>
+{% endblock %}

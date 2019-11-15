@@ -1,0 +1,23 @@
+{% extends 'app_admin/base.html' %}
+
+{% load i18n static localcosmos_tags%}
+
+{% block extra_head_script %}
+	<link rel="stylesheet" href="{% static 'maps/leaflet/leaflet.css' %}" />
+	<script src="{% static 'maps/leaflet/leaflet.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h2>{% trans 'Observation' %} #{{dataset.id}}</h2>
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div id="ctype-{{ dataset|ctype_id }}-{{ dataset.id }}" class="col-12">
+				{% include 'datasets/validation/ajax/dataset_form.html' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+djangorestframework
+django-imagekit
+django-road
+content-licencing
+anycluster
+rules==2.1
+django-el-pagination==3.2.4
+django-octicons
+django-countries
+django-cors-headers
+Pillow==6.2.1

@@ -1,0 +1,12 @@
+html, body {
+	height:100%;
+	font-family: 'Roboto', 'sans-serif';
+	background: #f0f0f0;
+}
+
+.btn-xs, .btn-group-xs > .btn {
+	padding: 0.15rem 0.3rem;
+	font-size: 0.675rem;
+	line-height: 1.5;
+	border-radius: 0.2rem;
+}

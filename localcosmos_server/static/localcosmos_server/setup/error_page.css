@@ -1,0 +1,13 @@
+body {
+	padding-top: 70px;
+	font-family: 'Roboto', 'sans-serif';
+}
+
+
+.footer a, .footer a:visited {
+	color: #aaaaaa;
+}
+
+.footer a:hover {
+	color: #ffffff;
+}

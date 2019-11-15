@@ -1,0 +1,56 @@
+{% extends 'server_control_panel/base.html' %}
+
+{% load i18n static localcosmos_tags %}
+
+{% block content %}
+	<div class="container">
+		<h2>{% trans 'Install new App' %}</h2>
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						{% trans 'Important information' %}
+					</div>
+					<div class="card-body">
+						<h5 class="card-title">How to make your apps run</h5>
+						<p class="card-text">
+							<ul>
+								<li>{% blocktrans %}Your webapp will be installed in {{ localcosmos_apps_root }}APP_UID/{% endblocktrans %}</li>
+								<li>{% trans 'You can look up your APP_UID on localcosmos.org' %}</li>
+								<li>{% trans 'Your webserver (nginx or apache) will serve your webapp, not django' %}</li>
+								<li>{% blocktrans %}Make sure to set an alias to {{ localcosmos_apps_root }}APP_UID/www/ in your webserver{% endblocktrans %}</li>
+								<li>{% blocktrans %}Your android and iOS Apps will be able to connect to your server after you installed the webapp{% endblocktrans %}</li>
+							</ul>
+						</p>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<form action="{% url 'scp:install_app' %}" method="POST" enctype="multipart/form-data">{% csrf_token %}
+			<div class="row mt-3">
+				<div class="col-12">
+					{% render_bootstrap_form form %}
+				</div>
+				{% if errors %}
+					<div class="col-12 my-3">
+						<div class="alert alert-danger">
+							{% trans 'The following errors occured during app import:' %}
+							<ul>
+								{% for error in errors %}
+									<li>{{ error }}</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				{% endif %}
+				<div class="col-12">
+					<button type="submit" class="btn btn-outline-primary">{% trans 'install' %}</button>
+				</div>
+			</div>
+		</form>
+
+	</div>
+{% endblock %}

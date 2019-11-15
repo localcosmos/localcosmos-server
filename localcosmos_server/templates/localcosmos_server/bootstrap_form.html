@@ -1,0 +1,9 @@
+{% for field in form %}
+	{% include 'localcosmos_server/bootstrap_field.html' %}
+{% endfor %}
+
+{% if form.errors %}
+	<div class="alert alert-danger">
+		{{ form.errors }}
+	</div>
+{% endif %}

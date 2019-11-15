@@ -1,5 +1,5 @@
-Deploying your LocalCosmos Private Server
-=========================================
+Deploy your Server
+==================
 
 Once you have successfully tested your LocalCosmos Private Server in development mode youcan deploy your server and make it accessible for the public.
 

@@ -1,0 +1,69 @@
+{% extends request.is_appadmin|yesno:"app_admin/base.html,app_kit/base.html" %}
+{% load i18n static online_content_tags %}
+
+{% block extra_style %}
+	<link href="{% static 'online_content/online_content.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+	<div class="container-fluid d-none d-md-block">
+		<div class="row">
+			<div class="col-12 text-center text-white bg-primary">
+				<h2>{{ app.name }}</h2>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-12 mt-4">
+			<h3>{{ app.name }} {% trans 'OnlineContent' %}</h3>
+			<hr>
+			
+			{% block subcontent %}
+				<h4>{% trans 'Pages' %}</h4>
+				{% if pages %}
+					<div class="row">
+						{% for template_content in pages %}
+							<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
+								{% include 'online_content/template_content_list_entry.html' %}
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					{% trans 'You do not have any online pages for this app yet.' %}
+				{% endif %}
+				<br>
+				<div class="row mt-3">
+					<div class="col-12">
+						<a href="{% url 'create_template_content' app.uid 'page' %}" class="btn btn-outline-primary">{% trans 'Add new page' %}</a>
+					</div>
+				</div>
+				<hr>
+				<h4>{% trans 'Features' %}</h4>
+				{% if features %}
+					<div class="row">
+						{% for template_content in features %}
+							<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
+								{% include 'online_content/template_content_list_entry.html' %}
+							</div>
+						{% endfor %}
+					</div>
+				{% else %}
+					{% trans 'You do not have any online feature content for this app yet.' %}
+				{% endif %}
+				<br>
+				<div class="row mt-3">
+					<div class="col-12">
+						<a href="{% url 'create_template_content' app.uid 'feature' %}" class="btn btn-outline-primary">{% trans 'Add new feature' %}</a>
+					</div>
+				</div>
+			{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block extra_script %}{% endblock %}

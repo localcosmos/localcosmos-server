@@ -1,0 +1,35 @@
+{% extends 'localcosmos_server/modals/large_modal_base.html' %}
+
+{% load i18n localcosmos_tags %}
+
+
+{% block above %}{% endblock %}
+{% block below %}{% endblock %}
+
+{% block modal_content %}
+
+	<div class="modal-header">
+		<h5 class="modal-title">{% trans 'Manage Taxonomic Restriction' %}</h5>
+	    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	    	<span aria-hidden="true">&times;</span>
+	    </button>
+	</div>
+	
+	<div class="modal-body">
+		{% if is_available %}
+		<form method="POST" action="{% if typed == 'typed' %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id 'typed' %}{% else %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id %}{% endif %}" class="xhr" ajax-target="LargeModalContent">{% csrf_token %}
+			{% include 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html' %}
+		</form>
+	{% else %}
+		<div class="alert alert-danger">
+			{% trans 'You have to publish your app before being able to set Taxonomic Restrictions' %}
+		</div>
+	{% endif %}
+	</div>
+	<div class="modal-footer">
+		{% include 'localcosmos_server/modals/footers/close.html' %}
+	</div>
+	
+{% endblock %}
+
+

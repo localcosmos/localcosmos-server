@@ -1,0 +1,45 @@
+{% load i18n %}
+{% if success %}
+	<script>
+		$("#Modal").modal("hide");
+		{% if view_name == "DeleteMicroContent" %}
+			// reload the page
+			window.location = window.location.href;
+		{% elif view_name == "DeleteFileContent" %}
+			var url = "{% url 'get_form_field' app.uid template_content.id microcontent_category microcontent_type language %}";
+			$.get(url, function(html){
+				$("#{{ microcontent_category }}-{{ microcontent_type }}-container").html(html);
+				ajaxify("{{ microcontent_category }}-{{ microcontent_type }}-container");
+			});
+			
+		{% endif %}
+		reloadPreview();
+	</script>
+{% else %}
+	<form method="POST" action="{% if template_content %}{% url view_name app.uid template_content.id language %}{% else %}{% url view_name app.uid language %}{% endif %}" class="xhr">{% csrf_token %}
+
+		<div class="modal-header">
+			<h5 class="modal-title">{% trans 'Delete Content' %}</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+		<div class="modal-body">
+			<p>
+				{% trans 'Do you really want to delete this content ?' %}
+			</p>
+			{{ form }}
+			{% if form.errors %}
+				{{ form.errors.as_text }}
+			{% endif %}
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+			<button type="submit" class="btn btn-danger">{% trans 'Delete' %}</button>
+		</div>
+
+	</form>
+	<script>
+		$("#Modal").modal("show");
+	</script>
+{% endif %}

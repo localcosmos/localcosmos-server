@@ -1,7 +1,7 @@
 Set up Tutorial
 ===================
 
-This tutorial covers setting up a running LocalCosmos Private Server as a development server and installing an App on it. It is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
+This tutorial covers setting up a running LocalCosmos Private Server as a development server. It is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
 
 0. Prerequisites
 ----------------
@@ -44,7 +44,7 @@ This will install django, localcosmos_server and its requirements in your create
 In ``/opt/localcosmos`` execute the following:
    .. code-block:: bash
 
-      django_admin.py startproject localcosmos_private
+      django-admin startproject localcosmos_private
 
 
 This will automatically create the folder ``/opt/localcosmos/localcosmos_private``, which contains your newly created django project.
@@ -280,6 +280,6 @@ In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 		python manage.py runserver 0.0.0.0:8080
 
 
-Now open a browserand navigate to ``http://localhost:8080`` .
+Now open a browser and navigate to ``http://localhost:8080`` .
 
 Also check if the API works. Browse to ``http://localhost:8080/api/`` .

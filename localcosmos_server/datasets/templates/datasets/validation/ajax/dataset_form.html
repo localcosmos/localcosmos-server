@@ -1,0 +1,35 @@
+{% load i18n localcosmos_tags %}
+<form method="POST" action="{% url 'datasets:save_dataset' request.app.uid dataset.id %}" class="xhr">{% csrf_token %}
+	{% render_bootstrap_form form %}
+	<div class="row mt-3">
+		{% if success %}
+			<div class="col-12">
+				<div class="alert alert-success">
+					{% trans 'changes have been saved successfully.' %}
+				</div>
+			</div>
+		{% endif %}
+		<div class="col-12">
+			<button type="submit" class="btn btn-outline-primary">{% trans 'update dataset' %}</button>
+			<a href="{% url 'datasets:delete_dataset' request.app.uid dataset.id %}" class="btn btn-danger xhr" ajax-target="ModalContent">{% trans 'delete dataset' %}</a>
+		</div>
+	</div>
+</form>
+<script>
+	(function(){
+		var picture_fields = document.getElementsByClassName("picturewidget-pictures");
+
+		each(picture_fields, function(picture_field, iterate){
+
+			var base_url = "{% url 'datasets:load_form_field_images' request.app.uid dataset.id %}";
+		
+			var url = base_url + "?field_uuid=" + picture_field.getAttribute("data-field-uuid");
+
+			$.get(url, function(html){
+				$("#" + picture_field.id).html(html);
+				ajaxify(picture_field.id);
+				iterate();
+			});
+		});
+	})();
+</script>

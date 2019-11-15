@@ -1,0 +1,15 @@
+{% load rest_framework localcosmos_tags %}
+
+{% render_serializer_form serializer %}
+
+{% if request.method == "PUT" %}
+	{% if serializer.errors.non_field_errors %}
+		<div class="alert-box alert">
+			<ul>
+				{% for error in serializer.errors.non_field_errors %}
+					<li>{{ error }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+{% endif %}

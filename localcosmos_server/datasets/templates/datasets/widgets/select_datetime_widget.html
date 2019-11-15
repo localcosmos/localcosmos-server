@@ -1,0 +1,108 @@
+{% load i18n static %}
+<div class="row">
+	<div class="col-12">
+		<input id="{{ widget.attrs.id }}_0" name="{{ widget.name }}_0" class="managedInput" {% if widget.value %}value="{{ widget.value.0 }}"{% endif %} readonly />
+		<input id="{{ widget.attrs.id }}_1" type="hidden" name="{{ widget.name }}_1" {% if widget.value %}value="{{ widget.value.1 }}"{% endif %} />
+	</div>
+</div>
+
+{% if not widget.attrs.readonly %}
+
+	<div id="popup_{{ widget.attrs.id }}" style="display:none">
+		<div class="modal-header">
+			<h5 class="modal-title">{% trans 'Select timestamp' %}</h5>
+		    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		    	<span aria-hidden="true">&times;</span>
+		    </button>
+		</div>
+		<div class="modal-body">
+
+			<div id="inputs_{{ widget.attrs.id }}" class="row">
+				<div class="col-4 col-md-3">
+					<label>{% trans 'Year' %}</label><br>
+					{{ splitwidgets.year }}
+				</div>
+				<div class="col-4 col-md-3">
+					<label>{% trans 'Month' %}</label><br>
+					{{ splitwidgets.month }}
+				</div>
+				<div class="col-4 col-md-2">
+					<label>{% trans 'Day' %}</label><br>
+					{{ splitwidgets.day }}
+				</div>
+				{% if mode == "datetime" %}
+					<div class="col-12">&nbsp;</div><br>
+
+					<div class="col-6 col-md-2">
+						<label>{% trans 'Hour' %}</label><br>
+						{{ splitwidgets.hour }}
+					</div>
+					<div class="col-6 col-md-2">
+						<label>{% trans 'Minute' %}</label><br>
+						{{ splitwidgets.minute }}
+					</div>
+				{% endif %}
+			</div>	
+
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+			<button id="set_date_{{ widget.attrs.id }}" type="button" class="btn btn-outline-primary">{% trans 'Set date' %}</button>
+		</div>
+	</div>
+	<script>
+		(function () {
+			var json_input = document.getElementById("{{ widget.attrs.id }}_1");
+			var verbose_input = document.getElementById("{{ widget.attrs.id }}_0");
+			var locale_string = new Date({{ unixtime }}).toLocaleString();
+			verbose_input.textContent = locale_string;
+
+			var setter_container = document.getElementById("popup_{{ widget.attrs.id }}");
+
+			var set_date = function(event){
+				var selectedDate = datePicker._get_input_date();
+				verbose_input.readOnly = false;
+				verbose_input.value = selectedDate.toLocaleString();
+				verbose_input.readOnly = true;
+				var json_value = {
+				    "type": "Temporal",
+				    "cron": {
+				            "type": "timestamp",
+				            "format" : "unixtime",
+				            "timestamp": selectedDate.getTime(),
+							"timezone_offset" : selectedDate.getTimezoneOffset()
+				    }
+				};
+				json_input.value = JSON.stringify(json_value);
+				setter_container.innerHTML = $("#ModalContent").html();
+				$("#Modal").modal("hide");
+			};
+
+			verbose_input.addEventListener("click", function(event){
+
+				var html = setter_container.innerHTML;
+				$("#ModalContent").html(html);
+
+				var options = {
+					"mode" : "{{ mode }}"
+				};
+
+				var value = json_input.value;
+
+				if (value){
+					value = JSON.parse(value);
+					var date = new Date(value.cron.timestamp);
+					options["date"] = date;
+				}
+
+				var picker_container = document.getElementById("ModalContent");
+				datePicker.manage_only_inputs(options, picker_container);
+
+
+				$("#set_date_{{ widget.attrs.id }}").on("click", set_date);
+				$("#Modal").modal("show");
+			});
+
+		})();
+	</script>
+{% endif %}

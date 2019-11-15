@@ -1,0 +1,26 @@
+{% load i18n localcosmos_tags %}
+{% if images %}
+	<div id="{{ field_uuid }}-images" class="row">
+		{% for image in images %}
+			<div id="ctype-{{ image|ctype_id }}-{{ image.id }}" class="col-auto">
+				<div class="mb-2">
+					<a href="{% url 'datasets:large_modal_image' request.app.uid %}?image_url={{ image.full_hd }}" class="xhr" ajax-target="LargeModalContent">
+						<img src="{{ image.thumbnail }}" class="img-fluid pointer dataset-image" data-hd-url="{{ image.full_hd }}"/>
+					</a>
+				</div>
+				<div class="btn-group dropup">
+					<button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{% trans 'modify' %}
+					</button>
+					<div class="dropdown-menu">
+						<a class="dropdown-item xhr" ajax-target="ModalContent" href="{% url 'datasets:delete_dataset_image' request.app.uid image.id %}">{% trans 'delete' %}</a>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% else %}
+	<div>
+		{% trans 'no images found'  %}
+	</div>
+{% endif %}

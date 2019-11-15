@@ -1,0 +1,41 @@
+{% extends 'app_admin/base.html' %}
+
+{% load i18n static localcosmos_tags %}
+
+{% block content %}
+	<div class="container">
+
+		<h2>{% trans 'Observations waiting for review' %}</h2>
+
+		<div class="row mb-4">
+			{% if review_datasets %}
+				{% for dataset in review_datasets %}
+					<div class="col-12 col-md-6 col-lg-4 mb-4">
+						{% include 'datasets/ajax/dataset_review_box.html' %}
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-12">
+					{% trans 'No observations are waiting for review.' %}
+				</div>
+			{% endif %}
+		</div>
+
+		<h2>{% trans 'Observations that need identification' %}</h2>
+
+		<div class="row">
+			{% if no_taxon_datasets %}
+				{% for dataset in no_taxon_datasets %}
+					<div class="col-12 col-md-6 col-lg-4 mb-4">
+						{% include 'datasets/ajax/dataset_box.html' %}
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="col-12">
+					{% trans 'No observations need identification.' %}
+				</div>
+			{% endif %}
+		</div>
+
+	</div>
+{% endblock %}

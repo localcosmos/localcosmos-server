@@ -1,0 +1,21 @@
+{% load i18n static online_content_tags imagekit %}
+{% with cms_object=field.field.cms_object %}
+
+<div class="col-4 col-md-3 col-lg-2 fileupload" {% if not cms_object.meta_instance.pk %}data-new="1"{% endif %}>
+	
+	{{ field }}
+	<label for="{{ field.auto_id }}" style="background-image:url({% if field.value %}{% thumbnail '100x100' field.field.widget.attrs.file as th %}{% image_url th %}{% else %}{% static 'localcosmos_server/images/add_image.svg' %}{% endif %});">
+		<span>&nbsp;</span>
+	</label>
+
+	<div class="text-center padding">
+		{% if field.value %}
+			<a href="#" data-role="button" class="btn btn-xs btn-danger xhr" ajax-target="ModalContent" data-url="{% if template_content %}{% url 'DeleteFileContent' app.uid template_content.id language %}{% else %}{% url 'DeleteFileContent' app.uid language %}{% endif %}?microcontentcategory={{ cms_object.microcontent_category }}&meta_pk={{ cms_object.meta_instance.pk }}&localized_pk={{ cms_object.localized_instance.pk }}&microcontenttype={{ cms_object.microcontent_type }}">{% trans 'delete' %}</a>
+		{% else %}
+			&nbsp;
+		{% endif %}
+	</div>
+		
+</div>
+
+{% endwith %}

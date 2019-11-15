@@ -1,0 +1,16 @@
+TemporalJSON is like GeoJSON, just for time related data
+
+example:
+
+{
+	"type": "Temporal", // "Feature" is GEOJSON
+	"cron": {
+		"type": "timestamp",
+		"format" : "unixtime",
+		"timestamp": 12345678, // UTC
+		"timezone_offset": -60
+	},
+	"properties": {
+		"name": "My Time"
+	}
+}

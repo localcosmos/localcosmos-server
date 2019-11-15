@@ -1,6 +1,8 @@
 Preparing your webserver 
 ========================
 
+Before you can install django and the localcosmos_server package, you have to install the requirements below.
+
 
 Required server components
 --------------------------
@@ -20,7 +22,7 @@ Install the kmeans PostgreSQL extension
 1. Download and unzip https://github.com/umitanuki/kmeans-postgresql on your server.
 2. make sure you have the development packages for you postgresql server package installed (e.g. sudo apt-get install libpq-dev postgresql-server-dev-10)
 
-3. In your unzipped kmeans folder run the following (e.g. on ubuntu)
+3. In the unzipped kmeans folder run the following (e.g. on ubuntu)
 
    .. code-block:: bash
 
