@@ -36,7 +36,7 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 
    .. code-block:: bash
 
-      pip install django
+      pip install django==2.2
       pip install localcosmos_server
 
 This will install django, localcosmos_server and its requirements in your created and activated virtualenv. 
@@ -59,7 +59,8 @@ This will automatically create the folder ``/opt/localcosmos/localcosmos_private
 2.1 settings.py
 ^^^^^^^^^^^^^^^
 You now have to adjust the contents of ``/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py`` to set up your LocalCosmos Private Server.
-Add the following to ``INSTALLED_APPS``
+
+**Add the following to ``INSTALLED_APPS``**
 
 	.. code-block:: python
 
@@ -112,15 +113,6 @@ Configure the middleware chain
 		]
 
 
-Include rules in the authenticatoin backend for per-object-permissions
-	.. code-block:: python
-
-		AUTHENTICATION_BACKENDS = (
-			'rules.permissions.ObjectPermissionBackend',
-			'django.contrib.auth.backends.ModelBackend',
-		)
-
-
 Set context processors and template loaders
 	.. code-block:: python
 
@@ -159,6 +151,8 @@ Set up the database
 			}
 		}
 
+Make sure the postgresql-postgis database ``NAME`` does exist.
+
 
 Set ``STATIC`` and ``MEDIA`` paths
     .. code-block:: python
@@ -170,7 +164,7 @@ Set ``STATIC`` and ``MEDIA`` paths
 		MEDIA_URL = '/media/'
 
 
-Inlude localcosmos_server settings. This covers anycluster, django_road and cors settings.
+Inlude localcosmos_server settings in your ``settings.py`` file. This automatically covers anycluster, django_road and cors settings.
     .. code-block:: python
 
 		from localcosmos_server.settings import *
@@ -205,7 +199,7 @@ Set localcosmos specific variables
 If you plan to run a django development server for settings, add the following at the bottom of ``urls.py``.
 	.. code-block:: python
 
-		# remove this line after development
+		# remove these lines after development
 		if settings.DEBUG:
 			from django.conf.urls.static import static
 			urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -283,7 +277,7 @@ to migrate the database.
 
 5. Run the development server
 ------------------------------
-In your django project directory, run the following command to start the development server.
+In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run the following command to start the development server.
 	.. code-block:: bash
 
 		python manage.py runserver 0.0.0.0:8080
