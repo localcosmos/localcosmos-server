@@ -1,7 +1,7 @@
 Set up Tutorial
 ===================
 
-This tutorial covers setting up a running LocalCosmos Private Server as a development server. It is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
+This tutorial covers setting up a running LocalCosmos Private Server as a development server. This tutorial is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
 
 0. Prerequisites
 ----------------
@@ -55,7 +55,7 @@ This will automatically create the folder ``/opt/localcosmos/localcosmos_private
 
 2.1 settings.py
 ^^^^^^^^^^^^^^^
-You now have to adjust the contents of ``/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py`` to set up your LocalCosmos Private Server.
+You now have to adjust the contents of the file ``settings.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` to set up your LocalCosmos Private Server.
 
 **Add the following to ``INSTALLED_APPS``**
 
@@ -180,6 +180,8 @@ Set localcosmos specific variables
 
 2.2 urls.py
 ^^^^^^^^^^^
+The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` also needs configuration:
+
 	.. code-block:: python
 
 		from django.conf import settings
