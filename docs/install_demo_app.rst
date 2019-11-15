@@ -18,9 +18,11 @@ You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/de
 The Demo App expects a development server running at ``http://localhost:8080`` and the LocalCosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work. 
 
 
-1. Configure nginx to serve your webapp
+2. Configure nginx to serve your webapp
 ---------------------------------------
-LocalCosmos Webapps are served by nginx or apache2, not by django. Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined in ``settings.LOCALCOSMOS_APPS_ROOT``. The ``uid`` of your app will be name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria``. So this app will be installed in e.g. ``/var/www/localcosmos/apps/treesofbavaria``, if your ``LOCALCOSMOS_APPS_ROOT`` setting in ``settings.py`` is ``/var/www/localcosmos/apps``.
+LocalCosmos Webapps are served by nginx or apache2, not by django.
+
+Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined in ``settings.LOCALCOSMOS_APPS_ROOT``. The ``UID`` of your app will be name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria``. So this app will be installed in e.g. ``/var/www/localcosmos/apps/treesofbavaria``, if your ``LOCALCOSMOS_APPS_ROOT`` setting in ``settings.py`` is ``/var/www/localcosmos/apps``.
 
 abstract example:
 	.. code-block:: sourcecode
@@ -28,14 +30,15 @@ abstract example:
 		LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 
 
-The ``UID`` of the Demo App is ``treesodbavaria``. If you want to serve your app at the root directory ``/``, set the location alias as follows:
+The ``UID`` of the Demo App is ``treesofbavaria``. If you want to serve your app at the root directory ``/``, set the location alias as follows:
+
 	.. code-block:: sourcecode
 
 		location / {
 			alias /var/www/localcosmos/apps/treesofbavaria/www;
 		}
 
-The Demo App will now be served at the URL ``http://localhost/``. You have to remember that URL.
+The Demo App is now being served at the URL ``http://localhost/``. You have to remember this URL.
 
 
 It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
