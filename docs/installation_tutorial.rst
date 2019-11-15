@@ -201,68 +201,13 @@ If you plan to run a django development server, add the following at the bottom 
 			from django.conf.urls.static import static
 			urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-Make sure your remove these lines before deploying django. For better security, static and media files should be served directly by nginx (see 3.1).
+Make sure your remove these lines before deploying django. For better security, static and media files should be served directly by nginx in a production environment.
 
 That's it for the django configuration.
 
 
-3. set up nginx or apache
--------------------------
-This tutorial covers nginx examples. If you plan to use apache2, you have to translate the examples into apache2 syntax.
 
-3.1 Configure nginx to serve django static and media files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Configure nginx locations according to your django projects ``STATIC_ROOT`` and ``MEDIA_ROOT`` settings in ``settings.py``.
-
-	.. code-block:: sourcecode
-
-		location /media  {
-			alias /var/www/localcosmos/media/;
-		}
-
-		location /static {
-			alias /var/www/localcosmos/static/;
-		}
-
-
-3.2 Configure nginx to serve your webapp
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined in ``settings.LOCALCOSMOS_APPS_ROOT``. The ``uid`` of your app will be name of this subfolder. You can look up the uid of your app on localcosmos.org. The webapp consists of a ``www`` folder which contains an ``index.html``.
-
-abstract example:
-	.. code-block:: sourcecode
-
-		LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
-
-concrete example:
-	.. code-block:: sourcecode
-
-		/var/www/localcosmos/myapp/www/index.html
-
-
-Create an alias to serve your webapp. If you want to server your app on the root of your domain: 
-	.. code-block:: sourcecode
-
-		location / {
-			alias /var/www/localcosmos/apps/myapp/www;
-		}
-
-It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
-
-Reserved locations are:
-	.. code-block:: sourcecode
-
-		/server-control-panel
-		/app-admin
-		/api
-		/login
-		/logout
-		/load-footer-sponsors
-
-You cannot use these locations for your webapps because they are used by the LocalCosmos Private Server django application.
-
-
-4. Migrate database
+3. Migrate database
 -------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 	.. code-block:: bash
@@ -272,7 +217,7 @@ In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 to migrate the database.
 
 
-5. Run the development server
+4. Run the development server
 ------------------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run the following command to start the development server.
 	.. code-block:: bash

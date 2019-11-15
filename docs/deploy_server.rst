@@ -3,11 +3,25 @@ Deploy your Server
 
 Once you have successfully tested your LocalCosmos Private Server in development mode youcan deploy your server and make it accessible for the public.
 
-1. Configure nginx and uwsgi
-----------------------------
+1. Configure nginx
+------------------
+
+1.1 Configure nginx to serve django static and media files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Configure nginx locations according to your django projects ``STATIC_ROOT`` and ``MEDIA_ROOT`` settings in ``settings.py``.
+
+	.. code-block:: sourcecode
+
+		location /media  {
+			alias /var/www/localcosmos/media/;
+		}
+
+		location /static {
+			alias /var/www/localcosmos/static/;
+		}
 
 
-1.1 Configure nginx to serve your django LocalCosmos Private Server using wsgi
+1.2 Configure nginx to serve your django LocalCosmos Private Server using wsgi
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 	.. code-block:: sourcecode

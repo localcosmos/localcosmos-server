@@ -1,16 +1,53 @@
 Installing the Demo App
 =======================
 
-The Demo App should **only be installed on a local development server for testing**.
+The Demo App should **only be installed on a local development server for testing**. This tutorial covers nginx examples. If you plan to use apache2, you have to translate the examples into apache2 syntax.
 
 
 0. Prerequisites
 ----------------
 
-A running LocalCosmos Private development server. 
+A running LocalCosmos Private development server.
 
 
-1. Download the Demo App
+1. Configure nginx to serve your webapp
+---------------------------------------
+Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined in ``settings.LOCALCOSMOS_APPS_ROOT``. The ``uid`` of your app will be name of this subfolder. You can look up the uid of your app on localcosmos.org. The webapp consists of a ``www`` folder which contains an ``index.html``.
+
+abstract example:
+	.. code-block:: sourcecode
+
+		LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
+
+concrete example:
+	.. code-block:: sourcecode
+
+		/var/www/localcosmos/myapp/www/index.html
+
+
+Create an alias to serve your webapp. If you want to server your app on the root of your domain: 
+	.. code-block:: sourcecode
+
+		location / {
+			alias /var/www/localcosmos/apps/myapp/www;
+		}
+
+It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
+
+Reserved locations are:
+	.. code-block:: sourcecode
+
+		/server-control-panel
+		/app-admin
+		/api
+		/login
+		/logout
+		/load-footer-sponsors
+
+You cannot use these locations for your webapps because they are used by the LocalCosmos Private Server django application.
+
+
+2. Download the Demo App
 ------------------------
 The Demo App is a .zip file named ``TreesOfBavaria.zip``.
 You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/demo-app/blob/master/TreesOfBavaria.zip>`_ .
@@ -18,7 +55,7 @@ You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/de
 The Demo App expects a development server running at ``http://localhost:8080`` and the LocalCosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work. 
 
 
-2. Prepare your nginx or apache server
+3. Prepare your nginx or apache server
 --------------------------------------
 The ``UID`` of the app is ``treesofbavaria``. So this app will be installed in e.g. ``/var/www/localcosmos/apps/treesofbavaria``, if your ``LOCALCOSMOS_APPS_ROOT`` setting in ``settings.py`` is ``/var/www/localcosmos/apps``.
 
