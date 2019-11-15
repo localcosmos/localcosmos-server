@@ -10,27 +10,33 @@ The Demo App should **only be installed on a local development server for testin
 A running LocalCosmos Private development server.
 
 
+1. Download the Demo App
+------------------------
+The Demo App is a .zip file named ``TreesOfBavaria.zip``.
+You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/demo-app/blob/master/TreesOfBavaria.zip>`_ .
+
+The Demo App expects a development server running at ``http://localhost:8080`` and the LocalCosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work. 
+
+
 1. Configure nginx to serve your webapp
 ---------------------------------------
-Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined in ``settings.LOCALCOSMOS_APPS_ROOT``. The ``uid`` of your app will be name of this subfolder. You can look up the uid of your app on localcosmos.org. The webapp consists of a ``www`` folder which contains an ``index.html``.
+LocalCosmos Webapps are served by nginx or apache2, not by django. Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined in ``settings.LOCALCOSMOS_APPS_ROOT``. The ``uid`` of your app will be name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria``. So this app will be installed in e.g. ``/var/www/localcosmos/apps/treesofbavaria``, if your ``LOCALCOSMOS_APPS_ROOT`` setting in ``settings.py`` is ``/var/www/localcosmos/apps``.
 
 abstract example:
 	.. code-block:: sourcecode
 
 		LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 
-concrete example:
-	.. code-block:: sourcecode
 
-		/var/www/localcosmos/myapp/www/index.html
-
-
-Create an alias to serve your webapp. If you want to server your app on the root of your domain: 
+The ``UID`` of the Demo App is ``treesodbavaria``. If you want to serve your app at the root directory ``/``, set the location alias as follows:
 	.. code-block:: sourcecode
 
 		location / {
-			alias /var/www/localcosmos/apps/myapp/www;
+			alias /var/www/localcosmos/apps/treesofbavaria/www;
 		}
+
+The Demo App will now be served at the URL ``http://localhost/``. You have to remember that URL.
+
 
 It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
 
@@ -45,27 +51,6 @@ Reserved locations are:
 		/load-footer-sponsors
 
 You cannot use these locations for your webapps because they are used by the LocalCosmos Private Server django application.
-
-
-2. Download the Demo App
-------------------------
-The Demo App is a .zip file named ``TreesOfBavaria.zip``.
-You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/demo-app/blob/master/TreesOfBavaria.zip>`_ .
-
-The Demo App expects a development server running at ``http://localhost:8080`` and the LocalCosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work. 
-
-
-3. Prepare your nginx or apache server
---------------------------------------
-The ``UID`` of the app is ``treesofbavaria``. So this app will be installed in e.g. ``/var/www/localcosmos/apps/treesofbavaria``, if your ``LOCALCOSMOS_APPS_ROOT`` setting in ``settings.py`` is ``/var/www/localcosmos/apps``.
-
-The Demo App will be served by your webserver after installation, not by django. If you want to serve your app at the root directory ``/``, set the location alias as follows (nginx)
-
-	.. code-block:: sourcecode
-
-		location / {
-			alias /var/www/localcosmos/apps/treesofbavaria/www;
-		}
 
 
 3. Install the Demo App

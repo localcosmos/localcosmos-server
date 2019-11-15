@@ -225,6 +225,6 @@ In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 		python manage.py runserver 0.0.0.0:8080
 
 
-Now open a browser and navigate to ``http://localhost:8080`` .
+Now open a browser and navigate to ``http://localhost:8080`` . Follow the instructions to complete the setup.
 
 Also check if the API works. Browse to ``http://localhost:8080/api/`` .
