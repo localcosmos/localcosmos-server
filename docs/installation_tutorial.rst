@@ -1,10 +1,10 @@
 Setting up a LocalCosmos Private Server as a development server
 ===============================================================
 
-This tutorial covers setting up a running LocalCosmos Private Server as a development server and installing an App on it.
+This tutorial covers setting up a running LocalCosmos Private Server as a development server and installing an App on it. It is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
 
 0. Prerequisites
----------------
+----------------
 
 Install all required server components as described in **Preparing your webserver**.
 
@@ -33,7 +33,7 @@ Create a folder on your disk where your LocalCosmos Private Server can live. eg:
 **Install django and localcosmos_server**
    .. code-block:: bash
 
-      pip install django==2.2
+      pip install django==2.2.*
       pip install localcosmos_server
 
 This will install django, localcosmos_server and its requirements in your created and activated virtualenv. 
@@ -117,7 +117,7 @@ Set context processors and template loaders
 			{
 				'BACKEND': 'django.template.backends.django.DjangoTemplates',
 				'DIRS': [],
-				#'APP_DIRS': True,
+				'APP_DIRS': False,
 				'OPTIONS': {
 				    'context_processors': [
 				        'django.template.context_processors.debug',
@@ -148,7 +148,7 @@ Set up the database
 			}
 		}
 
-Make sure the postgresql-postgis database ``NAME`` does exist.
+Make sure the postgresql-postgis database with the name ``NAME`` does exist.
 
 
 Set ``STATIC`` and ``MEDIA`` paths
@@ -280,4 +280,6 @@ In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 		python manage.py runserver 0.0.0.0:8080
 
 
-Now open a browserand navigate to ``http://localhost:8080``.
+Now open a browserand navigate to ``http://localhost:8080`` .
+
+Also check if the API works. Browse to ``http://localhost:8080/api/`` .
