@@ -195,7 +195,7 @@ The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosm
 			path('api/', include('localcosmos_server.api.urls')),
 		]
 
-If you plan to run a django development server, add the following at the bottom of ``urls.py``.
+As long as you run the django development server, add the following at the bottom of ``urls.py``.
 	.. code-block:: python
 
 		# remove these lines after development
