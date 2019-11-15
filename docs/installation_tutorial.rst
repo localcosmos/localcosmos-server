@@ -1,5 +1,5 @@
-Setting up a LocalCosmos Private Server as a development server
-===============================================================
+Set up Tutorial
+===================
 
 This tutorial covers setting up a running LocalCosmos Private Server as a development server and installing an App on it. It is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
 
@@ -193,7 +193,7 @@ Set localcosmos specific variables
 			path('api/', include('localcosmos_server.api.urls')),
 		]
 
-If you plan to run a django development server for settings, add the following at the bottom of ``urls.py``.
+If you plan to run a django development server, add the following at the bottom of ``urls.py``.
 	.. code-block:: python
 
 		# remove these lines after development
