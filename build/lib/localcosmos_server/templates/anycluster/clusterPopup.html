@@ -1,0 +1,23 @@
+{% extends 'localcosmos_server/modals/modal_base.html' %}
+
+{% load i18n static %}
+
+>{% block title %}{% trans 'Observation' %}{% endblock %}
+	
+
+{% block body %}
+	<div class="row">
+		{% for dataset in entries %}
+			<div class="col-12 mb-4">
+				<b>{{ dataset }}</b><br>
+				{{ dataset.timestamp }}<br>
+				<img src="{{ dataset.thumbnail_url }}" />
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/close.html' %}
+{% endblock %}
+

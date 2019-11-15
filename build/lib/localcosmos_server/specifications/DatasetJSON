@@ -1,0 +1,19 @@
+DatasetJSON is like GeoJSON, just for datasets
+
+example:
+
+{
+  "type": "Dataset", // type "Dataset", type "Feature" is GEOJSON
+  "dataset": {
+    "type": "Observation", /* type "Observation" needs reported_values (empty = {}) and observation_form (may not be empty) */
+	"specification_version" : 1,
+	"reported_values": {
+		"field_uuid" : {}  /* the uuid of the field and the data assigned to this field. the data can be text, json or numbers, or null */
+	},
+	"observation_form" : "ObservationFormJSON" /* the observation form as json - see specification for ObservationFormJSON */
+	"properties" : {}
+  },
+  "properties": {
+    "name": "My Time"
+  }
+}

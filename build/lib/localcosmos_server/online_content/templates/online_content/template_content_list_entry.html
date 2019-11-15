@@ -1,0 +1,93 @@
+{% load i18n static localcosmos_tags online_content_tags %}
+
+	<div id="ctype-{{ template_content|ctype_id }}-{{ template_content.id }}" class="card" style="width: 100%;">
+		<div class="card-header">
+			{{ template_content.verbose_template_name }}
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">
+				<a href="{% url 'manage_template_content' app.uid template_content.id %}">{{ template_content.primary_title }}</a>
+			</h5>
+			{% get_template_content_locale template_content app.primary_language as primary_localized_template_content %}
+			{% for language in app.languages %}
+				<div class="row">
+					<div class="col-auto">
+						<img src="{% static 'localcosmos_server/images/countries_big/' %}{{ language }}.png" />
+					</div>
+					<div class="col">
+						{% get_template_content_locale template_content language as localized_template_content %}
+
+						{% if localized_template_content %}
+
+							{% if localized_template_content.published_version %}
+								<span class="badge badge-success">{% blocktrans with version=localized_template_content.published_version %}published version: {{ version }}{% endblocktrans %}</span>
+							{% else %}
+								<span class="badge badge-warning">{% trans 'not published' %}</span>
+							{% endif %}
+
+							<span class="badge badge-info">{% blocktrans with version=localized_template_content.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
+
+							{% if app.secondary_languages %}
+								{% if localized_template_content.translation_ready %}
+									{% if localized_template_content.draft_version != primary_localized_template_content.draft_version %}
+										<span class="badge badge-warning">{% trans 'old version' %}</span>
+									{% else %}
+										<span class="badge badge-success">{% trans 'translation complete' %}</span>
+									{% endif %}
+								{% else %}
+									<span class="badge badge-warning">{% trans 'translation incomplete' %}</span>
+								{% endif %}
+							{% endif %}
+						{% else %}
+							<span class="badge badge-danger">{% trans 'missing' %}</span>
+						{% endif %}
+					</div>
+				</div>
+				<br>
+			{% endfor %}
+			<hr>
+			{% if publication %}
+				{% if publication_errors %}
+					<div class="row">
+						<div class="col-12">
+							<div class="alert alert-danger">
+								{% trans 'Publication failed:' %}<br>
+								{% for error in publication_errors %}
+									{{ error }} <br>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				{% else %}
+					<div class="row">
+						<div class="col-12">
+							<div class="alert alert-success">
+								{% trans 'publication successful' %}
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				
+			{% endif %}
+			<div class="btn-group dropup">
+				<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{% trans 'manage' %}
+				</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="{% url 'manage_template_content' app.uid template_content.pk %}">{% trans 'edit' %}</a>
+					<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="template-content-{{ template_content.id }}">{% trans 'publish' %}</a>
+					{% for language in app.secondary_languages %}
+						<a class="dropdown-item" href="{% url 'translate_template_content' app.uid template_content.id language %}">{% blocktrans %}translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
+					{% endfor %}
+					<div class="dropdown-divider"></div>
+					{% if template_content.is_published %}
+						<a class="dropdown-item xhr" href="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'unpublish' %}</a>
+						<div class="dropdown-divider"></div>
+					{% endif %}
+					<a class="dropdown-item xhr" href="{% url 'delete_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+

@@ -1,0 +1,9 @@
+recursive-include localcosmos_server/app_admin/static *
+recursive-include localcosmos_server/app_admin/templates *
+recursive-include localcosmos_server/datasets/templates *
+recursive-include localcosmos_server/online_content/static *
+recursive-include localcosmos_server/online_content/templates *
+recursive-include localcosmos_server/server_control_panel/templates *
+recursive-include localcosmos_server/specifications *
+recursive-include localcosmos_server/static *
+recursive-include localcosmos_server/templates *

@@ -1,0 +1,23 @@
+{% load i18n %}
+<div id="userbox-{{ user.id }}" class="col-12 col-md-4 col-lg-3">
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">{{ user }}</h5>
+			<p class="card-text">
+				<small>{% trans 'last login' %}: {{ user.last_login|date:"SHORT_DATE_FORMAT" }}</small>
+			</p>
+			
+			<div class="btn-group dropup">
+				<button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{% trans 'modify' %}
+				</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item xhr" href="{% url 'appadmin:manage_app_user_role' request.app.uid user.id %}" ajax-target="ModalContent">{% trans 'assign new role' %}</a>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#">{% trans 'delete' %}</a>
+				</div>
+			</div>
+
+		</div>										
+	</div>
+</div>

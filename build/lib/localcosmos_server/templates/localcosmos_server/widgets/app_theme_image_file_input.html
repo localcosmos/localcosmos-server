@@ -1,0 +1,23 @@
+{% load i18n static %}
+{# this template is only for AppThemeImages instance is AppThemeImage instance, which might have an url pointing to the image file #}
+<div id="{{ widget.attrs.id }}-container" class="row">
+	<div class="col-8 col-md-6 col-lg-4 twostepfileupload {% if extra_css_classes %} {{ extra_css_classes }}{% endif %}">
+		
+		{% include 'django/forms/widgets/file.html' %}
+
+		<label {% if instance %}style="background-image:url('{{ instance.url }}?_={% now 'U' %}');"{% endif %}></label>
+
+		<div class="btn-group dropup">
+			<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				{% trans 'modify' %}
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">
+				<a class="dropdown-item xhr" data-url="{{ url }}" ajax-target="ModalContent">{% if instance and instance.url %}{% trans 'change image' %}{% else %}{% trans 'add image' %}{% endif %}</a>
+				{% if instance and instance.url and delete_url %}
+					<a class="dropdown-item xhr" data-url="{{ delete_url }}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+</div>

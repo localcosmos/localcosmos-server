@@ -1,0 +1,79 @@
+<div class="row">
+	<div class="col-10 col-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+		<table class="mobilenumberinput">
+			<tr>
+				<td id="minus-{{ widget.attrs.id }}" class="text-right"><button type="button" class="btn btn-sm btn-secondary">-</button></td>
+				<td>
+					{% include 'django/forms/widgets/number.html' %}
+				</td>
+				<td id="plus-{{ widget.attrs.id }}" class="text-left"><button type="button" class="btn btn-sm btn-secondary">+</button></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<script>
+	(function () {
+		var input = document.getElementById("{{ widget.attrs.id }}");
+		var minus = document.getElementById("minus-{{ widget.attrs.id }}");
+		var plus = document.getElementById("plus-{{ widget.attrs.id }}");
+
+		var max_value = input.hasAttribute("max") ? parseFloat(input.getAttribute("max")) : null;
+		var min_value = input.hasAttribute("min") ? parseFloat(input.getAttribute("min")) : null;
+		var step = input.hasAttribute("step") ? input.getAttribute("step") : 1;
+
+		var decimals = 0;
+
+		if (step == "any" || step == null){
+			step = 1;
+		}
+		else {
+			step = parseFloat(step);
+
+			var step_len = step.toString();
+			if(step_len.indexOf('.') !== -1){
+			  decimals =  step_len.length - 2;
+			}
+		}
+
+		minus.addEventListener("click", function(){
+
+			var current_value = input.value || 0;
+
+			if (min_value==null || current_value > min_value) {
+
+				var temp_value = parseFloat(current_value) - step;
+	
+				if (step != 1){
+					temp_value = temp_value.toFixed(decimals);
+				}
+
+				if (min_value != null && temp_value < min_value){
+					temp_value = min_value;
+				}
+
+				input.value = temp_value;
+
+			}
+		});
+
+		plus.addEventListener("click", function(){
+
+			var current_value = input.value || 0;
+
+			if (max_value==null || current_value < max_value) {
+
+				var temp_value = parseFloat(current_value) + step;
+	
+				if (step != 1){
+					temp_value = temp_value.toFixed(decimals);
+				}
+
+				if (max_value != null && temp_value > max_value){
+					temp_value = max_value;
+				}
+
+				input.value = temp_value;
+			}
+		});
+	})();
+</script>

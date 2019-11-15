@@ -1,0 +1,346 @@
+{% load i18n static %}
+
+<div id="{{ widget.attrs.id }}_map" style="height:400px;"></div>
+<div class="form-row">
+	<div class="col-12">
+		<div class="input-group">
+			{% if not widget.attrs.readonly %}
+				<div id="{{ widget.attrs.id }}_gpsbutton" class="input-group-prepend">
+					<div class="input-group-text bg-light">
+						<img src="{% static 'octicons/location.svg' %}" class="octicon" />
+					</div>
+				</div>
+			{% endif %}
+
+			<input id="{{ widget.attrs.id }}_0" name="{{ widget.name }}_0" type="text" class="form-control" {% if widget.value %}value="{{ widget.value.0 }}"{% endif %} readonly />
+			<input id="{{ widget.attrs.id }}_1" name="{{ widget.name }}_1" type="hidden" class="form-control" {% if widget.value %}value="{{ widget.value.1 }}"{% endif %} />
+			
+			{% if not widget.attrs.readonly %}
+				<div id="{{ widget.attrs.id }}_delete" class="input-group-append">
+					<div class="input-group-text bg-danger">
+						<img src="{% static 'octicons/x.svg' %}" class="octicon" />
+					</div>
+				</div>
+			{% endif %}
+		</div>
+		<input id="{{ widget.attrs.id }}" type="hidden" name="{{ widget.attrs.name }}" />
+	</div>
+</div>
+<script>
+
+	(function () {
+
+		var map_type = "leaflet";
+
+		// the buttons
+		var position_json_input = document.getElementById("{{ widget.attrs.id }}"),
+			verbose_position = document.getElementById("{{ widget.attrs.id }}_0"),
+			gps_button = document.getElementById("{{ widget.attrs.id }}_gpsbutton"),
+			delete_button = document.getElementById("{{ widget.attrs.id }}_delete");
+
+		if (gps_button != null){
+			var gps_indicator = gps_button.firstElementChild;
+		}
+
+		{% if widget.attrs.readonly %}
+			var readonly = true;
+		{% else %}
+			var readonly = false;
+		{% endif %}
+
+		{% if widget.value %}
+			var value = {{ widget.value.1|safe }};
+			var initial_latitude = value.geometry.coordinates[1];
+			var initial_longitude = value.geometry.coordinates[0];
+			
+		{% else %}
+			var value = null;
+			var initial_latitude = 49;
+			var initial_longitude = 11;
+			var initial_accuracy = 0;
+		{% endif %}
+
+		var maps = {
+			"leaflet" : {
+				"create" : function(div_id){
+					var layerSources = {
+						"osm" : L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png',
+							{
+								attribution: 'Map data &copy; OpenStreetMap contributors',
+								subdomains: 'ab',
+								maxZoom: 20,
+								maxNativeZoom: 18
+							}),
+				
+						"satellite_tiles" : L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+							{
+								attribution: 'Tiles &copy; Esri',
+								maxZoom: 20,
+								maxNativeZoom: 18
+							}),
+						"satellite_names": L.tileLayer('https://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.{ext}', {
+							attribution: '&mdash; Map data &copy; OpenStreetMap',
+							subdomains: 'abcd',
+							minZoom: 0,
+							maxNativeZoom: 18,
+							maxZoom: 20,
+							ext: 'png'
+						})
+					};
+
+					var center = [initial_latitude, initial_longitude];
+					var zoom = 15;
+
+					var map = L.map(div_id, {
+						center: center,
+						zoom : zoom,
+						maxZoom: 24,
+						scrollWheelZoom: false
+					});
+
+					// add tile layers
+					var satellite = L.layerGroup([layerSources.satellite_tiles, layerSources.satellite_names]);
+				
+					satellite.addTo(map);
+
+					var baseLayers = {
+						"Satellite" : satellite,
+						"Streets" : layerSources["osm"]
+					};
+
+					L.control.layers(baseLayers, {}, {"position":"topright"}).addTo(map);
+
+					return map;
+
+				},
+				"place_marker" : function(manager, lat, lng){
+					var latLng = L.latLng(lat, lng);
+					if (manager.marker != null){
+						manager.marker.remove();
+					}
+					var marker = L.marker([lat, lng]).addTo(manager.map);
+					manager.marker = marker;
+				},
+				"attach_map_click_listener" : function(manager){
+					// place a marker on click
+					function setMarker(event) {
+						maps.leaflet.place_marker(manager, event.latlng.lat, event.latlng.lng);
+						
+						var position = manager.latLngToPosition(event.latlng.lat, event.latlng.lng);
+						manager.position = position;
+						manager.set_position_field_values(position);
+						manager.clearWatch();
+					}
+
+					manager.map.on('click', setMarker);
+				},
+				"position_to_latlng" : function(position){
+					return L.latLng(position.coords.latitude, position.coords.longitude);
+				},
+				"set_map_center" : function(map, latitude, longitude){
+					var latLng = L.latLng(latitude, longitude);
+					map.setView(latLng);
+				},
+				"remove_marker" : function(manager){
+					if (manager.marker != null){
+						manager.marker.remove();
+					}
+				}
+			},
+			"google" : {
+				"create" : function(div_id){
+					var map = new google.maps.Map(document.getElementById(div_id), {
+						zoom: 14,
+						center: {lat: initial_latitude, lng: initial_longitude},
+						mapTypeId: google.maps.MapTypeId.TERRAIN,
+						streetViewControl: false,
+					});
+
+					return map;
+
+				},
+				"place_marker" : function(manager, lat, lng){
+
+					var latLng = new google.maps.LatLng(lat, lng);
+
+					if (manager.marker == null){
+						var marker = new google.maps.Marker({
+							position: { lat: lat, lng: lng},
+							map: null
+						});
+						manager.marker = marker;
+					}
+	
+					manager.marker.setMap(manager.map);
+					manager.marker.setPosition(latLng);
+				},
+				"attach_map_click_listener" : function(manager){
+
+					// place a marker on click
+					google.maps.event.addListener(manager.map, "click", function(event){
+
+						maps.google.place_marker(manager, event.latLng.lat(), event.latLng.lng());        
+
+						var position = manager.latLngToPosition(event.latLng.lat(), event.latLng.lng());
+						manager.position = position;
+						manager.set_position_field_values(position);
+						manager.clearWatch();
+					});
+				},
+				"position_to_latlng" : function(position){
+					return new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+				},
+				"set_map_center" : function(map, latitude, longitude){
+					var latLng = new google.maps.LatLng(latitude, longitude);
+					map.setCenter(latLng);
+				},
+				"remove_marker" : function(manager){
+					manager.marker.setMap(null);
+					manager.position = null;
+				}
+			}
+		};
+
+		// within the manager google.maps.latlng is used
+		// for the interface the position object is used
+		var MapManager = {
+			create : function(div_id, initial_latitude, initial_longitude, readonly){
+				var self = Object.create(this);
+
+				self.readonly = readonly || false;
+
+				self.watchId = null;
+				self.position = null; // the position of the map marker if it was set by a human, not the position of the inputs or the gps sensor
+
+				self.map = maps[map_type].create(div_id);
+
+				if (value == null){
+					self.marker = null;
+				}
+				else {
+					self.marker = maps[map_type].place_marker(self, initial_latitude, initial_longitude);
+				}
+
+				if (readonly == false){
+					maps[map_type].attach_map_click_listener(self);
+				}
+
+				return self;
+			},
+
+			set_position_field_values : function(position){
+				position_json_input.value = JSON.stringify(position);
+				var verbose = "" + position.coords.latitude.toFixed(4) + "N " + position.coords.longitude.toFixed(4) + "E";
+				verbose_position.value = verbose;
+			},
+
+			latLngToPosition : function(latitude, longitude){
+				var position = {
+					coords : {
+						latitude : latitude,
+						longitude : longitude,
+						accuracy : 0
+					}
+				};
+				return position;
+			},
+
+			clean_position : function (position){
+				try {
+					if (typeof(position.coords.latitude) == "number" && typeof(position.coords.longitude) == "number" && typeof(position.coords.accuracy == "number")){
+						var position_cleaned = {
+							coords : {
+								latitude : position.coords.latitude,
+								longitude : position.coords.longitude,
+								accuracy : position.coords.accuracy
+							}
+						};
+						return position_cleaned;
+					}
+					else {
+						return null;
+					}
+				}
+				catch (e){
+					return null;
+				}
+			},
+
+			removeMarker : function(){
+				maps[map_type].remove_marker(this);
+			},
+
+			onSuccess : function(position){
+				var valid_position = this.clean_position(position);
+
+				if (valid_position != null) {
+					maps[map_type].place_marker(this, position.coords.latitude, position.coords.longitude);
+					maps[map_type].set_map_center(this.map, position.coords.latitude, position.coords.longitude);
+
+					if (position.coords.accuracy < 100){
+						this.clearWatch();
+					}
+					this.set_position_field_values(valid_position);
+				}
+			},
+
+			onError : function(e){
+				alert(e);
+			},
+		
+			watchPosition : function() {
+
+				var mapmanager = this;
+
+				if (this.watchId == null){
+					this.watchId = navigator.geolocation.watchPosition(function(position){
+						mapmanager.onSuccess(position);
+					},
+					function(e){
+						mapmanager.onError(e);
+					}, {enableHighAccuracy:true, timeout:60000, maximumAge:0});
+					gps_indicator.classList.remove("glyphicon-refresh");
+					gps_indicator.classList.add("blink");
+					gps_indicator.classList.add("glyphicon-hourglass");
+				}
+			},
+
+			clearWatch : function() {
+				navigator.geolocation.clearWatch(this.watchId);
+				this.watchId = null;
+				gps_indicator.classList.remove("blink");
+				gps_indicator.classList.remove("glyphicon-hourglass");
+				gps_indicator.classList.add("glyphicon-refresh");
+			}
+
+		};
+
+
+		// fill the form on successful position
+
+		var mapmanager = MapManager.create('{{ widget.attrs.id }}_map', initial_latitude, initial_longitude, readonly);
+	
+		if (readonly == false){
+			delete_button.addEventListener('click', function(){
+				position_json_input.value = null;
+				verbose_position.value = null;
+				mapmanager.removeMarker();
+			});
+			
+			gps_button.addEventListener('click', function(){
+				mapmanager.watchPosition();
+			});
+
+			// start watching position if possible
+			if (navigator.geolocation) {
+				// conditionally start position fetching
+				if (typeof(position_json_input.value) == "undefined" || position_json_input.value == null || position_json_input.value == "" ){
+					mapmanager.watchPosition();
+				}
+			}
+
+		}
+
+	})();
+
+</script>

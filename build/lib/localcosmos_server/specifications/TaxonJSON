@@ -1,0 +1,16 @@
+TaxonJSON is like GeoJSON, just for Taxa
+
+3 required attributes, unlimited optional attributes
+
+"taxon" : {} is for definition parameters
+
+example:
+
+{
+	"taxon_source" : "taxonomy.sources.col",   // required
+	"taxon_uuid" : "6bed6dce-18ab-492c-a0ee-6d0d4e2a30d8",   // required
+	"taxon_latname" : "Turdus merula", // required
+	"taxon_nuid" : "001001", // required
+	"gbifNubkey" : "239r6723985" // optional
+	...
+}

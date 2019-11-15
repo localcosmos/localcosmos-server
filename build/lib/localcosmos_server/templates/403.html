@@ -1,0 +1,14 @@
+{% extends 'error_base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-12 text-center">
+			<h1 class="text-danger">403</h1>
+			<div class="alert alert-danger">
+				{% trans 'You are not allowed to perform the operation you requested.' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% load i18n static %}
+<div id="{{ widget.attrs.id }}-container" class="row">
+	<div class="col-8 col-md-6 col-lg-4 ajaxfileupload {% if extra_css_classes %} {{ extra_css_classes }}{% endif %}">
+		
+		{% include 'django/forms/widgets/file.html' %}
+
+		<label for="{{ widget.attrs.id }}" {% if instance %}style="background-image:url('{{ instance.source_image.url }}?_={% now 'U' %}');"{% endif %} class="{{ widget.attrs.name }}">
+			<span>{% if instance %}&#160;{% else %}&#43;{% endif %}</span>
+		</label>
+
+		{% if instance %}
+			<div class="text-left">
+				<button id="{{ widget.attrs.id }}-delete" type="button" class="btn btn-xs btn-danger xhr" data-url="{% url delete_url_name content_type.id instance.pk %}" ajax-target="ModalContent">{% trans 'delete' %}</button>
+			</div>
+		{% endif %}
+	</div>
+
+</div>
+<script>
+	document.getElementById("{{ widget.attrs.id }}").addEventListener("change", AjaxFileInput);
+</script>

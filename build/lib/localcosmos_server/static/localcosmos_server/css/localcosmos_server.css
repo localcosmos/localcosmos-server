@@ -1,0 +1,104 @@
+/* CSS shared bz localcosmos_server and app_kit */
+
+body {
+	font-family: 'Roboto', 'sans-serif';
+}
+
+.slogan {
+    font-size: 2rem;
+	font-weight: 300;
+    padding: 2rem 0rem 2rem 0rem;
+    letter-spacing: 0.2rem;
+}
+
+.has-success input {
+	border-color: green;
+}
+
+.ajaxfileupload, .twostepfileupload {
+	margin-bottom: 1rem;
+}
+
+.ajaxfileupload input, .twostepfileupload input {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.ajaxfileupload label, .twostepfileupload label {
+	width: 50%;
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: rgb(150,150,150);
+    display: block;
+	position:relative;
+	text-align: center;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+}
+
+.ajaxfileupload label {
+	cursor: pointer;
+}
+
+.ajaxfileupload label > span {
+	position: absolute;
+	width: 100%;
+	text-align:center;
+	left:0px; top:45%;
+}
+
+.ajaxfileupload input[type="file"]:focus + label,
+.ajaxfileupload input[type="file"] + label:hover {
+    background-color: rgb(180,180,180);
+}
+
+
+.ajaxfileupload label:after, .twostepfileupload label:after {
+	content: "";
+	display: block;
+	padding-bottom: 100%;
+}
+
+.ajaxfileupload.ratio-1x2 label:after, .twostepfileupload.ratio-1x2 label:after {
+	padding-bottom: 200%;
+}
+
+
+.ajaxfileupload.ratio-2x1 label:after, .twostepfileupload.ratio-2x1 label:after {
+	padding-bottom: 50%;
+}
+
+.ajaxfileupload.ratio-2x1 label, .twostepfileupload.ratio-2x1 label {
+	width: 100%;
+}
+
+.flexContainer {
+	display: flex;
+}
+
+.flexContainer.columns {
+	 flex-direction: row;
+}
+
+.flexContainer > div {
+	padding: 0.5rem;
+}
+
+.octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+}
+
+.octicon-white {
+  fill: white;
+  stroke: white;
+}
+

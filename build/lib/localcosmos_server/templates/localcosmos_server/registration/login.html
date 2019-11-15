@@ -1,0 +1,49 @@
+{% extends base_template %}
+{% load i18n static localcosmos_tags %}
+
+{% block content %}
+	<div class="container">
+
+		<div class="row">
+			<div class="col-12">
+				<div class="slogan text-center">
+					{% trans 'Log in' %}
+				</div>
+			</div>
+		</div>
+
+		<div class="row justify-content-md-center">
+			<div class="col-12 col-md-6">
+				{% if request.user.is_authenticated is True %}
+					<div class="alert alert-info">
+						{% blocktrans with user=request.user %}You are logged in as {{ user }}{% endblocktrans %}
+					</div>
+				{% else %}
+					<form method="POST">{% csrf_token %}
+						{% render_bootstrap_form form %}
+						{% if next %}
+							<input type="hidden" name="next" value="{{ next }}" />
+						{% endif %}
+						<p class="text-center">
+							<button type="submit" class="btn btn-outline-success">{% trans 'sign in' %}</button><br>
+							<small><a href="{% url 'password_reset' %}">{% trans 'I forgot my password.' %}</a></small>
+						</p>
+					</form>
+				{% endif %}
+			</div>
+		</div>
+		{% if request.user.is_authenticated is False %}
+			{# currently, registration should be done through an installed webapp or app #}
+			<!--
+			<hr>
+			<div class="row justify-content-md-center">
+				<div class="col-12 col-md-6">
+					<h5>{% trans 'No account yet ?' %}</h5>
+					<div class="text-center">
+						<a href="{ url 'register' }{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}" class="btn btn-sm btn-outline-primary">{% trans 'register' %}</a>
+					</div>
+				</div>
+			</div>-->
+		{% endif %}
+	</div>
+{% endblock %}

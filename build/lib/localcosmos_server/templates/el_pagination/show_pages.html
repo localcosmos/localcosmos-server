@@ -1,0 +1,8 @@
+<nav aria-label="Page navigation example" class="mt-3">
+	<ul class="pagination justify-content-sm-center justify-content-lg-start">
+		{% for page in pages %}
+			{{ page.render_link|default:'<span class="endless_separator">...</span>' }}
+		{% endfor %}
+	</ul>
+</nav>
+

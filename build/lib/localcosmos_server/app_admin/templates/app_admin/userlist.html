@@ -1,0 +1,111 @@
+{% extends 'app_admin/base.html' %}
+
+{% load i18n localcosmos_tags el_pagination_tags %}
+
+{% block content %}
+
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<h2>{% trans 'Users' %}</h2>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-12 col-md-6 col-lg-4">
+				{{ search_app_user_form.as_p }}
+				<div id="id_search_user_no_results" class="alert alert-danger" style="display:none;">
+					{% trans 'no users found' %}
+				</div>
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-12">
+				<h4>{% trans 'Admins' %}</h4>
+
+				{% paginate 9 app_admins using "app_admin_page" %}
+
+				<div id="applist-admin" class="row">
+					{% if app_admins %}
+						{% for role in app_admins %}
+							{% with user=role.user %}
+								{% include 'app_admin/ajax/userbox.html' %}
+							{% endwith %}
+						{% endfor %}
+					{% else %}
+						<div id="no-app-admin" class="col-12">
+							{% trans 'No admins yet.' %}
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="row">
+					<div class="col-12">
+						{% show_pages %}
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-12">
+
+				<h4>{% trans 'Experts' %}</h4>
+
+				{% paginate 9 app_experts using "experts_page" %}
+
+				<div id="applist-expert" class="row">
+					{% if app_experts %}
+						{% for role in app_experts %}
+							{% with user=role.user %}
+								{% include 'app_admin/ajax/userbox.html' %}
+							{% endwith %}
+						{% endfor %}
+					{% else %}
+						<div id="no-app-expert" class="col-12">
+							{% trans 'No experts yet.' %}
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="row">
+					<div class="col-12">
+						{% show_pages %}
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-12">
+				<h4>{% trans 'Users' %}</h4>
+
+				{% paginate 9 app_users using "users_page" %}
+					
+				<div id="applist-user" class="row">
+					{% if app_users %}
+						{% for user in app_users %}
+							{% include 'app_admin/ajax/userbox.html' %}
+						{% endfor %}
+					{% else %}
+						<div id="no-app-user" class="col-12">
+							{% trans 'No users yet.' %}
+						</div>
+					{% endif %}
+				</div>
+
+				<div class="row">
+					<div class="col-12">
+						{% show_pages %}
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block extra_script %}
+	<script>
+		$("#id_search_user").userautocomplete("{% url 'appadmin:search_app_user' request.app.uid %}");
+	</script>
+{% endblock %}

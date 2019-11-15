@@ -1,0 +1,109 @@
+{% extends 'app_admin/base.html' %}
+{% load i18n static localcosmos_tags %}
+
+{% block content %}
+	<div class="container mb-5">
+		<div class="row mb-3">
+			<div class="col-12 text-center">
+				<h3>{% trans 'Observation Validation Routine' %}</h3>
+			</div>
+			<div class="col-12 p-3">
+				{% trans 'Defining an Observation Validation Routine helps to improve the quality of your collected data. You can set specific steps for specific taxa. For example, you might want to have an expert to look at reports of rare species and have him check the datasets photo.' %}
+			</div>
+		</div>
+		<hr>
+		<div class="row align-items-center">
+			
+			<div class="col-12 col-md-3 text-center text-md-right">
+				<strong>{% trans 'Step 0:' %}</strong>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="card p-3 text-center bg-info text-white">
+					<div>
+						{% trans 'User saves Dataset' %}<br>
+						<small>{% trans 'after successfully filling out an observation form without errors' %}</small>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="text-center p-3"><img src="{% static 'app_admin/img/downarrow.svg'%}" /></div>
+
+
+		{% for validation_step in dataset_validation_routine %}
+			<div id="ctype-{{ validation_step|ctype_id }}-{{ validation_step.id }}">
+				<div class="row align-items-center">
+				
+					<div class="col-12 col-md-3 text-center text-md-right">
+						<strong>{% blocktrans with position=validation_step.position %}Step {{ position }}: {% endblocktrans %}</strong>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="card p-3 text-center bg-info text-white">
+							<div>
+								{{ validation_step.verbose_name }}<br>
+								<small>{{ validation_step.description }}</small>
+							</div>
+							{% if validation_step.taxonomic_restrictions.all %}
+								<div class="mt-2">
+									<small> {% trans 'Applies to:' %}
+										{% for restriction in validation_step.taxonomic_restrictions.all %}
+											{{ restriction.taxon_latname }},
+										{% endfor %}
+									</small>
+								</div>	
+							{% endif %}
+						</div>
+					</div>
+					<div class="col-12 col-md-3">
+						<div class="btn-group dropup mt-1">
+							<button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ validation_step.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+								{% trans 'modify' %}
+							<span class="caret"></span>
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenu-{{ validation_step.id }}">	
+								<a data-url="{% url 'manage_app_taxonomic_restrictions' request.app.uid validation_step|ctype_id validation_step.id %}" class="dropdown-item xhr" ajax-target="LargeModalContent">{% trans 'manage taxonomic restrictions' %}</a>
+								<!--<div class="dropdown-divider"></div>
+								<a class="dropdown-item text-center moveforwardbutton" data-targetid="{{ nodelink.child.uuid }}">&#9664; {% trans 'move up' %}</a>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item text-center movebackbutton" data-targetid="{{ nodelink.child.uuid }}">{% trans 'move down' %} &#9654;</a>-->
+								<div class="dropdown-divider"></div>
+								<a data-url="{% url 'datasets:delete_dataset_validation_routine_step' request.app.uid validation_step.id %}" ajax-target="ModalContent" class="dropdown-item xhr">{% trans 'delete' %}</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="text-center p-3"><img src="{% static 'app_admin/img/downarrow.svg'%}" /></div>
+			</div>
+		{% endfor %}
+
+		<div class="row align-items-center">
+			<div class="col-12 col-md-3 text-center text-md-right">
+				<strong>{% trans 'Final Step:' %}</strong>
+			</div>
+			<div class="col-12 col-md-6">
+				<div class="card p-3 text-center bg-success text-white">
+					<div> {% trans 'Dataset is marked as valid' %}</div>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<div class="row mt-4">
+			<div class="col-12 text-center">
+				<a href="{% url 'datasets:add_dataset_validation_routine_step' request.app.uid %}" ajax-target="LargeModalContent" class="btn btn-outline-primary xhr">{% trans 'add step' %}</a>
+			</div>
+		</div>
+		<hr>
+		<div class="row mt-4">
+			<div class="col-12">
+				<h4>{% trans 'Available additional validation steps' %}</h4>
+			</div>
+			{% for validation_class in available_validation_classes %}
+				<div class="col-12 mt-4">
+					<h5>{{ validation_class.verbose_name }}</h5>
+					<div>{{ validation_class.description }}</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

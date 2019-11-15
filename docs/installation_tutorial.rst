@@ -142,8 +142,8 @@ Set up the database
 			'default': {
 				'ENGINE': 'django.contrib.gis.db.backends.postgis',
 				'NAME': 'localcosmos', # or any other name
-				'USER' : YOURDBUSER,
-				'PASSWORD' : YOURDBPASSWORD,
+				'USER' : 'YOURDBUSER',
+				'PASSWORD' : 'YOURDBPASSWORD',
 				'HOST' : 'localhost',
 			}
 		}
@@ -264,7 +264,7 @@ You cannot use these locations for your webapps because they are used by the Loc
 
 4. Migrate database
 -------------------
-In your django project directory, run
+In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 	.. code-block:: bash
 
 		python manage.py migrate

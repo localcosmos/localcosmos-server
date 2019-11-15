@@ -1,0 +1,14 @@
+{% extends 'error_base.html' %}
+
+{% load i18n %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-12 text-center">
+			<h1>Error code 500</h1>
+			<div class="alert alert-danger">
+				{% trans 'Unfortunately, there has been an internal server error.' %}
+			</div>
+		</div>
+	</div>
+{% endblock %}

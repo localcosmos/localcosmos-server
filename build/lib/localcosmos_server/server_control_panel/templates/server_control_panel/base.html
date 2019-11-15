@@ -1,0 +1,94 @@
+{% load i18n static rules octicons %}
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+
+		<title>LC Server Control Panel</title>
+
+		<!-- Bootstrap core CSS -->
+		<link href="{% static 'localcosmos_server/bootstrap-4.3.1-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+		<link href="{% static 'app_admin/css/app_admin.css' %}" rel="stylesheet">
+		<link href="{% static 'localcosmos_server/css/localcosmos_server.css' %}" rel="stylesheet">
+
+		<script src="{% static 'localcosmos_server/jquery-3.3.1.min.js' %}"></script>
+		<script src="{% static 'localcosmos_server/js/popper.min.js' %}"></script>
+		<script src="{% static 'localcosmos_server/bootstrap-4.3.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+
+		<script src="{% static 'localcosmos_server/js/localcosmos_server.js' %}"></script>
+
+		{% block extra_head_script %}{% endblock %}
+		{% block extra_style %}{% endblock %}
+
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top">
+			<a class="navbar-brand" href="{% url 'scp:home' %}">SCP</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#scpNavbar" aria-controls="scpNavbar" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="scpNavbar">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'scp:home' %}">{% trans 'Overview' %}</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'scp:install_app' %}">{% trans 'Install App' %}</a>
+					</li>
+					<!--<li class="nav-item">
+						<a class="nav-link" href="{ url 'manage_onlinecontent' request.app.uid }">{% trans 'GBIF' %}</a>
+					</li>-->
+				</ul>
+
+				<ul class="navbar-nav flex-row ml-md-auto d-md-flex">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{% octicon "person" width="20" height="auto" class="octicon-white" %}
+						</a>
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+							<a href="{% url 'log_out' %}" class="dropdown-item" >{% trans 'Sign out' %}</a>
+							{% if request.user.is_staff %}
+								<div class="dropdown-divider"></div>
+								<h6 class="dropdown-header">{% trans 'Staff only' %}</h6>
+								<a href="{% url 'admin:index' %}" class="dropdown-item">{% trans 'Django Admin' %}</a>
+							{% endif %}
+						</div>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<div id="mainContent" class="mt-3">
+			{% block content %}{% endblock %}
+		</div>
+
+
+		<div id="Modal" class="modal fade">
+			<div class="modal-dialog">
+				<div id="ModalContent" class="modal-content"></div>
+			</div>
+		</div>
+
+		<div id="LargeModal" class="modal fade">
+			<div class="modal-dialog modal-lg">
+				<div id="LargeModalContent" class="modal-content"></div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="{% static 'localcosmos_server/js/django-ajax.js' %}"></script>
+		<script type="text/javascript" src="{% static 'localcosmos_server/js/django-ajax-csrf.js' %}"></script>
+		<script>
+			ajaxify("mainContent");
+
+			$('form').submit(function() {
+				$(this).find('button[type="submit"]').attr('disabled', true);
+			});
+		</script>
+		{% block extra_script %}{% endblock %}
+	</body>
+</html>
+

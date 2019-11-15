@@ -1,0 +1,37 @@
+{% load localcosmos_tags %}
+<div class="row no-gutters">
+		{% spaceless %}{% for widget in widget.subwidgets %}<div class="col{% if forloop.last%}-3{% endif %}">{% include widget.template_name %}</div>{% endfor %}{% endspaceless %}
+</div>
+
+<script>
+	(function(){
+		var licence_version_choices = {{ licence_version_choices|as_json }};
+
+		var licence_select = document.getElementById('{{ id_base }}_0');
+
+		var version_select = document.getElementById('{{ id_base }}_1');
+
+		licence_select.addEventListener('change', function(event){
+
+			version_select.value = '';
+
+			for(var i=version_select.options.length - 1; i >= 0 ; i--) {
+				version_select.remove(i);
+			}
+			
+			var new_versions = licence_version_choices[licence_select.value];
+			for (var v=0; v<new_versions.length; v++){
+				var version = new_versions[v];
+				var option = document.createElement("option");
+				option.text = version;
+				option.value = version;
+
+				if (v == new_versions.length-1){
+					option.selected = true;
+					version_select.value = version;
+				}
+				version_select.add(option, v);
+			}
+		});
+	})();
+</script>

@@ -1,0 +1,7 @@
+{% extends 'datasets/ajax/dataset_box.html' %}
+
+{% load i18n %}
+
+{% block links %}
+	<a href="{% url 'datasets:human_validation' request.app.uid dataset.id dataset.current_validation_step.id %}" class="btn btn-sm btn-outline-primary">{% trans 'Review now' %}</a>
+{% endblock %}

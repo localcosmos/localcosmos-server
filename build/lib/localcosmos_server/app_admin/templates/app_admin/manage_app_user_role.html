@@ -1,0 +1,37 @@
+{% extends 'localcosmos_server/modals/modal_form.html' %}
+{% load i18n %}
+
+{% block action %}{% url 'appadmin:manage_app_user_role' request.app.uid app_user.id %}{% endblock %}
+
+{% block title %}{% blocktrans with username=app_user.username %}Manage role of {{ username }}{% endblocktrans %}{% endblock %}
+
+{% block extra_body %}
+	{% if success %}
+		<div class="alert alert-success">
+			{% trans 'successfully assigned new role' %}
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block footer %}
+	{% if success %}
+		{% include 'localcosmos_server/modals/footers/save_close.html' %}
+	{% else %}
+		{% include 'localcosmos_server/modals/footers/save.html' %}
+	{% endif %}
+{% endblock %}
+
+{% block script %}
+	{% if success %}
+		<script>
+			var user_box = $("#userbox-{{ app_user.id}}");
+			
+			var empty_list_indicator = $("#no-app-{{ new_role }}");
+			if (empty_list_indicator.length){
+				empty_list_indicator.remove();
+			}
+
+			user_box.detach().prependTo("#applist-{{ new_role }}");
+		</script>
+	{% endif %}
+{% endblock %}

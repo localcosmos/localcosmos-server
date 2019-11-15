@@ -1,0 +1,83 @@
+{% load i18n static %}
+<div class="row justify-content-center">
+	<div class="col-10 col-md-8 col-lg-6">
+		<p>
+			<img id="{{ widget.attrs.id }}_preview" {% if current_image %}src="{{ current_image.url }}"{% endif %} class="img-responsive" height="auto" width="100%" />
+		</p>
+	</div>
+</div>
+<br>
+<p>
+	{% include "django/forms/widgets/file.html" %}
+</p>
+<script>
+
+	(function () {
+
+		
+		var imageselect = document.getElementById("{{ widget.attrs.id }}");
+		var cropper_image = document.getElementById("{{ widget.attrs.id }}_preview");
+		var cropparams = document.getElementById("id_crop_parameters");
+		var cropper = null;
+
+		function readCropparams(){
+			paramobj = cropper.getData(true);
+			var data = {
+				"x" : paramobj.x,
+				"y" : paramobj.y,
+				"width" : paramobj.width,
+				"height" : paramobj.height,
+				"rotate" : paramobj.rotate,
+				"scaleX" : paramobj.scaleX,
+				"scaleY" : paramobj.scaleY,
+			};
+			cropparams.value = JSON.stringify(data);
+		}
+
+		{% if current_image %}
+			setTimeout(function(){
+				cropper = new Cropper(cropper_image, {
+					aspectRatio: 1 / 1,
+					viewMode: 1,
+					dragMode: "none",
+					scalable: false,
+					zoomable: false,
+					data: JSON.parse(cropparams.value),
+					cropend: readCropparams
+				});
+
+			}, 500);
+		{% endif %}
+
+		var reader = new FileReader();
+		reader.onloadend = function(e) {
+
+			if (cropper == null){
+				cropper_image.src = this.result;
+			
+				var image = document.getElementById('{{ widget.attrs.id }}_preview');
+
+				cropper = new Cropper(cropper_image, {
+					aspectRatio: 1 / 1,
+					viewMode: 1,
+					dragMode: "none",
+					scalable: false,
+					zoomable: false,
+					cropend: readCropparams
+				});
+
+				readCropparams();
+			}
+			else {
+				cropper.replace(this.result);
+			}
+		};
+
+		imageselect.addEventListener("change", function() { 
+			reader.readAsDataURL(imageselect.files[0]);
+		});
+		
+
+	})();
+
+</script>
