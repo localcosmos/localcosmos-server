@@ -13,7 +13,7 @@ A running LocalCosmos Private development server.
 1. Download the Demo App
 ------------------------
 The Demo App is a .zip file named ``TreesOfBavaria.zip``.
-You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/demo-app/blob/master/TreesOfBavaria.zip>`_ .
+You can dowload it `here <https://localcosmos.org/media/TreesOfBavaria.zip>`_ .
 
 Note: The Demo App covers the Webapp version of Trees Of Bavaria. If you build your own App on localcosmos.org, you will receive Android and iOS versions alongside the Webapp version.
 
