@@ -526,6 +526,8 @@ class FlagTree:
         self.flag_tree = {}
         self.preview = kwargs.get('preview', False)
 
+        self.toplevel_count = 0
+
         # preview fetches localized_template_content.draft_title
         title_attr = 'published_title'
         navigation_link_attr = 'navigation_link_name'
@@ -533,11 +535,15 @@ class FlagTree:
             title_attr = 'draft_title'
             navigation_link_attr = 'draft_navigation_link_name'
 
+
+        
         for flag in self.flags:
 
             tree_entry = self.get_tree_entry(flag)
 
             if tree_entry is not None:
+
+                self.toplevel_count += 1
 
                 if flag.parent_flag:
                     raise ValueError('navigation nesting not implemented')

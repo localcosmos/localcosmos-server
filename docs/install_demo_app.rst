@@ -15,6 +15,8 @@ A running LocalCosmos Private development server.
 The Demo App is a .zip file named ``TreesOfBavaria.zip``.
 You can dowload it `here <https://github.com/SiSol-Systems/localcosmos-server/demo-app/blob/master/TreesOfBavaria.zip>`_ .
 
+Note: The Demo App covers the Webapp version of Trees Of Bavaria. If you build your own App on localcosmos.org, you will receive Android and iOS versions alongside the Webapp version.
+
 The Demo App expects a development server running at ``http://localhost:8080`` and the LocalCosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work. 
 
 
@@ -38,10 +40,10 @@ The ``UID`` of the Demo App is ``treesofbavaria``. If you want to serve your app
 			alias /var/www/localcosmos/apps/treesofbavaria/www;
 		}
 
-The Demo App is now being served at the URL ``http://localhost/``. You have to remember this URL.
+The Demo App is now being served at the URL ``http://localhost/``.
 
 
-It is very important to remember the url which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
+It is very important to **remember the url** which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
 
 Reserved locations are:
 	.. code-block:: sourcecode
@@ -64,4 +66,4 @@ Open ``http://localhost:8080/server-control-panel/`` and click on ``Install App`
 2. Enter ``localhost/`` as URL of this App, according to your webservers configuration
 3. Click the install button
 
-Now you can visit ``http://localhost/`` (no port given) and use the Demo App.
+Now you can visit ``http://localhost/`` and start using the Demo App.

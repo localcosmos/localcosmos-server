@@ -36,7 +36,7 @@ class MultiContentWidget(Widget):
     def is_hidden(self):
         return all(w.is_hidden for w in self.widgets)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if self.is_localized:
             for widget in self.widgets:
                 widget.is_localized = self.is_localized

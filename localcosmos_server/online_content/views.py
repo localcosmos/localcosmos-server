@@ -327,8 +327,11 @@ class ManageTemplateContent(ManageMicroContents):
         unschemed_preview_url = '{0}#{1}'.format(self.app.get_preview_url(), app_preview_url_suffix)
 
         # the host where the preview is served. on LCOS it is simply the website
-        preview_url = '{0}://{1}'.format(self.request.scheme, unschemed_preview_url)
-
+        if unschemed_preview_url.startswith('http://') or unschemed_preview_url.startswith('https://'):
+            preview_url = unschemed_preview_url
+        else:
+            preview_url = '{0}://{1}'.format(self.request.scheme, unschemed_preview_url)
+        
         context['preview_url'] = preview_url
         context['preview'] = True
         

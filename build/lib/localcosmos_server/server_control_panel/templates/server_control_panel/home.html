@@ -1,6 +1,6 @@
 {% extends 'server_control_panel/base.html' %}
 
-{% load i18n static %}
+{% load i18n static localcosmos_tags %}
 
 {% block content %}
 	<div class="container">
@@ -23,8 +23,21 @@
 		<div class="row">
 			{% if apps %}
 				{% for app in apps %}
-					<div class="col-12 col-md-6 col-lg-4">
+					<div id="ctype-{{ app|ctype_id }}-{{ app.id }}" class="col-12 col-md-6 col-lg-4">
 						<div class="card">
+							<div class="card-header">
+								<small>{% trans 'App' %}</small>
+								{% if localcosmos_private %}
+									<div class="dropdown float-right d-inline-block">
+										<button class="btn btn-xs btn-outline-secondary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+										<div class="dropdown-menu">
+											<a class="dropdown-item" href="{% url 'scp:edit_app' app.uid %}">{% trans 'edit' %}</a>
+											<a class="dropdown-item" href="{% url 'scp:update_app' app.uid %}">{% trans 'update' %}</a>
+											<a class="dropdown-item xhr" data-url="{% url 'scp:uninstall_app' app.id %}" ajax-target="ModalContent">{% trans 'uninstall' %}</a>
+										</div>
+									</div>
+								{% endif %}
+							</div>
 							<div class="card-body">
 								<h5 class="card-title">{{ app }}</h5>
 								
@@ -36,13 +49,17 @@
 									<span class="badge badge-info">{% trans 'version' %}: {{ app.published_version }}</span>
 									<p class="card-text">
 										<div>
-											<a href="{{ app.get_admin_url }}" class="btn btn-sm btn-outline-primary">{% trans 'App admin' %}</a> 
+											<a href="{% if localcosmos_private %}{% else %}{{ request.scheme }}://{% endif %}{{ app.get_admin_url }}" class="btn btn-sm btn-outline-primary">{% trans 'App admin' %}</a> 
 										</div>
 										<hr>
 										<div>
 											{% trans 'Webapp' %}:
 											{% if app.get_url %}
-												<a href="{{ request.scheme }}://{{ app.get_url }}" target="_blank">{{ request.scheme }}://{{ app.get_url }}</a>
+												{% if localcosmos_private %}
+													<a href="{{ app.get_url }}" target="_blank">{{ app.get_url }}</a>
+												{% else %}
+													<a href="{{ request.scheme }}://{{ app.get_url }}" target="_blank">{{ request.scheme }}://{{ app.get_url }}</a>
+												{% endif %}
 											{% else %}
 												<span class="badge badge-danger">{% trans 'not available' %}</span>
 											{% endif %}

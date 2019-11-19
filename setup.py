@@ -10,16 +10,16 @@ install_requires = [
     'content-licencing',
     'anycluster',
     'rules==2.1',
-    'django-el-pagination==3.2.4',
+    'django-el-pagination',
     'django-octicons',
     'django-countries',
     'django-cors-headers',
-    'Pillow==6.2.1',
+    'Pillow',
 ]
 
 setup(
     name='localcosmos_server',
-    version='0.3',
+    version='0.4',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",

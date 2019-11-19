@@ -5,8 +5,9 @@ from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 
 from localcosmos_server.models import App, SecondaryAppLanguages
+from localcosmos_server.generic_views import AjaxDeleteView
 
-from .forms import InstallAppForm
+from .forms import InstallAppForm, EditAppForm
 
 from urllib import request
 from urllib.error import HTTPError, URLError
@@ -37,19 +38,40 @@ class LCPrivateOnlyMixin:
             raise Http404('The resource you requested is only available on LC Private installations')
         return super().dispatch(request, *args, **kwargs)
 
+
 '''
-    Install App
+    Install or Update App
     - only for LC Private installations
     - collect data and upload app .zip
+    - also capable of updating an app
 '''
 class InstallApp(LCPrivateOnlyMixin, FormView):
     template_name = 'server_control_panel/install_app.html'
     form_class = InstallAppForm
 
+    def dispatch(self, request, *args, **kwargs):
+
+        self.app = None
+        
+        app_uid = kwargs.get('app_uid', None)
+
+        if app_uid:
+            self.app = App.objects.get(uid=app_uid)
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['localcosmos_apps_root'] = settings.LOCALCOSMOS_APPS_ROOT
+        context['success'] = False
+        context['app'] = self.app
         return context
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.app != None:
+            initial['url'] = self.app.url
+        return initial
 
     def form_valid(self, form):
 
@@ -95,26 +117,37 @@ class InstallApp(LCPrivateOnlyMixin, FormView):
             primary_language = app_settings['PRIMARY_LANGUAGE']
             languages = app_settings['LANGUAGES']
                 
-        except:
+        except Exception as e:
             # could not import the zip
             # return an error
-            error_message = _('Error importing the app. Please upload a valid app .zip file')
-            errors.append(error_message)            
+            error_message = _('Error importing the app. Please upload a valid app .zip file: {0}'.format(str(e)))
+            errors.append(error_message)
+
+        # [UPDATE only] check if packages matches app
+        if self.app is not None:
+            if self.app.uid != app_uid or str(self.app.uuid) != app_uuid:
+                error_message = _('The zip file you uploaded does not contain the app {0}'.format(self.app.name))
+                errors.append(error_message)
 
         if not errors:
-            # create app object
-            app_exists = App.objects.filter(uid=app_uid).exists()
-            if app_exists:
-                error_message = _('App already exists. You have to use the update feature.')
-                errors.append(error_message)
+            
+            app_folder = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, app_uid)
+            
+            # get or create app object
+            app = App.objects.filter(uid=app_uid).first()
+            
+            if app:
+                # update the url
+                app.url = form.cleaned_data['url']
+                app.save()
 
             else:
 
                 # the app uuid has to be the same as in app_settings, alongside other parameters
-                app_folder = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, app_uid)
+                
                 app_path = os.path.join(app_folder, 'www')
                 url = form.cleaned_data['url']
-                cleaned_url = url.replace('https://', '').replace('http://', '')
+                #cleaned_url = url.replace('https://', '').replace('http://', '')
                 
                 app = App(
                     uuid = app_uuid,
@@ -123,34 +156,67 @@ class InstallApp(LCPrivateOnlyMixin, FormView):
                     primary_language = primary_language,
                     published_version = app_version,
                     published_version_path = app_path,
-                    url = cleaned_url
+                    url = url
                 )
                 
                 app.save()
 
-                # create secondary languages
-                for language in languages:
-                    if language != primary_language:
+            # update languages
+            existing_secondary_languages = list(SecondaryAppLanguages.objects.filter(app=app
+                            ).values_list('language_code', flat=True))
 
-                        secondary_language = SecondaryAppLanguages(
-                            app=app,
-                            language_code=language,
-                        )
+            languages.remove(primary_language)
 
-                        secondary_language.save()
-                
-                if os.path.isdir(app_folder):
-                    shutil.rmtree(app_folder)
+            # create secondary languages
+            for language in languages:
 
-                # copy unzipped folder into app dir
-                shutil.copytree(unzip_path, app_folder)
+                if language in existing_secondary_languages:
+                    existing_secondary_languages.remove(language)
+
+                else:
+
+                    secondary_language = SecondaryAppLanguages(
+                        app=app,
+                        language_code=language,
+                    )
+
+                    secondary_language.save()
+
+            # remove remaining existing_secondary_languages, which are the remove languages
+            for language_code in existing_secondary_languages:
+                remove_language = SecondaryAppLanguages.objects.filter(app=app, language_code=language_code).first()
+                if remove_language:
+                    remove_language.delete()
+
+            # remove currently installed app and upload new one
+            if os.path.isdir(app_folder):
+                shutil.rmtree(app_folder)
+
+            # copy unzipped folder into app dir
+            shutil.copytree(unzip_path, app_folder)
 
         # remove the temp folder
         shutil.rmtree(temp_folder)
             
         context['errors'] = errors
+        if not errors:
+            context['success'] = True
         
         return self.render_to_response(context)
+
+
+class UninstallApp(AjaxDeleteView):
+    
+    model = App
+
+    def get_deletion_message(self):
+        return _('Do you really want to uninstall %s ?' % self.object)
+
+    def get(self, request, *args, **kwargs):
+        if LOCALCOSMOS_OPEN_SOURCE == False:
+            raise Http404('Not available on LocalCosmos commercial')
+
+        return super().get(request, *args, **kwargs)
 
 
 
@@ -162,6 +228,35 @@ class AppMixin(AppsContextMixin):
     def dispatch(self, request, *args, **kwargs):
         self.app = App.objects.get(uid=kwargs['app_uid'])
         return super().dispatch(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['app'] = self.app
+        return context
+
+
+
+class EditApp(AppMixin, FormView):
+
+    form_class = EditAppForm
+    template_name = 'server_control_panel/edit_app.html'
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['instance'] = self.app
+        return form_kwargs
+
+    def form_valid(self, form):
+
+        app = form.save()
+
+        context = self.get_context_data(**self.kwargs)
+        context['app'] = app
+        context['success'] = True
+
+        return self.render_to_response(context)
+    
 
 
 class CheckAppApiStatus(AppMixin, TemplateView):
@@ -202,14 +297,4 @@ class CheckAppApiStatus(AppMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['api_check'] = self.check_api_status()
         return context
-        
 
-class AppDetail(AppMixin, TemplateView):
-
-    template_name = 'server_control_panel/app_detail.html'
-    
-    
-
-class UpdateApp(AppMixin, TemplateView):
-
-    template_name = 'server_control_panel/update_app.html'

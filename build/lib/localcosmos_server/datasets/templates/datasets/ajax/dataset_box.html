@@ -24,6 +24,14 @@
 			{% else %}
 				
 			{% endif %}
+			<div class="mt-2">
+				{% trans 'observed by' %}:
+				{% if dataset.user %}
+					{{ dataset.user }}
+				{% else %}
+					{% trans 'anonymous user' %}
+				{% endif %}
+			</div>
 		</p>
 		{% block links %}
 			<a href="{% url 'datasets:edit_dataset' request.app.uid dataset.id %}" class="btn btn-sm btn-outline-primary">{% trans 'show' %}</a>

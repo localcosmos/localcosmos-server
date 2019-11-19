@@ -18,7 +18,7 @@ from django.template.backends.django import DjangoTemplates
 
 from localcosmos_server.slugifier import create_unique_slug
 
-import uuid, os, json
+import uuid, os, json, shutil
 
 class LocalcosmosUserManager(UserManager):
     
@@ -302,9 +302,11 @@ class App(models.Model):
     # eg displays a selection in the AppAdmin
     def get_online_content_templates(self, template_type):
 
-        # preview is always false for this
-        preview = False
-        
+        if self.published_version:
+            preview = False
+        else:
+            preview = True
+            
         templates_path = os.path.join(self.get_online_content_templates_path(preview=preview), template_type)
         oc_settings = self.get_online_content_settings(preview=preview)
         language = self.primary_language
@@ -379,6 +381,13 @@ class App(models.Model):
                 return locale.get(key, None)
 
         return None
+
+    # LC PRIVATE: remove all contents from disk
+    def delete(self, *args, **kwargs):
+        app_folder = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.uid)
+        if os.path.isdir(app_folder):
+            shutil.rmtree(app_folder)
+        super().delete(*args, **kwargs)
         
 
     def __str__(self):

@@ -197,6 +197,7 @@ localcosmos_server/server_control_panel/urls.py
 localcosmos_server/server_control_panel/views.py
 localcosmos_server/server_control_panel/templates/server_control_panel/app_api_status.html
 localcosmos_server/server_control_panel/templates/server_control_panel/base.html
+localcosmos_server/server_control_panel/templates/server_control_panel/edit_app.html
 localcosmos_server/server_control_panel/templates/server_control_panel/home.html
 localcosmos_server/server_control_panel/templates/server_control_panel/install_app.html
 localcosmos_server/specifications/DatasetJSON

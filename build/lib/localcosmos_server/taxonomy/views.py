@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.views.generic import TemplateView, FormView
 from django.http import HttpResponse
 from django.urls import reverse
@@ -52,6 +53,7 @@ class ManageTaxonomicRestrictions(FormView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs.update(self.get_required_form_kwargs())
+
         return form_kwargs
 
     def get_required_form_kwargs(self):
@@ -60,6 +62,9 @@ class ManageTaxonomicRestrictions(FormView):
             'prefix' : self.get_prefix(),
             'taxon_search_url' : self.get_taxon_search_url(),
         }
+
+        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+            form_kwargs['fixed_taxon_source'] = 'AppTaxa'
 
         return form_kwargs
 
