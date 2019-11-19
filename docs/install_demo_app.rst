@@ -70,7 +70,7 @@ You cannot use these locations for your webapps because they are used by the Loc
 Open ``http://localhost:8080/server-control-panel/`` and click on ``Install App``.
 
 1. Select the zipfile ``TreesOfBavaria.zip`` you just downloaded.
-2. Enter ``localhost/`` as URL of this App, according to your webservers configuration
+2. Enter ``http://localhost/`` (or the URL according to your webserver configuration) to open the Webapp.
 3. Click the install button
 
 Now you can visit ``http://localhost/`` and start using the Demo App.
