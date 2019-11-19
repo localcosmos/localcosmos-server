@@ -7,13 +7,11 @@ Before you can install django and the localcosmos_server package, you have to in
 Required server components
 --------------------------
 
-* a Linux server with root access
 * nginx or apache2 web server
 * python3
 * virtualenv (optional, recommended)
-* PostGis 2.x
+* PostgreSQL 10.x with PostGIS 2.x
 * kmeans PostgreSQL extension: https://github.com/umitanuki/kmeans-postgresql
-* [for deployment] https with a valid certificate
 
 
 Install the kmeans PostgreSQL extension
