@@ -1,5 +1,6 @@
 # directories
 __pycache__
+demo-app
 
 # files
 *.pyc

@@ -40,7 +40,14 @@ The ``UID`` of the Demo App is ``treesofbavaria``. If you want to serve your app
 			alias /var/www/localcosmos/apps/treesofbavaria/www;
 		}
 
-The Demo App is now being served at the URL ``http://localhost/``.
+
+Do not forget to reload the nginx conf
+
+	.. code-block:: bash
+
+		sudo service nginx reload
+
+The Demo App can now be served at the URL ``http://localhost/`` after it has been installed.
 
 
 It is very important to **remember the url** which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
