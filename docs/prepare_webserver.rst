@@ -63,6 +63,7 @@ Download and unzip https://github.com/umitanuki/kmeans-postgresql on your server
 
 		sudo mkdir /opt/kmeans
 		cd /opt/kmeans
+		# replace <serveruser> with your username
 		sudo chown <serveruser>:<serveruser> /opt/kmeans
 		wget https://github.com/umitanuki/kmeans-postgresql/archive/master.zip
 		# install unzip

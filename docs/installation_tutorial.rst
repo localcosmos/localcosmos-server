@@ -1,7 +1,7 @@
 Set up Tutorial
 ===============
 
-Duration: 10-15 minutes.
+Duration: 30-45 minutes.
 
 This tutorial covers setting up a running LocalCosmos Private Server as a development server. This tutorial is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
 
