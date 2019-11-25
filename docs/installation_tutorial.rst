@@ -59,14 +59,21 @@ This will automatically create the folder ``/opt/localcosmos/localcosmos_private
 ^^^^^^^^^^^^^^^
 You now have to adjust the contents of the file ``settings.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` to set up your LocalCosmos Private Server.
 
-**Add the following to ``INSTALLED_APPS``**
+Replace ``INSTALLED_APPS`` with the following:
 
 	.. code-block:: python
 
 		INSTALLED_APPS = [
 
-			(...)		
+			# django defaults
+			'django.contrib.admin',
+			'django.contrib.auth',
+			'django.contrib.contenttypes',
+			'django.contrib.sessions',
+			'django.contrib.messages',
+			'django.contrib.staticfiles',
 
+			# localcosmos
 			'django.contrib.sites',
 
 			'localcosmos_server',
@@ -93,7 +100,7 @@ You now have to adjust the contents of the file ``settings.py`` located in ``/op
 		]
 
 
-Configure the middleware chain
+Replace the ``MIDDLEARE`` setting with the following
 	.. code-block:: python
 
 		MIDDLEWARE = [
@@ -112,7 +119,7 @@ Configure the middleware chain
 		]
 
 
-Set context processors and template loaders
+Replace the ``TEMPLATES`` setting with the following
 	.. code-block:: python
 
 		TEMPLATES = [
@@ -137,23 +144,22 @@ Set context processors and template loaders
 		]
 
 
-Set up the database
+Set up the database. Replace the ``DATABASE``setting with the setting below. Make sure you replace ``<lcpassword>`` with the correct password. If you did not follow the **Preparing your webserver** tutorial, you will also have to adjust the ``NAME`` and ``USER`` paramters according to your postgresql database name and your postgresql username.
 	.. code-block:: python
 
 		DATABASES = {
 			'default': {
 				'ENGINE': 'django.contrib.gis.db.backends.postgis',
-				'NAME': 'localcosmos', # or any other name
-				'USER' : 'YOURDBUSER',
-				'PASSWORD' : 'YOURDBPASSWORD',
+				'NAME': 'localcosmos',
+				'USER' : 'lcuser',
+				'PASSWORD' : '<lcpassword>',
 				'HOST' : 'localhost',
 			}
 		}
 
-Make sure the postgresql-postgis database with the name ``NAME`` does exist.
 
 
-Set ``STATIC`` and ``MEDIA`` paths
+Replace or add ``STATIC`` and ``MEDIA`` paths
     .. code-block:: python
 
 		STATIC_URL = '/static/'
@@ -163,14 +169,10 @@ Set ``STATIC`` and ``MEDIA`` paths
 		MEDIA_URL = '/media/'
 
 
-Inlude localcosmos_server settings in your ``settings.py`` file. This automatically covers anycluster, django_road and cors settings.
+Inlude localcosmos_server settings in your ``settings.py`` file. This automatically covers anycluster, django_road and cors settings. Insert these lines at the bottom of settings.py
     .. code-block:: python
 
 		from localcosmos_server.settings import *
-
-
-Set localcosmos specific variables
-	.. code-block:: python
 
 		# location where apps are installed
 		# your apps index.html will be in LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
@@ -182,7 +184,7 @@ Set localcosmos specific variables
 
 2.2 urls.py
 ^^^^^^^^^^^
-The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` also needs configuration:
+The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` also needs configuration. You ``urls.py`` should look like this:
 
 	.. code-block:: python
 
@@ -191,7 +193,6 @@ The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosm
 		from django.urls import path, include
 
 		urlpatterns = [
-			(...)
 			path('admin/', admin.site.urls),
 			path('', include('localcosmos_server.urls')),
 			path('api/', include('localcosmos_server.api.urls')),
