@@ -51,6 +51,7 @@ Install the kmeans PostgreSQL extension
 This step only applies if you follow this tutorial step by step. Switch back from the postgres user to the user you use on your server. Replace ``<serveruser>`` with the username you use on your server.
  
 	.. code-block:: bash
+
 		su <serveruser>
 
 
