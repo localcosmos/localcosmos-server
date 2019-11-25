@@ -225,7 +225,7 @@ to migrate the database.
 
 
 4. Run the development server
-------------------------------
+-----------------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run the following command to start the development server.
 	.. code-block:: bash
 
@@ -237,3 +237,15 @@ Now open a browser and navigate to ``http://localhost:8080`` . Follow the instru
 Also check if the API works. Browse to ``http://localhost:8080/api/`` .
 
 After you completed the setup, the Server Control Panel ist available at ``http://localhost:8080/server-control-panel/``.
+
+
+5. Re-running the development server
+------------------------------------
+If you want to start the development server after rebooting, you have to activate the virtual environment first.
+
+	.. code-block:: bash
+
+		cd /opt/localcosmos
+		source venv/bin/activate
+		cd localcosmos_private
+		python manage.py runserver 0.0.0.0:8080
