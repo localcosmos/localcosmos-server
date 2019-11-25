@@ -16,14 +16,16 @@ Install all required server components as described in **Preparing your webserve
 
 **Create a project folder**
 
-Create a folder on your disk where your LocalCosmos Private Server can live. eg: ``/opt/localcosmos``
+Create a folder on your disk where your LocalCosmos Private Server can live. eg: ``/opt/localcosmos``.
+Make sure you have permissions to write this folder. In the example the server user is ``<serveruser>`` - replace this with the username you use.
 
 
 **Create a python3 virtual environment**
-   .. code-block:: bash
-
-      cd /opt/localcosmos
-      virtualenv -p python3 venv
+	.. code-block:: bash
+		sudo mkdir /opt/localcosmos
+		sudo chown <serveruser>:<serveruser> /opt/localcosmos
+		cd /opt/localcosmos
+		virtualenv -p python3 venv
 
 
 **Activate the virtual environment**
