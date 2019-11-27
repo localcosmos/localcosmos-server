@@ -16,7 +16,7 @@ class ServerControlPanelMiddleware:
 
     def __call__(self, request):
 
-        if 'server-control-panel' in request.path_info:
+        if 'server/control-panel' in request.path_info:
 
             if request.user.is_authenticated:
                 if not request.user.is_superuser:

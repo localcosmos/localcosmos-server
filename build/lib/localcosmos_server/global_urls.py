@@ -35,6 +35,6 @@ urlpatterns = [
     path('', include('localcosmos_server.setup_urls')),
     
     # SERVER CONTROL PANEL
-    path('server-control-panel/', include('localcosmos_server.server_control_panel.urls', namespace='scp')),
+    path('control-panel/', include('localcosmos_server.server_control_panel.urls', namespace='scp')),
     
 ]

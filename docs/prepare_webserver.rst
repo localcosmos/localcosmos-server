@@ -3,6 +3,8 @@ Preparing your webserver
 
 Before you can install django and the localcosmos_server package, you have to install the requirements below. All code examples are for Debian/Ubuntu based systems.
 
+Duration: 10-15 minutes.
+
 
 1. Required server components
 -----------------------------
@@ -14,6 +16,7 @@ Before you can install django and the localcosmos_server package, you have to in
 * kmeans PostgreSQL extension: https://github.com/umitanuki/kmeans-postgresql
 
 On Debian/ubuntu, you can install the required packages as follows:
+
 	.. code-block:: bash
 
 		sudo apt-get install nginx

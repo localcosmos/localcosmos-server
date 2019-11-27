@@ -21,7 +21,9 @@ Make sure you have permissions to write this folder. In the example the server u
 
 
 **Create a python3 virtual environment**
+
 	.. code-block:: bash
+
 		sudo mkdir /opt/localcosmos
 		sudo chown <serveruser>:<serveruser> /opt/localcosmos
 		cd /opt/localcosmos
@@ -29,12 +31,14 @@ Make sure you have permissions to write this folder. In the example the server u
 
 
 **Activate the virtual environment**
+
    .. code-block:: bash
 
       source venv/bin/activate
 
 
 **Install django and localcosmos_server**
+
    .. code-block:: bash
 
       pip install django==2.2.*
@@ -46,6 +50,7 @@ This will install django, localcosmos_server and its requirements in your create
 **Create a new django project**
 
 In ``/opt/localcosmos`` execute the following:
+
    .. code-block:: bash
 
       django-admin startproject localcosmos_private
@@ -103,6 +108,7 @@ Replace ``INSTALLED_APPS`` with the following:
 
 
 Replace the ``MIDDLEARE`` setting with the following
+
 	.. code-block:: python
 
 		MIDDLEWARE = [
@@ -122,6 +128,7 @@ Replace the ``MIDDLEARE`` setting with the following
 
 
 Replace the ``TEMPLATES`` setting with the following
+
 	.. code-block:: python
 
 		TEMPLATES = [
@@ -147,6 +154,7 @@ Replace the ``TEMPLATES`` setting with the following
 
 
 Set up the database. Replace the ``DATABASE``setting with the setting below. Make sure you replace ``<lcpassword>`` with the correct password. If you did not follow the **Preparing your webserver** tutorial, you will also have to adjust the ``NAME`` and ``USER`` paramters according to your postgresql database name and your postgresql username.
+
 	.. code-block:: python
 
 		DATABASES = {
@@ -162,6 +170,7 @@ Set up the database. Replace the ``DATABASE``setting with the setting below. Mak
 
 
 Replace or add ``STATIC`` and ``MEDIA`` paths
+
     .. code-block:: python
 
 		STATIC_URL = '/static/'
@@ -172,6 +181,7 @@ Replace or add ``STATIC`` and ``MEDIA`` paths
 
 
 Inlude localcosmos_server settings in your ``settings.py`` file. This automatically covers anycluster, django_road and cors settings. Insert these lines at the bottom of settings.py
+
     .. code-block:: python
 
 		from localcosmos_server.settings import *
@@ -179,9 +189,6 @@ Inlude localcosmos_server settings in your ``settings.py`` file. This automatica
 		# location where apps are installed
 		# your apps index.html will be in LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 		LOCALCOSMOS_APPS_ROOT = '/var/www/localcosmos/apps/' 
-
-		LOCALCOSMOS_SPONSORING_API = 'https://staging.localcosmos.org/api/sponsoring/'
-
 
 
 2.2 urls.py
@@ -197,10 +204,10 @@ The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosm
 		urlpatterns = [
 			path('admin/', admin.site.urls),
 			path('', include('localcosmos_server.urls')),
-			path('api/', include('localcosmos_server.api.urls')),
 		]
 
 As long as you run the django development server, add the following at the bottom of ``urls.py``.
+
 	.. code-block:: python
 
 		# remove these lines after development
@@ -217,6 +224,7 @@ That's it for the django configuration.
 3. Migrate database
 -------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
+
 	.. code-block:: bash
 
 		python manage.py migrate
@@ -227,6 +235,7 @@ to migrate the database.
 4. Run the development server
 -----------------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run the following command to start the development server.
+
 	.. code-block:: bash
 
 		python manage.py runserver 0.0.0.0:8080
@@ -236,7 +245,7 @@ Now open a browser and navigate to ``http://localhost:8080`` . Follow the instru
 
 Also check if the API works. Browse to ``http://localhost:8080/api/`` .
 
-After you completed the setup, the Server Control Panel ist available at ``http://localhost:8080/server-control-panel/``.
+After you completed the setup, the Server Control Panel ist available at ``http://localhost:8080/server/control-panel/``.
 
 
 5. Re-running the development server

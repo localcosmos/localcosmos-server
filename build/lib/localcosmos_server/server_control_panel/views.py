@@ -4,6 +4,9 @@ from django.views.generic import TemplateView, FormView
 from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
 from localcosmos_server.models import App, SecondaryAppLanguages
 from localcosmos_server.generic_views import AjaxDeleteView
 
@@ -16,6 +19,12 @@ import json, os, shutil, zipfile
 
 LOCALCOSMOS_OPEN_SOURCE = getattr(settings, 'LOCALCOSMOS_OPEN_SOURCE')
 
+class LoginRequiredMixin:
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 '''
     Home
 '''
@@ -27,7 +36,7 @@ class AppsContextMixin:
         return context
 
 
-class ServerControlPanelHome(AppsContextMixin, TemplateView):
+class ServerControlPanelHome(LoginRequiredMixin, AppsContextMixin, TemplateView):
     template_name = 'server_control_panel/home.html'
 
 
@@ -45,7 +54,7 @@ class LCPrivateOnlyMixin:
     - collect data and upload app .zip
     - also capable of updating an app
 '''
-class InstallApp(LCPrivateOnlyMixin, FormView):
+class InstallApp(LoginRequiredMixin, LCPrivateOnlyMixin, FormView):
     template_name = 'server_control_panel/install_app.html'
     form_class = InstallAppForm
 
@@ -205,7 +214,7 @@ class InstallApp(LCPrivateOnlyMixin, FormView):
         return self.render_to_response(context)
 
 
-class UninstallApp(AjaxDeleteView):
+class UninstallApp(LoginRequiredMixin, AjaxDeleteView):
     
     model = App
 
@@ -237,7 +246,7 @@ class AppMixin(AppsContextMixin):
 
 
 
-class EditApp(AppMixin, FormView):
+class EditApp(LoginRequiredMixin, AppMixin, FormView):
 
     form_class = EditAppForm
     template_name = 'server_control_panel/edit_app.html'
@@ -259,7 +268,7 @@ class EditApp(AppMixin, FormView):
     
 
 
-class CheckAppApiStatus(AppMixin, TemplateView):
+class CheckAppApiStatus(LoginRequiredMixin, AppMixin, TemplateView):
 
     template_name = 'server_control_panel/app_api_status.html'
 

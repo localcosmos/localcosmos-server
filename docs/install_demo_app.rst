@@ -37,7 +37,7 @@ The ``UID`` of the Demo App is ``treesofbavaria``. If you want to serve your app
 	.. code-block:: sourcecode
 
 		location / {
-			alias /var/www/localcosmos/apps/treesofbavaria/www;
+			alias /var/www/localcosmos/apps/treesofbavaria/www/;
 		}
 
 
@@ -55,19 +55,16 @@ It is very important to **remember the url** which your webapp will be served at
 Reserved locations are:
 	.. code-block:: sourcecode
 
-		/server-control-panel
+		/server
 		/app-admin
 		/api
-		/login
-		/logout
-		/load-footer-sponsors
 
 You cannot use these locations for your webapps because they are used by the LocalCosmos Private Server django application.
 
 
 3. Install the Demo App
 -----------------------
-Open ``http://localhost:8080/server-control-panel/`` and click on ``Install App``.
+Open ``http://localhost:8080/server/control-panel/`` and click on ``Install App``.
 
 1. Select the zipfile ``TreesOfBavaria.zip`` which you just downloaded.
 2. Enter ``http://localhost/`` (or the URL according to your webserver configuration) as the URL of this App.

@@ -12,7 +12,7 @@ AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGOUT_REDIRECT_URL = '/loggedout/'
+LOGOUT_REDIRECT_URL = '/server/loggedout/'
 
 
 # this setting is used in localcosmos_server.models.App
@@ -60,4 +60,4 @@ DATASET_VALIDATION_CLASSES = (
 
 LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API = False
 
-LOGIN_REDIRECT_URL = '/server-control-panel/'
+LOGIN_REDIRECT_URL = '/server/control-panel/'

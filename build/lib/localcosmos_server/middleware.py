@@ -16,7 +16,9 @@ class LocalCosmosServerSetupMiddleware:
 
     def __call__(self, request):
 
-        if request.path_info in ['/localcosmos-setup/superuser/']:
+        localcosmos_create_superuser_url = reverse('localcosmos_setup_superuser')
+
+        if request.path_info in [localcosmos_create_superuser_url]:
             response = self.get_response(request)
             return response
 
@@ -24,7 +26,7 @@ class LocalCosmosServerSetupMiddleware:
         superuser_exists = User.objects.filter(is_superuser=True).exists()
 
         if not superuser_exists:
-            return redirect(reverse('localcosmos_setup_superuser'))
+            return redirect(localcosmos_create_superuser_url)
 
 
         response = self.get_response(request)

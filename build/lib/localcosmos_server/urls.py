@@ -7,7 +7,7 @@ from . import views
 # PART OF TENANT SCHEMA URL CONF
 
 urlpatterns = [
-    path('', include('localcosmos_server.global_urls')),
+    path('server/', include('localcosmos_server.global_urls')),
     
     # APP ADMIN
     path('app-admin/', include('localcosmos_server.app_admin.urls', namespace='appadmin')),

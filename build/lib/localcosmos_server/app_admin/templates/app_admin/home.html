@@ -7,7 +7,7 @@
 
 		<h2>{% trans 'Observations waiting for review' %}</h2>
 
-		<div class="row mb-4">
+		<div class="row my-4">
 			{% if review_datasets %}
 				{% for dataset in review_datasets %}
 					<div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -23,7 +23,7 @@
 
 		<h2>{% trans 'Observations that need identification' %}</h2>
 
-		<div class="row">
+		<div class="row mb-4">
 			{% if no_taxon_datasets %}
 				{% for dataset in no_taxon_datasets %}
 					<div class="col-12 col-md-6 col-lg-4 mb-4">

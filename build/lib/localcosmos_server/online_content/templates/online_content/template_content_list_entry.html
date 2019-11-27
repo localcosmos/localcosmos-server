@@ -10,7 +10,7 @@
 			</h5>
 			{% get_template_content_locale template_content app.primary_language as primary_localized_template_content %}
 			{% for language in app.languages %}
-				<div class="row">
+				<div class="row {% if not forloop.last %}mb-3{% endif %}">
 					<div class="col-auto">
 						<img src="{% static 'localcosmos_server/images/countries_big/' %}{{ language }}.png" />
 					</div>
@@ -43,7 +43,6 @@
 						{% endif %}
 					</div>
 				</div>
-				<br>
 			{% endfor %}
 			<hr>
 			{% if publication %}
