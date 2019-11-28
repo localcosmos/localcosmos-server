@@ -46,11 +46,11 @@ You also have to create a database user which has the right to alter the just cr
 		\q
 	
 
-Install the kmeans PostgreSQL extension
----------------------------------------
+3.Install the kmeans PostgreSQL extension
+-----------------------------------------
 
-1. Switch back to your server user
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3.1. Switch back to your server user
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 This step only applies if you follow this tutorial step by step. Switch back from the postgres user to the user you use on your server. Replace ``<serveruser>`` with the username you use on your server.
  
 	.. code-block:: bash
@@ -58,8 +58,8 @@ This step only applies if you follow this tutorial step by step. Switch back fro
 		su <serveruser>
 
 
-2. Download kmeans
-^^^^^^^^^^^^^^^^^^
+3.2 Download kmeans
+^^^^^^^^^^^^^^^^^^^
 Download and unzip https://github.com/umitanuki/kmeans-postgresql on your server. In this example, kmeans is downloaded into ``/opt/kmeans``, but you can use any other folder.
 
 	.. code-block:: bash
@@ -74,8 +74,8 @@ Download and unzip https://github.com/umitanuki/kmeans-postgresql on your server
 		unzip master.zip
 
 
-3. Activate kmeans extension
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3.3 Activate kmeans extension
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In this example, the database which we want to install the kmeans extension for, is named ``localcosmos``. Replace ``localcosmos`` if your database has a different name.
 
 	.. code-block:: bash

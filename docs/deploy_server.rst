@@ -21,7 +21,7 @@ Add your Domain name, in this example ``localcosmos-private.org``, to ``ALLOWED_
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 Run the development server once to check if there are errors
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 		
 		cd /opt/localcosmos
 		source venv/bin/activate
@@ -34,6 +34,18 @@ If you installed the Demo App (Trees Of Bavaria), you have to remove it before c
 If there are no errors, stop the development server and continue.
 
 
+1.3 Clean urls.py
+^^^^^^^^^^^^^^^^^
+Remove the development lines from ``urls.py``
+
+	.. code-block:: bash
+
+		# remove these lines after development
+		#if settings.DEBUG:
+		#	from django.conf.urls.static import static
+		#	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 2. uwsgi
 --------
 
@@ -41,14 +53,14 @@ If there are no errors, stop the development server and continue.
 ^^^^^^^^^^^^^^^^^
 If still active, deactivate your virtual environment. We have to install uwsgi system-wide and not inside the virtual environment.
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		deactivate
 
 
 Install ``uwsgi`` using ``pip``:
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		sudo apt-get install python3-pip
 		sudo -H pip3 install uwsgi
@@ -58,14 +70,14 @@ Install ``uwsgi`` using ``pip``:
 ^^^^^^^^^^^^^^^^^^^^
 First, create a ``uwsgi`` folder where all the uwsgi stuff will go
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		cd /opt/localcosmos
 		mkdir uwsgi
 
 Create the file ``localcosmos_private_uwsgi.ini`` in ``/opt/localcosmos/uwsgi/`` 
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		cd /opt/localcosmos/uwsgi/
 		touch localcosmos_private_uwsgi.ini
@@ -110,7 +122,7 @@ and put the following in it:
 ^^^^^^^^^^^^^^^^^^^^^^
 The socket ``localcosmos-private.sock`` will automatically be created. Therefore, we need a folder ``www-data`` can write into.
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		cd /opt/localcosmos/uwsgi
 		mkdir socket
@@ -121,7 +133,7 @@ The socket ``localcosmos-private.sock`` will automatically be created. Therefore
 2.4 Get uwsgi_params
 ^^^^^^^^^^^^^^^^^^^^
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 		
 		cd /opt/localcosmos/uwsgi
 		wget https://raw.githubusercontent.com/nginx/nginx/master/conf/uwsgi_params
@@ -130,7 +142,7 @@ The socket ``localcosmos-private.sock`` will automatically be created. Therefore
 2.5 Logging
 ^^^^^^^^^^^
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		sudo mkdir /var/log/uwsgi
 		sudo chown <server-user>:www-data /var/log/uwsgi
@@ -144,7 +156,7 @@ The socket ``localcosmos-private.sock`` will automatically be created. Therefore
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 First you have to create an nginx configuration file. Best practice is to name the file after the domain. For this tutorial we assume the domain is ``localcosmos-private.org``, so we create the file ``localcosmos-private.org.conf``. Adjust the filename according to the domain name you will use for your Local Cosmos Private Server.
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		cd /etc/nginx/sites-available
 		sudo touch localcosmos-private.org.conf
@@ -217,7 +229,7 @@ Now put the following code into this file.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Create the symlink to ``localcosmos-private.org.conf`` in ``/etc/nginx/sites-enabled/``
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		sudo ln -s /etc/nginx/sites-available/localcosmos-private.org.conf /etc/nginx/sites-enabled/
 
@@ -226,7 +238,7 @@ Create the symlink to ``localcosmos-private.org.conf`` in ``/etc/nginx/sites-ena
 ^^^^^^^^^^^^^^^^^^^^^^^^
 Create the folder ``localcosmos`` in ``/var/www`` with the correct permissions. Replace ``<server_user>`` with your username on your server.
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		cd /var/www
 		sudo mkdir localcosmos
@@ -244,14 +256,14 @@ Create the folder ``localcosmos`` in ``/var/www`` with the correct permissions. 
 3.4 Reload nginx
 ^^^^^^^^^^^^^^^^
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		sudo service nginx reload
 
 
 Test your uwsgi setup using this command.
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		/usr/local/bin/uwsgi --ini /opt/localcosmos/uwsgi/localcosmos_private_uwsgi.ini --uid www-data --gid www-data
 
@@ -263,7 +275,7 @@ Now open your Domain in a browser and check if it works.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Create the file ``/etc/rc.local`` if it does not exist yet.
 
-	.. code-block:: sourcecode
+	.. code-block:: bash
 
 		sudo touch /etc/rc.local
 		sudo chmod +x /etc/rc.local

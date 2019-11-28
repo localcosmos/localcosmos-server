@@ -169,6 +169,13 @@ Set up the database. Replace the ``DATABASE``setting with the setting below. Mak
 
 
 
+Replace ``ALLOWED_HOSTS`` with the following.
+
+	.. code-block:: python
+
+		ALLOWED_HOSTS = ['localhost']
+
+
 Replace or add ``STATIC`` and ``MEDIA`` paths
 
     .. code-block:: python
@@ -232,7 +239,19 @@ In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 to migrate the database.
 
 
-4. Run the development server
+4. Create localcosmos www folder
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+We need the folder ``/var/www/localcosmos`` and django has to be able to write into it. Replace ``<server_user>`` with the user you use on your computer.
+
+	.. code-block:: bash
+
+		# if the folder does not exist yet
+		sudo mkdir /var/www/localcosmos
+		# run this command in any case
+		sudo chown <server_user>:www-data /var/www/localcosmos
+
+
+5. Run the development server
 -----------------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run the following command to start the development server.
 
@@ -248,7 +267,7 @@ Also check if the API works. Browse to ``http://localhost:8080/api/`` .
 After you completed the setup, the Server Control Panel ist available at ``http://localhost:8080/server/control-panel/``.
 
 
-5. Re-running the development server
+6. Re-running the development server
 ------------------------------------
 If you want to start the development server after rebooting, you have to activate the virtual environment first.
 

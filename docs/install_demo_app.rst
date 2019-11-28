@@ -32,12 +32,13 @@ abstract example:
 		LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 
 
-The ``UID`` of the Demo App is ``treesofbavaria``. If you want to serve your app at the root directory ``/``, set the location alias as follows:
+The ``UID`` of the Demo App is ``treesofbavaria``. For this test we serve the App at the root directory ``/``. Open the configuration file named ``default`` living in ``/etc/nginx/sites-available/`` and modify ``location /`` as follows:
 
 	.. code-block:: sourcecode
 
 		location / {
 			alias /var/www/localcosmos/apps/treesofbavaria/www/;
+			try_files $uri $uri/index.html;
 		}
 
 
@@ -47,7 +48,7 @@ Do not forget to reload the nginx conf
 
 		sudo service nginx reload
 
-The Demo App can now be served at the URL ``http://localhost/`` after it has been installed.
+With this configuration, the Demo App will later be available the URL ``http://localhost/`` (after it has been installed).
 
 
 It is very important to **remember the url** which your webapp will be served at because you will have to enter this url in the **Server Control Panel** when installing an app.
@@ -59,18 +60,32 @@ Reserved locations are:
 		/app-admin
 		/api
 
-You cannot use these locations for your webapps because they are used by the LocalCosmos Private Server django application.
+You cannot use these locations for your webapps because they are used by the Local Cosmos Private Server django application.
 
 
-3. Install the Demo App
+3. Run the development server
+-----------------------------
+If not yet done, activate the virtual environment first
+
+	.. code-block:: bash
+
+		cd /opt/localcosmos
+		# activate virtual environment if not yet activated
+		source venv/bin/activate
+		# start the server
+		cd /opt/localcosmos/localcosmos_private
+		python manage.py runserver 0.0.0.0:8080
+
+
+The Demo App expects the Local Cosmos Server being available at ``http://localhost:8080/``, so make sure you do not use something else.
+
+
+4. Install the Demo App
 -----------------------
 Open ``http://localhost:8080/server/control-panel/`` and click on ``Install App``.
 
 1. Select the zipfile ``TreesOfBavaria.zip`` which you just downloaded.
 2. Enter ``http://localhost/`` (or the URL according to your webserver configuration) as the URL of this App.
-3. Click on Install
+3. Click the Install button
 
 Once the installation is complete, visit ``http://localhost/`` to open the Webapp.
-3. Click the install button
-
-Now you can visit ``http://localhost/`` and start using the Demo App.
