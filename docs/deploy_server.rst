@@ -236,13 +236,13 @@ Create the symlink to ``localcosmos-private.org.conf`` in ``/etc/nginx/sites-ena
 
 3.3 Collect static files
 ^^^^^^^^^^^^^^^^^^^^^^^^
-Create the folder ``localcosmos`` in ``/var/www`` with the correct permissions. Replace ``<server_user>`` with your username on your server.
+Create the folder ``localcosmos`` in ``/var/www`` with the correct permissions, if it does not exist yet. Replace ``<server_user>`` with your username on your server.
 
 	.. code-block:: bash
 
 		cd /var/www
 		sudo mkdir localcosmos
-		sudo chown <serveruser>:<serveruser> localcosmos
+		sudo chown <serveruser>:www-data localcosmos
 
 		# if not yet active, activate the virtual environment
 		cd /opt/localcosmos
@@ -251,6 +251,9 @@ Create the folder ``localcosmos`` in ``/var/www`` with the correct permissions. 
 		# collect static files
 		cd localcosmos_private
 		python manage.py collectstatic
+
+		# deactivate virtualenv
+		deactivate
 
 
 3.4 Reload nginx
@@ -268,7 +271,15 @@ Test your uwsgi setup using this command.
 		/usr/local/bin/uwsgi --ini /opt/localcosmos/uwsgi/localcosmos_private_uwsgi.ini --uid www-data --gid www-data
 
 
-Now open your Domain in a browser and check if it works.
+Now open ``http://YOUR_DOMAIN.org/server/control-panel/`` in a browser and check if it works.
+
+On some installations you have to remove ``default`` from ``sites-enabled`` (NOT ``sites-available`` !!)
+
+	.. code-block:: bash
+
+		cd /etc/nginx/sites-enabled
+		sudo rm default
+		sudo service nginx reload
 
 
 3.5 Make uwsgi startup when the system boots
@@ -293,7 +304,9 @@ Put the following in it:
 		exit 0
 
 
-3.6 Further help
-^^^^^^^^^^^^^^^^
+4. Troubleshooting
+------------------
 
-https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
+1. Check ``/var/log/nginx/error.log``
+2. Check ``/var/log/uwsgi/localcosmos-private.log``
+3. Read https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html
