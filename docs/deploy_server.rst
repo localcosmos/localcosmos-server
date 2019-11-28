@@ -304,6 +304,9 @@ Put the following in it:
 		exit 0
 
 
+**That's it! You now have a fully working Local Cosmos Private Server!**
+
+
 4. Troubleshooting
 ------------------
 
