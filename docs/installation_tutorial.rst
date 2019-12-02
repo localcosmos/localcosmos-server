@@ -107,7 +107,7 @@ Replace ``INSTALLED_APPS`` with the following:
 		]
 
 
-Replace the ``MIDDLEARE`` setting with the following
+Replace the ``MIDDLEWARE`` setting with the following
 
 	.. code-block:: python
 
