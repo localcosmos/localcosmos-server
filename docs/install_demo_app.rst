@@ -49,7 +49,7 @@ Note: The Demo App covers the Webapp version of Trees Of Bavaria. If you build y
 ---------------------------------------
 Local Cosmos Webapps are served by nginx or apache2, not by django.
 
-Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined by ``LOCALCOSMOS_APPS_ROOT`` in your ``settings.py`` file. The ``UID`` of your app will be the name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria`` and ``LOCALCOSMOS_APPS_ROOT`` is set to ``/var/www/localcosmos/apps/``. So this app will be installed in ``/var/www/localcosmos/apps/treesofbavaria``.
+Later, you will install your webapp using the **Server Control Panel** of your Local Cosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined by ``LOCALCOSMOS_APPS_ROOT`` in your ``settings.py`` file. The ``UID`` of your app will be the name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria`` and ``LOCALCOSMOS_APPS_ROOT`` is set to ``/var/www/localcosmos/apps/``. So this app will be installed in ``/var/www/localcosmos/apps/treesofbavaria/``.
 
 
 For this test we serve the App at the root directory ``/``. Open the configuration file named ``default`` living in ``/etc/nginx/sites-available/`` and modify ``location /`` as follows:
@@ -83,4 +83,4 @@ Open ``http://localhost:8080/server/control-panel/`` and click on ``Install App`
 2. Enter ``http://localhost/`` (or the URL according to your webserver configuration) as the URL of this App.
 3. Click the Install button
 
-Once the installation is complete, visit ``http://localhost/`` to open the Webapp.
+Once the installation is complete, visit ``http://localhost/`` to open the Webapp. To test the API, try logging in with the Superuser Account credentials you created in the server tutorial, or try to report an observation.
