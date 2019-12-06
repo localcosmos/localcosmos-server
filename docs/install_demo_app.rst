@@ -21,8 +21,8 @@ In this tutorial, we will configure the following setup:
 | http://localhost/                                 | Trees Of Bavaria Webapp      | nginx                      |
 +---------------------------------------------------+------------------------------+----------------------------+
 
-The App Admin for the Demo App ``Trees Of Bavaria`` will be available after the App has been installed.
-This Demo App expects the LocalCosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work.
+The App Admin for the Demo App, Trees Of Bavaria, will be available after the App has been installed.
+This Demo App expects the Local Cosmos Private Server api running at ``http://localhost:8080/api/``. Otherwise the Demo App will not work.
 
 Start your Local Cosmos Development Server:
 
@@ -47,9 +47,9 @@ Note: The Demo App covers the Webapp version of Trees Of Bavaria. If you build y
 
 2. Configure nginx to serve your Webapp
 ---------------------------------------
-LocalCosmos Webapps are served by nginx or apache2, not by django.
+Local Cosmos Webapps are served by nginx or apache2, not by django.
 
-Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined by ``LOCALCOSMOS_APPS_ROOT`` in your ``settings.py`` file. The ``UID`` of your app will be name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria``. So this app will be installed in ``/var/www/localcosmos/apps/treesofbavaria``.
+Later, you will install your webapp using the **Server Control Panel** of your LocalCosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined by ``LOCALCOSMOS_APPS_ROOT`` in your ``settings.py`` file. The ``UID`` of your app will be the name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria`` and ``LOCALCOSMOS_APPS_ROOT`` is set to ``/var/www/localcosmos/apps/``. So this app will be installed in ``/var/www/localcosmos/apps/treesofbavaria``.
 
 
 For this test we serve the App at the root directory ``/``. Open the configuration file named ``default`` living in ``/etc/nginx/sites-available/`` and modify ``location /`` as follows:
