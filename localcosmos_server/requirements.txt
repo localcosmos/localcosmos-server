@@ -5,8 +5,8 @@ content-licencing
 anycluster
 rules==2.1
 google-cloud-vision
-django-el-pagination==3.2.4
+django-el-pagination
 django-octicons
 django-countries
 django-cors-headers
-Pillow==6.2.1
+Pillow
