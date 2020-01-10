@@ -1,0 +1,137 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_uuid": "d085d231-e44a-44a0-946f-46604e4a8326",
+    "taxon_nuid": "00600200701b00702e00r",
+    "taxon_latname": "Sorbus aucuparia",
+    "vernacular": {
+        "de": "Eberesche",
+        "en": "Eberesche"
+    },
+    "node_names": [
+        "Eberesche"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "wechselständig",
+                    "image_url": "user_content/content_images/be2bcee18d6b847ef72bff25ec7a4194.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gefiedert",
+                    "image_url": "user_content/content_images/52d325bf640e7ccd4abb6569925f8724.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "user_content/content_images/e18b1e8e6557e2e98b9dba31f5f3025f.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gezackt",
+                    "image_url": "user_content/content_images/0f66a3509f9ee4c730bbb5faa20a7b92.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "user_content/content_images/b77d219e5a1746905858aacefb6a6728.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        107,
+                        100,
+                        0,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "rgba": "rgba(107,100,0,1.0)"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Die Eberesche ist von alters her in Kultur. Aus den Früchten lassen sich, am besten nach Frosteinwirkung, die den Abbau der Parasorbinsäure bewirkt, Marmeladen, Kompotte und Brände herstellen. Wegen des hohen Vitamin C-Gehaltes sind gekochte Vogelbeeren sehr gesund und wurden früher gegen Skorbut eingesetzt. Blätter und Blüten werden in der Medizin unter anderem gegen Husten, Bronchitis, Rheuma und Gicht verwendet. Das harte, polierfähige Holz findet zunehmend in der Möbelindustrie Verwendung."
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Das Gehölz ist eine Schmetterlingsfutterpflanze und dient weiteren zahlreichen Insekten als Nahrungspflanze. Viele Vogelarten, Füchse, Dachse und Nagetiere fressen die Früchte."
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [],
+        "taxon_images": []
+    },
+    "gbif_nubKey": 3012167
+}

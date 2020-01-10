@@ -4,7 +4,7 @@ from django.views.generic.edit import FormView
 from django.conf import settings
 from django.urls import reverse
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.decorators import ajax_required

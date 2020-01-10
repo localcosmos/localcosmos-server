@@ -7,6 +7,7 @@
 # - app endpoint scheme: /<str:app_uuid>/{ENDPOINT}/
 #
 ###################################################################################################################
+from django.contrib.auth import logout
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError, NotFound
@@ -179,6 +180,46 @@ class ManageAccount(APIView):
         return Response(context)    
 
 
+'''
+    Delete Account
+    - authenticated users only
+    - owner only
+    - [GET] delivers the form html to the client
+    - [DELETE] deletes the account
+'''
+class DeleteAccount(APIView):
+
+    permission_classes = (IsAuthenticatedOnly, OwnerOnly)
+    authentication_classes = (LCTokenAuthentication,)
+    renderer_classes = (TemplateHTMLRenderer,)
+    template_name = 'localcosmos_server/api/delete_account.html'
+    serializer_class = AccountSerializer
+
+
+    def get(self, request, *args, **kwargs):
+        serializer = self.serializer_class(request.user)
+        serializer_context = {
+            'serializer': serializer,
+            'user': request.user,
+            'request':request
+        }
+        return Response(serializer_context)
+
+
+    def delete(self, request, *args, **kwargs):
+
+        request.user.delete()
+
+        logout(request)
+
+        context = {
+            'user': request.user,
+            'success' : True,
+            'request' : request,
+        }
+        
+        return Response(context)
+    
 
 
 ##################################################################################################################

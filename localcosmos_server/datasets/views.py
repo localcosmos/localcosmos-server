@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 

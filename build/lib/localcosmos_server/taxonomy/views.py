@@ -2,7 +2,7 @@ from django.conf import settings
 from django.views.generic import TemplateView, FormView
 from django.http import HttpResponse
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 
 from django.contrib.contenttypes.models import ContentType
 

@@ -13,6 +13,8 @@ class AppAdminMiddleware(MiddlewareMixin):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
 
+        request.is_appadmin = False
+
         # the admin has to use localcosmos_server.urls to not conflict with the commercial installation
         # online_content needs the correct urlconf
         if '/app-admin/' in request.path:

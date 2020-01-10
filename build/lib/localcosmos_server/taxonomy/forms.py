@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 '''
     A form to search app taxa from disk or from db, depending on the taxon_search_url

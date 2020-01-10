@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 from django.contrib.contenttypes.models import ContentType
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 from django.urls import reverse
 
 from localcosmos_server.taxonomy.forms import AddSingleTaxonForm, TypedTaxonomicRestrictionForm

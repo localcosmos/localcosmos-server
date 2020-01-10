@@ -1,0 +1,143 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_uuid": "eb53f49f-1f80-4505-9d56-74216ac4e548",
+    "taxon_nuid": "006002009001005001001",
+    "taxon_latname": "Abies alba",
+    "vernacular": {
+        "de": "Weißtanne",
+        "en": "Weißtanne"
+    },
+    "node_names": [
+        "Weißtanne"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Anordnung der Nadeln",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "nebeneinander",
+                    "image_url": "user_content/content_images/c79b475818b7ec877a8a6383a98e0274.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Nadeln",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "abgerundet, nicht stechend",
+                    "image_url": "user_content/content_images/900fd9efabf49cfea970ac936bdb28b2.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Länge der Nadeln",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "RangeFilter",
+                "definition": {
+                    "step": 0.5,
+                    "unit": "cm"
+                }
+            },
+            "values": [
+                2.0,
+                3.0
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Wuchsrichtung der Zapfen",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "aufrecht stehend",
+                    "image_url": "user_content/content_images/fae5ce47ed5d9d764976868ee701f1fa.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Länge der Zapfen",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "RangeFilter",
+                "definition": {
+                    "step": 1.0,
+                    "unit": "cm"
+                }
+            },
+            "values": [
+                10.0,
+                16.0
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt, im Alter schuppig",
+                    "image_url": "user_content/content_images/037715300883cb88b0c89902d83f4edb.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Jahreszeitliche Benadelung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "ganzjährig mit Nadeln",
+                    "image_url": "user_content/content_images/043ebdc77a2e54112e3f4fdda780b687.JPEG"
+                }
+            ]
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Der finstere und gefürchtete Wald vieler Märchen und Sagen ist untrennbar mit der Tanne verbunden. Nicht von ungefähr kommt dieser Zusammenhang, zählt die heimische Weißtanne mit der Buche zu den schattentolerantesten Baumarten."
+        },
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Die größte Gefährdung geht von zu hohen Reh-, Rot- und Gamswildbeständen aus.\nGegenüber Schadorganismen wie Pilzen oder Insekten ist die Weißtanne robust. Es gibt einige auf Tanne spezialisierte Borkenkäfer, großflächige Schäden sind aber selten. Der Befall von Weißtanne mit Stamm- oder Triebläusen kann gefährlich werden.\nEbenso besteht bei der Tanne eine Gefährdung gegenüber Spätfrost und Frosttrockenheit.\nDie Tanne ist anfälliger gegenüber Luftschadstoffen, insbesondere Schwefelverbindungen, als andere Baumarten. Mit der Verbesserung der Luftreinheit der vergangen Jahrzehnte sind die Belastungen jedoch zurückgegangen."
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Die Weißtanne spielt aus tierökologischer Sicht eine besondere Rolle unter den Nadelbäumen. Mit ihrer weiten ökologischen Amplitude bietet sie Tierarten mit Präferenz für Nadelbäume Habitate in unterschiedlichsten Waldgesellschaften."
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [],
+        "taxon_images": []
+    },
+    "gbif_nubKey": 2685484
+}

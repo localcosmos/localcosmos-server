@@ -2,7 +2,7 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
 from django.http import Http404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required

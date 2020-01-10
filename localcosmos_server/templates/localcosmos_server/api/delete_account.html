@@ -1,0 +1,14 @@
+{% load i18n rest_framework localcosmos_tags %}
+
+{% if request.method == "DELETE" %}
+	{% if serializer.errors.non_field_errors %}
+		<div class="alert-box alert">
+			<ul>
+				{% for error in serializer.errors.non_field_errors %}
+					<li>{{ error }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endif %}
+{% endif %}
+

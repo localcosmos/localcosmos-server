@@ -1,0 +1,146 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_uuid": "f141fcc3-699b-44e7-8485-90c5a61e43e6",
+    "taxon_nuid": "00600200700x00c00800j",
+    "taxon_latname": "Fraxinus excelsior",
+    "vernacular": {
+        "de": "Esche",
+        "en": "Esche"
+    },
+    "node_names": [
+        "Esche"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gegenständig",
+                    "image_url": "user_content/content_images/d50d040edfa67fcfb3f56e2136f1a6f3.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gefiedert",
+                    "image_url": "user_content/content_images/52d325bf640e7ccd4abb6569925f8724.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "user_content/content_images/e18b1e8e6557e2e98b9dba31f5f3025f.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gezackt",
+                    "image_url": "user_content/content_images/0f66a3509f9ee4c730bbb5faa20a7b92.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gefurcht",
+                    "image_url": "user_content/content_images/bb56a7bc01f65f550c04e97146873b14.JPEG"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        107,
+                        100,
+                        0,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "rgba": "rgba(107,100,0,1.0)"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Die Esche spielte vor allem bei den Nordgermanen eine große Rolle. Sie verehrten sie als Weltenbaum Yggdrasil, dessen drei Wurzeln die Götter, die Unterwelt und das Land der Riesen verbanden. An diesen Wurzeln saßen die drei Nornen, die Schicksalsgöttinnen, die das Los der Menschen bestimmten.\n\nBereits in der Antike war die Herstellung von Heilmitteln aus der Esche bekannt. Seit dem Mittelalter übertrugen sich durch die Verbreitung pflanzenkundlichen Wissens die naturheilkundlichen Erkenntnisse bis in die Neuzeit. Heute werden Extrakte aus der Eschenrinde, kombiniert mit anderen pflanzlichen Wirkstoffen, primär bei rheumatischen Erkrankungen und leichten chronischen Schmerzen angewandt. Die Eschenrinde hat eine entzündungshemmende, leicht fiebersenkende und schwach schmerzlindernde Wirkung.\n\nDie Esche ist eine klimatolerante und damit wichtige Baumart im klimabedingten Waldumbau. Sie ist aber durch das Eschentriebsterben in ihrem Bestand gefährdet und ein Anbau ist derzeit nicht ohne Risiko."
+        },
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Als frostempfindliche Art ist die Esche anfällig für Spätfröste (April, Mai), sie heilt diese aber meist gut aus. Schäden durch Nassschneedruck können bis in die ältere Dickungsphase eine Rolle spielen. Bei überhöhtem Wildbestand führen Verbiss- und Fegeschäden mit Verlust der Leittriebe zu ungünstigen und wertmindernden Wuchsformen. Extrem überhöhte Wilddichten führen außerhalb von Wildschutzzäunen zum weitgehenden Ausfall der jungen Pflanzen. Insbesondere auf vergrasten Flächen kann es im unteren Stammbereich von Jungeschen zu Schäden durch Mäusefraß kommen."
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Die Esche ist ein Bestandteil der Hartholzauwälder, die zahlreichen Lebewesen einen Lebensraum bieten. Dort finden sich etwa 400 Falterarten, die überwiegend dämmerungs- und nachtaktiv sind, zahlreiche Libellenarten sowie etwa 1.000 Käferarten. Auch Amphibien, Reptilien, Vögel und einzelne Säugetiere fühlen sich in den Auwäldern wohl."
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "user_content/content_images/8e8eeedd75770d33a8b1a300b4e113eb.JPEG"
+            }
+        ],
+        "taxon_images": []
+    },
+    "gbif_nubKey": 3172358
+}
