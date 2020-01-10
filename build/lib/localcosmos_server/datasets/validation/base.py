@@ -105,7 +105,7 @@ class HumanInteractionValidator(DatasetValidatorBase):
     status_message = _('This Dataset is currently waiting for review.')
     error_message = _('This Dataset failed the review.')
 
-
+    # no automatic validation
     def run_validation(self, dataset):
         pass
 

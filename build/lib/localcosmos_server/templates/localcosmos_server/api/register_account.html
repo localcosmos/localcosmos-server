@@ -1,10 +1,4 @@
 {% load i18n rest_framework %}
-<div class="row justify-content-center">
-	<div class="col-12 col-lg-7 col-xl-6 mb-4">
-		<h2>{% trans 'Register Account' %}</h2>
-	</div>
-</div>
-
 {% if request.method == 'POST' %}
 	{% if not serializer.is_valid %}
 		<div class="row justify-content-center">

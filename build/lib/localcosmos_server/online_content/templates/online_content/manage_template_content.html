@@ -152,8 +152,8 @@
 
 					<hr>
 					<p>
-						<button type="submit" data-href="{% url 'manage_template_content' app.uid localized_template_content.template_content.id %}" class="formsubmit btn btn-outline-secondary">{% trans 'save page as draft' %}</button>
-						<button type="submit" data-href="{% url 'manage_template_content' app.uid localized_template_content.template_content.id %}?translation-ready=1" class="formsubmit btn btn-outline-primary">
+						<button type="submit" data-href="{% url 'manage_template_content' app.uid localized_template_content.template_content.id %}" class="formsubmit btn btn-outline-primary">{% trans 'save page as draft' %}</button>
+						<button type="submit" data-href="{% url 'manage_template_content' app.uid localized_template_content.template_content.id %}?translation-ready=1" class="formsubmit btn btn-outline-success">
 							{% if app.secondary_languages %}
 								{% trans 'ready for translation' %}
 							{% else %}

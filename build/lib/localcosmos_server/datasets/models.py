@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.fields import JSONField
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
+from django.db import connection
 
 User = get_user_model()
 
@@ -51,9 +52,15 @@ for classpath in DATASET_VALIDATION_CLASSPATHS:
     DATASET_VALIDATION_DICT[classpath] = ValidationClass
 
 
+# do not change this
+# Datasets with this validation step have gone through all validation steps
+# 'completed' does not mean that the dataset is valid, just that the validation process is complete
+COMPLETED_VALIDATION_STEP = 'completed'
+
+
 '''
     Dataset
-    - datasets have to be validated AFTER being saved, which means go through the validation routine
+    - datasets have to be validated AFTER being saved, which means going through the validation routine
     - after validation, the is_valid Bool is being set to True if validation was successful
     - LazyTaxonClass LazyAppTaxon which is default for ModelWithTaxon
 '''
@@ -71,7 +78,8 @@ class Dataset(ModelWithTaxon):
     coordinates = models.PointField(srid=3857, null=True) # point
     geographic_reference = models.GeometryField(srid=3857, null=True, blank=True) # for other geometries
 
-    # app reference, for filtering datasets on maps
+    # app reference, for filtering datasets on maps, no FK to not lose data if the app is deleted
+    # app_uuid is transmitted by django_road, settings editable=False breaks django-rest-framework
     app_uuid = models.UUIDField()
 
     # temporal reference, if it is a timestamp
@@ -110,6 +118,8 @@ class Dataset(ModelWithTaxon):
         
     @property
     def validation_routine(self):
+
+        # the app might have been deleted
         app = App.objects.filter(uuid=self.app_uuid).first()
 
         if app:
@@ -120,7 +130,7 @@ class Dataset(ModelWithTaxon):
     def validate(self):
         validation_routine = self.validation_routine
 
-        if self.validation_step != 'completed':
+        if self.validation_step != COMPLETED_VALIDATION_STEP:
 
             if len(validation_routine) > 0:
 
@@ -142,14 +152,14 @@ class Dataset(ModelWithTaxon):
                 
             else:
                 self.is_valid = True
-                self.validation_step = 'completed'
+                self.validation_step = COMPLETED_VALIDATION_STEP
 
                 self.save()
 
     @property
     def current_validation_status(self):
 
-        if self.validation_step == 'completed':
+        if self.validation_step == COMPLETED_VALIDATION_STEP:
             return self.validation_step
         
         ValidationClass = DATASET_VALIDATION_DICT[self.validation_step]
@@ -157,6 +167,10 @@ class Dataset(ModelWithTaxon):
 
     @property
     def current_validation_step(self):
+
+        if not self.validation_step or self.validation_step == COMPLETED_VALIDATION_STEP:
+            return None
+        
         validation_routine = self.validation_routine
         validation_steps = list(validation_routine.values_list('validation_class', flat=True))
         current_index = validation_steps.index(self.validation_step)
@@ -170,111 +184,123 @@ class Dataset(ModelWithTaxon):
     '''
     def update_redundant_columns(self):
 
-        # allow empty Dataset initialization dataset = Dataset()
-        if self.data:
+        reported_values = self.data['dataset']['reported_values']
 
-            reported_values = self.data['dataset']['reported_values']
+        # never alter the user that is assigned
+        # in rare cases the following can happen:
+        # - loggedin user creates sighting from device.platform=browser
+        # - fetching the browser device uid failed
+        # -> an unassigned device_uuid is used, the logged in user is linked to the sighting
+        # fix this problem and alter self.data['client_id'] to match the users browser client
+        if not self.pk:
 
-            # never alter the user that is assigned
-            # in rare cases the following can happen:
-            # - loggedin user creates sighting from device.platform=browser
-            # - fetching the browser device uid failed
-            # -> an unassigned device_uuid is used, the logged in user is linked to the sighting
-            # fix this problem and alter self.data['client_id'] to match the users browser client
-            if not self.pk:
+            # fill self.client_id
+            client_id = reported_values['client_id']
+            self.client_id = client_id
 
-                # fill self.client_id
-                client_id = reported_values['client_id']
-                platform = reported_values['client_platform']
+        # assign a user to the observation - even if it the dataset is updated
+        if not self.user and self.client_id:
+            # try find a user in usermobiles
+            client_id = reported_values['client_id']
+            self.client_id = client_id
+            client = UserClients.objects.filter(client_id=client_id).first()
+            if client:
+                self.user = client.user
 
-                self.client_id = client_id
+        # AFTER assigning the user, use the browser client_id if platform is browser
+        if not self.pk:
 
-            # assign a user to the observation - even if it is update
-            if not self.user and self.client_id:
-                # try find a user in usermobiles
-                client_id = reported_values['client_id']
-                self.client_id = client_id
-                client = UserClients.objects.filter(client_id=client_id).first()
+            platform = reported_values['client_platform']
+
+            # use browser client_id if browser and self.user
+            # this is only possible if the dataset has been transmitted using django_road, which assigned a user
+            if platform == 'browser' and self.user:
+                    
+                client = UserClients.objects.filter(user=self.user, platform='browser').order_by('pk').first()
+
                 if client:
-                    self.user = client.user
 
-            # AFTER assigning the user, use the browser client_id if platform is browser
-            if not self.pk:
+                    user_browser_client_id = client.client_id
+                
+                    if user_browser_client_id != reported_values['client_id']:
+                        self.data['dataset']['reported_values']['client_id'] = user_browser_client_id
+                        self.client_id = user_browser_client_id
 
-                # use browser client_id if browser and self.user
-                if platform == 'browser' and self.user:
-                        
-                    client = UserClients.objects.filter(user=self.user, platform='browser').first()
+        
+        # update taxon
+        # use the provided observation form json
 
-                    if client:
+        observation_form = self.data['dataset']['observation_form']
+        
+        taxon_field_uuid = observation_form['taxonomic_reference']
 
-                        user_browser_client_id = client.client_id
-                    
-                        if user_browser_client_id != reported_values['client_id']:
-                            self.data['dataset']['reported_values']['client_id'] = user_browser_client_id
-                            self.client_id = user_browser_client_id
+        if taxon_field_uuid in reported_values and type(reported_values[taxon_field_uuid]) == dict:
+            taxon_json = reported_values[taxon_field_uuid]
+                
+            lazy_taxon = self.LazyTaxonClass(**taxon_json)
+            self.set_taxon(lazy_taxon)
+        
+        # update coordinates or geographic_reference
+        # {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
+        # "type": "Point", "coordinates": [8.703575134277346, 55.84336786584161]}, "properties": {"accuracy": 1}}
+        # if it is a point, use coordinates. Otherwise use geographic_reference
+        geographic_reference_field_uuid = self.data['dataset']['observation_form']['geographic_reference']
+        if geographic_reference_field_uuid in self.data['dataset']['reported_values']:
 
-            
-            # update taxon
-            # use the provided observation form json
+            reported_value = self.data['dataset']['reported_values'][geographic_reference_field_uuid]
+            if reported_value['geometry']['type'] == 'Point':
 
-            observation_form = self.data['dataset']['observation_form']
-            
-            taxon_field_uuid = observation_form['taxonomic_reference']
-
-            if taxon_field_uuid in reported_values and type(reported_values[taxon_field_uuid]) == dict:
-                taxon_json = reported_values[taxon_field_uuid]
-                    
-                lazy_taxon = self.LazyTaxonClass(**taxon_json)
-                self.set_taxon(lazy_taxon)
-            
-            # update coordinates or geographic_reference
-            # {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
-            # "type": "Point", "coordinates": [8.703575134277346, 55.84336786584161]}, "properties": {"accuracy": 1}}
-            # if it is a point, use coordinates. Otherwise use geographic_reference
-            geographic_reference_field_uuid = self.data['dataset']['observation_form']['geographic_reference']
-            if geographic_reference_field_uuid in self.data['dataset']['reported_values']:
-
-                reported_value = self.data['dataset']['reported_values'][geographic_reference_field_uuid]
-                if reported_value['geometry']['type'] == 'Point':
-
-                    longitude = reported_value['geometry']['coordinates'][0]
-                    latitude = reported_value['geometry']['coordinates'][1]
-                    coords = GEOSGeometry('POINT({0} {1})'.format(longitude, latitude), srid=4326)
-                    
-                    self.coordinates = coords
-                    self.geographic_reference = coords
+                longitude = reported_value['geometry']['coordinates'][0]
+                latitude = reported_value['geometry']['coordinates'][1]
+                coords = GEOSGeometry('POINT({0} {1})'.format(longitude, latitude), srid=4326)
+                
+                self.coordinates = coords
+                self.geographic_reference = coords
 
 
-            # update temporal reference
-            temporal_reference_field_uuid = self.data['dataset']['observation_form']['temporal_reference']
-            
-            if temporal_reference_field_uuid in self.data['dataset']['reported_values']:
+        # update temporal reference
+        temporal_reference_field_uuid = self.data['dataset']['observation_form']['temporal_reference']
+        
+        if temporal_reference_field_uuid in self.data['dataset']['reported_values']:
 
-                reported_value = self.data['dataset']['reported_values'][temporal_reference_field_uuid]
+            reported_value = self.data['dataset']['reported_values'][temporal_reference_field_uuid]
 
-                # {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1564566855177}, "type": "Temporal"}}
-                if reported_value['cron']['type'] == 'timestamp' and reported_value['cron']['format'] == 'unixtime':
-                    self.timestamp = datetime_from_cron(reported_value)
+            # {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1564566855177}, "type": "Temporal"}}
+            if reported_value['cron']['type'] == 'timestamp' and reported_value['cron']['format'] == 'unixtime':
+                self.timestamp = datetime_from_cron(reported_value)
 
 
     def nearby(self):
 
         queryset = []
         if self.coordinates:
-            queryset = Dataset.objects.raw('''SELECT * FROM datasets WHERE id != %s
-                                        ORDER BY coordinates <-> st_setsrid(st_makepoint(%s,%s),3857);''',
-                                        [self.id, self.coordinates.x, self.coordinates.y])
-        return queryset
+            
+            # City.objects.raw('SELECT id, name, %s as point from myapp_city' % (connection.ops.select % 'point'))
 
+            fields = Dataset._meta.concrete_fields
+            field_names = []
 
-    def geolocation(self):
-        geolocation = None
+            # Relational Fields are not supported
+            for field in fields:
+                if isinstance(field, models.ForeignKey):
+                    #name = field.get_attname_column()[0]
+                    continue
+                if isinstance(field, models.fields.BaseSpatialField):
+                    name = connection.ops.select % field.name
+                else:
+                    name = field.name
+
+                field_names.append(name)
+
+            fields_str = ','.join(field_names)
+            fields_str.rstrip(',')
         
-        if self.longitude and self.latitude:
-            geolocation = City.objects.raw('SELECT * FROM cities_city ORDER BY location <-> st_setsrid(st_makepoint(%f,%f),4326) LIMIT 1;' %(self.longitude, self.latitude))[0]
-
-        return geolocation
+            queryset = Dataset.objects.raw(
+                '''SELECT {fields}, user_id FROM datasets_dataset WHERE id != %s
+                    ORDER BY coordinates <-> st_setsrid(st_makepoint(%s,%s),3857);'''.format(
+                        fields=fields_str), [self.id, self.coordinates.x, self.coordinates.y])
+            
+        return queryset
 
 
     def thumbnail_url(self):
@@ -292,7 +318,7 @@ class Dataset(ModelWithTaxon):
 
         reported_values = self.data['dataset']['reported_values']
 
-        if 'client_id' not in reported_values or len(reported_values['client_id']) == 0:
+        if 'client_id' not in reported_values or reported_values['client_id'] == None or len(reported_values['client_id']) == 0:
             raise ValueError('no client_id found in dataset.reported_values')
 
 
@@ -316,7 +342,10 @@ class Dataset(ModelWithTaxon):
      
 
     def __str__(self):
-        return '%s' % (self.taxon_latname)
+        if self.taxon_latname:
+            return '%s' % (self.taxon_latname)
+        return str(_('Unidentified'))
+    
 
     class Meta:
         ordering = ['-pk']
@@ -444,7 +473,7 @@ class DatasetImages(models.Model):
             long_edge = max_size[1]
         else:
             short_edge = max_size[1]
-            long_edge = max_size[1]
+            long_edge = max_size[0]
 
         if not os.path.isfile(thumbpath):
 
@@ -473,6 +502,9 @@ class DatasetImages(models.Model):
 
 
     def __str__(self):
+        if self.dataset.taxon_latname:
+            return self.dataset.taxon_latname
+        
         return 'Dataset Image #{0}'.format(self.id)
     
         

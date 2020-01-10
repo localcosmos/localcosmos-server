@@ -44,6 +44,8 @@ def validate_svg(data):
 
 class ImageRatioValidator:
 
+    tolerance = 0.1
+
     # allowed_ratio_str is a 'width:height' string like '1:2' 
     def __init__(self, allowed_ratio_str=None):
         self.allowed_ratio_str = allowed_ratio_str
@@ -117,7 +119,12 @@ class ImageRatioValidator:
 
         image_ratio = w/h
 
-        if image_ratio != self.allowed_ratio:
+        # apply a tolerance
+        # if using the cropping tool of photoshop or gimp, the ratio might be slightly off
+        min_ratio = self.allowed_ratio - tolerance
+        max_ratio = self.allowed_ratio + tolerance
+
+        if image_ratio < min_ratio or image_ratio > max_ratio:
             raise ValidationError(self.error_message)
 
     def validate_jpeg(self, image_file):

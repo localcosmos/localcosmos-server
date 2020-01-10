@@ -11,6 +11,14 @@
 				<div class="col-12">
 					{% render_bootstrap_form form %}
 				</div>
+
+				{% if success %}
+					<div class="col-12">
+						<div class="alert alert-success">
+							{% trans 'Successfully updated your App.' %}
+						</div>
+					</div>
+				{% endif %}
 				
 				<div class="col-12">
 					<button type="submit" class="btn btn-outline-primary">{% trans 'save' %}</button>

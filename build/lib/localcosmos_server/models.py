@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.postgres.fields import JSONField
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
+from django.db import transaction
 
 
 from .taxonomy.generic import ModelWithRequiredTaxon
@@ -65,6 +66,41 @@ class LocalcosmosUser(AbstractUser):
 
     objects = LocalcosmosUserManager()
 
+    # do not alter the delete method
+    def delete(self, using=None, keep_parents=False):
+        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+            super().delete(using=using, keep_parents=keep_parents)
+        else:
+            # localcosmos.org uses django-tenants
+            from django_tenants.utils import schema_context
+            from lcsite.models import Tenant
+            
+            user_id = self.pk
+
+            # using transactions because multiple schemas can refer to the same
+            # user ID as FK references!
+            with transaction.atomic():
+
+                deleted = False
+                
+                # delete user and all of its data across tenants
+                for tenant in Tenant.objects.all().exclude(schema_name='public'):
+                    with schema_context(tenant.schema_name):
+                        
+                        super().delete(using=using, keep_parents=keep_parents)
+                        # reassign the ID because delete() sets it to None
+                        self.pk = user_id
+
+                        deleted = True
+
+                
+                if deleted == False:
+                    
+                    # deleting from public schema is not necessary, it happens on the first schema-specific deletion
+                    with schema_context('public'):
+                        super().delete()
+            
+
     class Meta:
         unique_together = ('email',)
 
@@ -88,14 +124,14 @@ class UserClients(models.Model):
 
 
 '''
-    an App is a webapp which is loaded by an index.html file
+    App
+    - an App is a webapp which is loaded by an index.html file
     - Apps are served by nginx or apache
 '''
 class AppManager(models.Manager):
 
     def create(self, name, primary_language, uid):
 
-        # circular import
         app = self.model(
             name=name,
             primary_language=primary_language,
@@ -105,6 +141,7 @@ class AppManager(models.Manager):
         app.save()
 
         return app
+    
         
 class App(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
@@ -114,6 +151,7 @@ class App(models.Model):
     uid = models.CharField(max_length=255, unique=True, editable=False)
 
     # automatically download app updates when you click "publish" on localcosmos.org
+    # this feature is not implemented yet
     auto_update = models.BooleanField(default=True)
 
     primary_language = models.CharField(max_length=15)
@@ -123,16 +161,20 @@ class App(models.Model):
     # online content uses this to load a preview on the open source installation
     url = models.URLField(null=True)
 
-    # download the currently released apk here
+    # url for downloading the currently released apk
     apk_url = models.URLField(null=True)
 
-    # download currently released ipa here
+    # url for downloading the currently released ipa
+    # as of 2019 this does not make any sense, because apple does not support ad-hoc installations
+    # for companies < 100 employees
     ipa_url = models.URLField(null=True)
 
-    # download current webapp for installing on the private server
+    # COMMERCIAL ONLY
+    # url for downloading the current webapp for installing on the private server
     pwa_zip_url = models.URLField(null=True)
-    
-    # for version comparisons, version for apk, ipa and webapp
+
+    # COMMERCIAL ONLY ?
+    # for version comparisons, version of the app in the appkit, version of apk, ipa and webapp might differ
     published_version = models.IntegerField(null=True)
 
     # an asbolute path on disk to a folder containing a www folder with static index.html file
@@ -214,6 +256,7 @@ class App(models.Model):
 
     # read app features from disk, only published apps
     # preview=True is for commercial installation only
+    # used eg by AppTaxonSearch.py
     def get_features(self, preview=True):
         root = self.published_version_path
         
@@ -259,7 +302,8 @@ class App(models.Model):
     ##############################################################################################################
     # theme
     def get_installed_app_path(self):
-        if self.preview_version_path:
+        
+        if settings.LOCALCOSMOS_OPEN_SOURCE == False and self.preview_version_path:
             return self.preview_version_path
 
         return self.published_version_path

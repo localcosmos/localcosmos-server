@@ -37,10 +37,12 @@ from .widgets import MultiContentWidget
     - page
     - feature (can be displayed on several pages via include, may not extend a base)
 '''
+
 TEMPLATE_TYPES = (
     ('page', _('Page')), # pages can have flags like "header", "footer" etc
     ('feature', _('Feature')), # e.g. newsbox - can be displayed on several pages
 )
+
 class TemplateContentManager(models.Manager):
 
     def create(self, creator, app, language, draft_title, draft_navigation_link_name, template_name,
@@ -112,6 +114,8 @@ class TemplateContent(models.Model):
         else:
             return None
 
+
+    # might be obsolete
     def validate(self, app):
 
         result = {
@@ -162,10 +166,10 @@ class TemplateContent(models.Model):
         else:
             languages = [language]
 
-        # ltc.translation_ready is not set to True vy the user if there is only one language
+        # ltc.translation_ready is not set to True by the user if there is only one language
         # skip the check if the "translation" exists and also skip the check if the user has set
         # translation_ready to True, which is not the case because there is only a "publish" button
-        # in this case and no "ready for translation" button
+        # in this case (only 1 language) and no "ready for translation" button
         if not secondary_languages:
             ltc = LocalizedTemplateContent.objects.filter(template_content=self, language=primary_language).first()
             publication_errors += ltc.translation_complete()
@@ -173,7 +177,6 @@ class TemplateContent(models.Model):
         # secondary languages exist. these languages need translators and the translation_ready flags are
         # set by the user when he has finished translating
         else:
-
 
             for language_code in languages:
 
@@ -342,60 +345,6 @@ class LocalizedTemplateContent(models.Model):
 
     objects = LocalizedTemplateContentManager()        
 
-    '''
-    publish a LocalizedTemplateContent and all its MicroContents
-    '''
-    def publish(self):
-        # set title
-        self.published_title = self.draft_title
-        self.navigation_link_name = self.draft_navigation_link_name
-
-        if self.published_version != self.draft_version:
-
-            self.published_version = self.draft_version
-            self.published_at = timezone.now()
-
-        self.save(published=True)
-        
-
-    def save(self, *args, **kwargs):
-
-        # indicates, if the save() command came from self.publish
-        published = kwargs.pop('published', False)
-        
-        # if only a new preview token is needed skip the publication protocol
-        disallow_new_version = kwargs.pop('disallow_new_version', False)
-
-        # first, check the slug - new slug if the title really changed
-        slug_base = LocalizedTemplateContent.objects.generate_slug_base(self.draft_title)
-        if not self.slug.startswith(slug_base):
-            old_slug = self.slug
-            self.slug = LocalizedTemplateContent.objects.generate_slug(self.draft_title)
-            new_slug = self.slug
-
-            # add to SlugTrail - make old links still work
-            slug_trail = SlugTrail(
-                old_slug = old_slug,
-                new_slug = new_slug,
-            )
-
-            slug_trail.save()
-
-        
-
-        if disallow_new_version == False and published == False:
-
-            # the localized_template_content has already been published. start new version
-            if self.published_version == self.draft_version:
-                self.draft_version += 1
-                self.translation_ready = False
-
-        super().save(*args, **kwargs)
-
-
-    def get_text_microcontent(self, microcontent_type):
-        return TextMicroContent.objects.filter(template_content=self.template_content,
-                                               microcontent_type=microcontent_type)
 
     '''
     - if the language is the primary language, check if all required fields are presend
@@ -437,7 +386,8 @@ class LocalizedTemplateContent(models.Model):
             for tag in cms_tags:
 
                 # language independant - fetch all existing drafts
-                draft_microcontents = tag.Model.objects.filter(template_content=self.template_content, microcontent_type=tag.microcontent_type)
+                draft_microcontents = tag.Model.objects.filter(template_content=self.template_content,
+                                                               microcontent_type=tag.microcontent_type)
 
                 # check all contents, including all 'multi' 
                 for draft_microcontent in draft_microcontents:
@@ -488,6 +438,63 @@ class LocalizedTemplateContent(models.Model):
         return in_app_link
 
 
+    '''
+    publish a LocalizedTemplateContent and all its MicroContents
+    '''
+    def publish(self):
+        # set title
+        self.published_title = self.draft_title
+        self.navigation_link_name = self.draft_navigation_link_name
+
+        if self.published_version != self.draft_version:
+
+            self.published_version = self.draft_version
+            self.published_at = timezone.now()
+
+        self.save(published=True)
+        
+
+    def save(self, *args, **kwargs):
+
+        # indicates, if the save() command came from self.publish
+        published = kwargs.pop('published', False)
+        
+        # if only a new preview token is needed skip the publication protocol
+        disallow_new_version = kwargs.pop('disallow_new_version', False)
+
+        # first, check the slug - new slug if the title really changed
+        slug_base = LocalizedTemplateContent.objects.generate_slug_base(self.draft_title)
+        if not self.slug.startswith(slug_base):
+            old_slug = self.slug
+            self.slug = LocalizedTemplateContent.objects.generate_slug(self.draft_title)
+            new_slug = self.slug
+
+            # add to SlugTrail - make old links still work
+            slug_trail = SlugTrail(
+                old_slug = old_slug,
+                new_slug = new_slug,
+            )
+
+            slug_trail.save()
+
+        if not self.pk:
+
+            if self.language != self.template_content.app.primary_language:
+                master_ltc = self.template_content.get_localized(self.template_content.app.primary_language)
+                self.draft_version = master_ltc.draft_version
+
+        else:
+
+            if disallow_new_version == False and published == False:
+
+                # the localized_template_content has already been published. start new version
+                if self.published_version == self.draft_version:
+                    self.draft_version += 1
+                    self.translation_ready = False
+
+        super().save(*args, **kwargs)
+
+
 # if a slug is changed, remember the wold slug for a forward
 # e.g. a user changes the title of an entry
 class SlugTrail(models.Model):
@@ -520,6 +527,7 @@ class SlugTrail(models.Model):
 '''
 class FlagTree:
 
+    # flags is a TemplateContentFlags QuerySet
     def __init__(self, flags, language, max_levels=2, **kwargs):
         self.flags = flags.order_by('parent_flag')
         self.language = language
@@ -535,7 +543,6 @@ class FlagTree:
             title_attr = 'draft_title'
             navigation_link_attr = 'draft_navigation_link_name'
 
-
         
         for flag in self.flags:
 
@@ -546,7 +553,7 @@ class FlagTree:
                 self.toplevel_count += 1
 
                 if flag.parent_flag:
-                    raise ValueError('navigation nesting not implemented')
+                    raise NotImplementedError('navigation nesting is not implemented yet')
 
                 localized_template_content = tree_entry['localized_template_content'] 
 
@@ -560,17 +567,18 @@ class FlagTree:
         # only return unpublished localized_template_contents if preview is set to True
         localized_template_content = flag.template_content.get_localized(self.language)
 
-        if self.preview == True or localized_template_content.published_version:
+        if localized_template_content:
+            if self.preview == True or localized_template_content.published_version:
 
-            tree_entry = {
-                'localized_template_content' : localized_template_content,
-                'children' :[],
-                'in_app_link' : localized_template_content.in_app_link(preview=self.preview),
-                'navigation_link_name' : localized_template_content.navigation_link_name,
-            }
+                tree_entry = {
+                    'localized_template_content' : localized_template_content,
+                    'children' :[],
+                    'in_app_link' : localized_template_content.in_app_link(preview=self.preview),
+                    'navigation_link_name' : localized_template_content.navigation_link_name,
+                }
 
-            if self.preview:
-                tree_entry['navigation_link_name'] = localized_template_content.draft_navigation_link_name
+                if self.preview:
+                    tree_entry['navigation_link_name'] = localized_template_content.draft_navigation_link_name
 
         return tree_entry
         
@@ -600,6 +608,7 @@ class TemplateContentFlagsManager(models.Manager):
         flag_tree = FlagTree(flags, language, max_levels=max_flag_levels, **kwargs)
 
         return flag_tree
+    
     
 class TemplateContentFlags(models.Model):
     template_content = models.ForeignKey(TemplateContent, on_delete=models.CASCADE)
@@ -700,9 +709,6 @@ class CMSMicroContent(models.Model):
     def get_locale_model(self):
         return globals()['Localized%s' % self._meta.model.__name__]
 
-    @classmethod
-    def get_publication_model(self):
-        return globals()[self._meta.model.__name__.replace('Draft', 'Published')]
 
     def get_content(self, language):
         lmc = self.get_localized(language)
@@ -733,6 +739,10 @@ class CMSMicroContent(models.Model):
 class DraftCMSMicroContent(CMSMicroContent):
 
     objects = DraftMicroContentManager()
+
+    @classmethod
+    def get_publication_model(self):
+        return globals()[self._meta.model.__name__.replace('Draft', 'Published')]
 
     def get_form_field(self, widget_attrs, *args, **kwargs):
         raise NotImplementedError('CMSMicroContent need a get_form_field method')
@@ -844,19 +854,21 @@ class PublishedCMSMicroContent(CMSMicroContent):
 '''
 class LocalizedCMSMicroContentManager(models.Manager):
     
-    def create(self, draft_microcontent, language, content, creator, **kwargs):
+    def create(self, microcontent, language, content, creator, **kwargs):
 
-        localized_draft_microcontent = self.model(
+        # can be localized_draft_microcontent or localized_published_microcontent
+
+        localized_microcontent = self.model(
             language = language,
-            microcontent = draft_microcontent,
+            microcontent = microcontent,
             content = content,
             creator = creator,
             **kwargs
         )
 
-        localized_draft_microcontent.save()
+        localized_microcontent.save()
 
-        return localized_draft_microcontent
+        return localized_microcontent
 
 
 class LocalizedCMSMicroContent(models.Model):
@@ -1022,7 +1034,7 @@ class DraftImageMicroContent(DraftCMSMicroContent):
         limc = self.get_localized(language)
 
         if not limc:
-            limc = LocalizedImageMicroContent.objects.create(self, language, content, editor)
+            limc = LocalizedDraftImageMicroContent.objects.create(self, language, content, editor)
         else:
         
             limc.last_modified_by = editor
