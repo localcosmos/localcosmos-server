@@ -11,7 +11,7 @@ install_requires = [
     'anycluster',
     'rules==2.1',
     'django-el-pagination==3.2.4',
-    'django-octicons==2.1.0',
+    'django-octicons==1.0.2',
     'django-countries==5.5',
     'django-cors-headers==3.2.1',
     'Pillow',
@@ -19,7 +19,7 @@ install_requires = [
 
 setup(
     name='localcosmos_server',
-    version='0.5.1',
+    version='0.5.3',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -5,7 +5,7 @@ content-licencing
 anycluster
 rules==2.1
 django-el-pagination==3.2.4
-django-octicons==2.1.0
+django-octicons==1.0.2
 django-countries==5.5
 django-cors-headers==3.2.1
 Pillow

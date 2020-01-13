@@ -121,8 +121,8 @@ class ImageRatioValidator:
 
         # apply a tolerance
         # if using the cropping tool of photoshop or gimp, the ratio might be slightly off
-        min_ratio = self.allowed_ratio - tolerance
-        max_ratio = self.allowed_ratio + tolerance
+        min_ratio = self.allowed_ratio - self.tolerance
+        max_ratio = self.allowed_ratio + self.tolerance
 
         if image_ratio < min_ratio or image_ratio > max_ratio:
             raise ValidationError(self.error_message)

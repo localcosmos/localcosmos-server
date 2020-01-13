@@ -11,21 +11,8 @@
 		
 		// source and language of the search funtion (not the selected taxon)
 		var search_taxon_source = $("#" + base_id + "_taxon_source");
-		
-		if (search_taxon_source.length){
-			var search_taxon_source_value = search_taxon_source.val();
-		}
-		else {
-			var search_taxon_source_value = "taxonomy.sources.col";
-		}
 
 		var language_input = $("#" + base_id + "_language");
-		if (language_input.length){
-			var language_input_value = language_input.val();
-		}
-		else {
-			var language_input_value = "en";
-		}
 
 		var no_results_indicator = $("#" + base_id + "_info");
 		
@@ -60,6 +47,20 @@
 			source: function(input_value, process){
 
 				taxon_verbose_input.removeClass("is-valid");
+
+				if (search_taxon_source.length){
+					var search_taxon_source_value = search_taxon_source.val();
+				}
+				else {
+					var search_taxon_source_value = "taxonomy.sources.col";
+				}
+
+				if (language_input.length){
+					var language_input_value = language_input.val();
+				}
+				else {
+					var language_input_value = "en";
+				}
 
 				$.ajax({
 					type: "GET",
