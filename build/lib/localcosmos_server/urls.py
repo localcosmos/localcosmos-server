@@ -4,7 +4,6 @@ from django.urls import include, path
 
 from . import views
 
-# PART OF TENANT SCHEMA URL CONF
 
 urlpatterns = [
     path('server/', include('localcosmos_server.global_urls')),
@@ -19,6 +18,7 @@ urlpatterns = [
     path('api/', include('localcosmos_server.api.urls')),
     path('api/', include('localcosmos_server.online_content.api.urls')),
     path('api/anycluster/', include('localcosmos_server.anycluster_schema_urls')),
+    
 ]
 
 if getattr(settings, 'LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API', False) == True:

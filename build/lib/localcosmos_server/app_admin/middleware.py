@@ -24,13 +24,12 @@ class AppAdminMiddleware(MiddlewareMixin):
             if 'app_uid' not in view_kwargs:
                 raise ImproperlyConfigured('all app-admin urls require app_uid as an url kwarg')
             
-            request.urlconf = 'localcosmos_server.urls'
-            set_urlconf('localcosmos_server.urls')
-
             app = App.objects.get(uid=view_kwargs['app_uid'])
             request.app = app
+
+            login_path = reverse('log_in')
             
-            if 'log-in' not in request.path:
+            if login_path not in request.path:
 
                 user = request.user
                 if not user.is_authenticated:
@@ -40,6 +39,10 @@ class AppAdminMiddleware(MiddlewareMixin):
                 has_access = rules.test_rule('app_admin.has_access', user, app)
                 if not has_access:
                     raise PermissionDenied
+
+
+            request.urlconf = 'localcosmos_server.urls'
+            set_urlconf('localcosmos_server.urls')
         
         return None
         
