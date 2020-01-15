@@ -1,0 +1,59 @@
+{
+    "NAME": "Bäume der Wälder Bayerns",
+    "PACKAGE_NAME": "org.localcosmos.baumederwalderbayerns",
+    "DATABASES": {
+        "default": {
+            "ENGINE": "SQLite.sqliteplugin",
+            "NAME": "org.localcosmos.baumederwalderbayerns",
+            "VERSION": 1
+        },
+        "Android": {
+            "ENGINE": "SQLite.sqliteplugin",
+            "NAME": "org.localcosmos.baumederwalderbayerns",
+            "VERSION": 1
+        },
+        "iOS": {
+            "ENGINE": "SQLite.sqliteplugin",
+            "NAME": "org.localcosmos.baumederwalderbayerns",
+            "VERSION": 1
+        },
+        "browser": {
+            "ENGINE": "RemoteDB.remote",
+            "NAME": "org.localcosmos.baumederwalderbayerns",
+            "VERSION": 1
+        }
+    },
+    "LANGUAGES": [
+        "de",
+        "en"
+    ],
+    "PRIMARY_LANGUAGE": "de",
+    "THEME": "Flat",
+    "APP_UID": "treesofbavaria",
+    "APP_UUID": "172dd4e9-9bf0-4f56-b6fd-b5e17e4d9415",
+    "APP_VERSION": 3,
+    "OPTIONS": {
+        "allow_anonymous_observations": true,
+        "localcosmos_private": true,
+        "localcosmos_private_api_url": "http://localhost:8080/api/"
+    },
+    "API_URL": "http://localhost:8080/api/",
+    "MIDDLEWARE": [
+        "MangoUserMiddleware"
+    ],
+    "REMOTEDB_API_URL": "http://localhost:8080/api/road-remotedb-api/",
+    "REMOTEDB_MIDDLEWARE": [
+        "LocalCosmosRemoteDBMiddleware"
+    ],
+    "AUTHENTICATION_BACKENDS": [
+        "LocalCosmosRemoteAuthentication"
+    ],
+    "CONTEXT_PROCESSORS": [
+        "request",
+        "auth",
+        "device",
+        "history"
+    ],
+    "LOGIN_VIEW": "LoginView",
+    "PREVIEW": false
+}

@@ -273,7 +273,7 @@ class CheckAppApiStatus(LoginRequiredMixin, AppMixin, TemplateView):
     template_name = 'server_control_panel/app_api_status.html'
 
     def check_api_status(self):
-        settings = self.app.get_settings(preview=False)
+        settings = self.app.get_settings(app_state='published')
 
         result = {
             'success' : True,

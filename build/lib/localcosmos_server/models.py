@@ -235,16 +235,36 @@ class App(models.Model):
         return '{0}{1}{2}/preview/www/'.format(domain.domain, settings.APP_KIT_PREVIEW_URL, self.uid)
 
 
-    # read app settings from disk, online_content
-    # preview=True is for commercial installation only
-    def get_settings(self, preview=True):
+    def get_installed_app_path(self, app_state):
 
         if settings.LOCALCOSMOS_OPEN_SOURCE == True:
-            preview = False
-        
-        root = self.published_version_path
-        if preview == True:
+            app_state = 'published'
+
+        if app_state == 'published':
+            root = self.published_version_path
+
+            # on the first build, there is no published_version_path, but only a review_version_path
+            # the "review apk" is exactly the same as the later "published apk",
+            # so fall back to review settings if no published settings are available
+            if root == None and settings.LOCALCOSMOS_OPEN_SOURCE == False:
+                root = self.review_version_path
+
+        elif app_state == 'preview':
             root = self.preview_version_path
+
+        elif app_state == 'review':
+            root= self.review_version_path
+
+        else:
+            raise ValueError('Invalid app_state: {0}'.format(app_state))
+        
+        return root
+
+    # read app settings from disk, online_content
+    # app_state=='preview' or app_state=='review' are for commercial installation only
+    def get_settings(self, app_state='preview'):
+
+        root = self.get_installed_app_path(app_state)
             
         settings_json_path = os.path.join(root, 'settings.json')
 
@@ -255,10 +275,10 @@ class App(models.Model):
 
 
     # read app features from disk, only published apps
-    # preview=True is for commercial installation only
+    # app_state=='preview' or app_state=='review' are for commercial installation only
     # used eg by AppTaxonSearch.py
-    def get_features(self, preview=True):
-        root = self.published_version_path
+    def get_features(self, app_state='preview'):
+        root = self.get_installed_app_path(app_state)
         
         features_json_path = os.path.join(root, 'features.json')
 
@@ -269,18 +289,10 @@ class App(models.Model):
 
     # api_settings is used by localcosmos_server.api, eg to determine allow_anonymous_observations
     # api_settings only contains settings which make sense for the api (need_to_know basis)
-    # review=True is for commercial installation only
-    def get_api_settings(self, review=False):
-
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
-            review = False
+    # app_state='review' is for commercial installation only
+    def get_api_settings(self, app_state='published'):
         
-        root = self.published_version_path
-
-        # on the first build, there is no published_version_path, but only a review_version_path
-        # the "review apk" es exactly the same as the later "published apk", so fall back to review settings if no published settings are available
-        if review == True or root == None:
-            root = self.review_version_path
+        root = self.get_installed_app_path(app_state)
 
         api_settings_json_path = os.path.join(root, 'api', 'settings.json')
 
@@ -301,24 +313,18 @@ class App(models.Model):
 
     ##############################################################################################################
     # theme
-    def get_installed_app_path(self):
-        
-        if settings.LOCALCOSMOS_OPEN_SOURCE == False and self.preview_version_path:
-            return self.preview_version_path
 
-        return self.published_version_path
-
-    def get_theme_path(self, preview=True):
+    def get_theme_path(self, app_state='preview'):
         
-        app_settings = self.get_settings(preview=preview)
+        app_settings = self.get_settings(app_state=app_state)
         
         theme_name = app_settings['THEME']
-        installed_app_path = self.get_installed_app_path()
+        installed_app_path = self.get_installed_app_path(app_state)
         return os.path.join(installed_app_path, 'themes', theme_name)
 
-    def get_theme_config(self, preview=True):
+    def get_theme_config(self, app_state='preview'):
 
-        theme_path = self.get_theme_path(preview=preview)
+        theme_path = self.get_theme_path(app_state=app_state)
         theme_config_path = os.path.join(theme_path, 'config.json')
 
         with open(theme_config_path, 'r') as theme_config_file:
@@ -328,31 +334,45 @@ class App(models.Model):
         
     ###############################################################################################################
     # online content specific
-    
-    def get_online_content_templates_path(self, preview=True):
-        app_theme_path = self.get_theme_path(preview=preview)
+    # on LOCALCOSMOS_OPEN_SOURCE==True app_state is always 'published'
+    # on LOCALCOSMOS_OPEN_SOURCE==False app_state is always 'preview'
+
+    def get_online_content_app_state(self):
+
+        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+            return 'published'
+
+        return 'preview'
+
+    # preview or published, depending on LOCALCOSMOS_OPEN_SOURCE
+    def get_online_content_templates_path(self):
+        
+        app_state = self.get_online_content_app_state()
+        
+        app_theme_path = self.get_theme_path(app_state=app_state)
         return os.path.join(app_theme_path, 'online_content', 'templates')
 
 
     # return the online_content specific theme settings
     # called from online_content.api.views and online_content.models.TemplateContentFlagsManager
-    def get_online_content_settings(self, preview=True):
-        theme_config = self.get_theme_config(preview=preview)
+    def get_online_content_settings(self):
+
+        app_state = self.get_online_content_app_state()
+        
+        theme_config = self.get_theme_config(app_state=app_state)
 
         oc_settings = theme_config['online_content']
         return oc_settings
     
-    # return a list of available templates, always use the live version, used by eg online_content.forms.CreateTemplateContentForm
+    # return a list of available templates, always use the preview version,
+    # used by eg online_content.forms.CreateTemplateContentForm
     # eg displays a selection in the AppAdmin
     def get_online_content_templates(self, template_type):
 
-        if self.published_version:
-            preview = False
-        else:
-            preview = True
+        app_state = self.get_online_content_app_state()
             
-        templates_path = os.path.join(self.get_online_content_templates_path(preview=preview), template_type)
-        oc_settings = self.get_online_content_settings(preview=preview)
+        templates_path = os.path.join(self.get_online_content_templates_path(), template_type)
+        oc_settings = self.get_online_content_settings()
         language = self.primary_language
 
         templates = []
@@ -370,7 +390,7 @@ class App(models.Model):
         return templates
 
 
-    def get_online_content_template(self, template_name, preview=True):
+    def get_online_content_template(self, template_name):
         # return an instance of Template
         # Template(contents, origin, origin.template_name, self.engine,)
         # contents is the content of the .html file
@@ -378,7 +398,9 @@ class App(models.Model):
         # engine is a template engine
         # Template can be instantiated directly, ony with contents
 
-        theme_path = self.get_theme_path(preview=preview)
+        app_state = self.get_online_content_app_state()
+
+        theme_path = self.get_theme_path(app_state=app_state)
         online_content_path = os.path.join(theme_path, 'online_content')
 
         template_path = os.path.join(online_content_path, 'templates', template_name)

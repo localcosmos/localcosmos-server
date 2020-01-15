@@ -647,7 +647,7 @@ class TestLocalizedTemplateContent(WithUser, WithApp, WithTemplateContent, TestC
         in_app_link = ltc.in_app_link()
         self.assertEqual(in_app_link, '/online-content/{0}/'.format(ltc.slug))
 
-        in_app_link = ltc.in_app_link(preview=True)
+        in_app_link = ltc.in_app_link(app_state='preview')
         self.assertEqual(in_app_link, '/online-content/{0}/{1}/'.format(ltc.slug, ltc.preview_token))
 
 
@@ -736,20 +736,20 @@ class TestFlagTree(WithUser, WithApp, WithTemplateContent, WithFlags, TestCase):
 
         self.assertEqual(set(flag_tree.flags.values_list('flag', flat=True)), set(flags.values_list('flag', flat=True)))
         self.assertEqual(flag_tree.language, self.app.primary_language)
-        self.assertFalse(flag_tree.preview)
+        self.assertEqual(flag_tree.app_state, 'published')
         self.assertEqual(flag_tree.toplevel_count, 0)
 
         # set preview to True to generate 1 flag
         ltc = template_content.get_localized(self.app.primary_language)
-        flag_tree = FlagTree(flags, self.app.primary_language, preview=True)
-        self.assertTrue(flag_tree.preview)
+        flag_tree = FlagTree(flags, self.app.primary_language, app_state='preview')
+        self.assertEqual(flag_tree.app_state, 'preview')
         self.assertEqual(flag_tree.toplevel_count, 1)
         self.assertIn(ltc.draft_title, flag_tree.flag_tree)
 
         # published flag tree
         ltc.publish()
         flag_tree = FlagTree(flags, self.app.primary_language)
-        self.assertFalse(flag_tree.preview)
+        self.assertEqual(flag_tree.app_state, 'published')
         self.assertEqual(flag_tree.toplevel_count, 1)
         self.assertIn(ltc.published_title, flag_tree.flag_tree)
         
@@ -769,7 +769,7 @@ class TestFlagTree(WithUser, WithApp, WithTemplateContent, WithFlags, TestCase):
 
         # preview
         ltc = template_content.get_localized(self.app.primary_language)
-        flag_tree = FlagTree(flags, self.app.primary_language, preview=True)
+        flag_tree = FlagTree(flags, self.app.primary_language, app_state='preview')
         tree_entry = flag_tree.get_tree_entry(flags.first())
         self.assertEqual(tree_entry['children'], [])
         self.assertEqual(tree_entry['localized_template_content'], ltc)
@@ -815,7 +815,7 @@ class TestFlagTree(WithUser, WithApp, WithTemplateContent, WithFlags, TestCase):
         self.assertFalse(bool(flag_tree))
 
 
-        flag_tree = FlagTree(flags, self.app.primary_language, preview=True)
+        flag_tree = FlagTree(flags, self.app.primary_language, app_state='preview')
         self.assertTrue(bool(flag_tree))
 
 
@@ -849,15 +849,15 @@ class TestTemplateContentFlagsManager(WithUser, WithApp, WithTemplateContent, Wi
         flag_tree = TemplateContentFlags.objects.get_tree(self.app, self.flag_names[0], self.app.primary_language)
 
         self.assertEqual(flag_tree.language, self.app.primary_language)
-        self.assertFalse(flag_tree.preview)
+        self.assertEqual(flag_tree.app_state, 'published')
         self.assertEqual(flag_tree.toplevel_count, 0)
 
 
         flag_tree = TemplateContentFlags.objects.get_tree(self.app, self.flag_names[0], self.app.primary_language,
-                                                          preview=True)
+                                                          app_state='preview')
 
         self.assertEqual(flag_tree.language, self.app.primary_language)
-        self.assertTrue(flag_tree.preview)
+        self.assertEqual(flag_tree.app_state, 'preview')
         self.assertEqual(flag_tree.toplevel_count, 1)
 
 
@@ -865,7 +865,7 @@ class TestTemplateContentFlagsManager(WithUser, WithApp, WithTemplateContent, Wi
         ltc.publish()
         flag_tree = TemplateContentFlags.objects.get_tree(self.app, self.flag_names[0], self.app.primary_language)
         self.assertEqual(flag_tree.language, self.app.primary_language)
-        self.assertFalse(flag_tree.preview)
+        self.assertEqual(flag_tree.app_state, 'published')
         self.assertEqual(flag_tree.toplevel_count, 1)
 
 

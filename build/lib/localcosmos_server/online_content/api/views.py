@@ -131,6 +131,8 @@ class GetOnlineContentList(APIView):
         flag = self.request.query_params.get('flag', None)
         app_uuid = self.request.query_params.get('app_uuid', None)
 
+        app_state = 'published'
+
         if flag and app_uuid:
             
             app = App.objects.filter(uuid=app_uuid).first()
@@ -138,15 +140,16 @@ class GetOnlineContentList(APIView):
             if app:
                 language = self.request.query_params.get('language', app.primary_language)
                 
-                preview = 'preview' in self.request.query_params
+                if 'preview' in self.request.query_params:
+                    app_state = 'preview'
 
-                flag_tree = TemplateContentFlags.objects.get_tree(app, flag, language, preview=preview)
+                flag_tree = TemplateContentFlags.objects.get_tree(app, flag, language, app_state=app_state)
 
                 # read the template_name from theme settings
-                theme_settings = app.get_online_content_settings(preview=preview)
+                theme_settings = app.get_online_content_settings()
                 template_name = theme_settings['flags'][flag]['template_name']
 
-                template = app.get_online_content_template(template_name, preview=preview)
+                template = app.get_online_content_template(template_name)
 
                 context = {
                     'app' : app,

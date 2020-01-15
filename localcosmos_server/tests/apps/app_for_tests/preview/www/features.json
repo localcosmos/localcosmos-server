@@ -1,0 +1,108 @@
+{
+	"PREVIEW" : true,
+    "Glossary": {
+        "generic_content_type": "Glossary",
+        "uuid": "32a57568-1034-4bfc-81da-70c3af3c3e81",
+        "name": {
+            "de": "Glossar",
+            "en": "Glossary"
+        },
+        "version": 3,
+        "path": "features/Glossary/32a57568-1034-4bfc-81da-70c3af3c3e81/32a57568-1034-4bfc-81da-70c3af3c3e81.content"
+    },
+    "BackboneTaxonomy": {
+        "generic_content_type": "BackboneTaxonomy",
+        "uuid": "e1b2153d-b525-459a-9561-b6e8fd7eaa44",
+        "name": {
+            "de": "Backbone Taxonomy",
+            "en": "Backbone Taxonomy"
+        },
+        "version": 3,
+        "path": "features/BackboneTaxonomy/e1b2153d-b525-459a-9561-b6e8fd7eaa44/e1b2153d-b525-459a-9561-b6e8fd7eaa44.content",
+        "alphabet": "features/BackboneTaxonomy/e1b2153d-b525-459a-9561-b6e8fd7eaa44/alphabet",
+        "vernacular": {
+            "de": "features/BackboneTaxonomy/e1b2153d-b525-459a-9561-b6e8fd7eaa44/vernacular/de.json",
+            "en": "features/BackboneTaxonomy/e1b2153d-b525-459a-9561-b6e8fd7eaa44/vernacular/en.json"
+        }
+    },
+    "TaxonProfiles": {
+        "generic_content_type": "TaxonProfiles",
+        "uuid": "47813bc8-3396-45f2-a821-c6c0550c85f1",
+        "name": {
+            "de": "Baumporträts",
+            "en": "Tree portraits"
+        },
+        "version": 3,
+        "options": {
+            "enable_wikipedia_button": true,
+            "enable_observation_button": {
+                "id": 1,
+                "uuid": "4d0b9fb5-e32f-4883-abdb-5907c287b216",
+                "model": "GenericForm",
+                "action": "GenericForm",
+                "app_label": "generic_forms"
+            },
+            "enable_gbif_occurrence_map_button": true
+        },
+        "global_options": {},
+        "files": "features/TaxonProfiles/47813bc8-3396-45f2-a821-c6c0550c85f1"
+    },
+    "NatureGuide": {
+        "list": [
+            {
+                "generic_content_type": "NatureGuide",
+                "uuid": "ca665888-f4ad-4ff3-aaeb-52fb1964898b",
+                "name": {
+                    "de": "Waldbäume bestimmen",
+                    "en": "Identify forest trees"
+                },
+                "version": 3,
+                "path": "features/NatureGuide/ca665888-f4ad-4ff3-aaeb-52fb1964898b/ca665888-f4ad-4ff3-aaeb-52fb1964898b.content"
+            }
+        ],
+        "lookup": {
+            "ca665888-f4ad-4ff3-aaeb-52fb1964898b": "features/NatureGuide/ca665888-f4ad-4ff3-aaeb-52fb1964898b/ca665888-f4ad-4ff3-aaeb-52fb1964898b.content"
+        }
+    },
+    "Map": {
+        "list": [
+            {
+                "generic_content_type": "Map",
+                "uuid": "91f060be-f58f-4e46-83a1-599bde8f823b",
+                "name": {
+                    "de": "Karte",
+                    "en": "Map"
+                },
+                "version": 3,
+                "path": "features/Map/91f060be-f58f-4e46-83a1-599bde8f823b/91f060be-f58f-4e46-83a1-599bde8f823b.content"
+            }
+        ],
+        "lookup": {
+            "91f060be-f58f-4e46-83a1-599bde8f823b": "features/Map/91f060be-f58f-4e46-83a1-599bde8f823b/91f060be-f58f-4e46-83a1-599bde8f823b.content"
+        }
+    },
+    "GenericForm": {
+        "list": [
+            {
+                "generic_content_type": "GenericForm",
+                "uuid": "4d0b9fb5-e32f-4883-abdb-5907c287b216",
+                "name": {
+                    "de": "Baumbeobachtung",
+                    "en": "Tree observation"
+                },
+                "version": 3,
+                "path": "features/GenericForm/4d0b9fb5-e32f-4883-abdb-5907c287b216/4d0b9fb5-e32f-4883-abdb-5907c287b216.content"
+            }
+        ],
+        "lookup": {
+            "4d0b9fb5-e32f-4883-abdb-5907c287b216": "features/GenericForm/4d0b9fb5-e32f-4883-abdb-5907c287b216/4d0b9fb5-e32f-4883-abdb-5907c287b216.content"
+        },
+        "default": {
+            "app_label": "generic_forms",
+            "model": "GenericForm",
+            "uuid": "4d0b9fb5-e32f-4883-abdb-5907c287b216",
+            "id": 1,
+            "action": "GenericForm"
+        }
+    }
+}

@@ -20,12 +20,12 @@ class CanCreateDataset(permissions.BasePermission):
         app_uuid = request.data['app_uuid']
         app = App.objects.get(uuid=app_uuid)
 
-        review = False
+        app_state = 'published'
 
         if 'review' in request.data:
-            review = bool(int(request.data['review']))
+            app_state = 'review'
         
-        api_settings = app.get_api_settings(review=review)
+        api_settings = app.get_api_settings(app_state=app_state)
         
         allow_anonymous_observations = api_settings['allow_anonymous_observations']
 

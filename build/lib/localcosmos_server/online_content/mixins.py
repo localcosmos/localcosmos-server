@@ -15,7 +15,7 @@ class OnlineContentMixin:
         else:
             self.app = App.objects.get(uid=kwargs['app_uid'])
 
-        self.app_disk_path = self.app.get_installed_app_path()
+        self.app_disk_path = self.app.get_installed_app_path(app_state='published')
         if not self.app_disk_path:
             return redirect(reverse('app_not_installed'))
         return super().dispatch(request, *args, **kwargs)

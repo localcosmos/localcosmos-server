@@ -30,11 +30,15 @@ class WithUser:
 class WithApp:
 
     app_name = 'TestApp'
-    app_uid = 'testapp'
+    app_uid = 'app_for_tests'
     app_primary_language = 'de'
     app_secondary_languages = ['en']
 
-    testapp_relative_www_path = 'testapp/www/'
+    testapp_relative_www_path = 'app_for_tests/published/www/'
+
+    testapp_relative_review_www_path = 'app_for_tests/review/www/'
+    testapp_relative_preview_www_path = 'app_for_tests/preview/www/'
+    
 
     def setUp(self):
         super().setUp()

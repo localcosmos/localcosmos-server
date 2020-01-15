@@ -16,7 +16,7 @@ from localcosmos_server.models import (LocalcosmosUser, UserClients, App, AppUse
 
 from localcosmos_server.datasets.models import Dataset
 
-from localcosmos_server.tests.common import test_settings
+from localcosmos_server.tests.common import test_settings, test_settings_commercial
 
 from .mixins import WithUser, WithApp
 
@@ -164,9 +164,16 @@ class TestApp(WithApp, TestCase):
 
     def setUp(self):
         super().setUp()
-        published_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path)
+        self.published_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path)
 
-        self.app.published_version_path = published_version_path
+        self.review_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                self.testapp_relative_preview_www_path)
+
+        self.preview_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                 self.testapp_relative_review_www_path)
+
+        self.app.published_version_path = self.published_version_path
+        self.app.preview_version_path = self.preview_version_path
 
         self.app.save()
 
@@ -229,10 +236,23 @@ class TestApp(WithApp, TestCase):
         app_api_settings = self.app.get_api_settings()
         self.assertEqual(type(app_api_settings), dict)
 
-    def test_get_isntalled_app_path(self):
-        app_path = self.app.get_installed_app_path()
+    def test_get_installed_app_path(self):
+        app_path = self.app.get_installed_app_path(app_state='published')
 
         self.assertEqual(app_path, self.app.published_version_path)
+
+        self.app.preview_version_path = self.preview_version_path
+        self.app.published_version_path = None
+        self.app.save()
+
+        fallback_app_path = self.app.get_installed_app_path(app_state='published')
+        self.assertEqual(fallback_app_path, self.app.published_version_path)
+
+        preview_app_path = self.app.get_installed_app_path(app_state='preview')
+        self.assertEqual(preview_app_path, None)
+        
+        self.app.published_version_path = self.published_version_path
+        self.app.save()
 
     def test_get_theme_path(self):
         expected_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path,
@@ -246,6 +266,13 @@ class TestApp(WithApp, TestCase):
     def test_get_theme_config(self):
         theme_config = self.app.get_theme_config()
         self.assertEqual(type(theme_config), dict)
+
+
+    def test_get_online_content_app_state(self):
+
+        app_state = self.app.get_online_content_app_state()
+        self.assertEqual(app_state, 'published')
+        
 
     def test_get_online_content_templates_path(self):
         oct_path = self.app.get_online_content_templates_path()
@@ -279,7 +306,7 @@ class TestApp(WithApp, TestCase):
             self.assertTrue(isinstance(template, Template))
 
         with self.assertRaises(TemplateDoesNotExist):
-            template = self.app.get_online_content_template('non_existant_template_name.html')
+            template = self.app.get_online_content_template('page/PREVIEW.html')
 
     def test_get_locale(self):
         for language in self.app.languages():
@@ -321,6 +348,208 @@ class TestApp(WithApp, TestCase):
         self.assertFalse(os.path.exists(app.published_version_path))
         
 
+
+@test_settings_commercial
+class TestCommercialApp(WithApp, TestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.published_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path)
+
+        self.review_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                self.testapp_relative_review_www_path)
+
+        self.preview_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                 self.testapp_relative_preview_www_path)
+
+        self.app.preview_version_path = self.preview_version_path
+        self.app.review_version_path = self.review_version_path
+        self.app.save()
+
+
+    def publish_app(self):
+        self.app.published_version_path = self.published_version_path
+        self.app.save()
+
+
+    def unpublish_app(self):
+        self.app.published_version_path = None
+        self.app.save()
+        
+
+    def test_get_installed_app_path(self):
+        self.publish_app()
+        app_path = self.app.get_installed_app_path(app_state='published')
+
+        self.assertEqual(app_path, self.app.published_version_path)
+
+        self.unpublish_app()
+        self.app.save()
+
+        fallback_app_path = self.app.get_installed_app_path(app_state='published')
+        self.assertEqual(fallback_app_path, self.app.review_version_path)
+
+        preview_app_path = self.app.get_installed_app_path(app_state='preview')
+        self.assertEqual(preview_app_path, self.app.preview_version_path)
+
+
+    def test_get_settings(self):
+
+        preview_settings = self.app.get_settings()
+        self.assertEqual(preview_settings['PREVIEW'], True)
+
+        review_settings = self.app.get_settings(app_state='review')
+        self.assertEqual(review_settings['REVIEW'], True)
+        self.assertEqual(review_settings['PREVIEW'], False)
+
+        fallback_settings = self.app.get_settings(app_state='published')
+        self.assertEqual(fallback_settings['REVIEW'], True)
+        self.assertEqual(fallback_settings['PREVIEW'], False)
+
+        self.publish_app()
+        published_settings = self.app.get_settings(app_state='published')
+        self.assertFalse('REVIEW' in published_settings)
+        self.assertEqual(published_settings['PREVIEW'], False)
+
+    def test_get_features(self):
+
+        preview_features = self.app.get_features()
+        self.assertEqual(preview_features['PREVIEW'], True)
+
+        review_features = self.app.get_features(app_state='review')
+        self.assertEqual(review_features['REVIEW'], True)
+
+        fallback_features = self.app.get_features(app_state='published')
+        self.assertEqual(fallback_features['REVIEW'], True)
+
+        self.publish_app()
+        published_features = self.app.get_features(app_state='published')
+        self.assertFalse('REVIEW' in published_features)
+        self.assertFalse('PREVIEW' in published_features)
+
+    def test_get_api_settings(self):
+
+        preview_api_settings = self.app.get_api_settings(app_state='preview')
+        self.assertEqual(preview_api_settings['PREVIEW'], True)
+
+        review_api_settings = self.app.get_api_settings(app_state='review')
+        self.assertEqual(review_api_settings['REVIEW'], True)
+
+        fallback_api_settings = self.app.get_api_settings(app_state='published')
+        self.assertEqual(fallback_api_settings['REVIEW'], True)
+
+        self.publish_app()
+        published_api_settings = self.app.get_api_settings(app_state='published')
+        self.assertFalse('REVIEW' in published_api_settings)
+        self.assertFalse('PREVIEW' in published_api_settings)
+
+
+    def test_get_theme_path(self):
+        expected_preview_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                   self.testapp_relative_preview_www_path, 'themes/Flat')
+
+        expected_review_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                  self.testapp_relative_review_www_path, 'themes/Flat')
+
+        expected_published_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                                                     self.testapp_relative_www_path, 'themes/Flat')
+
+
+        preview_theme_path = self.app.get_theme_path()
+        self.assertEqual(preview_theme_path, expected_preview_theme_path)
+
+        review_theme_path = self.app.get_theme_path(app_state='review')
+        self.assertEqual(review_theme_path, expected_review_theme_path)
+
+        fallback_theme_path = self.app.get_theme_path(app_state='published')
+        self.assertEqual(fallback_theme_path, expected_review_theme_path)
+
+        self.publish_app()
+        published_theme_path = self.app.get_theme_path(app_state='published')
+        self.assertEqual(published_theme_path, expected_published_theme_path)
+
+
+    def test_get_theme_config(self):
+
+        preview_theme_config = self.app.get_theme_config(app_state='preview')
+        self.assertEqual(preview_theme_config['PREVIEW'], True)
+
+        review_theme_config = self.app.get_theme_config(app_state='review')
+        self.assertEqual(review_theme_config['REVIEW'], True)
+
+        fallback_theme_config = self.app.get_theme_config(app_state='published')
+        self.assertEqual(fallback_theme_config['REVIEW'], True)
+
+        self.publish_app()
+        published_theme_config = self.app.get_theme_config(app_state='published')
+        self.assertFalse('REVIEW' in published_theme_config)
+        self.assertFalse('PREVIEW' in published_theme_config)
+        
+
+    def test_get_online_content_app_state(self):
+
+        app_state = self.app.get_online_content_app_state()
+        self.assertEqual(app_state, 'preview')
+        
+    def test_get_online_conent_templates_path(self):
+
+        expected_oct_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
+                            self.testapp_relative_preview_www_path, 'themes/Flat/online_content/templates')
+
+
+
+        preview_oct_path = self.app.get_online_content_templates_path()
+        self.assertEqual(preview_oct_path, expected_oct_path)
+
+
+    def test_get_online_content_settings(self):
+        
+        preview_online_content_settings = self.app.get_online_content_settings()
+        self.assertEqual(preview_online_content_settings['PREVIEW'], True)
+
+        self.publish_app()
+        published_online_content_settings = self.app.get_online_content_settings()
+        self.assertEqual(preview_online_content_settings['PREVIEW'], True)
+        
+
+    def test_get_online_content_templates(self):
+
+        available_templates = {
+            'review': {
+                'page' : [
+                    ('page/test.html', 'Test Seite'),
+                    ('page/REVIEW.html', 'Review marker'),
+                    ('page/free_page.html', 'Freie Seite'),
+                ],
+            },
+            'preview' : {
+                'page' : [
+                    ('page/test.html', 'Test Seite'),
+                    ('page/PREVIEW.html', 'Preview marker'),
+                    ('page/free_page.html', 'Freie Seite'),
+                ],
+            },
+            'published': {
+                'page' : [
+                    ('page/test.html', 'Test Seite'),
+                    ('page/free_page.html', 'Freie Seite'),
+                ],
+            }
+        }
+
+        preview_templates = self.app.get_online_content_templates('page')
+
+        self.assertEqual(preview_templates, available_templates['preview']['page'])
+
+
+    def test_get_online_content_template(self):
+
+        template_names = ['feature/news.html', 'page/test.html', 'page/free_page.html', 'page/PREVIEW.html']
+
+        for template_name in template_names:
+            template = self.app.get_online_content_template(template_name)
+            self.assertTrue(isinstance(template, Template))
+        
 
 from localcosmos_server.models import APP_USER_ROLES
 @test_settings

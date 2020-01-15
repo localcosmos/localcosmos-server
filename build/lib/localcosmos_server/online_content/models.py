@@ -71,13 +71,13 @@ class TemplateContent(models.Model):
     objects = TemplateContentManager()
 
     def get_theme_settings(self):
-        return self.app.get_online_content_settings(preview=True)
+        return self.app.get_online_content_settings()
 
     def verbose_template_name(self, language_code=None):
         if not language_code:
             language_code = self.app.primary_language
             
-        theme_settings = self.app.get_online_content_settings(preview=True)
+        theme_settings = self.app.get_online_content_settings()
 
         verbose_name = self.template_name
 
@@ -429,8 +429,8 @@ class LocalizedTemplateContent(models.Model):
         return self.template_content.get_template()
 
     # improvement could be: read urls.js from the app and construct the url accordingly
-    def in_app_link(self, preview=False):
-        if preview:
+    def in_app_link(self, app_state='published'):
+        if app_state == 'preview':
             in_app_link = '/online-content/%s/%s/' %(self.slug, self.preview_token)
         else:
             in_app_link = '/online-content/%s/' %(self.slug)
@@ -532,14 +532,15 @@ class FlagTree:
         self.flags = flags.order_by('parent_flag')
         self.language = language
         self.flag_tree = {}
-        self.preview = kwargs.get('preview', False)
+        
+        self.app_state = kwargs.get('app_state', 'published')
 
         self.toplevel_count = 0
 
         # preview fetches localized_template_content.draft_title
         title_attr = 'published_title'
         navigation_link_attr = 'navigation_link_name'
-        if self.preview:
+        if self.app_state == 'preview':
             title_attr = 'draft_title'
             navigation_link_attr = 'draft_navigation_link_name'
 
@@ -568,16 +569,16 @@ class FlagTree:
         localized_template_content = flag.template_content.get_localized(self.language)
 
         if localized_template_content:
-            if self.preview == True or localized_template_content.published_version:
+            if self.app_state == 'preview' or localized_template_content.published_version:
 
                 tree_entry = {
                     'localized_template_content' : localized_template_content,
                     'children' :[],
-                    'in_app_link' : localized_template_content.in_app_link(preview=self.preview),
+                    'in_app_link' : localized_template_content.in_app_link(app_state=self.app_state),
                     'navigation_link_name' : localized_template_content.navigation_link_name,
                 }
 
-                if self.preview:
+                if self.app_state == 'preview':
                     tree_entry['navigation_link_name'] = localized_template_content.draft_navigation_link_name
 
         return tree_entry
@@ -598,9 +599,7 @@ class TemplateContentFlagsManager(models.Manager):
     # do not retrieve flags across apps
     def get_tree(self, app, flag, language, **kwargs):
 
-        preview = kwargs.get('preview', True)
-
-        theme_settings = app.get_online_content_settings(preview=preview)
+        theme_settings = app.get_online_content_settings()
         max_flag_levels = theme_settings.get('max_flag_levels', 2)
 
         flags = self.filter(template_content__app=app, flag=flag)
