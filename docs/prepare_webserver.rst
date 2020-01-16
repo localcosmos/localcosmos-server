@@ -89,7 +89,7 @@ In this example, the database which we want to install the kmeans extension for,
 		# switch to the postgres user
 		sudo -u postgres -i
 		# activate the kmeans extension for the database localcosmos, replace the db name if necessary
-		psql -f /usr/share/postgresql/10/extension/kmeans.sql -d localcomos
+		psql -f /usr/share/postgresql/10/extension/kmeans.sql -d localcosmos
 		exit
 
 

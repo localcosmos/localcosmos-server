@@ -31,6 +31,7 @@ ANYCLUSTER_COORDINATES_COLUMN_SRID = 3857
 ANYCLUSTER_PINCOLUMN = 'taxon_nuid'
 ANYCLUSTER_ADDITIONAL_COLUMN = 'taxon_source'
 
+
 # corsheaders
 # the api has to allow queries from everywhere
 CORS_ORIGIN_ALLOW_ALL = True

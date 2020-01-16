@@ -1,4 +1,5 @@
 # add self.online_content
+from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 from localcosmos_server.models import App
@@ -15,9 +16,17 @@ class OnlineContentMixin:
         else:
             self.app = App.objects.get(uid=kwargs['app_uid'])
 
-        self.app_disk_path = self.app.get_installed_app_path(app_state='published')
+        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+            app_state = 'published'
+        else:
+            app_state = 'preview'
+        
+        self.app_disk_path = self.app.get_installed_app_path(app_state=app_state)
+        
         if not self.app_disk_path:
-            return redirect(reverse('app_not_installed'))
+            raise FileNotFoundError('[{0}] self.app_disk_path for app_state: {1} is {2}'.format(self.app.uid,
+                                                                    app_state, self.app_disk_path))
+        
         return super().dispatch(request, *args, **kwargs)
 
 
