@@ -31,6 +31,10 @@ ANYCLUSTER_COORDINATES_COLUMN_SRID = 3857
 ANYCLUSTER_PINCOLUMN = 'taxon_nuid'
 ANYCLUSTER_ADDITIONAL_COLUMN = 'taxon_source'
 
+# make session available for apps
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = None
+
 
 # corsheaders
 # the api has to allow queries from everywhere
