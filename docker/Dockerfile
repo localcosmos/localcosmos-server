@@ -3,7 +3,6 @@
 # - based on ubuntu 18.04
 # - python3.6, postgresql and nginx webserver
 # - django, uwsgi
-# - required parameters: database_user, database_user_password, app_uid
 ############################################################
 
 # Set the base image to Ubuntu
@@ -11,9 +10,6 @@ FROM ubuntu:18.04
 ENV UBUNTU_NAME=bionic
 
 MAINTAINER Thomas Uher <thomas.uher@sisol-systems.com>
-
-ARG APP_UID
-ARG SERVE_APP_URL
 
 ENV PYTHONUNBUFFERED 1
 

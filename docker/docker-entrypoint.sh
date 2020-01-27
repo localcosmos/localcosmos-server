@@ -1,4 +1,7 @@
 #!/bin/bash
+# the following environment variables are used in this script:
+# $DATABASE_NAME, $DB_USER, $DB_PASSWORD, $SERVE_APP_URL, $APP_UID
+# $ALLOWED_HOST, $DATABASE_NAME, $DB_USER and $DB_PASSWORD are used by settings.py (os.environ[])
 
 # start postgresql
 /etc/init.d/postgresql start

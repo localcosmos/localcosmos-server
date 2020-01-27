@@ -111,7 +111,7 @@ WSGI_APPLICATION = 'localcosmos_private.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'localcosmos',
+        'NAME': os.environ['DATABASE_NAME'],
         'USER' : os.environ['DB_USER'],
         'PASSWORD' : os.environ['DB_PASSWORD'],
         'HOST' : 'localhost',
