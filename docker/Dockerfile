@@ -1,37 +1,89 @@
 ############################################################
-# Dockerfile to create a base LocalCosmos container
+# Dockerfile to create a LocalCosmos Server container
 # - based on ubuntu 18.04
 # - python3.6, postgresql and nginx webserver
+# - django, uwsgi
+# - required parameters: database_user, database_user_password, app_uid
 ############################################################
 
 # Set the base image to Ubuntu
 FROM ubuntu:18.04
 ENV UBUNTU_NAME=bionic
 
-# File Author / Maintainer
 MAINTAINER Thomas Uher <thomas.uher@sisol-systems.com>
 
+ARG APP_UID
+ARG SERVE_APP_URL
 
+ENV PYTHONUNBUFFERED 1
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+# create the localcosmos directory
+RUN mkdir /opt/localcosmos
+
+# Install the nginx webserver, python3, postgis
+RUN apt-get update &&\	
+    apt-get install -y --no-install-recommends nginx gettext-base &&\
+	apt-get install -y --no-install-recommends python3 python3-dev python3-pip python3-setuptools &&\
+	apt-get install -y --no-install-recommends make gcc &&\
+	apt-get install -y --no-install-recommends postgresql-10 postgresql-10-postgis-2.4 libpq-dev postgresql-server-dev-10 \
+      postgresql-client-10 postgresql-contrib-10  postgresql-10-postgis-scripts &&\
+	apt-get clean autoclean &&\
+    apt-get autoremove -y &&\
+	rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+
+RUN locale-gen en_US.UTF-8 &&\
+	update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
 ENV PYTHONIOENCODING=utf-8
 
 
-# Install basic applications and perform cleanup
-RUN apt-get update &&\
-    apt-get install --no-install-recommends -y python3 python-3-dev &&\
-    apt-get install --no-install-recommends -y virtualenv &&\
-    apt-get install --no-install-recommends -y postgresql-10 postgresql-10-postgis-2.4 libpq-dev postgresql-server-dev-10 &&\
-    apt-get clean autoclean &&\
-    apt-get autoremove -y &&\
-    rm -rf /var/lib/{apt,dpkg,cache,log}/
+# install kmeans
+ADD ["kmeans-postgresql-master/", "/opt/kmeans-postgresql-master/"]
+WORKDIR /opt/kmeans-postgresql-master
+RUN make &&\
+	make install
 
 
-COPY install_nginx.sh /tmp
+# install django, localcosmos_server
+RUN pip3 install wheel &&\
+    pip3 install django==2.2.* uwsgi &&\
+    pip3 install localcosmos_server
 
-# Install and configure the nginx webserver
-WORKDIR /tmp
-RUN chmod +x install_nginx.sh &&\
-    bash install_nginx.sh &&\
-    rm install_nginx.sh &&\
-    apt-get clean autoclean &&\
-    apt-get autoremove -y &&\
-    rm -rf /var/lib/{apt,dpkg,cache,log}/
+# create the django project
+WORKDIR /opt/localcosmos
+RUN django-admin startproject localcosmos_private
+
+COPY ["localcosmos_private/settings.py", "/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py"]
+COPY ["localcosmos_private/urls.py", "/opt/localcosmos/localcosmos_private/localcosmos_private/urls.py"]
+
+
+# Copy the nginx configuration files, remove old configuration if any
+RUN rm -f /etc/nginx/conf.d/* &&\
+    mkdir -p /var/www/localcosmos/ &&\
+    mkdir -p /var/log/uwsgi/
+
+
+COPY ["nginx/localcosmos-server.conf.template", "/etc/nginx/conf.d/localcosmos-server.conf.template"]
+
+COPY ["nginx/uwsgi_params", "/opt/localcosmos/uwsgi/uwsgi_params"]
+COPY ["nginx/localcosmos-server-uwsgi.ini", "/opt/localcosmos/uwsgi/localcosmos-server-uwsgi.ini"]
+
+
+# ENTRYPOINT
+RUN mkdir /code
+COPY ["wait-for-it.sh", "/code/wait-for-it.sh"]
+COPY ["docker-entrypoint.sh", "/code/docker-entrypoint.sh"]
+
+ENV MIGRATE=true
+
+RUN chmod +x /code/docker-entrypoint.sh &&\
+    chmod +x /code/wait-for-it.sh
+
+ENTRYPOINT ["/code/docker-entrypoint.sh"]
+

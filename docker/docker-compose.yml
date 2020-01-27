@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  lc-private:
+    container_name: 'localcosmos-private-server'
+    image: 'localcosmos-private-server-image' 
+    restart: always
+    build: .
+    volumes:
+      - type: volume
+        source: www
+        target: /var/www/localcosmos/
+      - type: volume
+        source: apps
+        target: /opt/apps/
+      - type: volume
+        source: database_config
+        target: /etc/postgresql/
+      - type: volume
+        source: database_log
+        target: /var/log/postgresql/
+      - type: volume
+        source: database_data
+        target: /var/lib/postgresql/
+    ports:
+      - 9201:8001
+    environment:
+      - DATABASE_NAME=localcosmos
+      - DB_USER=admin
+      - DB_PASSWORD=abcdef
+      - ALLOWED_HOST=localhost
+      - APP_UID=treesofbavaria
+      - SERVE_APP_URL=/
+
+volumes:
+  www:
+  apps:
+  database_config:
+  database_log:
+  database_data:
