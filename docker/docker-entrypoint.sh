@@ -30,7 +30,7 @@ else
 fi
 
 
-# Then do the python migration and one time db configuration
+# Then do the python migration
 if [[ $MIGRATE == true ]];
 then
   echo "Perform python migrations"

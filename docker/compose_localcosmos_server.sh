@@ -50,7 +50,6 @@ then
   echo "Removing the persistent named volumes of the web containers"
   # Remove the named volumes of the container
   docker volume rm localcosmos-private-server_www
-  docker volume rm localcosmos-private-server_apps
 fi
 
 

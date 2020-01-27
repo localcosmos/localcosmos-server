@@ -11,9 +11,6 @@ services:
         source: www
         target: /var/www/localcosmos/
       - type: volume
-        source: apps
-        target: /opt/apps/
-      - type: volume
         source: database_config
         target: /etc/postgresql/
       - type: volume
@@ -26,15 +23,14 @@ services:
       - 9201:8001
     environment:
       - DATABASE_NAME=localcosmos
-      - DB_USER=admin
-      - DB_PASSWORD=abcdef
+      - DB_USER=db_username
+      - DB_PASSWORD=db_password
       - ALLOWED_HOST=localhost
       - APP_UID=treesofbavaria
       - SERVE_APP_URL=/
 
 volumes:
   www:
-  apps:
   database_config:
   database_log:
   database_data:
