@@ -6,6 +6,8 @@ from . import views
 
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    
     path('server/', include('localcosmos_server.global_urls')),
     
     # APP ADMIN

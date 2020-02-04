@@ -4,7 +4,7 @@
 		
 		{% include 'django/forms/widgets/file.html' %}
 
-		<label {% if instance %}style="background-image:url('{{ instance.image_store.source_image.url }}?_={% now 'U' %}');"{% endif %}></label>
+		<label {% if instance %}style="background-image:url('{{ instance.image_store.source_image.url }}?_={% now 'U' %}'); background-size:contain;"{% endif %}></label>
 
 		<div class="btn-group dropup">
 			<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
