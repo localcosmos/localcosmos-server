@@ -25,7 +25,7 @@ services:
       - DATABASE_NAME=localcosmos
       - DB_USER=db_username
       - DB_PASSWORD=db_password
-      - ALLOWED_HOST=localhost
+      - ALLOWED_HOSTS=localhost
       - APP_UID=treesofbavaria
       - SERVE_APP_URL=/
 

@@ -25,7 +25,10 @@ SECRET_KEY = '-l4*f++k5$u!cr(o#-hio-d9hl)9b&nb37%_6v3l^w#20(rr!*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOST', '*')]
+ALLOWED_HOSTS = ['*']
+host_list = os.environ.get('ALLOWED_HOSTS', [])
+if host_list:
+    ALLOWED_HOSTS = host_list.split('|')
 
 
 # Application definition
@@ -166,3 +169,20 @@ from localcosmos_server.settings import *
 # location where apps are installed
 # your apps index.html will be in LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 LOCALCOSMOS_APPS_ROOT = '/var/www/localcosmos/apps/' 
+
+SERVER_EMAIL = 'server@localcosmos-private'
+
+admin_list = os.environ.get('LOCALCOSMOS_PRIVATE_ADMINS', [])
+ADMINS = []
+if admin_list:
+    # 'name,email|name,email'
+    ADMINS = [tuple(admin.split(',')) for admin in admin_list.split('|')]
+
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', False)
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', False)
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
+    
