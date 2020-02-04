@@ -37,6 +37,12 @@ server {
             include     /opt/localcosmos/uwsgi/uwsgi_params;
     }
 
+	# pass /admin to django
+    location /admin {
+            uwsgi_pass  django;
+            include     /opt/localcosmos/uwsgi/uwsgi_params;
+    }
+
     # pass /api to django
     location /api {
             uwsgi_pass  django;
