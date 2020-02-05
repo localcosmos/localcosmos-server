@@ -182,7 +182,7 @@ if admin_list:
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', False)
-EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', False)
+EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS', False))
+EMAIL_USE_SSL = bool(os.environ.get('EMAIL_USE_SSL', False))
 EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
     
