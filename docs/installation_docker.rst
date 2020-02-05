@@ -162,8 +162,8 @@ Optionally, you can add email settings to the environment. This enables django t
 Replace ``<email_host>``, ``<email_port>``, ``<email_host_user>``, ``<email_host_password>`` with your parameters and set ``EMAIL_USE_TLS`` to 1 or 0.
 
 
-5. Installation
----------------
+5. Run the docker container
+---------------------------
 
 	.. code-block:: bash
 

@@ -1,5 +1,5 @@
-Deploy your Server
-==================
+Deploy your Server (without docker)
+===================================
 
 Once you have successfully tested your LocalCosmos Private Server in development mode, you can deploy your server and make it accessible for the public. This tutorial covers deployment of Local Cosmos Private Server using ``nginx``, ``uwsgi`` and Ubuntu 18.04.
 
