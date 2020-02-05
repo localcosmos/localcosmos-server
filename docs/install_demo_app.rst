@@ -1,13 +1,37 @@
 Installing the Demo App
 =======================
 
-The Demo App should **only be installed on a local development server for testing**. This tutorial covers nginx examples. If you plan to use apache2, you have to translate the examples into apache2 syntax.
+The Demo App should **only be installed on a local development server for testing**.
 
 
-0. Prerequisites
-----------------
+1. Installation on a DOCKER LC Private Server
+---------------------------------------------
 
-In this tutorial, we will configure the following setup:
+1.1 Download the Demo App
+-------------------------
+The Demo App is a .zip file named ``TreesOfBavaria.zip``.
+You can dowload it `here <https://localcosmos.org/media/demo-app/docker/TreesOfBavaria.zip>`_ .
+
+Note: The Demo App covers the Webapp version of Trees Of Bavaria. If you build your own App on localcosmos.org, you will receive Android and iOS versions alongside the Webapp version.
+
+
+1.2 Install the Demo App
+------------------------
+Open ``http://localhost:9202/server/control-panel/`` and click on ``Install App``.
+
+1. Select the zipfile ``TreesOfBavaria.zip`` which you just downloaded.
+2. Enter ``http://localhost:9202/`` (or the URL according to your webserver configuration) as the URL of this App.
+3. Click the Install button
+
+Once the installation is complete, visit ``http://localhost:9202/`` to open the Webapp. To test the API, try logging in with the Superuser Account credentials you created in the server setup tutorial, or try to report an observation.
+
+
+2. Installation on a non-docker LC Private Server
+-------------------------------------------------
+
+This tutorial covers nginx examples. If you plan to use apache2, you have to translate the examples into apache2 syntax.
+ 
+We will configure the following setup:
 
 +---------------------------------------------------+------------------------------+----------------------------+
 | URL                                               | Function                     | Served by                  |
@@ -36,17 +60,17 @@ Start your Local Cosmos Development Server:
 		python manage.py runserver 0.0.0.0:8080
 
 
-1. Download the Demo App
-------------------------
+2.1 Download the Demo App
+-------------------------
 The Demo App is a .zip file named ``TreesOfBavaria.zip``.
-You can dowload it `here <https://localcosmos.org/media/TreesOfBavaria.zip>`_ .
+You can dowload it `here <https://localcosmos.org/media/demo-app/TreesOfBavaria.zip>`_ .
 
 Note: The Demo App covers the Webapp version of Trees Of Bavaria. If you build your own App on localcosmos.org, you will receive Android and iOS versions alongside the Webapp version.
 
  
 
-2. Configure nginx to serve your Webapp
----------------------------------------
+2.2 Configure nginx to serve your Webapp
+----------------------------------------
 Local Cosmos Webapps are served by nginx or apache2, not by django.
 
 Later, you will install your webapp using the **Server Control Panel** of your Local Cosmos Private Server. Your webapps will automatically be stored in a subfolder of the folder defined by ``LOCALCOSMOS_APPS_ROOT`` in your ``settings.py`` file. The ``UID`` of your app will be the name of this subfolder.  The ``UID`` of the Demo App is ``treesofbavaria`` and ``LOCALCOSMOS_APPS_ROOT`` is set to ``/var/www/localcosmos/apps/``. So this app will be installed in ``/var/www/localcosmos/apps/treesofbavaria/``.
@@ -75,8 +99,8 @@ With this configuration, the Demo App will later be available the URL ``http://l
 It is very important to **remember the url** which your webapp will be served at **by nginx** because you will have to enter this url in the **Server Control Panel** when installing an app.
 
 
-3. Install the Demo App
------------------------
+2.3 Install the Demo App
+------------------------
 Open ``http://localhost:8080/server/control-panel/`` and click on ``Install App``.
 
 1. Select the zipfile ``TreesOfBavaria.zip`` which you just downloaded.

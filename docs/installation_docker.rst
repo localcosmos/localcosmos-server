@@ -37,6 +37,8 @@ Put the following in your just created ``.conf`` file. Again, replace ``<my-proj
 			listen 443;
 			server_name <my-project.org> www.<my_project.org>;
 
+			client_max_body_size 20M;
+
 			location / {
 				proxy_http_version 1.1;
 				proxy_set_header Upgrade $http_upgrade;
