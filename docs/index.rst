@@ -14,4 +14,5 @@ Contents:
 
    installation_docker
    installation_without_docker
+   install_demo_app
    deploy_server

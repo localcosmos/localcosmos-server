@@ -56,18 +56,29 @@ Put the following in your just created ``.conf`` file. Again, replace ``<my-proj
 2. Install docker
 -----------------
 
+Install docker and the docker-compose-utility
+
 	.. code-block:: bash
+
 		sudo apt-get install docker.io docker-compose
 
-	.. code-block:: bash
-		sudo systemctl start docker
+
+Start docker
 
 	.. code-block:: bash
+
+		sudo systemctl start docker
+
+
+make docker start on boot
+
+	.. code-block:: bash
+
 		sudo systemctl enable docker
 
 
-3. pull the Local Cosmos Private Server docker image
-----------------------------------------------------
+3. Get the Local Cosmos Private Server docker image
+---------------------------------------------------
 
 All docker commands have to be run as the superuser.
 
@@ -140,11 +151,13 @@ Also replace ``<.myproject.org>`` with the domain you run your Localcosmos Priva
 Optionally, you can add email settings to the environment. This enables django to send email to you if an error occurs server-side.
 
 	.. code-block:: bash
+
 		  - EMAIL_HOST=<email_host>
 		  - EMAIL_PORT=<email_port>
 		  - EMAIL_HOST_USER=<email_host_user>
 		  - EMAIL_HOST_PASSWORD=<email_host_password>
 		  - EMAIL_USE_TLS=1
+
 
 Replace ``<email_host>``, ``<email_port>``, ``<email_host_user>``, ``<email_host_password>`` with your parameters and set ``EMAIL_USE_TLS`` to 1 or 0.
 
@@ -162,4 +175,4 @@ After Installation, visit ``localhost:9202/server/control-panel/`` or ``<myproje
 
 You now have your Local Cosmos Private Server up and running.
 
-If you are on a local machine and want to test the Demo App, got to
+If you are on a local machine and want to test the Demo App, proceed to **Installing the Demo App**.
