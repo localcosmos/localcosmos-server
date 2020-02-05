@@ -13,5 +13,5 @@ Contents:
    :caption: Contents:
 
    installation_docker
-   install_without_docker
+   installation_without_docker
    deploy_server
