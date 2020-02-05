@@ -1,186 +1,106 @@
-Set up Tutorial
-===============
-
-1. Installation using docker
-----------------------------
-
-Duration: 10-15 minutes.
-
-1.1 Install and Configure nginx
--------------------------------
-This is only required for a production environment. If you test on your local machine, you can skip this step.
-
-	.. code-block:: bash
-
-		sudo apt-get install nginx
-
-
-Create the nginx conf file for your app. Replace ``<my-project.org>`` with the domain of your project.
-
-	.. code-block:: bash
-		
-		touch /etc/nginx/sites-available/<my-project.org>.conf>
-		
-
-Put the following in your just created ``.conf`` file. Again, replace ``<my-project.org>`` with the domain of your project
-
-	.. code-block:: bash
-
-		upstream lcprivate_docker {
-			server localhost:9202;
-		}
-
-		server {
-			listen 80;
-			server_name <my-project.org> www.<my-project.org>;
-			return 301 https://<my-project.org>/$request_uri;
-		}
-
-		server {
-			listen 443;
-			server_name <my-project.org> www.<my_project.org>;
-
-			location / {
-				proxy_http_version 1.1;
-				proxy_set_header Upgrade $http_upgrade;
-				proxy_set_header Connection 'upgrade';
-				proxy_set_header Host $host;
-				proxy_set_header X-Real-IP $remote_addr;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-				proxy_set_header X-Forwarded-Proto $scheme;
-				proxy_cache_bypass $http_upgrade;
-				proxy_pass http://lcprivate_docker;
-			}
-
-		}
-
-
-
-1.2 Install docker
-------------------
-
-	.. code-block:: bash
-		sudo apt-get install docker.io docker-compose
-
-	.. code-block:: bash
-		sudo systemctl start docker
-
-	.. code-block:: bash
-		sudo systemctl enable docker
-
-
-1.3 pull the Local Cosmos Private Server docker image
------------------------------------------------------
-
-All docker commands have to be run as the superuser.
-
-	.. code-block:: bash
-
-		sudo docker pull docker.sisol-systems.com/localcosmos-private-server
-
-
-1.4 Configuration with docker-compose.yml
------------------------------------------
-On your server, create a folder for your project.
-
-	.. code-block:: bash
-
-		mkdir /opt/<my-project-name>
-
-
-Create the file docker-compose.yml
-
-	.. code-block:: bash
-
-		cd /opt/<my-project-name>
-		touch docker-compose.yml
-
-
-Put the following content into ``docker-compose.yml``. Replace ``<my-project-name>`` with the name of your project. Also Replace ``<db_username>`` and ``<db_password>``. This will **set** your database credentials, so do not share these values openly.
-
-Also replace ``<.myproject.org>`` with the domain you run your Localcosmos Private Server on. Do not forget the leading ``.``. Finally, replace ``<APP_UID>`` with app_uid of your App. You find your app_uid in the App Kit on localcosmos.org. If you just want to run the Demo App on localhost, use ``treesofbavaria`` as the app_uid. You cannot run the Demo App on something else than localhost.
-
-	.. code-block:: bash
-
-		version: '3.3'
-
-		services:
-		  lc-private:
-			container_name: '<my-project-name>'
-			image: 'docker.sisol-systems.com/localcosmos-private-server' 
-			restart: always
-			build: .
-			volumes:
-			  - type: volume
-				source: www
-				target: /var/www/localcosmos/
-			  - type: volume
-				source: database_config
-				target: /etc/postgresql/
-			  - type: volume
-				source: database_log
-				target: /var/log/postgresql/
-			  - type: volume
-				source: database_data
-				target: /var/lib/postgresql/
-			ports:
-			  - 9202:8001
-			environment:
-			  - DATABASE_NAME=localcosmos
-			  - DB_USER=<db_username>
-			  - DB_PASSWORD=<db_password>
-			  - ALLOWED_HOSTS=localhost|<.myproject.org>
-			  - APP_UID=<APP_UID>
-			  - SERVE_APP_URL=/
-
-		volumes:
-		  www:
-		  database_config:
-		  database_log:
-		  database_data:
-
-
-Optionally, you can add email settings to the environment. This enables django to send email to you if an error occurs server-side.
-
-	.. code-block:: bash
-		  - EMAIL_HOST=<email_host>
-		  - EMAIL_PORT=<email_port>
-		  - EMAIL_HOST_USER=<email_host_user>
-		  - EMAIL_HOST_PASSWORD=<email_host_password>
-		  - EMAIL_USE_TLS=1
-
-Replace ``<email_host>``, ``<email_port>``, ``<email_host_user>``, ``<email_host_password>`` with your parameters and set ``EMAIL_USE_TLS`` to 1 or 0.
-
-
-1.5 Installation
-----------------
-
-	.. code-block:: bash
-
-		cd /opt/<my-project-name>
-		sudo docker-compose up -d
-
-
-After Installation, visit ``localhost:9202/server/control-panel/`` or ``<myproject.org>/server/control-panel/`` and follow the on-screen instructions.
-
-You now have your Local Cosmos Private Server up and running.
-
-If you are on a local machine and want to test the Demo App, got to
-
-
-2. Installation without docker
-------------------------------
+Installation without docker
+===========================
 
 Duration: 30-45 minutes.
 
 This tutorial covers setting up a running LocalCosmos Private Server as a development server. This tutorial is intended for people not familiar with django. For more information about django visit https://www.djangoproject.com/ .
 
-2.0 Prerequisites
+1. Prerequisites
 -----------------
-Install all required server components as described in **Preparing your webserver**.
 
-2.1 Create a new django project
--------------------------------
+Before you can install django and the localcosmos_server package, you have to install the requirements below. All code examples are for Debian/Ubuntu based systems.
+
+
+1.1 Required server components
+------------------------------
+
+* nginx or apache2 web server
+* python3 and python3-dev
+* virtualenv (optional, recommended)
+* PostgreSQL 10.x with PostGIS 2.x
+* kmeans PostgreSQL extension: https://github.com/umitanuki/kmeans-postgresql
+
+On Debian/ubuntu, you can install the required packages as follows:
+
+	.. code-block:: bash
+
+		sudo apt-get install nginx
+		sudo apt-get install python3 python3-dev
+		sudo apt-get install virtualenv
+		sudo apt-get install postgresql-10 postgresql-10-postgis-2.4 libpq-dev postgresql-server-dev-10
+
+
+1.2 Create Postgres database
+----------------------------
+If not yet done, create a postgres database. If your desired database name is ``localcomsos``, you can create the database as follows:
+
+	.. code-block:: bash
+
+		sudo -u postgres -i
+		psql
+		# create new database by the name localcosmos
+		create database localcosmos;
+
+You also have to create a database user which has the right to alter the just created ``localcosmos`` database. In this example the user is named ``lcuser``, but you can use any other name. You have to replace ``<lcpassword>`` with your desired password.
+
+	.. code-block:: bash
+		
+		create user lcuser;
+		alter role lcuser SUPERUSER;
+		alter user lcuser PASSWORD '<lcpassword>';
+		\q
+	
+
+1.3 Install the kmeans PostgreSQL extension
+-------------------------------------------
+
+1.3.1 Switch back to your server user
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This step only applies if you follow this tutorial step by step. Switch back from the postgres user to the user you use on your server. Replace ``<serveruser>`` with the username you use on your server.
+ 
+	.. code-block:: bash
+
+		su <serveruser>
+
+
+1.3.2 Download kmeans
+^^^^^^^^^^^^^^^^^^^^^
+Download and unzip https://github.com/umitanuki/kmeans-postgresql on your server. In this example, kmeans is downloaded into ``/opt/kmeans``, but you can use any other folder.
+
+	.. code-block:: bash
+
+		sudo mkdir /opt/kmeans
+		cd /opt/kmeans
+		# replace <serveruser> with your username
+		sudo chown <serveruser>:<serveruser> /opt/kmeans
+		wget https://github.com/umitanuki/kmeans-postgresql/archive/master.zip
+		# install unzip
+		sudo apt-get install unzip
+		unzip master.zip
+
+
+1.3.3 Activate kmeans extension
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In this example, the database which we want to install the kmeans extension for, is named ``localcosmos``. Replace ``localcosmos`` if your database has a different name.
+
+	.. code-block:: bash
+
+		cd /opt/kmeans/kmeans-postgresql-master
+		# if not yet done, install build requirements
+		sudo apt-get install make gcc
+		# make and make install kmeans
+		make
+		sudo make install
+		# switch to the postgres user
+		sudo -u postgres -i
+		# activate the kmeans extension for the database localcosmos, replace the db name if necessary
+		psql -f /usr/share/postgresql/10/extension/kmeans.sql -d localcosmos
+		exit
+
+
+
+2. Create a new django project
+------------------------------
 
 **Create a project folder**
 
@@ -227,11 +147,11 @@ In ``/opt/localcosmos`` execute the following:
 This will automatically create the folder ``/opt/localcosmos/localcosmos_private``, which contains your newly created django project.
 
 
-2.2 Configure your django project
----------------------------------
+3. Configure your django project
+--------------------------------
 
-2.2.1 settings.py
-^^^^^^^^^^^^^^^^^
+3.1 settings.py
+^^^^^^^^^^^^^^^
 You now have to adjust the contents of the file ``settings.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` to set up your LocalCosmos Private Server.
 
 Replace ``INSTALLED_APPS`` with the following:
@@ -366,8 +286,8 @@ Inlude localcosmos_server settings in your ``settings.py`` file. This automatica
 		LOCALCOSMOS_APPS_ROOT = '/var/www/localcosmos/apps/' 
 
 
-2.2.2 urls.py
-^^^^^^^^^^^^^
+3.2 urls.py
+^^^^^^^^^^^
 The file ``urls.py`` located in ``/opt/localcosmos/localcosmos_private/localcosmos_private/`` also needs configuration. You ``urls.py`` should look like this:
 
 	.. code-block:: python
@@ -396,8 +316,8 @@ That's it for the django configuration.
 
 
 
-2.3 Migrate database
---------------------
+4. Migrate database
+-------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 
 	.. code-block:: bash
@@ -407,8 +327,8 @@ In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run
 to migrate the database.
 
 
-2.4 Create localcosmos www folder
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+5. Create localcosmos www folder
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 We need the folder ``/var/www/localcosmos`` and django has to be able to write into it. Replace ``<server_user>`` with the user you use on your computer.
 
 	.. code-block:: bash
@@ -419,8 +339,8 @@ We need the folder ``/var/www/localcosmos`` and django has to be able to write i
 		sudo chown <server_user>:www-data /var/www/localcosmos
 
 
-2.5 Run the development server
-------------------------------
+6. Run the development server
+-----------------------------
 In your django project directory, ``/opt/localcosmos/localcosmos_private/``, run the following command to start the development server.
 
 	.. code-block:: bash
@@ -435,8 +355,8 @@ Also check if the API works. Browse to ``http://localhost:8080/api/`` .
 After you completed the setup, the Server Control Panel ist available at ``http://localhost:8080/server/control-panel/``.
 
 
-2.6 Re-running the development server
--------------------------------------
+7. Re-running the development server
+------------------------------------
 If you want to start the development server after rebooting, you have to activate the virtual environment first.
 
 	.. code-block:: bash

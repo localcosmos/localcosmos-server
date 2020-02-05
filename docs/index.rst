@@ -12,7 +12,6 @@ Contents:
    :maxdepth: 2
    :caption: Contents:
 
-   prepare_webserver
-   installation_tutorial
-   install_demo_app
+   installation_docker
+   install_without_docker
    deploy_server
