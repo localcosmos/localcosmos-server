@@ -75,6 +75,11 @@ body {
 	padding-bottom: 50%;
 }
 
+
+.ajaxfileupload.ratio-10x16 label:after, .twostepfileupload.ratio-10x16 label:after {
+	padding-bottom: 160%;
+}
+
 .ajaxfileupload.ratio-2x1 label, .twostepfileupload.ratio-2x1 label {
 	width: 100%;
 }
