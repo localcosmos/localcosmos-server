@@ -14,7 +14,11 @@ import os, json
 """
 class CMSTag:
 
-    def __init__(self, microcontent_category, microcontent_type, *args, **kwargs):
+    def __init__(self, app, template_content, microcontent_category, microcontent_type, *args, **kwargs):
+
+        self.app = app
+        self.template_content = template_content
+        
         self.microcontent_category = microcontent_category
         self.microcontent_type = microcontent_type
         self.args = list(args)
@@ -134,7 +138,9 @@ class CMSTag:
                 empty_localized_instance = self.get_empty_localized_instance()
                 empty_meta_instance = self.Model()
                     
-                field = self._create_field(language, empty_meta_instance, empty_localized_instance, widget_attrs, is_first=is_first, is_last=is_last)
+                field = self._create_field(language, empty_meta_instance, empty_localized_instance, widget_attrs,
+                                           is_first=is_first, is_last=is_last)
+                
                 form_fields.append(field)
                 is_first = False
 
@@ -185,13 +191,14 @@ class CMSTag:
         # required for image uploads
         widget_attrs['language'] = language
 
-        form_field = meta_instance.get_form_field(widget_attrs, *self.args, **field_kwargs)
+        form_field = meta_instance.get_form_field(self.app, self.template_content, widget_attrs, *self.args,
+                                                  **field_kwargs)
 
         form_field.meta_instance = meta_instance
         form_field.localized_instance = localized_instance
             
-        form_field.cms_object = CMSObject(self.Model, self.microcontent_category, self.microcontent_type, self.multi,
-                                            self.min_num, self.max_num, meta_instance, localized_instance, *self.args, **kwargs)
+        form_field.cms_object = CMSObject(self.Model, self.microcontent_category, self.microcontent_type,
+                self.multi, self.min_num, self.max_num, meta_instance, localized_instance, *self.args, **kwargs)
 
         field = {
             'field' : form_field,
@@ -220,7 +227,9 @@ class CMSTag:
 
 class CMSObject:
 
-    def __init__(self, Model, microcontent_category, microcontent_type, multi, min_num, max_num, meta_instance, localized_instance, *args, **kwargs):
+    def __init__(self, Model, microcontent_category, microcontent_type, multi, min_num, max_num, meta_instance,
+                 localized_instance, *args, **kwargs):
+        
         self.microcontent_category = microcontent_category
         self.microcontent_type = microcontent_type
         self.args = args        

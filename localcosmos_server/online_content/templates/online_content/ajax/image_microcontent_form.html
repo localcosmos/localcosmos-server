@@ -1,9 +1,9 @@
 {% extends 'localcosmos_server/modals/modal_form.html' %}
 
-{% load i18n localcosmos_tags app_tags %}
+{% load i18n localcosmos_tags %}
 
 {% block above %}
-	<form method="POST" action="{% if meta_instance %}{% url 'upload_licenced_image' app.uid microcontent_category meta_instance.pk language %}{% else %}{% url 'upload_licenced_image' app.uid template_content.id microcontent_category microcontent_type language %}{% endif %}" enctype="multipart/form-data" class="xhr">{% csrf_token %}
+	<form method="POST" action="{% if meta_instance %}{% url 'update_licenced_image' app.uid template_content.id microcontent_category meta_instance.pk language %}{% else %}{% url 'upload_licenced_image' app.uid template_content.id microcontent_category microcontent_type language %}{% endif %}" enctype="multipart/form-data" class="xhr">{% csrf_token %}
 {% endblock %}
 
 {% block title %}

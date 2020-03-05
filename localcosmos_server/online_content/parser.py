@@ -7,9 +7,12 @@
 
 from .CMSObjects import CMSTag
 
-class TemplateParser(object):
+class TemplateParser:
 
-    def __init__(self, template):
+    def __init__(self, app, template_content, template):
+        self.app = app
+        self.template_content = template_content # a TemplateContent instance
+        
         self.template = template
         self.cms_tags = []
 
@@ -79,7 +82,8 @@ class TemplateParser(object):
                     parts = arg.split("-")
                     tag_kwargs[parts[0]] = tag_kwargs[parts[1]]
             
-            tagobj = CMSTag(microcontent_category, microcontent_type, *tag_content, **tag_kwargs)
+            tagobj = CMSTag(self.app, self.template_content, microcontent_category, microcontent_type, *tag_content,
+                            **tag_kwargs)
 
             self.cms_tags.append(tagobj)
 

@@ -104,7 +104,6 @@ class WithTemplateContent:
 @test_settings
 class TestTemplateContent(WithUser, WithApp, WithTemplateContent, TestCase):
 
-
     # only published apps can access template content settings on lc private
     def setUp(self):
         super().setUp()
@@ -974,17 +973,17 @@ class TestDraftTextMicroContent(WithUser, WithApp, WithTemplateContent, WithDraf
         template_content = self.create_template_content()
         draft_text_mc = self.create_draft_text_mc(template_content)
 
-        form_field = draft_text_mc.get_form_field({})
+        form_field = draft_text_mc.get_form_field(self.app, template_content, {})
 
         self.assertTrue(isinstance(form_field.widget, forms.Textarea))
         self.assertTrue(isinstance(form_field, forms.CharField))
 
-        form_field = draft_text_mc.get_form_field({}, 'short')
+        form_field = draft_text_mc.get_form_field(self.app, template_content, {}, 'short')
 
         self.assertTrue(isinstance(form_field.widget, forms.TextInput))
         self.assertTrue(isinstance(form_field, forms.CharField))
 
-        form_field = draft_text_mc.get_form_field({'multi':True})
+        form_field = draft_text_mc.get_form_field(self.app, template_content, {'multi':True})
 
         self.assertTrue(isinstance(form_field.widget, MultiContentWidget))
         self.assertTrue(isinstance(form_field, MultiContentField))
@@ -1327,7 +1326,7 @@ class TestDraftImageMicroContent(WithUser, WithApp, WithTemplateContent, WithMed
         }
 
         widget_attrs = widget_attrs_default.copy()
-        form_field = draft_image_mc.get_form_field(widget_attrs)
+        form_field = draft_image_mc.get_form_field(self.app, template_content, widget_attrs)
 
         self.assertTrue(isinstance(form_field, forms.ImageField))
         self.assertTrue(isinstance(form_field.widget, forms.FileInput))
@@ -1338,7 +1337,7 @@ class TestDraftImageMicroContent(WithUser, WithApp, WithTemplateContent, WithMed
         draft_image_mc.refresh_from_db()
 
         widget_attrs = widget_attrs_default.copy()
-        form_field_2 = draft_image_mc.get_form_field(widget_attrs)
+        form_field_2 = draft_image_mc.get_form_field(self.app, template_content, widget_attrs)
         self.assertTrue(isinstance(form_field_2, forms.ImageField))
         
         self.assertTrue(isinstance(form_field_2.widget, forms.FileInput))

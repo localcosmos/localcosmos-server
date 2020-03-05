@@ -7,13 +7,12 @@ from django.contrib.contenttypes.models import ContentType
     - provide a method to store a restriction in the db
 '''
 class TaxonomicRestrictionMixin:
-
     
 
     def save_taxonomic_restriction(self, content_instance, form):
 
-        taxon = form.cleaned_data.get('taxon', None)
-        if taxon:
+        lazy_taxon = form.cleaned_data.get('taxon', None)
+        if lazy_taxon:
             restriction_type = form.cleaned_data['restriction_type']
 
             content_type = ContentType.objects.get_for_model(content_instance)

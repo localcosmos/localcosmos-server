@@ -69,7 +69,7 @@ class ManageMicroContentsForm(TemplateContentFormCommon):
         template = self._template()
 
         # find all cms template tags in source
-        parser = TemplateParser(template)
+        parser = TemplateParser(template_content.app, template_content, template)
         cms_tags = parser.parse()
 
         # the fields should be in self.fields        

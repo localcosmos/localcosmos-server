@@ -358,7 +358,7 @@ class LocalizedTemplateContent(models.Model):
 
         # avoid circular import
         from .parser import TemplateParser
-        parser = TemplateParser(self.get_template())
+        parser = TemplateParser(self.template_content.app, self.template_content, self.get_template())
 
         cms_tags = parser.parse()
 
@@ -743,7 +743,7 @@ class DraftCMSMicroContent(CMSMicroContent):
     def get_publication_model(self):
         return globals()[self._meta.model.__name__.replace('Draft', 'Published')]
 
-    def get_form_field(self, widget_attrs, *args, **kwargs):
+    def get_form_field(self, app, template_content, widget_attrs, *args, **kwargs):
         raise NotImplementedError('CMSMicroContent need a get_form_field method')
 
     def translation_complete(self, language):
@@ -912,7 +912,7 @@ class LocalizedCMSMicroContent(models.Model):
 '''
 class DraftTextMicroContent(DraftCMSMicroContent):
 
-    def get_form_field(self, widget_attrs, *args, **kwargs):
+    def get_form_field(self, app, template_content, widget_attrs, *args, **kwargs):
 
         widget = forms.Textarea
         if 'short' in args:
@@ -1001,7 +1001,7 @@ class LocalizedPublishedTextMicroContent(LocalizedTextMicroContent):
 
 class DraftImageMicroContent(DraftCMSMicroContent):
 
-    def get_form_field(self, widget_attrs, *args, **kwargs):
+    def get_form_field(self, app, template_content, widget_attrs, *args, **kwargs):
 
         language = widget_attrs['language']
 
@@ -1009,18 +1009,44 @@ class DraftImageMicroContent(DraftCMSMicroContent):
         if limc:
             widget_attrs['file'] = limc.content
 
-        licenced_url_name = 'upload_licenced_image'
-            
-        data_url_reverse_kwargs = {
+
+        data_url_kwargs = {
+            'app_uid' : app.uid,
+            'template_content_id' : template_content.id,
             'language' : language,
             'microcontent_category' : widget_attrs['data-microcontentcategory'],
-            'microcontent_type' : widget_attrs['data-microcontenttype'],
         }
-        widget_attrs['data-url'] = reverse('upload_image', kwargs=data_url_reverse_kwargs)
+
+        licenced_url_kwargs = data_url_kwargs.copy()
+
+        data_url_kwargs['microcontent_type'] = widget_attrs['data-microcontenttype']
+
+        delete_url = None
+
+        if self.pk:
+
+            licenced_url_kwargs['microcontent_id'] = self.pk
+            licenced_url = reverse('update_licenced_image', kwargs=licenced_url_kwargs)
+            
+            delete_kwargs = {
+                'app_uid' : app.uid,
+                'template_content_id' : template_content.id,
+                'language' : language,
+            }
+            delete_url = reverse('DeleteFileContent', kwargs=delete_kwargs)
+            
+        else:
+            licenced_url_kwargs['microcontent_type'] = widget_attrs['data-microcontenttype']
+            licenced_url = reverse('upload_licenced_image', kwargs=licenced_url_kwargs)
+            
+        data_url = reverse('upload_image', kwargs=data_url_kwargs)
+            
+        widget_attrs['data-url'] = data_url  
         widget_attrs['accept'] = 'image/*'
 
         form_field = forms.ImageField(widget=forms.FileInput(widget_attrs), **kwargs)
-        form_field.licenced_url_name = licenced_url_name
+        form_field.licenced_url = licenced_url
+        form_field.delete_url = delete_url
         return form_field
 
     # always falls back to primary language image
