@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from localcosmos_server.models import App, SecondaryAppLanguages
 from localcosmos_server.generic_views import AjaxDeleteView
 
+from localcosmos_server import VERSION as SERVER_VERSION
+
 from .forms import InstallAppForm, EditAppForm
 
 from urllib import request
@@ -37,7 +39,13 @@ class AppsContextMixin:
 
 
 class ServerControlPanelHome(LoginRequiredMixin, AppsContextMixin, TemplateView):
+    
     template_name = 'server_control_panel/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['server_version'] = SERVER_VERSION
+        return context
 
 
 class LCPrivateOnlyMixin:

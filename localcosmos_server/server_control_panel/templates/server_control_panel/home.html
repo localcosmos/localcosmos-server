@@ -9,6 +9,9 @@
 
 		<div class="row mb-4">
 			<div class="col-12">
+				Server version: {{ server_version }}
+			</div>
+			<div class="col-12">
 				<div class="card">
 					<div class="card-body">
 						<strong>API URL: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'api_home' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'api_home' %}</a></strong>

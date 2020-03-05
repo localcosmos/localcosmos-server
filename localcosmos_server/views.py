@@ -28,5 +28,3 @@ class LogIn(LoginView):
 
 class LoggedOut(TemplateView):
     template_name = 'localcosmos_server/registration/loggedout.html'
-
-
