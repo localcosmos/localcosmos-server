@@ -167,7 +167,6 @@ class LargeModalImage(TemplateView):
         return context
     
     
-    
 class ShowDatasetValidationRoutine(TemplateView):
 
     template_name = 'datasets/dataset_validation_routine.html'
@@ -192,6 +191,7 @@ class ShowDatasetValidationRoutine(TemplateView):
         context['available_validation_classes'] = available_validation_classes
         
         return context
+
 
 from localcosmos_server.view_mixins import TaxonomicRestrictionMixin
 class ManageDatasetValidationRoutineStep(TaxonomicRestrictionMixin, FormView):

@@ -45,7 +45,6 @@ localcosmos_server/app_admin/apps.py
 localcosmos_server/app_admin/forms.py
 localcosmos_server/app_admin/middleware.py
 localcosmos_server/app_admin/models.py
-localcosmos_server/app_admin/tests.py
 localcosmos_server/app_admin/urls.py
 localcosmos_server/app_admin/view_mixins.py
 localcosmos_server/app_admin/views.py
@@ -185,7 +184,6 @@ localcosmos_server/server_control_panel/apps.py
 localcosmos_server/server_control_panel/forms.py
 localcosmos_server/server_control_panel/middleware.py
 localcosmos_server/server_control_panel/models.py
-localcosmos_server/server_control_panel/tests.py
 localcosmos_server/server_control_panel/urls.py
 localcosmos_server/server_control_panel/views.py
 localcosmos_server/server_control_panel/templates/server_control_panel/app_api_status.html

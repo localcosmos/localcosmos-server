@@ -18,15 +18,19 @@ from localcosmos_server.generic_views import AjaxDeleteView
 class SearchAppTaxon(TemplateView):
 
     def get(self, request, *args, **kwargs):
-        limit = request.GET.get('limit',10)
+        limit = int(request.GET.get('limit', 10))
         searchtext = request.GET.get('searchtext', None)
         language = request.GET.get('language', 'en').lower()
         source = request.GET['taxon_source']
+        
+        if searchtext:
+            search = AppTaxonSearch(request.app, source, searchtext, language, **{'limit':limit})
 
-        search = AppTaxonSearch(request.app, source, searchtext, language, **{'limit':limit})
+            choices = search.get_choices_for_typeahead()
 
-        choices = search.get_choices_for_typeahead()
-
+        else:
+            choices = []
+        
         return HttpResponse(json.dumps(choices), content_type="application/json")
 
 

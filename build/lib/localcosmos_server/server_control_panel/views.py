@@ -132,7 +132,7 @@ class InstallApp(LoginRequiredMixin, LCPrivateOnlyMixin, FormView):
             error_message = _('Error importing the app. Please upload a valid app .zip file: {0}'.format(str(e)))
             errors.append(error_message)
 
-        # [UPDATE only] check if packages matches app
+        # [UPDATE only] check if package matches app
         if self.app is not None:
             if self.app.uid != app_uid or str(self.app.uuid) != app_uuid:
                 error_message = _('The zip file you uploaded does not contain the app {0}'.format(self.app.name))
@@ -280,7 +280,7 @@ class CheckAppApiStatus(LoginRequiredMixin, AppMixin, TemplateView):
             'error' : None,
         }
         
-        api_url = api_url = settings['API_URL']
+        api_url = settings['API_URL']
 
         try:
             response = request.urlopen(api_url)

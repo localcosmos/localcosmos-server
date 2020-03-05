@@ -5,10 +5,8 @@ from django.conf import settings
 from .widgets import CropImageInput
 
 
-class LocalizeableForm(forms.Form):
-
-    input_language = forms.CharField(widget=forms.HiddenInput)
-
+class FormLocalizationMixin:
+    
     def __init__(self, *args, **kwargs):
         self.language = kwargs.pop('language', None)
         super().__init__(*args, **kwargs)
@@ -19,19 +17,16 @@ class LocalizeableForm(forms.Form):
             self.fields[field_name].language = self.language
 
 
-
-class LocalizeableModelForm(forms.ModelForm):
+class LocalizeableForm(FormLocalizationMixin, forms.Form):
 
     input_language = forms.CharField(widget=forms.HiddenInput)
 
-    def __init__(self, *args, **kwargs):
-        self.language = kwargs.pop('language', None)
-        super().__init__(*args, **kwargs)
 
-        self.fields['input_language'].initial = self.language
 
-        for field_name in self.localizeable_fields:
-            self.fields[field_name].language = self.language
+class LocalizeableModelForm(FormLocalizationMixin, forms.ModelForm):
+
+    input_language = forms.CharField(widget=forms.HiddenInput)
+
 
 
 from django.contrib.auth.forms import AuthenticationForm
@@ -51,13 +46,17 @@ class EmailOrUsernameAuthenticationForm(AuthenticationForm):
 
         if username and password:
 
-            if "@" in username:
+            # username might contain @
+            if '@' in username:
                 user_pre = User.objects.filter(email=username).first()
+
+                if not user_pre:
+                    user_pre = User.objects.filter(username=username).first()
 
                 if user_pre:
                     username = user_pre.username
                 else:
-                    raise forms.ValidationError(_('No user found by that email address'))
+                    raise forms.ValidationError(_('Invalid username or email'))
                 
             self.user_cache = authenticate(username=username, password=password)
             
@@ -78,6 +77,7 @@ class EmailOrUsernameAuthenticationForm(AuthenticationForm):
 '''
     ManageContentImageForm
     - used by online_content and app_kit
+    - expects LicencingFormMixin in Form
     - add an image to any content of the app, or an app directly
     - images have a type, default is 'image', possible types are eg 'background' or 'logo'
     - app, content_type and object_id are in view_kwargs
@@ -170,6 +170,9 @@ class ManageContentImageFormCommon:
             md5 = cleaned_data.get('md5', None)
 
             file_md5 = hashlib.md5(file_.read()).hexdigest()
+
+            # this line is extremely required. do not delete it. otherwise the file_ will not be read correctly
+            file_.seek(0)
 
             if md5:
                 if file_md5 != md5:

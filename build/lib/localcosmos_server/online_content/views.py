@@ -56,6 +56,20 @@ class CreateTemplateContent(OnlineContentMixin, FormView):
         context['template_type'] = self.kwargs['template_type']
         return context
 
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['language'] = self.app.primary_language
+        return form_kwargs
+
+
+    def get_form(self, form_class=None):
+        """Return an instance of the form to be used in this view."""
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(self.app, self.kwargs['template_type'], **self.get_form_kwargs())
+
+
     def form_valid(self, form):
         # create a new template_content for this online content (which is app specific)
 
@@ -72,19 +86,6 @@ class CreateTemplateContent(OnlineContentMixin, FormView):
         template_content.save()
 
         return redirect('manage_template_content', app_uid=self.app.uid, pk=template_content.pk)
-
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['language'] = self.app.primary_language
-        return form_kwargs
-
-
-    def get_form(self, form_class=None):
-        """Return an instance of the form to be used in this view."""
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(self.app, self.kwargs['template_type'], **self.get_form_kwargs())
 
 
 
@@ -132,7 +133,7 @@ class ManageMicroContents(OnlineContentMixin, FormView):
             field.meta_instance.set_content(content, user, language)
         else:
             # the meta instance is created, which also triggers the creation of localized_instance
-            # this should only be triggered when NOT translating
+            # this should only be triggered if NOT translating
             meta_instance = field.cms_object.Model.objects.create(
                 template_content,
                 language,
@@ -231,9 +232,9 @@ class ManageMicroContents(OnlineContentMixin, FormView):
 
         if form.is_valid():
 
-            # this saves localized_template_content
+            # this saves localized_template_content (creates if necessary AND it is a translation)
             # and then the microcontents
-            # now, translatoin readyness can be checked
+            # now, translation readyness can be checked
             self.form_valid(form)
 
             # optionally publish the template_content - if there are no secondary languages
@@ -271,7 +272,7 @@ class ManageMicroContents(OnlineContentMixin, FormView):
 
 
 '''
-    fill a template content with microcontents in the main language
+    fill a template content with microcontents in the primary language
 '''
 class ManageTemplateContent(ManageMicroContents):
 
@@ -281,25 +282,9 @@ class ManageTemplateContent(ManageMicroContents):
         self.set_template_content(request, *args, **kwargs)
         self.set_language(request, *args, **kwargs)
 
-        self.localized_template_content = LocalizedTemplateContent.objects.filter(
-            template_content=self.template_content, language=self.language).first()
-
-        if not self.localized_template_content:
-            # maybe the primary language has been changed
-            # this requires the creation of a LocalizedTemplateContent in the primary language
-            old_localized_template_content = LocalizedTemplateContent.objects.filter(
-                template_content=self.template_content).first()
-            ''' it is impossible that a localized_template_content does not exist for a template content
-            if not temp_content:
-                draft_title = _('Temporary Title')
-                draft_navigation_link_name = _('Temporary Link name')
-            else:
-                draft_title = '[%s] %s' % (_('needs translation'), temp_content)
-            '''
-            draft_title = '[%s] %s' % (_('needs translation'), old_localized_template_content)
-            draft_navigation_link_name = old_localized_template_content.draft_navigation_link_name
-            self.localized_template_content = LocalizedTemplateContent.objects.create(request.user,
-                                    self.template_content, self.language, draft_title, draft_navigation_link_name)
+        # this is not for translations, so the localized template content exists
+        self.localized_template_content = LocalizedTemplateContent.objects.get(
+            template_content=self.template_content, language=self.language)
 
         # update preview_token if necessary
         token_is_valid = self.localized_template_content.validate_preview_token(
@@ -338,6 +323,17 @@ class ManageTemplateContent(ManageMicroContents):
         return context
 
 
+    def get_initial(self):
+        
+        initial = {
+            'draft_title' : self.localized_template_content.draft_title,
+            'draft_navigation_link_name' : self.localized_template_content.draft_navigation_link_name,
+            'input_language' : self.localized_template_content.language,
+            'page_flags' : self.localized_template_content.flags(),
+        }
+        return initial
+
+
     def form_valid(self, form):
         # save the template_content, publication errors
         self.save_localized_template_content(form)
@@ -360,17 +356,7 @@ class ManageTemplateContent(ManageMicroContents):
 
         # save the microcontent
         self.save_microcontent_fields(form)
-        
 
-    def get_initial(self):
-        
-        initial = {
-            'draft_title' : self.localized_template_content.draft_title,
-            'draft_navigation_link_name' : self.localized_template_content.draft_navigation_link_name,
-            'input_language' : self.localized_template_content.language,
-            'page_flags' : self.localized_template_content.flags(),
-        }
-        return initial
 
 
 '''
@@ -404,6 +390,37 @@ class TranslateTemplateContent(ManageMicroContents):
         # always show the draft content for translations
         context['preview'] = True
         return context
+    
+
+    # initial has to be overridden - localized_template_content mighjt not exist
+    # initial['input_language'] is set by the LocalizeableForm and get_form_kwargs which
+    # sets form_kwargs['language'] = self.language
+    def get_initial(self):
+        initial = {}
+
+        if self.localized_template_content:
+            initial['draft_title'] = self.localized_template_content.draft_title
+            initial['draft_navigation_link_name'] = self.localized_template_content.draft_navigation_link_name
+        
+        return initial
+    
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['for_translation'] = True
+        return form_kwargs
+
+
+    # needed for reloading a clean form after POSTing
+    # override to inlude for_translation
+    def get_form_force_initial(self):
+        form_kwargs = {
+            'initial' : self.get_initial(),
+            'language' : self.language,
+            'for_translation' : True,
+        }
+        return self.form_class(self.template_content, **form_kwargs)
+    
 
     def form_valid(self, form):
 
@@ -422,34 +439,6 @@ class TranslateTemplateContent(ManageMicroContents):
         self.save_localized_template_content(form)
 
         self.save_microcontent_fields(form, for_translation=True)
-
-    # initial has to be overridden - localized_template_content mighjt not exist
-    # initial['input_language'] is set by the LocalizeableForm and get_form_kwargs which
-    # sets form_kwargs['language'] = self.language
-    def get_initial(self):
-        initial = {}
-
-        if self.localized_template_content:
-            initial['draft_title'] = self.localized_template_content.draft_title
-            initial['draft_navigation_link_name'] = self.localized_template_content.draft_navigation_link_name
-        
-        return initial
-
-    def get_form_kwargs(self):
-        form_kwargs = super().get_form_kwargs()
-        form_kwargs['for_translation'] = True
-        return form_kwargs
-
-
-    # needed for reloading a clean form after POSTing
-    # override to inlude for_translation
-    def get_form_force_initial(self):
-        form_kwargs = {
-            'initial' : self.get_initial(),
-            'language' : self.language,
-            'for_translation' : True,
-        }
-        return self.form_class(self.template_content, **form_kwargs)
         
 
 '''
@@ -506,7 +495,6 @@ class UnpublishTemplateContent(OnlineContentMixin, TemplateView):
 """
     this deletes draft_content of Textarea or TextInput fields, including CKEditor
     ajax is not used
-    The content is not deleted - its draft_content is nullified. Otherwise, published content would vanish
 """
 class DeleteMicroContent(OnlineContentMixin, TemplateView):
 
@@ -534,6 +522,25 @@ class DeleteMicroContent(OnlineContentMixin, TemplateView):
         return context
 
 
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        
+        initial = {
+            'meta_pk' : request.GET['meta_pk'],
+            'localized_pk' : request.GET['localized_pk'],
+            'microcontent_category' : request.GET['microcontentcategory'],
+            'microcontent_type' : request.GET.get('microcontenttype', None),
+        }
+
+        form = self.form_class(initial=initial)
+
+        context.update({
+            'form' : form,
+        })
+        
+        return self.render_to_response(context)
+
+
     def delete_microcontent(self, microcontent, language):
         # decide if only a translation is deleted - or if the content is deleted
         # if the language == primary_language we are not in the translation process, but
@@ -545,6 +552,7 @@ class DeleteMicroContent(OnlineContentMixin, TemplateView):
         else:
             localized_microcontent = microcontent.get_localized(language)
             localized_microcontent.delete()
+
             
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -582,23 +590,6 @@ class DeleteMicroContent(OnlineContentMixin, TemplateView):
     def on_success(self, context, form):
         pass
 
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        
-        initial = {
-            'meta_pk' : request.GET['meta_pk'],
-            'localized_pk' : request.GET['localized_pk'],
-            'microcontent_category' : request.GET['microcontentcategory'],
-            'microcontent_type' : request.GET.get('microcontenttype', None),
-        }
-
-        form = self.form_class(initial=initial)
-
-        context.update({
-            'form' : form,
-        })
-        
-        return self.render_to_response(context)
 
 
 # files are handled via ajax
@@ -619,6 +610,7 @@ class DeleteFileContent(DeleteMicroContent):
 """
     ajax upload file
     - in the future, language specific files should be possible
+    - essential view kwargs are app_uid and template_content_id
     - the form contains [pk],[template_content_id], language, file
     - the url kwargs contain microcontent_type, microcontent_category, language
 """
@@ -628,26 +620,42 @@ class UploadFile(OnlineContentMixin, TemplateView):
 
     form_class = UploadFileForm
 
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.template_content = TemplateContent.objects.get(pk=kwargs['template_content_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['template_content'] = self.template_content
+
+        return context
+    
     def post(self, request, *args, **kwargs):
 
         microcontent_type = kwargs['microcontent_type'] # the microcontent_type as defined in the template
         microcontent_category = kwargs['microcontent_category']
 
-        # if the form is invalid, language cannot be read from the form
-        language = kwargs['language']
-        
-        cms_tag = CMSTag(microcontent_category, microcontent_type)
-
+        # cms_tag
+        cms_tag = CMSTag(self.app, self.template_content, microcontent_category, microcontent_type)
         widget_attrs = cms_tag._get_widget_attrs()
 
-        form = self.form_class(request.POST, request.FILES)
+        # Model is the Meta model: DraftImageMicroContent
+        Model = microcontent_category_model_map[microcontent_category]['draft']
 
-        # this is not nice - it should be kwargs
-        template_content_id = request.POST.get('template_content_id', None)
-        template_content = None
-        
-        if template_content_id is not None:
-            template_content = TemplateContent.objects.get(pk=template_content_id)
+        # if the form is invalid, language cannot be read from the form
+        language = kwargs['language']
+
+        # try to get the meta_instance
+        meta_instance_pk = request.POST.get('pk', None)
+
+        meta_instance = None
+        if meta_instance_pk:
+            meta_instance = Model.objects.get(pk=meta_instance_pk)
+    
+
+        form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
             pk = form.cleaned_data.get('pk', None)
@@ -655,15 +663,11 @@ class UploadFile(OnlineContentMixin, TemplateView):
             
             language = form.cleaned_data['language']
 
-            # Model is the Meta model: DraftImageMicroContent
-            Model = microcontent_category_model_map[microcontent_category]['draft']
-
-            if pk is not None:
-                meta_instance = Model.objects.get(pk=form.cleaned_data['pk'])
+            if meta_instance is not None:
                 meta_instance.set_content(file, request.user, language)
 
             else:
-                meta_instance = Model.objects.create(template_content, language, microcontent_type, file,
+                meta_instance = Model.objects.create(self.template_content, language, microcontent_type, file,
                                                      request.user)
 
             localized_instance = meta_instance.get_localized(language)
@@ -671,24 +675,28 @@ class UploadFile(OnlineContentMixin, TemplateView):
             field = cms_tag._create_field(language, meta_instance, localized_instance, widget_attrs=widget_attrs)
 
             # unready the localized translation/start a new version if published
-            if template_content:
-                localized_template_content = template_content.get_localized(language)
-                localized_template_content.save()
+            localized_template_content = self.template_content.get_localized(language)
+            localized_template_content.save()
 
         else:
-            field = form.fields['file']
+            if meta_instance is None:
+                meta_instance = Model()
+                localized_instance = cms_tag.get_empty_localized_instance()
+            else:
+                localized_instance = meta_instance.get_localized(language)
+            field = cms_tag._create_field(language, meta_instance, localized_instance, widget_attrs=widget_attrs)
 
         fieldform = forms.Form()
         fieldform.fields[field['name']] = field['field']
 
         # fields do not render outside forms, we have to pass a form to the template
 
-        context = {
+        context = self.get_context_data(**kwargs)
+        context.update({
             'fieldform' : fieldform,
             'form' : form,
-            'template_content' : template_content,
             'language' : language,
-        }
+        })
         
         return self.render_to_response(context)
 
@@ -795,7 +803,6 @@ class ManageImageUpload(LicencingFormViewMixin, OnlineContentMixin, FormView):
     for successful image deletions and uploads
     reloads all fields if field is multi
 '''
-from .CMSObjects import CMSTag
 class GetFormField(OnlineContentMixin, FormView):
 
     template_name = 'online_content/ajax/reloaded_file_fields.html'
@@ -820,7 +827,7 @@ class GetFormField(OnlineContentMixin, FormView):
         if form_class is None:
             form_class = forms.Form
 
-        cms_tag = CMSTag(self.microcontent_category, self.microcontent_type)
+        cms_tag = CMSTag(self.app, self.template_content, self.microcontent_category, self.microcontent_type)
 
         form = form_class(**self.get_form_kwargs())
 

@@ -27,16 +27,16 @@ urlpatterns = [
         login_required(views.DeleteMicroContent.as_view()), name='DeleteMicroContent'),
     path('<str:app_uid>/delete-filecontent/<int:template_content_id>/<str:language>/',
         login_required(views.DeleteFileContent.as_view()), name='DeleteFileContent'),
-    # IMAGES
-    path('online-content/upload-image/<str:microcontent_category>/<str:microcontent_type>/<str:language>/',
+    # IMAGES - template content required
+    path('<str:app_uid>/online-content/upload-image/<int:template_content_id>/<str:microcontent_category>/<str:microcontent_type>/<str:language>/',
         login_required(views.UploadImage.as_view()), name='upload_image'),
     # LICENCED IMAGES
     # upload new image
     path('<str:app_uid>/online-content/upload-licenced-image/<int:template_content_id>/<str:microcontent_category>/<str:microcontent_type>/<str:language>/',
         login_required(views.ManageImageUpload.as_view()), name='upload_licenced_image'),
     # edit localized image or upload new locale
-    path('<str:app_uid>/online-content/upload-licenced-image/<str:microcontent_category>/<int:microcontent_id>/<str:language>/',
-        login_required(views.ManageImageUpload.as_view()), name='upload_licenced_image'),
+    path('<str:app_uid>/online-content/update-licenced-image/<int:template_content_id>/<str:microcontent_category>/<int:microcontent_id>/<str:language>/',
+        login_required(views.ManageImageUpload.as_view()), name='update_licenced_image'),
     # GET EMPTY FIELDS
     path('<str:app_uid>/online-content/get-form-field/<int:template_content_id>/<str:microcontent_category>/<str:microcontent_type>/<str:language>/',
         login_required(views.GetFormField.as_view()), name='get_form_field'),

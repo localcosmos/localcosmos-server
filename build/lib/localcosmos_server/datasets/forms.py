@@ -21,7 +21,7 @@ class DatasetValidationRoutineForm(forms.Form):
 
         self.validation_routine = validation_routine
 
-        self.instance = kwargs.pop('instance')
+        self.instance = kwargs.pop('instance', None)
 
         super().__init__(**kwargs)
 
@@ -44,14 +44,14 @@ class DatasetValidationRoutineForm(forms.Form):
 
     def clean_validation_step(self):
 
-        data = self.cleaned_data['validation_step']
+        validation_step = self.cleaned_data['validation_step']
 
         existing_validation_steps = self.validation_routine.values_list('validation_class', flat=True)
 
-        if data in existing_validation_steps and not self.instance:
+        if validation_step in existing_validation_steps and not self.instance:
             raise forms.ValidationError(_('This step already exists in your Validation Routine'))
 
-        return data
+        return validation_step
 
 
 '''
@@ -61,7 +61,8 @@ class ObservationForm(forms.Form):
 
     # fields that cannot be edited
     locked_field_roles = ['temporal_reference', 'geographic_reference']
-    locked_field_classes = ['TaxonField' 'DateTimeJSONField', 'PointJSONField', 'PictureField']
+    locked_field_classes = ['DateTimeJSONField', 'PointJSONField', 'PictureField']
+    #locked_field_widget_classes = ['MobilePositionInput', 'CameraAndAlbumWidget', 'SelectDateTimeWidget']
 
     locked_field_uuids = []
 
@@ -79,9 +80,6 @@ class ObservationForm(forms.Form):
 
             field_class_name = form_field['field_class']
             widget_class_name = form_field['definition']['widget']
-
-            if field_class_name in self.locked_field_classes or form_field['role'] in self.locked_field_roles:
-                self.locked_field_uuids.append(form_field['uuid'])
 
 
             FieldClass = getattr(fields, field_class_name)
@@ -107,10 +105,15 @@ class ObservationForm(forms.Form):
                 # set to a bogus value to not display taxonomic source selection
                 widget_kwargs['fixed_taxon_source'] = 'apptaxa'
 
-            if widget_class_name in ['MobilePositionInput', 'CameraAndAlbumWidget', 'SelectDateTimeWidget']:
+            # lock certain fields
+            if field_class_name in self.locked_field_classes or form_field['role'] in self.locked_field_roles:
+                
+                self.locked_field_uuids.append(form_field['uuid'])
+                
                 widget_kwargs['attrs'].update({
                     'readonly' : True,
                 })
+                
 
             if widget_class_name == 'CameraAndAlbumWidget':
                 widget_kwargs['attrs']['load_images'] = True

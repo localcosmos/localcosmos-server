@@ -22,7 +22,7 @@ from .forms import AppUserRoleForm, SearchAppUserForm
 
 # middleware only grants acces to experts and admins
 # AdminOnly is done via Mixin
-from .view_mixins import AdminOnlyMixin
+from .view_mixins import AdminOnlyMixin, ExpertOnlyMixin
 
 import json
 
@@ -45,23 +45,6 @@ class AdminHome(TemplateView):
         return context
 
 
-class SearchTaxon(FormView):
-
-    form_class = None
-
-    def get(self, request, *args, **kwargs):
-        limit = request.GET.get('limit',10)
-        searchtext = request.GET.get('taxon', None)
-        language = request.GET.get('language', 'en').lower()
-        source = request.GET['source']
-
-        taxon_search = TaxonSearch(source, searchtext, language, **{'limit':limit})
-
-        choices = taxon_search.get_choices_for_typeahead()
-
-        return HttpResponse(json.dumps(choices), content_type='application/json')
-
-
 class UserList(AdminOnlyMixin, TemplateView):
 
     template_name = 'app_admin/userlist.html'
@@ -69,8 +52,8 @@ class UserList(AdminOnlyMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        app_admins = AppUserRole.objects.filter(app=self.request.app, role='admin')
-        app_experts = AppUserRole.objects.filter(app=self.request.app, role='expert')
+        app_admins = AppUserRole.objects.filter(app=self.request.app, role='admin').order_by('user__username')
+        app_experts = AppUserRole.objects.filter(app=self.request.app, role='expert').order_by('user__username')
         
         context['app_admins'] = app_admins
         context['app_experts'] = app_experts
@@ -79,7 +62,7 @@ class UserList(AdminOnlyMixin, TemplateView):
             app_experts.values_list('user_id', flat=True))
 
         context['app_users'] = User.objects.all().exclude(id__in=exclude_ids).exclude(is_superuser=True).exclude(
-            is_staff=True).exclude(username='APPKITAPIUSER')
+            is_staff=True).exclude(username='APPKITAPIUSER').order_by('username')
 
         context['search_app_user_form'] = SearchAppUserForm()
         
@@ -142,28 +125,31 @@ class ManageAppUserRole(AdminOnlyMixin, FormView):
 
 class SearchAppUser(TemplateView):
 
+    @method_decorator(ajax_required)
     def get(self, request, *args, **kwargs):
         limit = request.GET.get('limit',10)
         searchtext = request.GET.get('searchtext', None)
-        
-        results = User.objects.filter(username__istartswith=searchtext)[:10]
 
         choices = []
 
-        for result in results:
-            
-            url_kwargs = {
-                'app_uid' :self.request.app.uid,
-                'user_id':result.id,
-            }
-            
-            user = {
-                'name' : result.username,
-                'id' : result.id,
-                'edit_role_url' : reverse('appadmin:manage_app_user_role', kwargs=url_kwargs),
-            }
+        if searchtext:
+        
+            results = User.objects.filter(username__istartswith=searchtext)[:10]
 
-            choices.append(user)
+            for result in results:
+                
+                url_kwargs = {
+                    'app_uid' :self.request.app.uid,
+                    'user_id':result.id,
+                }
+                
+                user = {
+                    'name' : result.username,
+                    'id' : result.id,
+                    'edit_role_url' : reverse('appadmin:manage_app_user_role', kwargs=url_kwargs),
+                }
+
+                choices.append(user)
         
 
         return HttpResponse(json.dumps(choices), content_type='application/json')
