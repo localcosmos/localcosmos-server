@@ -1233,6 +1233,7 @@ localcosmos_server/taxonomy/lazy.py
 localcosmos_server/taxonomy/urls.py
 localcosmos_server/taxonomy/views.py
 localcosmos_server/taxonomy/widgets.py
+localcosmos_server/templates/400.html
 localcosmos_server/templates/403.html
 localcosmos_server/templates/404.html
 localcosmos_server/templates/500.html

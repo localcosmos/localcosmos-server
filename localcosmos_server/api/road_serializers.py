@@ -30,6 +30,8 @@ class DatasetSerializer(serializers.ModelSerializer):
     # SerializerMethodFields are only for to_representation
     thumbnail = serializers.SerializerMethodField()
 
+    user = LocalcosmosUserSerializer(many=False, read_only=True)
+
     def get_thumbnail(self, obj):
 
         image = DatasetImages.objects.filter(dataset=obj).first()
