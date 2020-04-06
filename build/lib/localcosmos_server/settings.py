@@ -1,6 +1,8 @@
 '''
     LOCALCOSMOS SERVER DJANGO SETTINGS
 '''
+from django.utils.translation import ugettext_lazy as _
+
 
 SITE_ID = 1
 

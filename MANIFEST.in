@@ -7,3 +7,4 @@ recursive-include localcosmos_server/server_control_panel/templates *
 recursive-include localcosmos_server/specifications *
 recursive-include localcosmos_server/static *
 recursive-include localcosmos_server/templates *
+recursive-include localcosmos_server/locale *

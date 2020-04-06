@@ -91,6 +91,10 @@ localcosmos_server/google_cloud_api/__init__.py
 localcosmos_server/google_cloud_api/serializers.py
 localcosmos_server/google_cloud_api/urls.py
 localcosmos_server/google_cloud_api/views.py
+localcosmos_server/locale/de/LC_MESSAGES/django.mo
+localcosmos_server/locale/de/LC_MESSAGES/django.po
+localcosmos_server/locale/en/LC_MESSAGES/django.mo
+localcosmos_server/locale/en/LC_MESSAGES/django.po
 localcosmos_server/migrations/0001_initial.py
 localcosmos_server/migrations/__init__.py
 localcosmos_server/online_content/CMSObjects.py
