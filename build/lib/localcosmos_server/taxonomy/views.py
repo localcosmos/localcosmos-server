@@ -141,4 +141,4 @@ class RemoveAppTaxonomicRestriction(AjaxDeleteView):
     model = TaxonomicRestriction
 
     def get_deletion_message(self):
-        return _("Do you really want to remove %s ?" % self.object.taxon_latname)
+        return _("Do you really want to remove %s?" % self.object.taxon_latname)

@@ -61,7 +61,7 @@
 					<div class="row">
 						<div class="col-12">
 							<div class="alert alert-success">
-								{% trans 'publication successful' %}
+								{% trans 'Publication successful.' %}
 							</div>
 						</div>
 					</div>
@@ -70,20 +70,20 @@
 			{% endif %}
 			<div class="btn-group dropup">
 				<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					{% trans 'manage' %}
+					{% trans 'Manage' %}
 				</button>
 				<div class="dropdown-menu">
-					<a class="dropdown-item" href="{% url 'manage_template_content' app.uid template_content.pk %}">{% trans 'edit' %}</a>
-					<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="template-content-{{ template_content.id }}">{% trans 'publish' %}</a>
+					<a class="dropdown-item" href="{% url 'manage_template_content' app.uid template_content.pk %}">{% trans 'Edit' %}</a>
+					<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="template-content-{{ template_content.id }}">{% trans 'Publish' %}</a>
 					{% for language in app.secondary_languages %}
-						<a class="dropdown-item" href="{% url 'translate_template_content' app.uid template_content.id language %}">{% blocktrans %}translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
+						<a class="dropdown-item" href="{% url 'translate_template_content' app.uid template_content.id language %}">{% blocktrans %}Translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
 					{% endfor %}
 					<div class="dropdown-divider"></div>
 					{% if template_content.is_published %}
-						<a class="dropdown-item xhr" href="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'unpublish' %}</a>
+						<a class="dropdown-item xhr" href="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Unpublish' %}</a>
 						<div class="dropdown-divider"></div>
 					{% endif %}
-					<a class="dropdown-item xhr" href="{% url 'delete_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+					<a class="dropdown-item xhr" href="{% url 'delete_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
 				</div>
 			</div>
 

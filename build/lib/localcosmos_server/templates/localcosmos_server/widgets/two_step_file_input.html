@@ -8,12 +8,12 @@
 
 		<div class="btn-group dropup">
 			<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-				{% trans 'modify' %}
+				{% trans 'Modify' %}
 			</button>
 			<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">
-				<a class="dropdown-item xhr" data-url="{{ url }}" ajax-target="ModalContent">{% if instance %}{% trans 'change image' %}{% else %}{% trans 'add image' %}{% endif %}</a>
+				<a class="dropdown-item xhr" data-url="{{ url }}" ajax-target="ModalContent">{% if instance %}{% trans 'Change image' %}{% else %}{% trans 'Add image' %}{% endif %}</a>
 				{% if instance %}
-					<a class="dropdown-item xhr" data-url="{% url delete_url_name content_type.id instance.pk %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+					<a class="dropdown-item xhr" data-url="{% url delete_url_name content_type.id instance.pk %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
 				{% endif %}
 			</div>
 		</div>

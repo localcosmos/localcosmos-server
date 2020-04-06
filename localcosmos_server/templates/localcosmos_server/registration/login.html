@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="slogan text-center">
-					{% trans 'Log in' %}
+					{% trans 'Sign in' %}
 				</div>
 			</div>
 		</div>
@@ -16,7 +16,7 @@
 			<div class="col-12 col-md-6">
 				{% if request.user.is_authenticated is True %}
 					<div class="alert alert-info">
-						{% blocktrans with user=request.user %}You are logged in as {{ user }}{% endblocktrans %}
+						{% blocktrans with user=request.user %}You are signed in as {{ user }}{% endblocktrans %}
 					</div>
 				{% else %}
 					<form method="POST">{% csrf_token %}
@@ -25,7 +25,7 @@
 							<input type="hidden" name="next" value="{{ next }}" />
 						{% endif %}
 						<p class="text-center">
-							<button type="submit" class="btn btn-outline-success">{% trans 'sign in' %}</button><br>
+							<button type="submit" class="btn btn-outline-success">{% trans 'Sign in' %}</button><br>
 							<small><a href="{% url 'password_reset' %}">{% trans 'I forgot my password.' %}</a></small>
 						</p>
 					</form>

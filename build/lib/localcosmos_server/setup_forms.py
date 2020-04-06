@@ -18,8 +18,8 @@ class SetupSuperuserForm(UserCreationForm):
         'email_mismatch': _("The two email address fields didn't match."),
     }
     
-    email = forms.EmailField(label=_('e-mail'))
-    email2 = forms.EmailField(label = _('e-mail (again)'))
+    email = forms.EmailField(label=_('Email'))
+    email2 = forms.EmailField(label = _('Email (again)'))
 
     def clean_email2(self):
         email = self.cleaned_data.get('email')

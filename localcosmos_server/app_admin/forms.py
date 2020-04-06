@@ -12,4 +12,4 @@ class AppUserRoleForm(forms.Form):
 
 
 class SearchAppUserForm(forms.Form):
-    search_user = forms.CharField(label=_('Search user'), required=False)
+    search_user = forms.CharField(label=_('Search users'), required=False)

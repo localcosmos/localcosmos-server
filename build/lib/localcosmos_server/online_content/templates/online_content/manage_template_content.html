@@ -37,7 +37,7 @@
 					{% if app.secondary_languages %}
 						{% if localized_template_content.translation_ready %}
 							<div class="alert alert-warning">
-								{% trans 'You marked the content in this language as ready for translation' %}
+								{% trans 'You marked the content in this language as ready for translation.' %}
 							</div>
 						{% endif %}
 					{% endif %}
@@ -78,7 +78,7 @@
 						<div class="row">
 								<div class="col-12">
 									<div class="alert alert-success">
-										{% trans 'publication successful' %}
+										{% trans 'Publication successful.' %}
 									</div>
 								</div>
 							</div>
@@ -155,12 +155,12 @@
 						<button type="submit" data-href="{% url 'manage_template_content' app.uid localized_template_content.template_content.id %}" class="formsubmit btn btn-outline-primary">{% trans 'save page as draft' %}</button>
 						<button type="submit" data-href="{% url 'manage_template_content' app.uid localized_template_content.template_content.id %}?translation-ready=1" class="formsubmit btn btn-outline-success">
 							{% if app.secondary_languages %}
-								{% trans 'ready for translation' %}
+								{% trans 'Ready for translation' %}
 							{% else %}
 								{% if localized_template_content.published_version %}
-									{% trans 'publish changes' %}
+									{% trans 'Publish changes' %}
 								{% else %}
-									{% trans 'publish' %}
+									{% trans 'Publish' %}
 								{% endif %}
 							{% endif %}
 						</button>
@@ -169,7 +169,7 @@
 			</div>
 			<div class="col-12 col-md-6">
 				{% if template_content %}
-					<h4>{% trans 'Preview' %} <small><a href="{{ preview_url }}" target="_blank">{% trans 'show in separate window' %}</a></small></h4>
+					<h4>{% trans 'Preview' %} <small><a href="{{ preview_url }}" target="_blank">{% trans 'Show in separate window' %}</a></small></h4>
 					<object id="contentPreview" type="text/html" data="{{ preview_url }}"></object>
 				{% endif %}
 			</div>

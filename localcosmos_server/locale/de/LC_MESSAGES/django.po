@@ -1,0 +1,1324 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-03 14:55+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api/serializers.py:58
+msgid "No user found for that username or email address."
+msgstr "Kein Benutzer für diesen Benutzernamen oder diese e-mail gefunden."
+
+#: api/serializers.py:71
+msgid "Unable to log in with provided credentials."
+msgstr "Anmelden mit den eingegebenen Daten nicht möglich."
+
+#: api/serializers.py:103
+msgid ""
+"Must include \"username\", \"password\", \"client_id\" and \"platform\"."
+msgstr ""
+"\"username\", \"password\", \"client_id\" und \"platform\" müssen enthalten "
+"sein."
+
+#: api/serializers.py:124 api/serializers.py:125
+msgid "Password (again)"
+msgstr "Passwort (nochmal)"
+
+#: api/serializers.py:127
+msgid "First name (optional)"
+msgstr "Vorname (optional)"
+
+#: api/serializers.py:128
+msgid "Surname (optional)"
+msgstr "Vorname (optional)"
+
+#: api/serializers.py:129
+msgid "Email address"
+msgstr "e-mail Addresse"
+
+#: api/serializers.py:130
+msgid "Email address (again)"
+msgstr "e-mail Addresse (nochmal)"
+
+#: api/serializers.py:138
+msgid "This email address is already registered."
+msgstr "Diese e-mail Addresse ist bereits registriert"
+
+#: api/serializers.py:144
+msgid "The email addresses did not match."
+msgstr "Die beiden e-mail Addressen stimmten nicht überein."
+
+#: api/serializers.py:147
+msgid "The passwords did not match."
+msgstr "Die Passwörter stimmten nicht überein"
+
+#: app_admin/forms.py:8
+msgid "user"
+msgstr "Nutzer"
+
+#: app_admin/forms.py:15
+msgid "Search users"
+msgstr "Nutzer suchen"
+
+#: app_admin/templates/app_admin/ajax/userbox.html:7
+msgid "Last login"
+msgstr "Letzte Anmeldung"
+
+#: app_admin/templates/app_admin/ajax/userbox.html:12
+#: datasets/templates/datasets/dataset_validation_routine.html:60
+#: datasets/templates/datasets/validation/ajax/picture_field_images.html:13
+#: online_content/templates/online_content/filecontent_field.html:13
+#: templates/localcosmos_server/widgets/app_theme_image_file_input.html:12
+#: templates/localcosmos_server/widgets/two_step_file_input.html:11
+msgid "Modify"
+msgstr "bearbeiten"
+
+#: app_admin/templates/app_admin/ajax/userbox.html:15
+msgid "Assign new role"
+msgstr "Neue Rolle zuweisen"
+
+#: app_admin/templates/app_admin/ajax/userbox.html:17
+#: datasets/templates/datasets/dataset_validation_routine.html:70
+#: datasets/templates/datasets/validation/ajax/picture_field_images.html:16
+#: online_content/templates/online_content/ajax/image_microcontent_form.html:22
+#: online_content/templates/online_content/ajax_filecontent_field.html:13
+#: online_content/templates/online_content/delete_microcontent.html:38
+#: online_content/templates/online_content/filecontent_field.html:18
+#: online_content/templates/online_content/template_content_list_entry.html:86
+#: online_content/templates/online_content/textcontent_field.html:13
+#: templates/localcosmos_server/generic/delete_object.html:38
+#: templates/localcosmos_server/modals/footers/delete.html:3
+#: templates/localcosmos_server/widgets/app_theme_image_file_input.html:17
+#: templates/localcosmos_server/widgets/two_step_file_input.html:16
+msgid "Delete"
+msgstr "Löschen"
+
+#: app_admin/templates/app_admin/base.html:52
+#: app_admin/templates/app_admin/userlist.html:10
+#: app_admin/templates/app_admin/userlist.html:80
+msgid "Users"
+msgstr "Benutzer"
+
+#: app_admin/templates/app_admin/base.html:56
+msgid "Online content"
+msgstr "Online Content"
+
+#: app_admin/templates/app_admin/base.html:59
+#: datasets/templates/datasets/list_datasets.html:20
+msgid "Observations"
+msgstr "Beobachtungen"
+
+#: app_admin/templates/app_admin/base.html:61
+msgid "Manage observations"
+msgstr "Beobachtungen verwalten"
+
+#: app_admin/templates/app_admin/base.html:62
+msgid "Manage validation routine"
+msgstr "Validierungsroutine verwalten"
+
+#: app_admin/templates/app_admin/base.html:73
+#: server_control_panel/templates/server_control_panel/base.html:55
+msgid "Sign out"
+msgstr "abmelden"
+
+#: app_admin/templates/app_admin/home.html:8
+msgid "Observations waiting for review"
+msgstr "Beobachtungen, die auf eine Prüfung warten"
+
+#: app_admin/templates/app_admin/home.html:19
+msgid "No observations are waiting for review."
+msgstr "Keine Beobachtungen warten auf Prüfung."
+
+#: app_admin/templates/app_admin/home.html:24
+msgid "Observations that need identification"
+msgstr "Beobachtungen, die eine Identifizierung benötigen"
+
+#: app_admin/templates/app_admin/home.html:35
+msgid "No observations need identification."
+msgstr "Keine Beobachtungen benötigen eine Identifizierung."
+
+#: app_admin/templates/app_admin/manage_app_user_role.html:6
+#, python-format
+msgid "Manage role of %(username)s"
+msgstr "Rolle von %(username)s verwalten"
+
+#: app_admin/templates/app_admin/manage_app_user_role.html:11
+msgid "Successfully assigned new role."
+msgstr "Neue Rolle erfolgreich zugewiesen."
+
+#: app_admin/templates/app_admin/userlist.html:17
+msgid "No users found."
+msgstr "Keine Benutzer gefunden."
+
+#: app_admin/templates/app_admin/userlist.html:23
+msgid "Admins"
+msgstr "Admins"
+
+#: app_admin/templates/app_admin/userlist.html:36
+msgid "No admins yet."
+msgstr "Noch keine Admins."
+
+#: app_admin/templates/app_admin/userlist.html:52
+msgid "Experts"
+msgstr "Experten"
+
+#: app_admin/templates/app_admin/userlist.html:65
+msgid "No experts yet."
+msgstr "Noch keine Experten."
+
+#: app_admin/templates/app_admin/userlist.html:91
+msgid "No users yet."
+msgstr "Noch keine Nutzer."
+
+#: datasets/forms.py:52
+msgid "This step already exists in your Validation Routine"
+msgstr "Dieser Schritt existiert bereits in ihrer Validierungsroutine"
+
+#: datasets/models.py:347 datasets/tests/test_models.py:428
+msgid "Unidentified"
+msgstr "Nicht identifiziert"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:13
+msgid "Observation without taxon"
+msgstr "Beobachtung ohne Taxon"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:20
+msgid "valid"
+msgstr "valide"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:22
+msgid "invalid"
+msgstr "nicht valide"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:28
+msgid "observed by"
+msgstr "beobachtet von"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:32
+msgid "Anonymous user"
+msgstr "anonymer Nutzer"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:37
+msgid "Show"
+msgstr "Anzeigen"
+
+#: datasets/templates/datasets/ajax/dataset_review_box.html:6
+msgid "Review now"
+msgstr "Jetzt prüfen"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:8
+msgid "Observation validation routine"
+msgstr "Validierungsroutine für Beobachtungen"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:11
+msgid ""
+"Defining an observation validation routine helps to improve the quality of "
+"your collected data. You can set specific steps for specific taxa. For "
+"example, you might want to have an expert to look at reports of rare species "
+"and have him check the datasets photo."
+msgstr ""
+"Das Erstellen einer Validierungsroutine für Beobachtungen kann dabei helfen, "
+"die Qualität ihrer gesammelten Daten zu verbessern. Sie können "
+"Validierungsschritte optional auf bestimmte Taxa becshränken. Zum Beispiel möchten Sie "
+"vielleicht, dass ein Experte sich Beobachtungen seltener Arten anschaut und "
+"das Foto des Datensatzes prüft."
+
+#: datasets/templates/datasets/dataset_validation_routine.html:18
+msgid "Step 0:"
+msgstr "Schritt 0:"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:23
+msgid "User saves dataset"
+msgstr "Nutzer speichert Datensatz"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:24
+msgid "After successfully filling out an observation form without errors."
+msgstr "Nach erfolgreichem, fehlerfreien Ausfüllen eines Beobachtungsformulars."
+
+#: datasets/templates/datasets/dataset_validation_routine.html:38
+#, python-format
+msgid "Step %(position)s: "
+msgstr "Schritt %(position)s: "
+
+#: datasets/templates/datasets/dataset_validation_routine.html:48
+msgid "Applies to:"
+msgstr "Betrifft:"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:64
+msgid "manage taxonomic restrictions"
+msgstr "Taxonomische Restriktionen verwalten"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:66
+msgid "Move up"
+msgstr "nach oben"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:68
+msgid "Move down"
+msgstr "nach unten"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:82
+msgid "Final step:"
+msgstr "Letzter Schritt:"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:86
+msgid "Dataset is marked as valid"
+msgstr "Datensatz wird als valide markiert"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:93
+msgid "Add step"
+msgstr "Schritt hinzufügen"
+
+#: datasets/templates/datasets/dataset_validation_routine.html:99
+msgid "Available additional validation steps"
+msgstr "Verfügbare zusätzliche Validierungsschritte"
+
+#: datasets/templates/datasets/edit_dataset.html:14
+#: datasets/templates/datasets/validation/expert_review.html:32
+#: templates/anycluster/clusterPopup.html:5
+msgid "Observation"
+msgstr "Beobachtung"
+
+#: datasets/templates/datasets/edit_dataset.html:15
+msgid "by"
+msgstr "von"
+
+#: datasets/templates/datasets/edit_dataset.html:15
+msgid "anonymous user"
+msgstr "anonymer Nutzer"
+
+#: datasets/templates/datasets/list_datasets.html:11
+msgid "Export"
+msgstr "Export"
+
+#: datasets/templates/datasets/list_datasets.html:14
+msgid "Download all observations as .csv"
+msgstr "Alle Beobachtungen als .csv herunterladen"
+
+#: datasets/templates/datasets/list_datasets.html:15
+#: server_control_panel/templates/server_control_panel/home.html:80
+#: server_control_panel/templates/server_control_panel/home.html:88
+msgid "Download"
+msgstr "herunterladen"
+
+#: datasets/templates/datasets/list_datasets.html:41
+msgid "No observations yet."
+msgstr "Noch keine Beobachtungen."
+
+#: datasets/templates/datasets/manage_dataset_validation_routine_step.html:6
+msgid "Manage validation step"
+msgstr "Validierungsschritt verwalten"
+
+#: datasets/templates/datasets/manage_dataset_validation_routine_step.html:17
+msgid "Successfully saved your validation step."
+msgstr "Validierungsschritt erfolgreich gespeichert."
+
+#: datasets/templates/datasets/validation/ajax/dataset_form.html:8
+msgid "Changes have been saved successfully."
+msgstr "Änderungen wurden erfolgreich gespeichert."
+
+#: datasets/templates/datasets/validation/ajax/dataset_form.html:13
+msgid "Update dataset"
+msgstr "Datensatz aktualisieren"
+
+#: datasets/templates/datasets/validation/ajax/dataset_form.html:14
+msgid "Delete dataset"
+msgstr "Datensatz löschen"
+
+#: datasets/templates/datasets/validation/ajax/delete_dataset.html:7
+msgid "Observation has been deleted."
+msgstr "Beobachtung würde gelöscht."
+
+#: datasets/templates/datasets/validation/ajax/delete_dataset_image.html:6
+#: datasets/views.py:299
+msgid "Do you really want to delete this image?"
+msgstr "Wollen Sie dieses Bild wirklich löschen?"
+
+#: datasets/templates/datasets/validation/ajax/large_modal_image.html:4
+msgid "Image"
+msgstr "Bild"
+
+#: datasets/templates/datasets/validation/ajax/picture_field_images.html:24
+msgid "No images found."
+msgstr "keine Bilder gefunden"
+
+#: datasets/templates/datasets/validation/expert_review.html:11
+#: datasets/validation/validators.py:26
+msgid "Expert review"
+msgstr "Expertenreview"
+
+#: datasets/templates/datasets/validation/expert_review.html:16
+msgid "Thank you for your review"
+msgstr "Vielen Dank für ihr Review"
+
+#: datasets/templates/datasets/validation/expert_review.html:18
+msgid "You marked this observation as valid."
+msgstr "Sie haben diese Beobachtung als valide markiert."
+
+#: datasets/templates/datasets/validation/expert_review.html:20
+msgid "You marked this observation as invalid."
+msgstr "Sie haben diese Beobachtung als nicht valide markiert."
+
+#: datasets/templates/datasets/validation/expert_review.html:24
+msgid "Back to overview"
+msgstr "zurück zur Übersicht"
+
+#: datasets/templates/datasets/validation/expert_review.html:47
+msgid "Your review"
+msgstr "Ihr Review"
+
+#: datasets/templates/datasets/validation/expert_review.html:51
+msgid ""
+"Before submitting your review, please try to correct the observation if it "
+"contains errors. If you have been able to correct the data, mark the "
+"observation as valid."
+msgstr ""
+"Bevor Sie ihr Review abschicken sollten Sie versuchen die Beobachtung zu "
+"korrigieren, falls diese Fehler enthält. Markieren Sie die Beobachtung als "
+"valide, alls es ihnen möglich war, die Daten zu korrigieren."
+
+#: datasets/templates/datasets/validation/expert_review.html:61
+msgid "Submit review"
+msgstr "Review abschicken"
+
+#: datasets/templates/datasets/widgets/picture_widget.html:15
+msgid "In your app this button opens the camera."
+msgstr "In ihrer App öffnet dieser Button die Kamera."
+
+#: datasets/templates/datasets/widgets/picture_widget.html:18
+msgid "In your app this button opens the photo album."
+msgstr "In ihrer App öffnet dieser Button das Fotoalbum."
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:13
+msgid "Select timestamp"
+msgstr "Zeitpunkt auswählen"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:22
+msgid "Year"
+msgstr "Jahr"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:26
+msgid "Month"
+msgstr "Monat"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:30
+msgid "Day"
+msgstr "Tag"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:37
+msgid "Hour"
+msgstr "Stunde"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:41
+msgid "Minute"
+msgstr "Minute"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:49
+#: online_content/templates/online_content/ajax/unpublish_template_content.html:17
+#: online_content/templates/online_content/delete_microcontent.html:37
+#: templates/localcosmos_server/generic/delete_object.html:37
+#: templates/localcosmos_server/modals/footers/close.html:2
+#: templates/localcosmos_server/modals/footers/save_close.html:2
+msgid "Close"
+msgstr "Schließen"
+
+#: datasets/templates/datasets/widgets/select_datetime_widget.html:50
+msgid "Set date"
+msgstr "Datum setzen"
+
+#: datasets/validation/base.py:105
+msgid "This dataset is currently waiting for review."
+msgstr "Dieser Datensatz wartet momentan auf eine Prüfung."
+
+#: datasets/validation/base.py:106
+msgid "This dataset failed the review."
+msgstr "Dieser Datensatz hat die Prüfung nicht bestanden."
+
+#: datasets/validation/base.py:136
+msgid "The following fields are required but missing: "
+msgstr "Folgende Pflichtfelder waren leer:"
+
+#: datasets/validation/forms.py:5
+msgid "Observation is valid"
+msgstr "Beobachtung ist valide"
+
+#: datasets/validation/forms.py:6
+msgid "Observation is invalid"
+msgstr "Beobachtung ist nicht valide"
+
+#: datasets/validation/validators.py:15
+msgid "Reference fields validator"
+msgstr "Referenzfeld-Prüfer"
+
+#: datasets/validation/validators.py:16
+msgid "Automatically checks if taxon, date/time, and location are given."
+msgstr "Prüft automatisch, ob Taxon, Zeitpunkt und Ort vorhanden sind."
+
+#: datasets/validation/validators.py:24
+msgid "This observation is currently waiting for review."
+msgstr "Diese Beobachtung wartet momentan auf eine Prüfung."
+
+#: datasets/validation/validators.py:27
+msgid ""
+"An expert will review the dataset. This validation can include the analysis "
+"of images."
+msgstr ""
+"Ein Experte prüft den Datensatz. Diese Validierung kann die Analyse von "
+"Bildern beinhalten."
+
+#: datasets/views.py:278
+#, python-brace-format
+msgid "Do you really want to remove {0}?"
+msgstr "Wollen Sie wirklich {0} entfernen?"
+
+#: datasets/views.py:289
+msgid "Do you really want to delete this obsersavtion?"
+msgstr "Wollen Sie wirklich diese Beobachtung löschen?"
+
+#: forms.py:40
+msgid "Username or email address"
+msgstr "Nutzername oder e-mail"
+
+#: forms.py:59
+msgid "Invalid username or email address"
+msgstr "Nutername oder e-mail ungültig"
+
+#: forms.py:158
+msgid "You selected an invalid area of the image."
+msgstr "Sie haben einen ungültigen Bereich ihres Bildes ausgewählt."
+
+#: forms.py:179
+msgid "The image upload was not successful. Please try again."
+msgstr "Das Hochladen des Bildes war nicht erfolgreich. Bitte nochmal versuchen."
+
+#: models.py:473
+msgid "admin"
+msgstr "Admin"
+
+#: models.py:474
+msgid "expert"
+msgstr "Experte"
+
+#: models.py:493
+msgid "exists"
+msgstr "existiert"
+
+#: models.py:494
+msgid "required"
+msgstr "benötigt"
+
+#: models.py:495 templates/localcosmos_server/bootstrap_field.html:43
+#: templates/localcosmos_server/bootstrap_field.html:67
+#: templates/localcosmos_server/bootstrap_field.html:74
+msgid "optional"
+msgstr "optional"
+
+#: online_content/fields.py:19
+msgid "Enter valid text."
+msgstr "Gültigen Text eingeben."
+
+#: online_content/forms.py:20
+msgid "Title"
+msgstr "Titel"
+
+#: online_content/forms.py:22
+msgid "Name for links in navigation menus"
+msgstr "Name für Links in Navigationen"
+
+#: online_content/forms.py:23
+#, python-format
+msgid ""
+"Max %(characters)s characters. If this content shows up in a navigation "
+"menu, this name will be shown as the link."
+msgstr ""
+"Höchstens %(characters)s Zeichen. Falls dieser Inhalt in einer Navigation "
+"angezeigt wird, wird dieser Name als Link angezeigt."
+
+#: online_content/forms.py:30
+msgid "Template"
+msgstr "Template"
+
+#: online_content/forms.py:97
+msgid "Show link to this online content in"
+msgstr "Zeige Link zu diesem Online Content in"
+
+#: online_content/forms.py:98
+msgid ""
+"The title will be the name of the link in the navigations. Long titles will "
+"be cut off."
+msgstr ""
+"Der Titel wird der Name des Links in Navigationen sein. Lange Titel werden "
+"abgeschnitten."
+
+#: online_content/models.py:42
+msgid "Page"
+msgstr "Seite"
+
+#: online_content/models.py:43
+msgid "Feature"
+msgstr "Feature"
+
+#: online_content/models.py:143
+#, python-format
+msgid "Translation for the language %(language)s is missing"
+msgstr "Übersetzung in die Sprache %(language)s fehlt"
+
+#: online_content/models.py:148
+#, python-format
+msgid "The translator for the language %(language)s is still working"
+msgstr "Der Übersetzer für die Sprache %(language)s arbeitet noch"
+
+#: online_content/models.py:379
+#, python-format
+msgid ""
+"The component \"%(component_name)s\" is required but still missing for the "
+"language %(language)s"
+msgstr ""
+"Die Komponenente \"%(component_name)s\" ist Pflicht, fehlt aber in der "
+"Sprache %(language)s"
+
+#: online_content/models.py:939
+#, python-format
+msgid "%(component_name)s is missing for the language %(language)s"
+msgstr "%(component_name)s fehlt in der Sprache %(language)s"
+
+#: online_content/templates/online_content/ajax/image_microcontent_form.html:10
+msgid "Manage image"
+msgstr "Bild verwalten"
+
+#: online_content/templates/online_content/ajax/image_microcontent_form.html:20
+#: online_content/templates/online_content/ajax/unpublish_template_content.html:20
+#: templates/localcosmos_server/modals/footers/add_selected.html:2
+#: templates/localcosmos_server/modals/footers/delete.html:2
+#: templates/localcosmos_server/modals/footers/save.html:2
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: online_content/templates/online_content/ajax/image_microcontent_form.html:24
+#: server_control_panel/templates/server_control_panel/edit_app.html:24
+#: templates/localcosmos_server/modals/footers/save.html:3
+#: templates/localcosmos_server/modals/footers/save_close.html:3
+msgid "Save"
+msgstr "Speichern"
+
+#: online_content/templates/online_content/ajax/unpublish_template_content.html:4
+#, python-format
+msgid "Unpublish %(template_content)s"
+msgstr "Veröffentlichung von %(template_content)s aufheben"
+
+#: online_content/templates/online_content/ajax/unpublish_template_content.html:8
+#, python-format
+msgid "Successfully unpublished %(template_content)s"
+msgstr "Veröffentlichung von %(template_content)s erfolgreich aufgehoben"
+
+#: online_content/templates/online_content/ajax/unpublish_template_content.html:11
+#, python-format
+msgid "Do you really want to unpublish %(template_content)s?"
+msgstr "Wollen Sie die Veröffentlichung von %(template_content)s wirklich aufheben?"
+
+#: online_content/templates/online_content/ajax/unpublish_template_content.html:21
+#: online_content/templates/online_content/template_content_list_entry.html:83
+msgid "Unpublish"
+msgstr "Veröffentlichung aufheben"
+
+#: online_content/templates/online_content/create_template_content.html:8
+#, python-format
+msgid "Add new %(template_type)s"
+msgstr "%(template_type)s hinzufügen"
+
+#: online_content/templates/online_content/create_template_content.html:12
+msgid "Add"
+msgstr "hinzufügen"
+
+#: online_content/templates/online_content/delete_microcontent.html:22
+msgid "Delete content"
+msgstr "Inhalt löschen"
+
+#: online_content/templates/online_content/delete_microcontent.html:29
+msgid "Do you really want to delete this content?"
+msgstr "Wollen Sie diesen Inhalt wirklich löschen?"
+
+#: online_content/templates/online_content/filecontent_field.html:16
+#: templates/localcosmos_server/widgets/app_theme_image_file_input.html:15
+#: templates/localcosmos_server/widgets/two_step_file_input.html:14
+msgid "Change image"
+msgstr "Bild ändern"
+
+#: online_content/templates/online_content/filecontent_field.html:16
+#: templates/localcosmos_server/widgets/app_theme_image_file_input.html:15
+#: templates/localcosmos_server/widgets/two_step_file_input.html:14
+msgid "Add image"
+msgstr "Bild hinzufügen"
+
+#: online_content/templates/online_content/manage_template_content.html:14
+msgid "published"
+msgstr "veröffentlicht"
+
+#: online_content/templates/online_content/manage_template_content.html:17
+msgid "unpublished changes"
+msgstr "unveröffentlichte Änderungen"
+
+#: online_content/templates/online_content/manage_template_content.html:19
+#: online_content/templates/online_content/template_content_list_entry.html:25
+msgid "not published"
+msgstr "nicht veröffentlicht"
+
+#: online_content/templates/online_content/manage_template_content.html:27
+msgid "ready for translation"
+msgstr "bereit für die Übersetzung"
+
+#: online_content/templates/online_content/manage_template_content.html:29
+msgid "not ready for translation"
+msgstr "nicht für die Übersetzung bereit"
+
+#: online_content/templates/online_content/manage_template_content.html:40
+msgid "You marked the content in this language as ready for translation."
+msgstr "Sie haben diesen Inhalt als für die Übersetzung bereit markiert."
+
+#: online_content/templates/online_content/manage_template_content.html:51
+msgid "Successfully saved your content as draft."
+msgstr "Ihr Inhalt wurde erfolgreich als Entwurf gespeichert."
+
+#: online_content/templates/online_content/manage_template_content.html:63
+#: online_content/templates/online_content/template_content_list_entry.html:53
+msgid "Publication failed:"
+msgstr "Veröffentlichung fehlgeschlagen:"
+
+#: online_content/templates/online_content/manage_template_content.html:68
+msgid "Could not set this page as ready for translation:"
+msgstr "Diese Seite konnte nicht als für die Übersetzung bereit markiert werden:"
+
+#: online_content/templates/online_content/manage_template_content.html:81
+#: online_content/templates/online_content/template_content_list_entry.html:64
+msgid "Publication successful."
+msgstr "Veröffentlichung erfolgreich"
+
+#: online_content/templates/online_content/manage_template_content.html:92
+msgid "Components"
+msgstr "Komponenten"
+
+#: online_content/templates/online_content/manage_template_content.html:123
+#, python-format
+msgid "add %(name)s"
+msgstr "%(name)s hinzufügen"
+
+#: online_content/templates/online_content/manage_template_content.html:155
+msgid "save page as draft"
+msgstr "Seite als Entwurf speichern"
+
+#: online_content/templates/online_content/manage_template_content.html:158
+msgid "Ready for translation"
+msgstr "bereit für die Übersetzung"
+
+#: online_content/templates/online_content/manage_template_content.html:161
+msgid "Publish changes"
+msgstr "Änderungen veröffentlichen"
+
+#: online_content/templates/online_content/manage_template_content.html:163
+#: online_content/templates/online_content/template_content_list_entry.html:77
+msgid "Publish"
+msgstr "veröffentlichen"
+
+#: online_content/templates/online_content/manage_template_content.html:172
+msgid "Preview"
+msgstr "Vorschau"
+
+#: online_content/templates/online_content/manage_template_content.html:172
+msgid "Show in separate window"
+msgstr "in separatem Fenster anzeigen"
+
+#: online_content/templates/online_content/online_content_base.html:22
+msgid "OnlineContent"
+msgstr "Online Content"
+
+#: online_content/templates/online_content/online_content_base.html:26
+msgid "Pages"
+msgstr "Seiten"
+
+#: online_content/templates/online_content/online_content_base.html:36
+msgid "You do not have any online pages for this app yet."
+msgstr "Sie haben noch keine Seiten für diese App."
+
+#: online_content/templates/online_content/online_content_base.html:41
+msgid "Add new page"
+msgstr "Neue Seite hinzufügen"
+
+#: online_content/templates/online_content/online_content_base.html:45
+msgid "Features"
+msgstr "Features"
+
+#: online_content/templates/online_content/online_content_base.html:55
+msgid "You do not have any online feature content for this app yet."
+msgstr "Sie haben noch keinen Feature Content für diese App."
+
+#: online_content/templates/online_content/online_content_base.html:60
+msgid "Add new feature"
+msgstr "Neues Feature hinzufügen"
+
+#: online_content/templates/online_content/template_content_list_entry.html:23
+#, python-format
+msgid "published version: %(version)s"
+msgstr "veröffentlichte Version: %(version)s"
+
+#: online_content/templates/online_content/template_content_list_entry.html:28
+#, python-format
+msgid "current version: %(version)s"
+msgstr "aktuelle Version: %(version)s"
+
+#: online_content/templates/online_content/template_content_list_entry.html:33
+msgid "old version"
+msgstr "alte Version"
+
+#: online_content/templates/online_content/template_content_list_entry.html:35
+msgid "translation complete"
+msgstr "Übersetzung vollständig"
+
+#: online_content/templates/online_content/template_content_list_entry.html:38
+msgid "translation incomplete"
+msgstr "Übersetzung unvollständig"
+
+#: online_content/templates/online_content/template_content_list_entry.html:42
+msgid "missing"
+msgstr "fehlt"
+
+#: online_content/templates/online_content/template_content_list_entry.html:73
+msgid "Manage"
+msgstr "verwalten"
+
+#: online_content/templates/online_content/template_content_list_entry.html:76
+#: server_control_panel/templates/server_control_panel/home.html:37
+msgid "Edit"
+msgstr "bearbeiten"
+
+#: online_content/templates/online_content/template_content_list_entry.html:79
+#, python-format
+msgid "Translate into %(language)s "
+msgstr "nach %(language)s übersetzen "
+
+#: online_content/templates/online_content/translate_template_content.html:12
+msgid "This translation is marked as complete. "
+msgstr "Diese Übersetzung wurde als vollständig markiert. "
+
+#: online_content/templates/online_content/translate_template_content.html:16
+msgid "This translation is not yet complete."
+msgstr "Diese Übersetzung ist noch nicht vollständig."
+
+#: online_content/templates/online_content/translate_template_content.html:84
+msgid "save"
+msgstr "speichern"
+
+#: online_content/templates/online_content/translate_template_content.html:85
+msgid "translation is complete"
+msgstr "Übersetzung ist vollständig"
+
+#: online_content/templates/online_content/translate_template_content.html:93
+msgid ""
+"This content is still being edited in the primary language. It will be "
+"translatable as soon as the editor is finished creating the content in the "
+"primary language."
+msgstr ""
+"Dieser Inhalt wird noch in der Primärsprache bearbeitet. Sobald der "
+"Ersteller mit der Primärsprache fertig ist, kann der Text übersetzt werden."
+
+#: server_control_panel/forms.py:8
+msgid "App .zip file"
+msgstr "App .zip Datei"
+
+#: server_control_panel/forms.py:11
+msgid "URL of this app"
+msgstr "URL dieser App"
+
+#: server_control_panel/forms.py:12
+msgid ""
+"Absolute URL where your app will be served according to your web server "
+"configuration."
+msgstr ""
+"Absolute URL unter der die App gemäß der Konfiguration ihres Webservers "
+"bereitgestellt wird."
+
+#: server_control_panel/forms.py:13
+msgid "e.g. mysite.com or mysite.com/app"
+msgstr "z.B. mysite.com oder mysite.com/app"
+
+#: server_control_panel/templates/server_control_panel/app_api_status.html:3
+msgid "working"
+msgstr "arbeite"
+
+#: server_control_panel/templates/server_control_panel/base.html:39
+#: server_control_panel/templates/server_control_panel/install_app.html:18
+msgid "Overview"
+msgstr "Übersicht"
+
+#: server_control_panel/templates/server_control_panel/base.html:42
+msgid "Install app"
+msgstr "App installieren"
+
+#: server_control_panel/templates/server_control_panel/base.html:45
+msgid "GBIF"
+msgstr "GBIF"
+
+#: server_control_panel/templates/server_control_panel/base.html:58
+msgid "Staff only"
+msgstr "Staff only"
+
+#: server_control_panel/templates/server_control_panel/base.html:59
+msgid "Django admin"
+msgstr "Django Admin"
+
+#: server_control_panel/templates/server_control_panel/edit_app.html:7
+#, python-format
+msgid "Edit %(name)s"
+msgstr "%(name)s ändern"
+
+#: server_control_panel/templates/server_control_panel/edit_app.html:18
+msgid "Successfully updated your app."
+msgstr "App erfolgreich aktualisiert."
+
+#: server_control_panel/templates/server_control_panel/home.html:8
+msgid "Server info"
+msgstr "Server Info"
+
+#: server_control_panel/templates/server_control_panel/home.html:18
+msgid ""
+"Use this url in the app kit on localcosmos.org to connect your app to this "
+"server."
+msgstr ""
+"Benutzen Sie diese url im App Kit auf localcosmos.org um ihre App mit diesem "
+"Server zu verbinden."
+
+#: server_control_panel/templates/server_control_panel/home.html:24
+msgid "Installed apps"
+msgstr "Installierte Apps"
+
+#: server_control_panel/templates/server_control_panel/home.html:32
+msgid "App"
+msgstr "App"
+
+#: server_control_panel/templates/server_control_panel/home.html:38
+msgid "Update"
+msgstr "aktualisieren"
+
+#: server_control_panel/templates/server_control_panel/home.html:39
+msgid "Uninstall"
+msgstr "deinstallieren"
+
+#: server_control_panel/templates/server_control_panel/home.html:52
+msgid "version"
+msgstr "Version"
+
+#: server_control_panel/templates/server_control_panel/home.html:55
+msgid "App admin"
+msgstr "App Admin"
+
+#: server_control_panel/templates/server_control_panel/home.html:59
+msgid "Web app"
+msgstr "Webapp"
+
+#: server_control_panel/templates/server_control_panel/home.html:67
+#: server_control_panel/templates/server_control_panel/home.html:82
+#: server_control_panel/templates/server_control_panel/home.html:90
+msgid "not available"
+msgstr "nicht verfügbar"
+
+#: server_control_panel/templates/server_control_panel/home.html:72
+msgid "API status"
+msgstr "API Status"
+
+#: server_control_panel/templates/server_control_panel/home.html:78
+msgid "Android .apk"
+msgstr "Android .apk"
+
+#: server_control_panel/templates/server_control_panel/home.html:86
+msgid "iOS .ipa"
+msgstr "iOS .ipa"
+
+#: server_control_panel/templates/server_control_panel/home.html:96
+msgid "draft"
+msgstr "Entwurf"
+
+#: server_control_panel/templates/server_control_panel/home.html:98
+msgid "More information will be avaibale when this app has been published."
+msgstr ""
+"Sobald diese App veröffentlicht wurde, sind mehr Informationen verfügbar."
+
+#: server_control_panel/templates/server_control_panel/home.html:107
+msgid "You have not installed any apps yet."
+msgstr "Sie haben noch keine Apps installiert."
+
+#: server_control_panel/templates/server_control_panel/home.html:114
+#: server_control_panel/templates/server_control_panel/install_app.html:8
+msgid "Install new app"
+msgstr "Neue App installieren"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:8
+#, python-format
+msgid "Update %(name)s"
+msgstr "%(name)s aktualisieren"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:14
+msgid ""
+"Your app has been installed successfully. You can check its status in the "
+"overview."
+msgstr ""
+"Ihre App wurde erfolgreich installiert. Sie können deren Status in der  "
+"Übersicht sehen."
+
+#: server_control_panel/templates/server_control_panel/install_app.html:29
+msgid "Important information"
+msgstr "Wichtige Information"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:35
+#, python-format
+msgid "Your web app will be installed in %(localcosmos_apps_root)sAPP_UID/"
+msgstr "Ihre WebApp wird nach %(localcosmos_apps_root)sAPP_UID/ installiert"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:36
+msgid "You can look up your APP_UID on localcosmos.org"
+msgstr "Sie können ihre APP_UID auf localcosmos.org nachschlagen"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:37
+msgid "Your webserver (nginx or apache) will serve your web app, not django"
+msgstr ""
+"Ihre WebApp wird von ihrem Webserver (nginx oder apache) bereitgestellt, "
+"nicht von django"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:38
+#, python-format
+msgid ""
+"Make sure to set an alias to %(localcosmos_apps_root)sAPP_UID/www/ in your "
+"web server"
+msgstr ""
+"Stellen Sie sicher, dass is einen Alias für %(localcosmos_apps_root)sAPP_UID/"
+"www/ in ihrem Webserver konfigurieren"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:39
+msgid ""
+"Your Android and iOS Apps will be able to connect to your server after you "
+"installed the web app"
+msgstr ""
+"Ihre Android und iOS Apps können erst mit ihrem Server verbinden, nachdem "
+"Sie die WebApp dort installiert haben."
+
+#: server_control_panel/templates/server_control_panel/install_app.html:57
+msgid "The following errors occured during app import:"
+msgstr "Während des imports gab es folgende Fehler:"
+
+#: server_control_panel/templates/server_control_panel/install_app.html:68
+msgid "Install"
+msgstr "installieren"
+
+#: server_control_panel/views.py:140
+#, python-brace-format
+msgid "Error importing the app. Please upload a valid app .zip file: {0}"
+msgstr ""
+"Fehler beim import der App. Bitte löaden Sie eine valide App .zip Datei "
+"hoch: {0}"
+
+#: server_control_panel/views.py:146
+#, python-brace-format
+msgid "The zip file you uploaded does not contain the app {0}"
+msgstr "Die zip Datei, die Sie hochgeladen haben enthielt nicht die App {0}"
+
+#: server_control_panel/views.py:230
+#, python-format
+msgid "Do you really want to uninstall %s?"
+msgstr "Wollen Sie wirklich %s deinstallieren ?"
+
+#: setup_forms.py:17
+msgid "The two password fields didn't match."
+msgstr "Die beiden Passwörter stimmten nicht überein."
+
+#: setup_forms.py:18
+msgid "The two email address fields didn't match."
+msgstr "Die beiden e-mail Addressen stimmten nicht überein."
+
+#: setup_forms.py:21
+msgid "Email"
+msgstr "e-mail"
+
+#: setup_forms.py:22
+msgid "Email (again)"
+msgstr "e-mail (nochmal)"
+
+#: taxonomy/fields.py:44
+msgid "Include descendants"
+msgstr "Nachkommen mit einschließen"
+
+#: taxonomy/forms.py:35
+msgid "Taxon"
+msgstr "Taxon"
+
+#: taxonomy/views.py:144
+#, python-format
+msgid "Do you really want to remove %s?"
+msgstr "Wollen Sie wirklich %s entfernen ?"
+
+#: templates/400.html:10
+msgid "Bad request"
+msgstr "Bad request"
+
+#: templates/403.html:10
+msgid "You are not allowed to perform the operation you requested."
+msgstr "Sie sind nicht berechtigt, die angeforderte Operation durchzuführen."
+
+#: templates/404.html:10
+msgid "The requested page could not be found."
+msgstr "Die angeforderte Seite wurde nicht gefunden."
+
+#: templates/500.html:10
+msgid "Unfortunately, there has been an internal server error."
+msgstr "Leider gab es einen internen Server Fehler."
+
+#: templates/base.html:37
+msgid "Server Control Panel"
+msgstr "Server Control Panel"
+
+#: templates/el_pagination/show_more.html:5
+msgid "more"
+msgstr "mehr"
+
+#: templates/error_base.html:30
+msgid "Go back to website"
+msgstr "Zurück zur Webseite"
+
+#: templates/localcosmos_server/api/register_account.html:6
+msgid "There have been errors in the data you submitted."
+msgstr "Die von ihnen übermittelten Daten enthielten Fehler."
+
+#: templates/localcosmos_server/api/register_account.html:12
+#, python-format
+msgid ""
+"Welcome %(username)s. Your account has been created successfully and you "
+"have been logged in."
+msgstr ""
+"Willkommen %(username)s. Ihr Account wurde erfolgreich angelegt und Sie "
+"wurden angemeldet."
+
+#: templates/localcosmos_server/bootstrap_field.html:21
+msgid "no choices found"
+msgstr "keine Wahlmöglichkeiten gefunden"
+
+#: templates/localcosmos_server/generic/delete_object.html:19
+#, python-format
+msgid "Delete %(verbose_name)s"
+msgstr "%(verbose_name)s löschen"
+
+#: templates/localcosmos_server/generic/delete_object.html:30
+#, python-format
+msgid "Do you really want to delete %(verbose_name)s?"
+msgstr "Wollen Sie wirklich %(verbose_name)s löschen?"
+
+#: templates/localcosmos_server/modals/footers/add_selected.html:3
+msgid "Add selected"
+msgstr "Ausgewählte hinzufügen"
+
+#: templates/localcosmos_server/registration/loggedout.html:11
+msgid "Signed in"
+msgstr "Angemeldet"
+
+#: templates/localcosmos_server/registration/loggedout.html:13
+msgid "Signed out"
+msgstr "abmelden"
+
+#: templates/localcosmos_server/registration/loggedout.html:23
+#: templates/localcosmos_server/registration/login.html:19
+#, python-format
+msgid "You are signed in as %(user)s"
+msgstr "Sie sind als %(user)s angemeldet"
+
+#: templates/localcosmos_server/registration/loggedout.html:27
+msgid "You are signed out"
+msgstr "Sie sind abgemeldet"
+
+#: templates/localcosmos_server/registration/login.html:10
+#: templates/localcosmos_server/registration/login.html:28
+#: templates/localcosmos_server/registration/password_reset_complete.html:21
+msgid "Sign in"
+msgstr "Anmelden"
+
+#: templates/localcosmos_server/registration/login.html:29
+msgid "I forgot my password."
+msgstr "Ich habe mein Passwort vergessen"
+
+#: templates/localcosmos_server/registration/login.html:41
+msgid "No account yet ?"
+msgstr "Noch keinen Account ?"
+
+#: templates/localcosmos_server/registration/login.html:43
+msgid "register"
+msgstr "registrieren"
+
+#: templates/localcosmos_server/registration/password_change_done.html:17
+msgid "You have to use your new password the next time you log in."
+msgstr "Bei der nächsten Anmeldung müssen Sie ihr neues Paswort benutzen."
+
+#: templates/localcosmos_server/registration/password_change_form.html:20
+msgid ""
+"Please enter your old password, for security's sake, and then enter your new "
+"password twice so we can verify you typed it in correctly."
+msgstr ""
+"Bitte geben Sie aus SWicherheitsgründen ihr altes Passwort ein. Danach geben "
+"Sie zweimal ihr neues Passwort ein, damit wir verifizieren können, dass Sie "
+"es korrekt eingegeben haben."
+
+#: templates/localcosmos_server/registration/password_change_form.html:25
+#: templates/localcosmos_server/registration/password_reset_confirm.html:25
+msgid "Change my password"
+msgstr "Passwort ändern"
+
+#: templates/localcosmos_server/registration/password_reset_complete.html:19
+msgid "Your password has been set. You may go ahead and sign in now."
+msgstr "Ihr Passwort wurde gesetzt. Sie können sich jetzt anmelden."
+
+#: templates/localcosmos_server/registration/password_reset_confirm.html:20
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+"Bitte geben Sie ihr neues Passwort zweimal ein, damit wir verifizieren "
+"können, dass Sie es korrekt eingegeben haben."
+
+#: templates/localcosmos_server/registration/password_reset_confirm.html:31
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used. Please request a new password reset."
+msgstr ""
+"Der Link für das Zurücksetzen des Passwortes war ungültig. Vermutlich, weil er bereits benutzt "
+"wurde. Bitte fordern Sie das Zurücksetzen des Passwortes neu an."
+
+#: templates/localcosmos_server/registration/password_reset_done.html:18
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+"Wir haben ihnen Anweisungen geschickt, wie Sie ein neues Passwort setzen "
+"können, falls ein Account für dies e-mail Addresse existiert. Die e-mail "
+"sollte in Kürze ankommen."
+
+#: templates/localcosmos_server/registration/password_reset_done.html:19
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+"Falls Sie keine e-mail erhalten, müssen Sie sicherstellen, dass Sie auch "
+"diejenige e-mail Addresse eingeben, mit der Sie sich registriert haben. "
+"Schauen Sie auch im Spam-Ordner nach."
+
+#: templates/localcosmos_server/registration/password_reset_form.html:18
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+"Passwort vergessen? Geben Sie unten ihre e-mail Adresse ein, und wir "
+"schicken ihnen Anweisungen, wie sie ein neues Passwort setzen können."
+
+#: templates/localcosmos_server/registration/password_reset_form.html:27
+msgid "Reset my password"
+msgstr "Mein Passwort zurücksetzen"
+
+#: templates/localcosmos_server/setup/setup_superuser.html:12
+msgid "Setup superuser account"
+msgstr "Superuser Account erstellen"
+
+#: templates/localcosmos_server/setup/setup_superuser.html:18
+msgid "Create superuser account"
+msgstr "Superuser Account erstellen"
+
+#: templates/localcosmos_server/taxonomy/manage_taxonomic_restrictions.html:12
+msgid "Manage taxonomic restriction"
+msgstr "Taxonomische Restriktionen verwalten"
+
+#: templates/localcosmos_server/taxonomy/manage_taxonomic_restrictions.html:25
+msgid ""
+"You have to publish your app before being able to set taxonomic restrictions"
+msgstr ""
+"Sie müssen ihre App veröffentlichen, bevor Sie Taxonomische Restriktionen "
+"festlegen können."
+
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:5
+#, python-format
+msgid "%(name)s is restricted to the following taxa"
+msgstr "%(name)s ist auf folgende Taxa beschränkt"
+
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:14
+msgid "with descendants"
+msgstr "einschließlich Nachkommen"
+
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:17
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:19
+msgid "Remove"
+msgstr "entfernen"
+
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:26
+msgid "Usable for all taxa"
+msgstr "Für alle Taxa benutzbar"
+
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:31
+msgid "Add taxonomic restriction"
+msgstr "Taxonomische Restriktion hinzufügen"
+
+#: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:51
+msgid "Add taxon to restriction"
+msgstr "Taxon zur Restriktion hinzufügen"
+
+#: templates/localcosmos_server/widgets/ajax_file_input.html:13
+msgid "delete"
+msgstr "löschen"
+
+#: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:11
+msgid "include descendants"
+msgstr "Nachkommen mit einschließen"
+
+#: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:36
+msgid "search and select taxon"
+msgstr "Taxon suchen und auswählen"
+
+#: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:42
+msgid "no taxa found"
+msgstr "Kein Taxon gefunden"
+
+#: tests/apps/app_for_tests/preview/www/themes/Flat/online_content/templates/flag/main_navigation.html:29
+#: tests/apps/app_for_tests/published/www/themes/Flat/online_content/templates/flag/main_navigation.html:29
+#: tests/apps/app_for_tests/review/www/themes/Flat/online_content/templates/flag/main_navigation.html:29
+msgid "Read more"
+msgstr "Mehr lesen"
+
+#: validators.py:15
+msgid "Invalid SVG file: could not detect SVG in XML tree of the file."
+msgstr "Ungültige SVG Datei: svg nicht im xml tree der Datei gefunden."
+
+#: validators.py:55
+#, python-format
+msgid "Wrong image ratio. Upload a file with the dimensions w:h = %(ratio)s"
+msgstr ""
+"Falsche Bildabmessungen. Laden Sie eine Datei mit den Abmessungen Breite:"
+"Höhe = %(ratio)s hoch."
+
+#: validators.py:96 validators.py:189
+msgid ""
+"Invalid SVG file: did neither find viewBox setting or width and height "
+"setting in the SVG file."
+msgstr ""
+"Ungültige svg Datei: Entweder wurde die viewBox Einstellung nicht gefunden "
+"oder die Einstellung für width und height fehlen."
+
+#: validators.py:149
+#, python-format
+msgid ""
+"Wrong image dimensions. You image has to be EXACTLY width x height = "
+"%(dimensions)s"
+msgstr ""
+"Falsche Bildmaße. Das Bild muss EXAKT %(dimensions)s (Breite x Höhe) sein."
+

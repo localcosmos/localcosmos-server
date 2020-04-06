@@ -102,8 +102,8 @@ class HumanInteractionValidator(DatasetValidatorBase):
     template_name = None
     form_class = None
     
-    status_message = _('This Dataset is currently waiting for review.')
-    error_message = _('This Dataset failed the review.')
+    status_message = _('This dataset is currently waiting for review.')
+    error_message = _('This dataset failed the review.')
 
     # no automatic validation
     def run_validation(self, dataset):
@@ -113,11 +113,6 @@ class HumanInteractionValidator(DatasetValidatorBase):
     def form_valid(self, view_instance, form):
         raise NotImplementedError('HumanInteractionValidator requires a form_valid method')
         
-
-
-
-
-
 
 
 # this should be enhanced somehow to cover required fields in generic_forms etc
@@ -138,7 +133,7 @@ class RequiredFieldsValidator(DatasetValidatorBase):
                 missing_fields.append(field)
 
         if is_valid == False:
-            error_message = _("The following fields are required but missing: ")
+            error_message = _('The following fields are required but missing: ')
             error_message = error_message + ",".join(missing_fields)
             self.add_error(error_message)
             self.on_fail()

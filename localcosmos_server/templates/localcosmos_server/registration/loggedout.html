@@ -8,9 +8,9 @@
 			<div class="col-12">
 				<div class="slogan text-center">
 					{% if request.user.is_authenticated is True %}
-						{% trans 'Logged in' %}
+						{% trans 'Signed in' %}
 					{% else %}
-						{% trans 'Logged out' %}
+						{% trans 'Signed out' %}
 					{% endif %}
 				</div>
 			</div>
@@ -20,11 +20,11 @@
 			<div class="col-12 col-md-6">
 				{% if request.user.is_authenticated is True %}
 					<div class="alert alert-info">
-						{% blocktrans with user=request.user %}You are logged in as {{ user }}{% endblocktrans %}
+						{% blocktrans with user=request.user %}You are signed in as {{ user }}{% endblocktrans %}
 					</div>
 				{% else %}
 					<div class="alert alert-info">
-						{% blocktrans with user=request.user %}You are logged out{% endblocktrans %}
+						{% blocktrans with user=request.user %}You are signed out{% endblocktrans %}
 					</div>
 				{% endif %}
 			</div>

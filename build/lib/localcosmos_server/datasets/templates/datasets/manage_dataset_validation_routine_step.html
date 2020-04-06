@@ -3,7 +3,7 @@
 {% load i18n localcosmos_tags %}
 
 {% block title %}
-	{% trans 'Manage Validation Step' %}
+	{% trans 'Manage validation step' %}
 {% endblock %}
 
 {% block action %}{% if validation_step %}{% url 'datasets:manage_dataset_validation_routine_step' request.app.uid validation_step.id %}{% else %}{% url 'datasets:add_dataset_validation_routine_step' request.app.uid %}{% endif %}{% endblock %}

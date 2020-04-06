@@ -5,7 +5,7 @@
 {% block content %}
 	<div class="container">
 
-		<h2>{% if app %}{% blocktrans with name=app.name %}Update {{ name }}{% endblocktrans %}{% else %}{% trans 'Install new App' %}{% endif %}</h2>
+		<h2>{% if app %}{% blocktrans with name=app.name %}Update {{ name }}{% endblocktrans %}{% else %}{% trans 'Install new app' %}{% endif %}</h2>
 
 		{% if success %}
 			<div class="row">
@@ -32,11 +32,11 @@
 								<h5 class="card-title">How to make your apps run</h5>
 								<p class="card-text">
 									<ul>
-										<li>{% blocktrans %}Your webapp will be installed in {{ localcosmos_apps_root }}APP_UID/{% endblocktrans %}</li>
+										<li>{% blocktrans %}Your web app will be installed in {{ localcosmos_apps_root }}APP_UID/{% endblocktrans %}</li>
 										<li>{% trans 'You can look up your APP_UID on localcosmos.org' %}</li>
-										<li>{% trans 'Your webserver (nginx or apache) will serve your webapp, not django' %}</li>
-										<li>{% blocktrans %}Make sure to set an alias to {{ localcosmos_apps_root }}APP_UID/www/ in your webserver{% endblocktrans %}</li>
-										<li>{% blocktrans %}Your android and iOS Apps will be able to connect to your server after you installed the webapp{% endblocktrans %}</li>
+										<li>{% trans 'Your webserver (nginx or apache) will serve your web app, not django' %}</li>
+										<li>{% blocktrans %}Make sure to set an alias to {{ localcosmos_apps_root }}APP_UID/www/ in your web server{% endblocktrans %}</li>
+										<li>{% blocktrans %}Your Android and iOS Apps will be able to connect to your server after you installed the web app{% endblocktrans %}</li>
 									</ul>
 								</p>
 								
@@ -65,7 +65,7 @@
 					{% endif %}
 					
 					<div class="col-12">
-						<button type="submit" class="btn btn-outline-primary">{% trans 'install' %}</button>
+						<button type="submit" class="btn btn-outline-primary">{% trans 'Install' %}</button>
 					</div>
 				</div>
 			</form>

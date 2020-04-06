@@ -10,10 +10,10 @@
 				</div>
 				<div class="btn-group dropup">
 					<button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						{% trans 'modify' %}
+						{% trans 'Modify' %}
 					</button>
 					<div class="dropdown-menu">
-						<a class="dropdown-item xhr" ajax-target="ModalContent" href="{% url 'datasets:delete_dataset_image' request.app.uid image.id %}">{% trans 'delete' %}</a>
+						<a class="dropdown-item xhr" ajax-target="ModalContent" href="{% url 'datasets:delete_dataset_image' request.app.uid image.id %}">{% trans 'Delete' %}</a>
 					</div>
 				</div>
 			</div>
@@ -21,6 +21,6 @@
 	</div>
 {% else %}
 	<div>
-		{% trans 'no images found'  %}
+		{% trans 'No images found.'  %}
 	</div>
 {% endif %}

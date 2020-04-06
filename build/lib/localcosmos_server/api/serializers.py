@@ -55,7 +55,7 @@ class LCAuthTokenSerializer(AuthTokenSerializer):
                 unauthorized_user = User.objects.filter(email=username).first()
 
                 if not unauthorized_user:
-                    raise serializers.ValidationError(_('No user found for that username or email'))
+                    raise serializers.ValidationError(_('No user found for that username or email address.'))
 
                 # set the correct username
                 username = unathorized_user.username
@@ -125,9 +125,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
                                       style={'input_type': 'password', 'placeholder':_('Password (again)')})
 
     first_name = serializers.CharField(label=_('First name (optional)'), required=False)
-    last_name = serializers.CharField(label=_('Last name (optional)'), required=False)
-    email = serializers.EmailField(label=_('e-mail address'), style={'placeholder':'you@example.com'})
-    email2 = serializers.EmailField(label=_('e-mail address (again)'), style={'placeholder':'you@example.com'})
+    last_name = serializers.CharField(label=_('Surname (optional)'), required=False)
+    email = serializers.EmailField(label=_('Email address'), style={'placeholder':'you@example.com'})
+    email2 = serializers.EmailField(label=_('Email address (again)'), style={'placeholder':'you@example.com'})
 
     client_id = serializers.CharField(label='', style={'input_type': 'hidden',})
     platform = serializers.CharField(label='', style={'input_type': 'hidden',})
@@ -135,16 +135,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         email_exists = User.objects.filter(email__iexact=value).exists()
         if email_exists:
-            raise serializers.ValidationError(_('This email address already is registered'))
+            raise serializers.ValidationError(_('This email address is already registered.'))
 
         return value
 
     def validate(self, data):
         if data['email'] != data['email2']:
-            raise serializers.ValidationError({'email2': _('The emails did not match')})
+            raise serializers.ValidationError({'email2': _('The email addresses did not match.')})
 
         if data['password'] != data['password2']:
-            raise serializers.ValidationError({'password2': _('The passwords did not match')})
+            raise serializers.ValidationError({'password2': _('The passwords did not match.')})
         return data
 
 

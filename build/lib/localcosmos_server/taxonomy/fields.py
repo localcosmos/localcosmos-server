@@ -41,7 +41,7 @@ class TaxonField(forms.MultiValueField):
         ]
 
         if descendants_choice == True:
-            fields.append(forms.BooleanField(required=False, label=_('include descendants')))
+            fields.append(forms.BooleanField(required=False, label=_('Include descendants')))
 
         fields = tuple(fields)
 

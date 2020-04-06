@@ -37,7 +37,7 @@ class EmailOrUsernameAuthenticationForm(AuthenticationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['username'].label = _('Username or e-mail')
+        self.fields['username'].label = _('Username or email address')
 
     def clean(self):
         username = self.cleaned_data.get('username', None)
@@ -56,7 +56,7 @@ class EmailOrUsernameAuthenticationForm(AuthenticationForm):
                 if user_pre:
                     username = user_pre.username
                 else:
-                    raise forms.ValidationError(_('Invalid username or email'))
+                    raise forms.ValidationError(_('Invalid username or email address'))
                 
             self.user_cache = authenticate(username=username, password=password)
             
@@ -176,7 +176,7 @@ class ManageContentImageFormCommon:
 
             if md5:
                 if file_md5 != md5:
-                    raise forms.ValidationError(_('The image upload was not successful. Please try again'))
+                    raise forms.ValidationError(_('The image upload was not successful. Please try again.'))
 
             else:
                 cleaned_data['md5'] = file_md5

@@ -5,7 +5,7 @@
 {% block content %}
 	<div class="container">
 
-		<h2>{% trans 'Server Info' %}</h2>
+		<h2>{% trans 'Server info' %}</h2>
 
 		<div class="row mb-4">
 			<div class="col-12">
@@ -15,13 +15,13 @@
 				<div class="card">
 					<div class="card-body">
 						<strong>API URL: <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'api_home' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'api_home' %}</a></strong>
-						<div class="alert alert-danger mt-2">{% trans 'Use this url in the App Kit on localcosmos.org to connect your app to this server.' %}</div>
+						<div class="alert alert-danger mt-2">{% trans 'Use this url in the app kit on localcosmos.org to connect your app to this server.' %}</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<h2>{% trans 'Installed Apps' %}</h2>
+		<h2>{% trans 'Installed apps' %}</h2>
 
 		<div class="row">
 			{% if apps %}
@@ -34,9 +34,9 @@
 									<div class="dropdown float-right d-inline-block">
 										<button class="btn btn-xs btn-outline-secondary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 										<div class="dropdown-menu">
-											<a class="dropdown-item" href="{% url 'scp:edit_app' app.uid %}">{% trans 'edit' %}</a>
-											<a class="dropdown-item" href="{% url 'scp:update_app' app.uid %}">{% trans 'update' %}</a>
-											<a class="dropdown-item xhr" data-url="{% url 'scp:uninstall_app' app.id %}" ajax-target="ModalContent">{% trans 'uninstall' %}</a>
+											<a class="dropdown-item" href="{% url 'scp:edit_app' app.uid %}">{% trans 'Edit' %}</a>
+											<a class="dropdown-item" href="{% url 'scp:update_app' app.uid %}">{% trans 'Update' %}</a>
+											<a class="dropdown-item xhr" data-url="{% url 'scp:uninstall_app' app.id %}" ajax-target="ModalContent">{% trans 'Uninstall' %}</a>
 										</div>
 									</div>
 								{% endif %}
@@ -56,7 +56,7 @@
 										</div>
 										<hr>
 										<div>
-											{% trans 'Webapp' %}:
+											{% trans 'Web app' %}:
 											{% if app.get_url %}
 												{% if localcosmos_private %}
 													<a href="{{ app.get_url }}" target="_blank">{{ app.get_url }}</a>
@@ -69,23 +69,23 @@
 										</div>
 										<hr>
 										<div>
-											{% trans 'API Status' %}: <span class="api-status" data-api-status-url="{% url 'scp:app_api_status' app.uid %}"></span>
+											{% trans 'API status' %}: <span class="api-status" data-api-status-url="{% url 'scp:app_api_status' app.uid %}"></span>
 										</div>
 										{% if localcosmos_private %}
 										{% else %}
 											<hr>
 											<div>
-												{% trans 'Android' %}:
+												{% trans 'Android .apk' %}:
 												{% if app.apk_url %}
-													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.apk_url }}" download>{% trans 'download' %}</a>
+													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.apk_url }}" download>{% trans 'Download' %}</a>
 												{% else %}
 													<span class="badge badge-danger">{% trans 'not available' %}</span>
 												{% endif %}
 											</div>
 											<div>
-												{% trans 'iOS' %}:
+												{% trans 'iOS .ipa' %}:
 												{% if app.ipa_url %}
-													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.ipa_url }}" download>{% trans 'download' %}</a>
+													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.ipa_url }}" download>{% trans 'Download' %}</a>
 												{% else %}
 													<span class="badge badge-danger">{% trans 'not available' %}</span>
 												{% endif %}
@@ -111,7 +111,7 @@
 		<hr>
 		<div class="row mt-3">
 			<div class="col-12">
-				<a href="{% url 'scp:install_app' %}" class="btn btn-outline-primary">{% trans 'install new App' %}</a>
+				<a href="{% url 'scp:install_app' %}" class="btn btn-outline-primary">{% trans 'Install new app' %}</a>
 			</div>
 		</div>
 	</div>

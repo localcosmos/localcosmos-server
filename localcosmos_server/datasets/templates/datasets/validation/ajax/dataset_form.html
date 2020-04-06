@@ -5,13 +5,13 @@
 		{% if success %}
 			<div class="col-12">
 				<div class="alert alert-success">
-					{% trans 'changes have been saved successfully.' %}
+					{% trans 'Changes have been saved successfully.' %}
 				</div>
 			</div>
 		{% endif %}
 		<div class="col-12">
-			<button type="submit" class="btn btn-outline-primary">{% trans 'update dataset' %}</button>
-			<a href="{% url 'datasets:delete_dataset' request.app.uid dataset.id %}" class="btn btn-danger xhr" ajax-target="ModalContent">{% trans 'delete dataset' %}</a>
+			<button type="submit" class="btn btn-outline-primary">{% trans 'Update dataset' %}</button>
+			<a href="{% url 'datasets:delete_dataset' request.app.uid dataset.id %}" class="btn btn-danger xhr" ajax-target="ModalContent">{% trans 'Delete dataset' %}</a>
 		</div>
 	</div>
 </form>

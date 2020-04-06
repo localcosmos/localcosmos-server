@@ -8,7 +8,7 @@
 
 {% block content %}
 	<div class="container mb-5">
-		<h2>{% trans 'Expert Review' %}</h2>
+		<h2>{% trans 'Expert review' %}</h2>
 
 		{% if review_success %}
 			<div class="row">
@@ -21,7 +21,7 @@
 					{% endif %}
 				</div>
 				<div class="col-12 my-4">
-					<a href="{% url 'appadmin:home' request.app.uid %}" class="btn btn-outline-primary">{% trans 'back to overview' %}</a>
+					<a href="{% url 'appadmin:home' request.app.uid %}" class="btn btn-outline-primary">{% trans 'Back to overview' %}</a>
 				</div>
 			</div>
 		{% else %}
@@ -58,7 +58,7 @@
 										{% render_bootstrap_form form %}
 										<div class="row mt-3">
 											<div class="col-12">
-												<button type="submit" class="btn btn-outline-primary">{% trans 'submit review' %}</button>
+												<button type="submit" class="btn btn-outline-primary">{% trans 'Submit review' %}</button>
 											</div>
 										</div>
 									</form>

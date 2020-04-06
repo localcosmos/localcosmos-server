@@ -12,7 +12,7 @@ from PIL import Image
 
 
 def validate_svg(data):
-    message = _('Invalid svg file: could not detect svg in xml tree of the file.')
+    message = _('Invalid SVG file: could not detect SVG in XML tree of the file.')
 
     # We need to get a file object for Pillow. We might have a path or we might
     # have to read the data into memory.
@@ -52,7 +52,7 @@ class ImageRatioValidator:
         if allowed_ratio_str:
             ratio_list = allowed_ratio_str.split(':')
             self.allowed_ratio = float(ratio_list[0])/float(ratio_list[1])
-            self.error_message = _('Wrong image ratio. Upload a File with the dimensions w:h = %(ratio)s' % {
+            self.error_message = _('Wrong image ratio. Upload a file with the dimensions w:h = %(ratio)s' % {
                 'ratio' : self.allowed_ratio_str })
         else:
             self.allowed_ratio = None
@@ -70,7 +70,7 @@ class ImageRatioValidator:
             validation_method_name = 'validate_%s' % ext
             
             if not hasattr(self, validation_method_name):
-                raise ValidationError('unsupported file extension: %s' % ext)
+                raise ValidationError('Unsupported file extension: %s' % ext)
 
             validation_method = getattr(self, validation_method_name)
             validation_method(image_file)
@@ -93,7 +93,7 @@ class ImageRatioValidator:
                 view_box = '0 0 %s %s' % (svg_width, svg_height)
                 
             else:
-                message = _('Invalid svg file: did neither find viewBox setting or width and height setting in the svg file.')
+                message = _('Invalid SVG file: did neither find viewBox setting or width and height setting in the SVG file.')
                 raise ValidationError(message)
 
         
@@ -186,7 +186,7 @@ class ImageDimensionsValidator:
                 view_box = '0 0 %s %s' % (svg_width, svg_height)
                 
             else:
-                message = _('Invalid svg file: did neither find viewBox setting or width and height setting in the svg file.')
+                message = _('Invalid SVG file: did neither find viewBox setting or width and height setting in the SVG file.')
                 raise ValidationError(message)
 
         

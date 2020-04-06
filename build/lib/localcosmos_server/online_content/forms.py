@@ -18,8 +18,9 @@ User = get_user_model()
 
 class TemplateContentFormCommon(LocalizeableForm):
     draft_title = forms.CharField(label=_('Title'))
-    draft_navigation_link_name = forms.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH, label=_('Link name in navigations'),
-            help_text=_('Max %(characters)s characters. If this content shows up in a navigation this name will be shown as the link.') % {'characters' : NAVIGATION_LINK_NAME_MAX_LENGTH})
+    draft_navigation_link_name = forms.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH,
+            label=_('Name for links in navigation menus'),
+            help_text=_('Max %(characters)s characters. If this content shows up in a navigation menu, this name will be shown as the link.') % {'characters' : NAVIGATION_LINK_NAME_MAX_LENGTH})
 
     localizeable_fields = ['draft_title', 'draft_navigation_link_name']
 

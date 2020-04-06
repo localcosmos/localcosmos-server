@@ -227,11 +227,11 @@ class UninstallApp(LoginRequiredMixin, AjaxDeleteView):
     model = App
 
     def get_deletion_message(self):
-        return _('Do you really want to uninstall %s ?' % self.object)
+        return _('Do you really want to uninstall %s?' % self.object)
 
     def get(self, request, *args, **kwargs):
         if LOCALCOSMOS_OPEN_SOURCE == False:
-            raise Http404('Not available on LocalCosmos commercial')
+            raise Http404('Not available on Local Cosmos commercial')
 
         return super().get(request, *args, **kwargs)
 

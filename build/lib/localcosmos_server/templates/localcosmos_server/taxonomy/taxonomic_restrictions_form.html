@@ -14,9 +14,9 @@
 							{% if restriction.taxon_include_descendants %}<span class="badge badge-info">{% trans 'with descendants' %}</span>{% endif %}
 							{% if restriction.restriction_type == 'exists' %}{% else %}<span class="badge badge-info">{{ restriction.restriction_type }}</span>{% endif %}
 							{% if restriction_class == 'AppContentTaxonomicRestriction' %}
-								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_taxonomic_restriction' restriction.id %}" ajax-target="ModalContent">{% trans 'remove' %}</button>
+								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_taxonomic_restriction' restriction.id %}" ajax-target="ModalContent">{% trans 'Remove' %}</button>
 							{% elif restriction_class == 'TaxonomicRestriction' %}
-								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_app_taxonomic_restriction' request.app.uid restriction.id %}" ajax-target="ModalContent">{% trans 'remove' %}</button>
+								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_app_taxonomic_restriction' request.app.uid restriction.id %}" ajax-target="ModalContent">{% trans 'Remove' %}</button>
 							{% endif %}
 						</li>
 					{% endfor %}
@@ -28,7 +28,7 @@
 	</div>
 </div>
 <br>
-<h5>{% trans 'add taxonomic restriction' %}</h5>
+<h5>{% trans 'Add taxonomic restriction' %}</h5>
 <div>
 	{% block form %}
 		{% for field in form %}
@@ -48,6 +48,6 @@
 	{% endblock %}
 </div>
 <div>
-	<button type="submit" class="btn btn-outline-primary">{% trans 'add taxon to restriction' %}</button>
+	<button type="submit" class="btn btn-outline-primary">{% trans 'Add taxon to restriction' %}</button>
 </div>
 

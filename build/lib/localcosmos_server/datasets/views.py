@@ -275,7 +275,7 @@ class DeleteDatasetValidationRoutineStep(AjaxDeleteView):
     model = DatasetValidationRoutine
 
     def get_deletion_message(self):
-        return _('Do you really want to remove {0} ?'.format(self.object.verbose_name()))
+        return _('Do you really want to remove {0}?'.format(self.object.verbose_name()))
 
 
 
@@ -286,7 +286,7 @@ class DeleteDataset(AjaxDeleteView):
     model = Dataset
 
     def get_deletion_message(self):
-        return _('Do you really want to delete this obsersavtion ?')
+        return _('Do you really want to delete this obsersavtion?')
 
 
 class DeleteDatasetImage(AjaxDeleteView):
@@ -296,7 +296,7 @@ class DeleteDatasetImage(AjaxDeleteView):
     model = DatasetImages
 
     def get_deletion_message(self):
-        return _('Do you really want to delete this image ?')
+        return _('Do you really want to delete this image?')
 
 
 class DownloadDatasetsCSV(TemplateView):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-09 15:02+0100\n"
+"POT-Creation-Date: 2020-04-03 14:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: api/serializers.py:58
-msgid "No user found for that username or email"
+msgid "No user found for that username or email address."
 msgstr ""
 
 #: api/serializers.py:71
@@ -40,27 +40,27 @@ msgid "First name (optional)"
 msgstr ""
 
 #: api/serializers.py:128
-msgid "Last name (optional)"
+msgid "Surname (optional)"
 msgstr ""
 
 #: api/serializers.py:129
-msgid "e-mail address"
+msgid "Email address"
 msgstr ""
 
 #: api/serializers.py:130
-msgid "e-mail address (again)"
+msgid "Email address (again)"
 msgstr ""
 
 #: api/serializers.py:138
-msgid "This email address already is registered"
+msgid "This email address is already registered."
 msgstr ""
 
 #: api/serializers.py:144
-msgid "The emails did not match"
+msgid "The email addresses did not match."
 msgstr ""
 
 #: api/serializers.py:147
-msgid "The passwords did not match"
+msgid "The passwords did not match."
 msgstr ""
 
 #: app_admin/forms.py:8
@@ -68,11 +68,11 @@ msgid "user"
 msgstr ""
 
 #: app_admin/forms.py:15
-msgid "Search user"
+msgid "Search users"
 msgstr ""
 
 #: app_admin/templates/app_admin/ajax/userbox.html:7
-msgid "last login"
+msgid "Last login"
 msgstr ""
 
 #: app_admin/templates/app_admin/ajax/userbox.html:12
@@ -81,24 +81,27 @@ msgstr ""
 #: online_content/templates/online_content/filecontent_field.html:13
 #: templates/localcosmos_server/widgets/app_theme_image_file_input.html:12
 #: templates/localcosmos_server/widgets/two_step_file_input.html:11
-msgid "modify"
+msgid "Modify"
 msgstr ""
 
 #: app_admin/templates/app_admin/ajax/userbox.html:15
-msgid "assign new role"
+msgid "Assign new role"
 msgstr ""
 
 #: app_admin/templates/app_admin/ajax/userbox.html:17
 #: datasets/templates/datasets/dataset_validation_routine.html:70
 #: datasets/templates/datasets/validation/ajax/picture_field_images.html:16
+#: online_content/templates/online_content/ajax/image_microcontent_form.html:22
 #: online_content/templates/online_content/ajax_filecontent_field.html:13
+#: online_content/templates/online_content/delete_microcontent.html:38
 #: online_content/templates/online_content/filecontent_field.html:18
 #: online_content/templates/online_content/template_content_list_entry.html:86
 #: online_content/templates/online_content/textcontent_field.html:13
-#: templates/localcosmos_server/widgets/ajax_file_input.html:13
+#: templates/localcosmos_server/generic/delete_object.html:38
+#: templates/localcosmos_server/modals/footers/delete.html:3
 #: templates/localcosmos_server/widgets/app_theme_image_file_input.html:17
 #: templates/localcosmos_server/widgets/two_step_file_input.html:16
-msgid "delete"
+msgid "Delete"
 msgstr ""
 
 #: app_admin/templates/app_admin/base.html:52
@@ -108,7 +111,7 @@ msgid "Users"
 msgstr ""
 
 #: app_admin/templates/app_admin/base.html:56
-msgid "Online Content"
+msgid "Online content"
 msgstr ""
 
 #: app_admin/templates/app_admin/base.html:59
@@ -117,11 +120,11 @@ msgid "Observations"
 msgstr ""
 
 #: app_admin/templates/app_admin/base.html:61
-msgid "Manage Observations"
+msgid "Manage observations"
 msgstr ""
 
 #: app_admin/templates/app_admin/base.html:62
-msgid "Manage Validation Routine"
+msgid "Manage validation routine"
 msgstr ""
 
 #: app_admin/templates/app_admin/base.html:73
@@ -151,11 +154,11 @@ msgid "Manage role of %(username)s"
 msgstr ""
 
 #: app_admin/templates/app_admin/manage_app_user_role.html:11
-msgid "successfully assigned new role"
+msgid "Successfully assigned new role."
 msgstr ""
 
 #: app_admin/templates/app_admin/userlist.html:17
-msgid "no users found"
+msgid "No users found."
 msgstr ""
 
 #: app_admin/templates/app_admin/userlist.html:23
@@ -203,12 +206,11 @@ msgid "observed by"
 msgstr ""
 
 #: datasets/templates/datasets/ajax/dataset_box.html:32
-#: datasets/templates/datasets/edit_dataset.html:15
-msgid "anonymous user"
+msgid "Anonymous user"
 msgstr ""
 
 #: datasets/templates/datasets/ajax/dataset_box.html:37
-msgid "show"
+msgid "Show"
 msgstr ""
 
 #: datasets/templates/datasets/ajax/dataset_review_box.html:6
@@ -216,12 +218,12 @@ msgid "Review now"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:8
-msgid "Observation Validation Routine"
+msgid "Observation validation routine"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:11
 msgid ""
-"Defining an Observation Validation Routine helps to improve the quality of "
+"Defining an observation validation routine helps to improve the quality of "
 "your collected data. You can set specific steps for specific taxa. For "
 "example, you might want to have an expert to look at reports of rare species "
 "and have him check the datasets photo."
@@ -232,11 +234,11 @@ msgid "Step 0:"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:23
-msgid "User saves Dataset"
+msgid "User saves dataset"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:24
-msgid "after successfully filling out an observation form without errors"
+msgid "After successfully filling out an observation form without errors."
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:38
@@ -253,15 +255,15 @@ msgid "manage taxonomic restrictions"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:66
-msgid "move up"
+msgid "Move up"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:68
-msgid "move down"
+msgid "Move down"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:82
-msgid "Final Step:"
+msgid "Final step:"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:86
@@ -269,7 +271,7 @@ msgid "Dataset is marked as valid"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:93
-msgid "add step"
+msgid "Add step"
 msgstr ""
 
 #: datasets/templates/datasets/dataset_validation_routine.html:99
@@ -286,6 +288,10 @@ msgstr ""
 msgid "by"
 msgstr ""
 
+#: datasets/templates/datasets/edit_dataset.html:15
+msgid "anonymous user"
+msgstr ""
+
 #: datasets/templates/datasets/list_datasets.html:11
 msgid "Export"
 msgstr ""
@@ -297,7 +303,7 @@ msgstr ""
 #: datasets/templates/datasets/list_datasets.html:15
 #: server_control_panel/templates/server_control_panel/home.html:80
 #: server_control_panel/templates/server_control_panel/home.html:88
-msgid "download"
+msgid "Download"
 msgstr ""
 
 #: datasets/templates/datasets/list_datasets.html:41
@@ -305,7 +311,7 @@ msgid "No observations yet."
 msgstr ""
 
 #: datasets/templates/datasets/manage_dataset_validation_routine_step.html:6
-msgid "Manage Validation Step"
+msgid "Manage validation step"
 msgstr ""
 
 #: datasets/templates/datasets/manage_dataset_validation_routine_step.html:17
@@ -313,24 +319,24 @@ msgid "Successfully saved your validation step."
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/dataset_form.html:8
-msgid "changes have been saved successfully."
+msgid "Changes have been saved successfully."
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/dataset_form.html:13
-msgid "update dataset"
+msgid "Update dataset"
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/dataset_form.html:14
-msgid "delete dataset"
+msgid "Delete dataset"
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/delete_dataset.html:7
-msgid "Observation has been deleted"
+msgid "Observation has been deleted."
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/delete_dataset_image.html:6
 #: datasets/views.py:299
-msgid "Do you really want to delete this image ?"
+msgid "Do you really want to delete this image?"
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/large_modal_image.html:4
@@ -338,12 +344,12 @@ msgid "Image"
 msgstr ""
 
 #: datasets/templates/datasets/validation/ajax/picture_field_images.html:24
-msgid "no images found"
+msgid "No images found."
 msgstr ""
 
 #: datasets/templates/datasets/validation/expert_review.html:11
 #: datasets/validation/validators.py:26
-msgid "Expert Review"
+msgid "Expert review"
 msgstr ""
 
 #: datasets/templates/datasets/validation/expert_review.html:16
@@ -359,7 +365,7 @@ msgid "You marked this observation as invalid."
 msgstr ""
 
 #: datasets/templates/datasets/validation/expert_review.html:24
-msgid "back to overview"
+msgid "Back to overview"
 msgstr ""
 
 #: datasets/templates/datasets/validation/expert_review.html:47
@@ -374,15 +380,15 @@ msgid ""
 msgstr ""
 
 #: datasets/templates/datasets/validation/expert_review.html:61
-msgid "submit review"
+msgid "Submit review"
 msgstr ""
 
 #: datasets/templates/datasets/widgets/picture_widget.html:15
-msgid "in your app this button opens the camera"
+msgid "In your app this button opens the camera."
 msgstr ""
 
 #: datasets/templates/datasets/widgets/picture_widget.html:18
-msgid "in your app this button opens the photo album"
+msgid "In your app this button opens the photo album."
 msgstr ""
 
 #: datasets/templates/datasets/widgets/select_datetime_widget.html:13
@@ -414,6 +420,7 @@ msgstr ""
 #: online_content/templates/online_content/delete_microcontent.html:37
 #: templates/localcosmos_server/generic/delete_object.html:37
 #: templates/localcosmos_server/modals/footers/close.html:2
+#: templates/localcosmos_server/modals/footers/save_close.html:2
 msgid "Close"
 msgstr ""
 
@@ -422,14 +429,14 @@ msgid "Set date"
 msgstr ""
 
 #: datasets/validation/base.py:105
-msgid "This Dataset is currently waiting for review."
+msgid "This dataset is currently waiting for review."
 msgstr ""
 
 #: datasets/validation/base.py:106
-msgid "This Dataset failed the review."
+msgid "This dataset failed the review."
 msgstr ""
 
-#: datasets/validation/base.py:141
+#: datasets/validation/base.py:136
 msgid "The following fields are required but missing: "
 msgstr ""
 
@@ -442,11 +449,11 @@ msgid "Observation is invalid"
 msgstr ""
 
 #: datasets/validation/validators.py:15
-msgid "Reference Fields Validator"
+msgid "Reference fields validator"
 msgstr ""
 
 #: datasets/validation/validators.py:16
-msgid "Automatically checks if taxon, date or time, and location are present."
+msgid "Automatically checks if taxon, date/time, and location are given."
 msgstr ""
 
 #: datasets/validation/validators.py:24
@@ -455,25 +462,25 @@ msgstr ""
 
 #: datasets/validation/validators.py:27
 msgid ""
-"An Expert reviews the dataset. This validation can include the analysis of "
-"images."
+"An expert will review the dataset. This validation can include the analysis "
+"of images."
 msgstr ""
 
 #: datasets/views.py:278
 #, python-brace-format
-msgid "Do you really want to remove {0} ?"
+msgid "Do you really want to remove {0}?"
 msgstr ""
 
 #: datasets/views.py:289
-msgid "Do you really want to delete this obsersavtion ?"
+msgid "Do you really want to delete this obsersavtion?"
 msgstr ""
 
 #: forms.py:40
-msgid "Username or e-mail"
+msgid "Username or email address"
 msgstr ""
 
 #: forms.py:59
-msgid "Invalid username or email"
+msgid "Invalid username or email address"
 msgstr ""
 
 #: forms.py:158
@@ -481,7 +488,7 @@ msgid "You selected an invalid area of the image."
 msgstr ""
 
 #: forms.py:179
-msgid "The image upload was not successful. Please try again"
+msgid "The image upload was not successful. Please try again."
 msgstr ""
 
 #: models.py:473
@@ -514,26 +521,26 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: online_content/forms.py:21
-msgid "Link name in navigations"
+#: online_content/forms.py:22
+msgid "Name for links in navigation menus"
 msgstr ""
 
-#: online_content/forms.py:22
+#: online_content/forms.py:23
 #, python-format
 msgid ""
-"Max %(characters)s characters. If this content shows up in a navigation this "
-"name will be shown as the link."
+"Max %(characters)s characters. If this content shows up in a navigation "
+"menu, this name will be shown as the link."
 msgstr ""
 
-#: online_content/forms.py:29
+#: online_content/forms.py:30
 msgid "Template"
 msgstr ""
 
-#: online_content/forms.py:96
+#: online_content/forms.py:97
 msgid "Show link to this online content in"
 msgstr ""
 
-#: online_content/forms.py:97
+#: online_content/forms.py:98
 msgid ""
 "The title will be the name of the link in the navigations. Long titles will "
 "be cut off."
@@ -570,7 +577,7 @@ msgid "%(component_name)s is missing for the language %(language)s"
 msgstr ""
 
 #: online_content/templates/online_content/ajax/image_microcontent_form.html:10
-msgid "Manage Image"
+msgid "Manage image"
 msgstr ""
 
 #: online_content/templates/online_content/ajax/image_microcontent_form.html:20
@@ -581,14 +588,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: online_content/templates/online_content/ajax/image_microcontent_form.html:22
-#: online_content/templates/online_content/delete_microcontent.html:38
-#: templates/localcosmos_server/generic/delete_object.html:38
-#: templates/localcosmos_server/modals/footers/delete.html:3
-msgid "Delete"
-msgstr ""
-
 #: online_content/templates/online_content/ajax/image_microcontent_form.html:24
+#: server_control_panel/templates/server_control_panel/edit_app.html:24
+#: templates/localcosmos_server/modals/footers/save.html:3
+#: templates/localcosmos_server/modals/footers/save_close.html:3
 msgid "Save"
 msgstr ""
 
@@ -608,6 +611,7 @@ msgid "Do you really want to unpublish %(template_content)s?"
 msgstr ""
 
 #: online_content/templates/online_content/ajax/unpublish_template_content.html:21
+#: online_content/templates/online_content/template_content_list_entry.html:83
 msgid "Unpublish"
 msgstr ""
 
@@ -617,27 +621,27 @@ msgid "Add new %(template_type)s"
 msgstr ""
 
 #: online_content/templates/online_content/create_template_content.html:12
-msgid "add"
+msgid "Add"
 msgstr ""
 
 #: online_content/templates/online_content/delete_microcontent.html:22
-msgid "Delete Content"
+msgid "Delete content"
 msgstr ""
 
 #: online_content/templates/online_content/delete_microcontent.html:29
-msgid "Do you really want to delete this content ?"
+msgid "Do you really want to delete this content?"
 msgstr ""
 
 #: online_content/templates/online_content/filecontent_field.html:16
 #: templates/localcosmos_server/widgets/app_theme_image_file_input.html:15
 #: templates/localcosmos_server/widgets/two_step_file_input.html:14
-msgid "change image"
+msgid "Change image"
 msgstr ""
 
 #: online_content/templates/online_content/filecontent_field.html:16
 #: templates/localcosmos_server/widgets/app_theme_image_file_input.html:15
 #: templates/localcosmos_server/widgets/two_step_file_input.html:14
-msgid "add image"
+msgid "Add image"
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:14
@@ -654,7 +658,6 @@ msgid "not published"
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:27
-#: online_content/templates/online_content/manage_template_content.html:158
 msgid "ready for translation"
 msgstr ""
 
@@ -663,7 +666,7 @@ msgid "not ready for translation"
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:40
-msgid "You marked the content in this language as ready for translation"
+msgid "You marked the content in this language as ready for translation."
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:51
@@ -681,7 +684,7 @@ msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:81
 #: online_content/templates/online_content/template_content_list_entry.html:64
-msgid "publication successful"
+msgid "Publication successful."
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:92
@@ -697,13 +700,17 @@ msgstr ""
 msgid "save page as draft"
 msgstr ""
 
+#: online_content/templates/online_content/manage_template_content.html:158
+msgid "Ready for translation"
+msgstr ""
+
 #: online_content/templates/online_content/manage_template_content.html:161
-msgid "publish changes"
+msgid "Publish changes"
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:163
 #: online_content/templates/online_content/template_content_list_entry.html:77
-msgid "publish"
+msgid "Publish"
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:172
@@ -711,7 +718,7 @@ msgid "Preview"
 msgstr ""
 
 #: online_content/templates/online_content/manage_template_content.html:172
-msgid "show in separate window"
+msgid "Show in separate window"
 msgstr ""
 
 #: online_content/templates/online_content/online_content_base.html:22
@@ -769,21 +776,17 @@ msgid "missing"
 msgstr ""
 
 #: online_content/templates/online_content/template_content_list_entry.html:73
-msgid "manage"
+msgid "Manage"
 msgstr ""
 
 #: online_content/templates/online_content/template_content_list_entry.html:76
 #: server_control_panel/templates/server_control_panel/home.html:37
-msgid "edit"
+msgid "Edit"
 msgstr ""
 
 #: online_content/templates/online_content/template_content_list_entry.html:79
 #, python-format
-msgid "translate into %(language)s "
-msgstr ""
-
-#: online_content/templates/online_content/template_content_list_entry.html:83
-msgid "unpublish"
+msgid "Translate into %(language)s "
 msgstr ""
 
 #: online_content/templates/online_content/translate_template_content.html:12
@@ -795,9 +798,6 @@ msgid "This translation is not yet complete."
 msgstr ""
 
 #: online_content/templates/online_content/translate_template_content.html:84
-#: server_control_panel/templates/server_control_panel/edit_app.html:24
-#: templates/localcosmos_server/modals/footers/save.html:3
-#: templates/localcosmos_server/modals/footers/save_close.html:3
 msgid "save"
 msgstr ""
 
@@ -817,17 +817,17 @@ msgid "App .zip file"
 msgstr ""
 
 #: server_control_panel/forms.py:11
-msgid "URL of this App"
+msgid "URL of this app"
 msgstr ""
 
 #: server_control_panel/forms.py:12
 msgid ""
-"absolute url where your app will be served according to your webserver "
-"configuration"
+"Absolute URL where your app will be served according to your web server "
+"configuration."
 msgstr ""
 
 #: server_control_panel/forms.py:13
-msgid "eg mysite.com or mysite.com/app"
+msgid "e.g. mysite.com or mysite.com/app"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/app_api_status.html:3
@@ -840,7 +840,7 @@ msgid "Overview"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/base.html:42
-msgid "Install App"
+msgid "Install app"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/base.html:45
@@ -852,7 +852,7 @@ msgid "Staff only"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/base.html:59
-msgid "Django Admin"
+msgid "Django admin"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/edit_app.html:7
@@ -861,21 +861,21 @@ msgid "Edit %(name)s"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/edit_app.html:18
-msgid "Successfully updated your App."
+msgid "Successfully updated your app."
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:8
-msgid "Server Info"
+msgid "Server info"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:18
 msgid ""
-"Use this url in the App Kit on localcosmos.org to connect your app to this "
+"Use this url in the app kit on localcosmos.org to connect your app to this "
 "server."
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:24
-msgid "Installed Apps"
+msgid "Installed apps"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:32
@@ -883,11 +883,11 @@ msgid "App"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:38
-msgid "update"
+msgid "Update"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:39
-msgid "uninstall"
+msgid "Uninstall"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:52
@@ -899,7 +899,7 @@ msgid "App admin"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:59
-msgid "Webapp"
+msgid "Web app"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:67
@@ -909,15 +909,15 @@ msgid "not available"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:72
-msgid "API Status"
+msgid "API status"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:78
-msgid "Android"
+msgid "Android .apk"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:86
-msgid "iOS"
+msgid "iOS .ipa"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:96
@@ -933,16 +933,13 @@ msgid "You have not installed any apps yet."
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:114
-msgid "install new App"
+#: server_control_panel/templates/server_control_panel/install_app.html:8
+msgid "Install new app"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:8
 #, python-format
 msgid "Update %(name)s"
-msgstr ""
-
-#: server_control_panel/templates/server_control_panel/install_app.html:8
-msgid "Install new App"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:14
@@ -957,7 +954,7 @@ msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:35
 #, python-format
-msgid "Your webapp will be installed in %(localcosmos_apps_root)sAPP_UID/"
+msgid "Your web app will be installed in %(localcosmos_apps_root)sAPP_UID/"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:36
@@ -965,20 +962,20 @@ msgid "You can look up your APP_UID on localcosmos.org"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:37
-msgid "Your webserver (nginx or apache) will serve your webapp, not django"
+msgid "Your webserver (nginx or apache) will serve your web app, not django"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:38
 #, python-format
 msgid ""
 "Make sure to set an alias to %(localcosmos_apps_root)sAPP_UID/www/ in your "
-"webserver"
+"web server"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:39
 msgid ""
-"Your android and iOS Apps will be able to connect to your server after you "
-"installed the webapp"
+"Your Android and iOS Apps will be able to connect to your server after you "
+"installed the web app"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:57
@@ -986,7 +983,7 @@ msgid "The following errors occured during app import:"
 msgstr ""
 
 #: server_control_panel/templates/server_control_panel/install_app.html:68
-msgid "install"
+msgid "Install"
 msgstr ""
 
 #: server_control_panel/views.py:140
@@ -1001,7 +998,7 @@ msgstr ""
 
 #: server_control_panel/views.py:230
 #, python-format
-msgid "Do you really want to uninstall %s ?"
+msgid "Do you really want to uninstall %s?"
 msgstr ""
 
 #: setup_forms.py:17
@@ -1013,16 +1010,15 @@ msgid "The two email address fields didn't match."
 msgstr ""
 
 #: setup_forms.py:21
-msgid "e-mail"
+msgid "Email"
 msgstr ""
 
 #: setup_forms.py:22
-msgid "e-mail (again)"
+msgid "Email (again)"
 msgstr ""
 
 #: taxonomy/fields.py:44
-#: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:11
-msgid "include descendants"
+msgid "Include descendants"
 msgstr ""
 
 #: taxonomy/forms.py:35
@@ -1031,7 +1027,11 @@ msgstr ""
 
 #: taxonomy/views.py:144
 #, python-format
-msgid "Do you really want to remove %s ?"
+msgid "Do you really want to remove %s?"
+msgstr ""
+
+#: templates/400.html:10
+msgid "Bad request"
 msgstr ""
 
 #: templates/403.html:10
@@ -1075,47 +1075,40 @@ msgstr ""
 
 #: templates/localcosmos_server/generic/delete_object.html:19
 #, python-format
-msgid "delete %(verbose_name)s"
+msgid "Delete %(verbose_name)s"
 msgstr ""
 
 #: templates/localcosmos_server/generic/delete_object.html:30
 #, python-format
-msgid "Do you really want to delete %(verbose_name)s ?"
+msgid "Do you really want to delete %(verbose_name)s?"
 msgstr ""
 
 #: templates/localcosmos_server/modals/footers/add_selected.html:3
 msgid "Add selected"
 msgstr ""
 
-#: templates/localcosmos_server/modals/footers/save_close.html:2
-msgid "close"
-msgstr ""
-
 #: templates/localcosmos_server/registration/loggedout.html:11
-msgid "Logged in"
+msgid "Signed in"
 msgstr ""
 
 #: templates/localcosmos_server/registration/loggedout.html:13
-msgid "Logged out"
+msgid "Signed out"
 msgstr ""
 
 #: templates/localcosmos_server/registration/loggedout.html:23
 #: templates/localcosmos_server/registration/login.html:19
 #, python-format
-msgid "You are logged in as %(user)s"
+msgid "You are signed in as %(user)s"
 msgstr ""
 
 #: templates/localcosmos_server/registration/loggedout.html:27
-msgid "You are logged out"
+msgid "You are signed out"
 msgstr ""
 
 #: templates/localcosmos_server/registration/login.html:10
-#: templates/localcosmos_server/registration/password_reset_complete.html:21
-msgid "Log in"
-msgstr ""
-
 #: templates/localcosmos_server/registration/login.html:28
-msgid "sign in"
+#: templates/localcosmos_server/registration/password_reset_complete.html:21
+msgid "Sign in"
 msgstr ""
 
 #: templates/localcosmos_server/registration/login.html:29
@@ -1146,7 +1139,7 @@ msgid "Change my password"
 msgstr ""
 
 #: templates/localcosmos_server/registration/password_reset_complete.html:19
-msgid "Your password has been set.  You may go ahead and log in now."
+msgid "Your password has been set. You may go ahead and sign in now."
 msgstr ""
 
 #: templates/localcosmos_server/registration/password_reset_confirm.html:20
@@ -1158,7 +1151,7 @@ msgstr ""
 #: templates/localcosmos_server/registration/password_reset_confirm.html:31
 msgid ""
 "The password reset link was invalid, possibly because it has already been "
-"used.  Please request a new password reset."
+"used. Please request a new password reset."
 msgstr ""
 
 #: templates/localcosmos_server/registration/password_reset_done.html:18
@@ -1184,20 +1177,20 @@ msgid "Reset my password"
 msgstr ""
 
 #: templates/localcosmos_server/setup/setup_superuser.html:12
-msgid "Setup Superuser Account"
+msgid "Setup superuser account"
 msgstr ""
 
 #: templates/localcosmos_server/setup/setup_superuser.html:18
-msgid "create superuser account"
+msgid "Create superuser account"
 msgstr ""
 
 #: templates/localcosmos_server/taxonomy/manage_taxonomic_restrictions.html:12
-msgid "Manage Taxonomic Restriction"
+msgid "Manage taxonomic restriction"
 msgstr ""
 
 #: templates/localcosmos_server/taxonomy/manage_taxonomic_restrictions.html:25
 msgid ""
-"You have to publish your app before being able to set Taxonomic Restrictions"
+"You have to publish your app before being able to set taxonomic restrictions"
 msgstr ""
 
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:5
@@ -1211,7 +1204,7 @@ msgstr ""
 
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:17
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:19
-msgid "remove"
+msgid "Remove"
 msgstr ""
 
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:26
@@ -1219,11 +1212,19 @@ msgid "Usable for all taxa"
 msgstr ""
 
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:31
-msgid "add taxonomic restriction"
+msgid "Add taxonomic restriction"
 msgstr ""
 
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:51
-msgid "add taxon to restriction"
+msgid "Add taxon to restriction"
+msgstr ""
+
+#: templates/localcosmos_server/widgets/ajax_file_input.html:13
+msgid "delete"
+msgstr ""
+
+#: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:11
+msgid "include descendants"
 msgstr ""
 
 #: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:36
@@ -1241,18 +1242,18 @@ msgid "Read more"
 msgstr ""
 
 #: validators.py:15
-msgid "Invalid svg file: could not detect svg in xml tree of the file."
+msgid "Invalid SVG file: could not detect SVG in XML tree of the file."
 msgstr ""
 
 #: validators.py:55
 #, python-format
-msgid "Wrong image ratio. Upload a File with the dimensions w:h = %(ratio)s"
+msgid "Wrong image ratio. Upload a file with the dimensions w:h = %(ratio)s"
 msgstr ""
 
 #: validators.py:96 validators.py:189
 msgid ""
-"Invalid svg file: did neither find viewBox setting or width and height "
-"setting in the svg file."
+"Invalid SVG file: did neither find viewBox setting or width and height "
+"setting in the SVG file."
 msgstr ""
 
 #: validators.py:149

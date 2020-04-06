@@ -12,8 +12,8 @@ from .base import RequiredFieldsValidator, HumanInteractionValidator
 '''
 class ReferenceFieldsValidator(RequiredFieldsValidator):
 
-    verbose_name = _('Reference Fields Validator')
-    description = _('Automatically checks if taxon, date or time, and location are present.')
+    verbose_name = _('Reference fields validator')
+    description = _('Automatically checks if taxon, date/time, and location are given.')
     
 
 class ExpertReviewValidator(HumanInteractionValidator):
@@ -23,8 +23,8 @@ class ExpertReviewValidator(HumanInteractionValidator):
 
     status_message = _('This observation is currently waiting for review.')
 
-    verbose_name = _('Expert Review')
-    description = _('An Expert reviews the dataset. This validation can include the analysis of images.')
+    verbose_name = _('Expert review')
+    description = _('An expert will review the dataset. This validation can include the analysis of images.')
 
 
     def form_valid(self, dataset, view_instance, form):

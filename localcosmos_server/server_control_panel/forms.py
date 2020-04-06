@@ -8,9 +8,9 @@ class InstallAppForm(forms.Form):
     zipfile = forms.FileField(label=_('App .zip file'),
                               validators=[FileExtensionValidator(allowed_extensions=['zip'])])
 
-    url = forms.URLField(label=_('URL of this App'),
-                help_text=_('absolute url where your app will be served according to your webserver configuration'),
-                         widget=forms.TextInput(attrs={'placeholder':_('eg mysite.com or mysite.com/app')}))
+    url = forms.URLField(label=_('URL of this app'),
+                help_text=_('Absolute URL where your app will be served according to your web server configuration.'),
+                         widget=forms.TextInput(attrs={'placeholder':_('e.g. mysite.com or mysite.com/app')}))
 
 
 class EditAppForm(forms.ModelForm):

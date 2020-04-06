@@ -9,7 +9,7 @@
 			<form action="{% url 'create_template_content' app.uid template_type %}" method="POST">{% csrf_token %}
 				{% render_bootstrap_form form %}
 				<p class="text-center">
-					<button type="submit" class="btn btn-outline-primary">{% trans 'add' %}</button>
+					<button type="submit" class="btn btn-outline-primary">{% trans 'Add' %}</button>
 				</p>
 			</form>
 		</div>
