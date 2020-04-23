@@ -43,7 +43,7 @@ msgstr "Vorname (optional)"
 
 #: api/serializers.py:128
 msgid "Surname (optional)"
-msgstr "Vorname (optional)"
+msgstr "Nachname (optional)"
 
 #: api/serializers.py:129
 msgid "Email address"
@@ -854,7 +854,7 @@ msgstr "z.B. mysite.com oder mysite.com/app"
 
 #: server_control_panel/templates/server_control_panel/app_api_status.html:3
 msgid "working"
-msgstr "arbeite"
+msgstr "funktioniert"
 
 #: server_control_panel/templates/server_control_panel/base.html:39
 #: server_control_panel/templates/server_control_panel/install_app.html:18

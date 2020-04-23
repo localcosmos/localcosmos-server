@@ -8,6 +8,7 @@ from localcosmos_server.forms import EmailOrUsernameAuthenticationForm
 # activate permission rules
 from .permission_rules import *
 
+
 class LogIn(LoginView):
     template_name = 'localcosmos_server/registration/login.html'
     form_class = EmailOrUsernameAuthenticationForm

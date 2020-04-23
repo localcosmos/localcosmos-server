@@ -131,6 +131,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     client_id = serializers.CharField(label='', style={'input_type': 'hidden',})
     platform = serializers.CharField(label='', style={'input_type': 'hidden',})
+    app_uuid = serializers.CharField(label='', style={'input_type': 'hidden',})
 
     def validate_email(self, value):
         email_exists = User.objects.filter(email__iexact=value).exists()
@@ -185,7 +186,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password', 'password2', 'first_name', 'last_name', 'email', 'email2', 'client_id',
-                  'platform',)
+                  'platform', 'app_uuid')
 
         extra_kwargs = {
             'password': {
@@ -196,3 +197,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
                 },
             },
         }
+
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    email = serializers.EmailField(label=_('Email address'), style={'placeholder':'you@example.com'})

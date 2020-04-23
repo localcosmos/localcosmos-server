@@ -10,8 +10,10 @@ urlpatterns = [
     path('user/<int:user_id>/manage/', views.ManageAccount.as_view()),
     path('user/<int:user_id>/delete/', views.DeleteAccount.as_view()),
     path('user/register/', views.RegisterAccount.as_view()),
+    path('password/reset/', views.PasswordResetRequest.as_view()),
     # app specific
     path('app/<uuid:app_uuid>/', views.AppAPIHome.as_view(), name='app_api_home'),
+    path('app/<uuid:app_uuid>/privacy-statement/', views.PrivacyStatement.as_view(), name='app_privacy_statement'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])

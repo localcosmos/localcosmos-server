@@ -9,6 +9,8 @@
 ###################################################################################################################
 from django.contrib.auth import logout
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
 from rest_framework.views import APIView
 from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.response import Response
@@ -19,9 +21,13 @@ from rest_framework import status
 
 from localcosmos_server.models import App
 
-from .serializers import LCAuthTokenSerializer, AccountSerializer, RegistrationSerializer
+from .serializers import LCAuthTokenSerializer, AccountSerializer, RegistrationSerializer, PasswordResetSerializer
 from django_road.permissions import IsAuthenticatedOnly, OwnerOnly
 from .authentication import LCTokenAuthentication
+
+from localcosmos_server.mails import send_registration_confirmation_email
+
+import os, json
 
 
 ##################################################################################################################
@@ -74,7 +80,7 @@ class ObtainLCAuthToken(ObtainAuthToken):
 
 
 '''
-    User Account Registration, App unspecific
+    User Account Registration, App specific
 '''
 class RegisterAccount(APIView):
 
@@ -89,6 +95,7 @@ class RegisterAccount(APIView):
         serializer.lc_initial = {
             'client_id': request.GET['client_id'],
             'platform' : request.GET['platform'],
+            'app_uuid' : request.GET['app_uuid'],
         }
         serializer_context = {
             'serializer': serializer,
@@ -111,10 +118,16 @@ class RegisterAccount(APIView):
         }
         
         if serializer.is_valid():
+            app_uuid = serializer.validated_data['app_uuid']
+            
             user = serializer.save()
             request.user = user
             context['user'] = user
             context['success'] = True
+
+            # send registration email
+            send_registration_confirmation_email(user, app_uuid)
+            
         else:
             context['success'] = False
             context['serializer'] = serializer
@@ -221,6 +234,59 @@ class DeleteAccount(APIView):
         return Response(context)
     
 
+# a user enters his email address or username and gets an email
+from django.contrib.auth.forms import PasswordResetForm
+class PasswordResetRequest(APIView):
+
+    serializer_class = PasswordResetSerializer
+    renderer_classes = (TemplateHTMLRenderer,)
+    permission_classes = ()
+    
+    template_name = 'localcosmos_server/api/password_reset_form.html'
+
+
+    def get(self, request, *args, **kwargs):
+        
+        serializer = self.serializer_class()
+        serializer_context = {
+            'serializer': serializer,
+            'request':request,
+        }
+        
+        return Response(serializer_context)
+
+
+    def post(self, request, *args, **kwargs):
+
+        serializer_context = { 'request': request }        
+        serializer = self.serializer_class(data=request.data, context=serializer_context)
+
+        context = {
+            'success' : False,
+            'request' : request,
+        }
+        
+        if serializer.is_valid():
+            form = PasswordResetForm(data=serializer.data)
+            form.is_valid()
+            users = form.get_users(serializer.data['email'])
+            users = list(users)
+
+            if not users:
+                context['serializer'] = serializer
+                context['error_message'] = _('No matching user found.')
+                return Response(context, status=status.HTTP_400_BAD_REQUEST)
+
+            form.save(email_template_name='localcosmos_server/registration/password_reset_email.html')
+            context['success'] = True
+            
+        else:
+            context['serializer'] = serializer
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)
+            
+        context['serializer'] = serializer
+        return Response(context)    
+        
 
 ##################################################################################################################
 #
@@ -238,4 +304,38 @@ class AppAPIHome(APIView):
             'api_status' : 'online',
             'app_name' : app.name,
         }
+        return Response(context)
+
+
+##################################################################################################################
+#
+#   LEGAL REQUIREMENTS
+#
+##################################################################################################################
+class PrivacyStatement(APIView):
+    
+    permission_classes = ()
+    renderer_classes = (TemplateHTMLRenderer,)
+    template_name = 'localcosmos_server/api/legal/privacy_statement.html'
+
+
+    def get(self, request, *args, **kwargs):
+
+        app = App.objects.get(uuid=kwargs['app_uuid'])
+
+        # get app legal_notice.json
+        review = request.GET.get('review', False)
+        if review:
+            legal_notice_path = os.path.join(app.review_version_path, 'legal_notice.json')
+        else:
+            legal_notice_path = os.path.join(app.published_version_path, 'legal_notice.json')
+            
+        with open(legal_notice_path, 'r') as f:
+            legal_notice = json.loads(f.read())
+        
+        context = {
+            'legal_notice' : legal_notice,
+            'request':request,
+        }
+        
         return Response(context)
