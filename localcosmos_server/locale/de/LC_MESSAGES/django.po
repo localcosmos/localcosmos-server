@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 14:55+0200\n"
+"POT-Creation-Date: 2020-04-24 11:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgstr "Vorname (optional)"
 msgid "Surname (optional)"
 msgstr "Nachname (optional)"
 
-#: api/serializers.py:129
+#: api/serializers.py:129 api/serializers.py:204
 msgid "Email address"
 msgstr "e-mail Addresse"
 
@@ -53,17 +53,21 @@ msgstr "e-mail Addresse"
 msgid "Email address (again)"
 msgstr "e-mail Addresse (nochmal)"
 
-#: api/serializers.py:138
+#: api/serializers.py:139
 msgid "This email address is already registered."
 msgstr "Diese e-mail Addresse ist bereits registriert"
 
-#: api/serializers.py:144
+#: api/serializers.py:145
 msgid "The email addresses did not match."
 msgstr "Die beiden e-mail Addressen stimmten nicht überein."
 
-#: api/serializers.py:147
+#: api/serializers.py:148
 msgid "The passwords did not match."
 msgstr "Die Passwörter stimmten nicht überein"
+
+#: api/views.py:277
+msgid "No matching user found."
+msgstr "Kein passender Benutzer gefunden."
 
 #: app_admin/forms.py:8
 msgid "user"
@@ -232,9 +236,9 @@ msgid ""
 msgstr ""
 "Das Erstellen einer Validierungsroutine für Beobachtungen kann dabei helfen, "
 "die Qualität ihrer gesammelten Daten zu verbessern. Sie können "
-"Validierungsschritte optional auf bestimmte Taxa becshränken. Zum Beispiel möchten Sie "
-"vielleicht, dass ein Experte sich Beobachtungen seltener Arten anschaut und "
-"das Foto des Datensatzes prüft."
+"Validierungsschritte optional auf bestimmte Taxa becshränken. Zum Beispiel "
+"möchten Sie vielleicht, dass ein Experte sich Beobachtungen seltener Arten "
+"anschaut und das Foto des Datensatzes prüft."
 
 #: datasets/templates/datasets/dataset_validation_routine.html:18
 msgid "Step 0:"
@@ -246,7 +250,8 @@ msgstr "Nutzer speichert Datensatz"
 
 #: datasets/templates/datasets/dataset_validation_routine.html:24
 msgid "After successfully filling out an observation form without errors."
-msgstr "Nach erfolgreichem, fehlerfreien Ausfüllen eines Beobachtungsformulars."
+msgstr ""
+"Nach erfolgreichem, fehlerfreien Ausfüllen eines Beobachtungsformulars."
 
 #: datasets/templates/datasets/dataset_validation_routine.html:38
 #, python-format
@@ -501,7 +506,13 @@ msgstr "Sie haben einen ungültigen Bereich ihres Bildes ausgewählt."
 
 #: forms.py:179
 msgid "The image upload was not successful. Please try again."
-msgstr "Das Hochladen des Bildes war nicht erfolgreich. Bitte nochmal versuchen."
+msgstr ""
+"Das Hochladen des Bildes war nicht erfolgreich. Bitte nochmal versuchen."
+
+#: mails.py:23 templates/email/registration_confirmation.html:8
+#: templates/email/registration_confirmation.txt:4
+msgid "Registration confirmation"
+msgstr ""
 
 #: models.py:473
 msgid "admin"
@@ -626,7 +637,8 @@ msgstr "Veröffentlichung von %(template_content)s erfolgreich aufgehoben"
 #: online_content/templates/online_content/ajax/unpublish_template_content.html:11
 #, python-format
 msgid "Do you really want to unpublish %(template_content)s?"
-msgstr "Wollen Sie die Veröffentlichung von %(template_content)s wirklich aufheben?"
+msgstr ""
+"Wollen Sie die Veröffentlichung von %(template_content)s wirklich aufheben?"
 
 #: online_content/templates/online_content/ajax/unpublish_template_content.html:21
 #: online_content/templates/online_content/template_content_list_entry.html:83
@@ -698,7 +710,8 @@ msgstr "Veröffentlichung fehlgeschlagen:"
 
 #: online_content/templates/online_content/manage_template_content.html:68
 msgid "Could not set this page as ready for translation:"
-msgstr "Diese Seite konnte nicht als für die Übersetzung bereit markiert werden:"
+msgstr ""
+"Diese Seite konnte nicht als für die Übersetzung bereit markiert werden:"
 
 #: online_content/templates/online_content/manage_template_content.html:81
 #: online_content/templates/online_content/template_content_list_entry.html:64
@@ -1089,10 +1102,79 @@ msgstr "Server Control Panel"
 msgid "more"
 msgstr "mehr"
 
+#: templates/email/registration_confirmation.html:315
+msgid "Registration confirmation."
+msgstr "Registrierungsbestätigung."
+
+#: templates/email/registration_confirmation.html:321
+#: templates/email/registration_confirmation.txt:6
+#, python-format
+msgid "Hello %(name)s!"
+msgstr "Hallo %(name)s!"
+
+#: templates/email/registration_confirmation.html:324
+#: templates/email/registration_confirmation.txt:9
+#, python-format
+msgid "Thank you for registering on %(url)s."
+msgstr "Vielen Dank für die Registrierung auf %(url)s."
+
+#: templates/email/registration_confirmation.html:326
+#: templates/email/registration_confirmation.txt:13
+#, python-format
+msgid "Your username is: %(username)s"
+msgstr "Ihr Nutzername ist: %(username)s"
+
+#: templates/email/registration_confirmation.html:336
+msgid "Questions?"
+msgstr "Fragen?"
+
+#: templates/email/registration_confirmation.html:340
+#: templates/email/registration_confirmation.txt:17
+#: templates/localcosmos_server/legal/legal_notice.html:4
+#: templates/localcosmos_server/legal/legal_notice.html:10
+msgid "Legal notice"
+msgstr "Impressum"
+
+#: templates/email/registration_confirmation.html:341
+#: templates/email/registration_confirmation.txt:18
+#: templates/localcosmos_server/legal/privacy_statement.html:8
+msgid "Privacy statement"
+msgstr "Datenschutzerklärung"
+
 #: templates/error_base.html:30
 msgid "Go back to website"
 msgstr "Zurück zur Webseite"
 
+#: templates/localcosmos_server/api/password_reset_form.html:8
+#: templates/localcosmos_server/registration/password_reset_done.html:18
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+"Wir haben ihnen Anweisungen geschickt, wie Sie ein neues Passwort setzen "
+"können, falls ein Account für dies e-mail Addresse existiert. Die e-mail "
+"sollte in Kürze ankommen."
+
+#: templates/localcosmos_server/api/password_reset_form.html:10
+#: templates/localcosmos_server/registration/password_reset_done.html:19
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+"Falls Sie keine e-mail erhalten, müssen Sie sicherstellen, dass Sie auch "
+"diejenige e-mail Addresse eingeben, mit der Sie sich registriert haben. "
+"Schauen Sie auch im Spam-Ordner nach."
+
+#: templates/localcosmos_server/api/password_reset_form.html:17
+#: templates/localcosmos_server/registration/password_reset_form.html:18
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+"Passwort vergessen? Geben Sie unten ihre e-mail Adresse ein, und wir "
+"schicken ihnen Anweisungen, wie sie ein neues Passwort setzen können."
+
+#: templates/localcosmos_server/api/password_reset_form.html:27
 #: templates/localcosmos_server/api/register_account.html:6
 msgid "There have been errors in the data you submitted."
 msgstr "Die von ihnen übermittelten Daten enthielten Fehler."
@@ -1119,6 +1201,10 @@ msgstr "%(verbose_name)s löschen"
 #, python-format
 msgid "Do you really want to delete %(verbose_name)s?"
 msgstr "Wollen Sie wirklich %(verbose_name)s löschen?"
+
+#: templates/localcosmos_server/legal/legal_notice.html:17
+msgid "Operator and contact person"
+msgstr ""
 
 #: templates/localcosmos_server/modals/footers/add_selected.html:3
 msgid "Add selected"
@@ -1195,34 +1281,33 @@ msgid ""
 "The password reset link was invalid, possibly because it has already been "
 "used. Please request a new password reset."
 msgstr ""
-"Der Link für das Zurücksetzen des Passwortes war ungültig. Vermutlich, weil er bereits benutzt "
-"wurde. Bitte fordern Sie das Zurücksetzen des Passwortes neu an."
+"Der Link für das Zurücksetzen des Passwortes war ungültig. Vermutlich, weil "
+"er bereits benutzt wurde. Bitte fordern Sie das Zurücksetzen des Passwortes "
+"neu an."
 
-#: templates/localcosmos_server/registration/password_reset_done.html:18
+#: templates/localcosmos_server/registration/password_reset_email.html:2
+#, python-format
 msgid ""
-"We've emailed you instructions for setting your password, if an account "
-"exists with the email you entered. You should receive them shortly."
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
 msgstr ""
-"Wir haben ihnen Anweisungen geschickt, wie Sie ein neues Passwort setzen "
-"können, falls ein Account für dies e-mail Addresse existiert. Die e-mail "
-"sollte in Kürze ankommen."
 
-#: templates/localcosmos_server/registration/password_reset_done.html:19
-msgid ""
-"If you don't receive an email, please make sure you've entered the address "
-"you registered with, and check your spam folder."
+#: templates/localcosmos_server/registration/password_reset_email.html:4
+msgid "Please go to the following page and choose a new password:"
 msgstr ""
-"Falls Sie keine e-mail erhalten, müssen Sie sicherstellen, dass Sie auch "
-"diejenige e-mail Addresse eingeben, mit der Sie sich registriert haben. "
-"Schauen Sie auch im Spam-Ordner nach."
 
-#: templates/localcosmos_server/registration/password_reset_form.html:18
-msgid ""
-"Forgotten your password? Enter your email address below, and we'll email "
-"instructions for setting a new one."
+#: templates/localcosmos_server/registration/password_reset_email.html:8
+msgid "Your username, in case you've forgotten:"
 msgstr ""
-"Passwort vergessen? Geben Sie unten ihre e-mail Adresse ein, und wir "
-"schicken ihnen Anweisungen, wie sie ein neues Passwort setzen können."
+
+#: templates/localcosmos_server/registration/password_reset_email.html:10
+msgid "Thanks for using our site!"
+msgstr "Vielen Dank, dass Sie unsere App benutzen!"
+
+#: templates/localcosmos_server/registration/password_reset_email.html:12
+#, python-format
+msgid "The %(site_name)s team"
+msgstr "Das Team von %(site_name)s"
 
 #: templates/localcosmos_server/registration/password_reset_form.html:27
 msgid "Reset my password"
@@ -1321,4 +1406,3 @@ msgid ""
 "%(dimensions)s"
 msgstr ""
 "Falsche Bildmaße. Das Bild muss EXAKT %(dimensions)s (Breite x Höhe) sein."
-

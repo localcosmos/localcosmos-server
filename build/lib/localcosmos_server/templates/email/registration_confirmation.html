@@ -335,6 +335,12 @@
 						<tr>
 							<td class="aligncenter content-block">{% trans 'Questions?' %} Email <a href="mailto:{{ legal_notice.email }}">{{ legal_notice.email }}</a></td>
 						</tr>
+						<tr>
+							<td class="aligncenter content-block">
+								<a href="https://{{ site.domain }}{{ legal_notice_url }}" target="_blank">{% trans 'Legal notice' %}</a> &nbsp; &nbsp;
+								<a href="https://{{ site.domain }}{{ privacy_statement_url }}" target="_blank">{% trans 'Privacy statement' %}</a>
+							</td>
+						</tr>
 					</table>
 				</div></div>
 		</td>

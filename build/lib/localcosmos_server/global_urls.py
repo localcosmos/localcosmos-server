@@ -29,12 +29,17 @@ urlpatterns = [
         template_name='localcosmos_server/registration/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         extra_context={'base_template': 'base.html'},
-        template_name='localcosmos_server/registration/password_reset_complete.html'), name='password_reset_complete'),
+        template_name='localcosmos_server/registration/password_reset_complete.html'),
+        name='password_reset_complete'),
     
     # SETUP GUI
     path('', include('localcosmos_server.setup_urls')),
     
     # SERVER CONTROL PANEL
     path('control-panel/', include('localcosmos_server.server_control_panel.urls', namespace='scp')),
+
+    # LEGAL
+    path('legal-notice/<str:app_uid>/', views.LegalNotice.as_view(), name='legal_notice'),
+    path('privacy-statement/<str:app_uid>/', views.PrivacyStatement.as_view(), name='privacy_statement'),
     
 ]

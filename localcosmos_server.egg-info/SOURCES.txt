@@ -1347,6 +1347,7 @@ localcosmos_server/templates/localcosmos_server/api/legal/privacy_statement.html
 localcosmos_server/templates/localcosmos_server/generic/delete_object.html
 localcosmos_server/templates/localcosmos_server/legal/base.html
 localcosmos_server/templates/localcosmos_server/legal/legal_notice.html
+localcosmos_server/templates/localcosmos_server/legal/privacy_statement.html
 localcosmos_server/templates/localcosmos_server/modals/large_modal_base.html
 localcosmos_server/templates/localcosmos_server/modals/large_modal_form.html
 localcosmos_server/templates/localcosmos_server/modals/modal_base.html

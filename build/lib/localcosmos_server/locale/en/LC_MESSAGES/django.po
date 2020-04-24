@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 14:55+0200\n"
+"POT-Creation-Date: 2020-04-24 11:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 msgid "Surname (optional)"
 msgstr ""
 
-#: api/serializers.py:129
+#: api/serializers.py:129 api/serializers.py:204
 msgid "Email address"
 msgstr ""
 
@@ -51,16 +51,20 @@ msgstr ""
 msgid "Email address (again)"
 msgstr ""
 
-#: api/serializers.py:138
+#: api/serializers.py:139
 msgid "This email address is already registered."
 msgstr ""
 
-#: api/serializers.py:144
+#: api/serializers.py:145
 msgid "The email addresses did not match."
 msgstr ""
 
-#: api/serializers.py:147
+#: api/serializers.py:148
 msgid "The passwords did not match."
+msgstr ""
+
+#: api/views.py:277
+msgid "No matching user found."
 msgstr ""
 
 #: app_admin/forms.py:8
@@ -489,6 +493,11 @@ msgstr ""
 
 #: forms.py:179
 msgid "The image upload was not successful. Please try again."
+msgstr ""
+
+#: mails.py:23 templates/email/registration_confirmation.html:8
+#: templates/email/registration_confirmation.txt:4
+msgid "Registration confirmation"
 msgstr ""
 
 #: models.py:473
@@ -1054,10 +1063,71 @@ msgstr ""
 msgid "more"
 msgstr ""
 
+#: templates/email/registration_confirmation.html:315
+msgid "Registration confirmation."
+msgstr ""
+
+#: templates/email/registration_confirmation.html:321
+#: templates/email/registration_confirmation.txt:6
+#, python-format
+msgid "Hello %(name)s!"
+msgstr ""
+
+#: templates/email/registration_confirmation.html:324
+#: templates/email/registration_confirmation.txt:9
+#, python-format
+msgid "Thank you for registering on %(url)s."
+msgstr ""
+
+#: templates/email/registration_confirmation.html:326
+#: templates/email/registration_confirmation.txt:13
+#, python-format
+msgid "Your username is: %(username)s"
+msgstr ""
+
+#: templates/email/registration_confirmation.html:336
+msgid "Questions?"
+msgstr ""
+
+#: templates/email/registration_confirmation.html:340
+#: templates/email/registration_confirmation.txt:17
+#: templates/localcosmos_server/legal/legal_notice.html:4
+#: templates/localcosmos_server/legal/legal_notice.html:10
+msgid "Legal notice"
+msgstr ""
+
+#: templates/email/registration_confirmation.html:341
+#: templates/email/registration_confirmation.txt:18
+#: templates/localcosmos_server/legal/privacy_statement.html:8
+msgid "Privacy statement"
+msgstr ""
+
 #: templates/error_base.html:30
 msgid "Go back to website"
 msgstr ""
 
+#: templates/localcosmos_server/api/password_reset_form.html:8
+#: templates/localcosmos_server/registration/password_reset_done.html:18
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+
+#: templates/localcosmos_server/api/password_reset_form.html:10
+#: templates/localcosmos_server/registration/password_reset_done.html:19
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+
+#: templates/localcosmos_server/api/password_reset_form.html:17
+#: templates/localcosmos_server/registration/password_reset_form.html:18
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+
+#: templates/localcosmos_server/api/password_reset_form.html:27
 #: templates/localcosmos_server/api/register_account.html:6
 msgid "There have been errors in the data you submitted."
 msgstr ""
@@ -1081,6 +1151,10 @@ msgstr ""
 #: templates/localcosmos_server/generic/delete_object.html:30
 #, python-format
 msgid "Do you really want to delete %(verbose_name)s?"
+msgstr ""
+
+#: templates/localcosmos_server/legal/legal_notice.html:17
+msgid "Operator and contact person"
 msgstr ""
 
 #: templates/localcosmos_server/modals/footers/add_selected.html:3
@@ -1154,22 +1228,28 @@ msgid ""
 "used. Please request a new password reset."
 msgstr ""
 
-#: templates/localcosmos_server/registration/password_reset_done.html:18
+#: templates/localcosmos_server/registration/password_reset_email.html:2
+#, python-format
 msgid ""
-"We've emailed you instructions for setting your password, if an account "
-"exists with the email you entered. You should receive them shortly."
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
 msgstr ""
 
-#: templates/localcosmos_server/registration/password_reset_done.html:19
-msgid ""
-"If you don't receive an email, please make sure you've entered the address "
-"you registered with, and check your spam folder."
+#: templates/localcosmos_server/registration/password_reset_email.html:4
+msgid "Please go to the following page and choose a new password:"
 msgstr ""
 
-#: templates/localcosmos_server/registration/password_reset_form.html:18
-msgid ""
-"Forgotten your password? Enter your email address below, and we'll email "
-"instructions for setting a new one."
+#: templates/localcosmos_server/registration/password_reset_email.html:8
+msgid "Your username, in case you've forgotten:"
+msgstr ""
+
+#: templates/localcosmos_server/registration/password_reset_email.html:10
+msgid "Thanks for using our site!"
+msgstr ""
+
+#: templates/localcosmos_server/registration/password_reset_email.html:12
+#, python-format
+msgid "The %(site_name)s team"
 msgstr ""
 
 #: templates/localcosmos_server/registration/password_reset_form.html:27

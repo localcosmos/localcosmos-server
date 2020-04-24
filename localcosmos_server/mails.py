@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string, get_template
 from django.contrib.sites.models import Site
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
 FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
@@ -23,11 +24,17 @@ def send_registration_confirmation_email(user, app_uuid):
     from_email = FROM_EMAIL
     to = user.email
 
+    legal_notice_url = reverse('legal_notice', kwargs={'app_uid':app.uid}, urlconf='localcosmos_server.urls')
+    privacy_statement_url = reverse('privacy_statement', kwargs={'app_uid':app.uid},
+                                    urlconf='localcosmos_server.urls')
+
     ctx = {
         'user' : user,
         'app' : app,
         'legal_notice' : legal_notice,
         'site' : Site.objects.get_current(),
+        'legal_notice_url' : legal_notice_url,
+        'privacy_statement_url' : privacy_statement_url,
     }
 
     text_message = render_to_string('email/registration_confirmation.txt', ctx)

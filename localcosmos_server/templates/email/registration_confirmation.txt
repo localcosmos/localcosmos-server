@@ -1,12 +1,12 @@
-{% load i18n lcsite_tags %}
-Local Cosmos
+{% load i18n %}
+{{ app.name }}
 
 {% trans 'Registration confirmation' %}
 
 {% blocktrans with name=user.username %}Hello {{ name }}!{% endblocktrans %}
 ---------------------------------------------------------------------------=
 ------------
-{% blocktrans with url=app.url %}Thank you for registering on {{ url }}.'{% endblocktrans %}
+{% blocktrans with url=app.url %}Thank you for registering on {{ url }}.{% endblocktrans %}
 
 ---------------------------------------------------------------------------=
 ------------
@@ -14,4 +14,5 @@ Local Cosmos
 
 ---------------------------------------------------------------------------=
 ---------------------------
-
+{% trans 'Legal notice' %}: https://{{ site.domain }}{{ legal_notice_url }}
+{% trans 'Privacy statement' %}: https://{{ site.domain }}{{ privacy_statement_url }}

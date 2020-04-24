@@ -6,11 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>{% block title %}Local Cosmos Setup{% endblock %}</title>
+    <title>{% block title %}Local Cosmos{% endblock %}</title>
 
     <!-- Bootstrap -->
     <link href="{% static 'localcosmos_server/setup/bootstrap-4.3.1-dist/css/bootstrap.min.css' %}" rel="stylesheet">
-	<link href="{% static 'localcosmos_server/setup/lc_setup.css' %}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,11 +24,6 @@
 
 	{% block content %}{% endblock %}
 
-	<div id="Modal" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog">
-			<div id="ModalContent" class="modal-content"></div>
-		</div>
-	</div>
 
 
     <script src="{% static 'localcosmos_server/setup/jquery/jquery-3.3.1.min.js' %}" type="text/javascript"></script>
