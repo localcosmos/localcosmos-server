@@ -40,4 +40,7 @@ urlpatterns = [
     # GET EMPTY FIELDS
     path('<str:app_uid>/online-content/get-form-field/<int:template_content_id>/<str:microcontent_category>/<str:microcontent_type>/<str:language>/',
         login_required(views.GetFormField.as_view()), name='get_form_field'),
+    # Upload custom template
+    path('<str:app_uid>/upload-custom-template/', login_required(views.UploadCustomTemplate.as_view()),
+         name='upload_custom_template'),
 ]

@@ -20,6 +20,8 @@ from django.utils import timezone
 
 from .fields import MultiContentField
 from .widgets import MultiContentWidget
+from .utils import verbosify_template_name
+
 
 
 '''
@@ -79,7 +81,7 @@ class TemplateContent(models.Model):
             
         theme_settings = self.app.get_online_content_settings()
 
-        verbose_name = self.template_name
+        verbose_name = verbosify_template_name(self.template_name)
 
         if self.template_name in theme_settings['verbose_template_names'] and language_code in theme_settings['verbose_template_names'][self.template_name]:
             verbose_name = theme_settings['verbose_template_names'][self.template_name][language_code]

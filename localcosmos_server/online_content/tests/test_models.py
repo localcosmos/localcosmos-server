@@ -162,7 +162,7 @@ class TestTemplateContent(WithUser, WithApp, WithTemplateContent, TestCase):
 
         # test non-existant fr
         verbose_name_fr = template_content.verbose_template_name(language_code='fr')
-        expected_name_fr = template_content.template_name
+        expected_name_fr = 'Free page'#template_content.template_name
         self.assertEqual(verbose_name_fr, expected_name_fr)
         
 

@@ -111,6 +111,7 @@ localcosmos_server/online_content/mixins.py
 localcosmos_server/online_content/models.py
 localcosmos_server/online_content/parser.py
 localcosmos_server/online_content/urls.py
+localcosmos_server/online_content/utils.py
 localcosmos_server/online_content/views.py
 localcosmos_server/online_content/widgets.py
 localcosmos_server/online_content/api/__init__.py
@@ -252,6 +253,7 @@ localcosmos_server/online_content/templates/online_content/translate_template_co
 localcosmos_server/online_content/templates/online_content/ajax/image_microcontent_form.html
 localcosmos_server/online_content/templates/online_content/ajax/reloaded_file_fields.html
 localcosmos_server/online_content/templates/online_content/ajax/unpublish_template_content.html
+localcosmos_server/online_content/templates/online_content/ajax/upload_custom_template.html
 localcosmos_server/online_content/templates/online_content/ckeditor/layout-complex.js
 localcosmos_server/online_content/templates/online_content/ckeditor/layout-simple.js
 localcosmos_server/online_content/templatetags/__init__.py

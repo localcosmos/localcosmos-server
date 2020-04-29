@@ -15,7 +15,8 @@ from localcosmos_server.generic_views import AjaxDeleteView
 from .mixins import OnlineContentMixin
 
 from .forms import (CreateTemplateContentForm, ManageTemplateContentForm, DeleteMicroContentForm, UploadFileForm,
-                    UploadImageForm, UploadImageWithLicenceForm, TranslateTemplateContentForm)
+                    UploadImageForm, UploadImageWithLicenceForm, TranslateTemplateContentForm,
+                    UploadCustomTemplateForm)
 
 from .models import (TemplateContent, LocalizedTemplateContent, TemplateContentFlags,
                      microcontent_category_model_map)
@@ -836,3 +837,46 @@ class GetFormField(OnlineContentMixin, FormView):
             form.fields[field['name']].language = self.language
 
         return form
+
+
+class UploadCustomTemplate(OnlineContentMixin, FormView):
+
+    template_name = 'online_content/ajax/upload_custom_template.html'
+    form_class = UploadCustomTemplateForm
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form(self, form_class=None):
+        """Return an instance of the form to be used in this view."""
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(self.app, **self.get_form_kwargs())
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['success'] = False
+        return context
+        
+
+    def form_valid(self, form):
+
+        template_folder = os.path.join(self.app.get_user_uploaded_online_content_templates_path(), 'page')
+
+        if not os.path.isdir(template_folder):
+            os.makedirs(template_folder)
+
+        file = form.cleaned_data['template']
+        template_path = os.path.join(template_folder, file.name)
+
+        with open(template_path, 'wb+') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+        context = self.get_context_data(**self.kwargs)
+        context['form'] = form
+        context['success'] = True
+
+        return self.render_to_response(context)

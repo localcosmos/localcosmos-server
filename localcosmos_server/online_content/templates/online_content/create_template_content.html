@@ -14,5 +14,14 @@
 			</form>
 		</div>
 	</div>
-
+	<hr>
+	<div class="row justify-content-md-center">
+		<div class="col-12 text-left">
+			<h4>{% trans 'Custom templates' %}</h4>
+			<p>
+				{% trans 'You can create and upload your own custom templates.' %}
+			</p>
+			<button type="button" class="btn btn-outline-primary xhr" data-url="{% url 'upload_custom_template' app.uid %}" ajax-target="ModalContent">{% trans 'Upload custom template' %}</button>
+		</div>
+	</div>
 {% endblock %}

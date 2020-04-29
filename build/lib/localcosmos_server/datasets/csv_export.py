@@ -11,7 +11,7 @@ class DatasetCSVExport:
 
         filters['app_uuid'] = app.uuid
 
-        self.csv_dir = os.path.join(settings.MEDIA_ROOT, str(app.uuid), 'exports')
+        self.csv_dir = os.path.join(app.media_base_path, 'exports')
         self.filepath =  os.path.join(self.csv_dir, 'datasets.csv')
         
         self.filters = filters

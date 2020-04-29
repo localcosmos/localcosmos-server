@@ -1,6 +1,7 @@
 from django.conf import settings
 from django import forms
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import FileExtensionValidator
 
 import os
 
@@ -181,3 +182,28 @@ class UploadImageWithLicenceForm(ManageContentImageFormCommon, LicencingFormMixi
         source_image_field.widget.current_image = self.current_image
 
         return source_image_field
+
+
+# check if the template already exists in templates provided by the theme
+class UploadCustomTemplateForm(forms.Form):
+
+    template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['html'])])
+
+    def __init__(self, app, *args, **kwargs):
+        self.app = app
+        super().__init__(*args, **kwargs)
+
+    def clean_template(self):
+
+        template = self.cleaned_data.get('template')
+        uploaded_filename = template.name
+
+        templates_path = os.path.join(self.app.get_online_content_templates_path(), 'page')
+
+        # iterate over templates shipped with the theme
+        for filename in os.listdir(templates_path):
+            if filename == uploaded_filename:
+                raise forms.ValidationError(_('This template already exists.'))
+        
+        return template
+        

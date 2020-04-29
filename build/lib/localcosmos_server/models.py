@@ -19,7 +19,10 @@ from django.template.backends.django import DjangoTemplates
 
 from localcosmos_server.slugifier import create_unique_slug
 
+from localcosmos_server.online_content.utils import verbosify_template_name
+
 import uuid, os, json, shutil
+    
 
 class LocalcosmosUserManager(UserManager):
     
@@ -202,6 +205,12 @@ class App(models.Model):
 
     objects = AppManager()
 
+    # path where the user uploads app stuff to
+    # eg onlince content templates
+    @property
+    def media_base_path(self):
+        return os.path.join(settings.MEDIA_ROOT, self.uid)
+
 
     def get_url(self):
         if settings.LOCALCOSMOS_OPEN_SOURCE == True:
@@ -353,6 +362,10 @@ class App(models.Model):
         return os.path.join(app_theme_path, 'online_content', 'templates')
 
 
+    def get_user_uploaded_online_content_templates_path(self):
+        return os.path.join(self.media_base_path, 'online_content', 'templates')
+
+
     # return the online_content specific theme settings
     # called from online_content.api.views and online_content.models.TemplateContentFlagsManager
     def get_online_content_settings(self):
@@ -368,24 +381,34 @@ class App(models.Model):
     # used by eg online_content.forms.CreateTemplateContentForm
     # eg displays a selection in the AppAdmin
     def get_online_content_templates(self, template_type):
-
-        app_state = self.get_online_content_app_state()
             
         templates_path = os.path.join(self.get_online_content_templates_path(), template_type)
         oc_settings = self.get_online_content_settings()
         language = self.primary_language
 
         templates = []
-    
+
+        # iterate over templates shipped with the theme
         for filename in os.listdir(templates_path):
 
-            template_path = '%s/%s' % (template_type, filename)
+            template_path = '{0}/{1}'.format(template_type, filename)
             verbose_name = template_path
 
             if template_path in oc_settings['verbose_template_names'] and language in oc_settings['verbose_template_names'][template_path]:
                 verbose_name = oc_settings['verbose_template_names'][template_path][language]
 
             templates.append((template_path, verbose_name))
+
+
+        # iterate over user uploaded templates
+        user_uploaded_templates_path = os.path.join(self.get_user_uploaded_online_content_templates_path(),
+                                                    template_type)
+        
+        if os.path.isdir(user_uploaded_templates_path):
+            for filename in os.listdir(user_uploaded_templates_path):
+                template_path = '{0}/{1}'.format(template_type, filename)
+                verbose_name = verbosify_template_name(template_path)
+                templates.append((template_path, verbose_name))
 
         return templates
 
@@ -396,20 +419,31 @@ class App(models.Model):
         # contents is the content of the .html file
         # origin is an Origin instance
         # engine is a template engine
-        # Template can be instantiated directly, ony with contents
+        # Template can be instantiated directly, only with contents
 
-        app_state = self.get_online_content_app_state()
+        # templates shipped with theme
+        templates_base_dir = self.get_online_content_templates_path()
 
-        theme_path = self.get_theme_path(app_state=app_state)
-        online_content_path = os.path.join(theme_path, 'online_content')
+        # templates uploaded by user
+        user_uploaded_templates_base_dir = self.get_user_uploaded_online_content_templates_path()
 
-        template_path = os.path.join(online_content_path, 'templates', template_name)
+        # check if template is shipped with the theme
+        template_path = os.path.join(templates_base_dir, template_name)
 
-        templates_base_dir = os.path.join(online_content_path, 'templates')
+        if not os.path.isfile(template_path):
+
+            # if not check if the template was uploaded by the user
+            template_path = os.path.join(user_uploaded_templates_base_dir, template_name)
+
+            if not os.path.isfile(template_path):
+                msg = 'Online Content Template %s does not exist. Tried: %s' % (template_name, template_path)
+                raise TemplateDoesNotExist(msg)
+        
+        
         params = {
             'NAME' : 'OnlineContentEngine',
             #'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [templates_base_dir],
+            'DIRS': [templates_base_dir, user_uploaded_templates_base_dir],
             'APP_DIRS': False,
             'OPTIONS': {
                 'context_processors': [
@@ -425,12 +459,8 @@ class App(models.Model):
         }
         engine = DjangoTemplates(params)
 
-        try:
-            with open(template_path, encoding=engine.engine.file_charset) as fp:
-                contents = fp.read()
-        except FileNotFoundError:
-            msg = 'Online Content Template %s does not exist. Tried: %s' % (template_name, template_path)
-            raise TemplateDoesNotExist(msg)
+        with open(template_path, encoding=engine.engine.file_charset) as fp:
+            contents = fp.read()
 
         # use the above engine with dirs
         template = Template(contents, engine=engine.engine)
