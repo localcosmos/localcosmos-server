@@ -1,2 +1,2 @@
 name = 'localcosmos_server'
-VERSION = '0.7.3'
+VERSION = '0.7.4'

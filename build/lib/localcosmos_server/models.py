@@ -75,8 +75,8 @@ class LocalcosmosUser(AbstractUser):
             super().delete(using=using, keep_parents=keep_parents)
         else:
             # localcosmos.org uses django-tenants
-            from django_tenants.utils import schema_context
-            from lcsite.models import Tenant
+            from django_tenants.utils import schema_context, get_tenant_model
+            Tenant = get_tenant_model()
             
             user_id = self.pk
 
@@ -133,12 +133,13 @@ class UserClients(models.Model):
 '''
 class AppManager(models.Manager):
 
-    def create(self, name, primary_language, uid):
+    def create(self, name, primary_language, uid, **kwargs):
 
         app = self.model(
             name=name,
             primary_language=primary_language,
             uid=uid,
+            **kwargs
         )
 
         app.save()
@@ -217,7 +218,9 @@ class App(models.Model):
             return self.url
 
         # commercial installation uses subdomains
-        from lcsite.models import Domain
+        from django_tenants.utils import get_tenant_domain_model
+        Domain = get_tenant_domain_model()
+        
         domain = Domain.objects.get(app=self)
         return domain.domain
 
@@ -226,7 +229,9 @@ class App(models.Model):
             return reverse('appadmin:home', kwargs={'app_uid':self.uid})
 
         # commercial installation uses subdomains
-        from lcsite.models import Domain
+        from django_tenants.utils import get_tenant_domain_model
+        Domain = get_tenant_domain_model()
+        
         domain = Domain.objects.get(app=self)
         path = reverse('appadmin:home', kwargs={'app_uid':self.uid}, urlconf='localcosmos_server.urls')
 
@@ -239,7 +244,9 @@ class App(models.Model):
         if settings.LOCALCOSMOS_OPEN_SOURCE == True:
             return self.url
 
-        from lcsite.models import Domain
+        from django_tenants.utils import get_tenant_domain_model
+        Domain = get_tenant_domain_model()
+        
         domain = Domain.objects.filter(tenant__schema_name='public').first()
         return '{0}{1}{2}/preview/www/'.format(domain.domain, settings.APP_KIT_PREVIEW_URL, self.uid)
 

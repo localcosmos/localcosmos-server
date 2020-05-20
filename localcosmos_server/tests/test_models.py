@@ -290,7 +290,7 @@ class TestApp(WithApp, TestCase):
 
         available_templates = {
             'feature' : [('feature/news.html', 'News Eintrag')],
-            'page' : [('page/test.html', 'Test Seite'), ('page/free_page.html', 'Freie Seite'),],
+            'page' : [('page/free_page.html', 'Freie Seite'), ('page/test.html', 'Test Seite'),],
         }
 
         for template_type in template_types:
@@ -516,35 +516,35 @@ class TestCommercialApp(WithApp, TestCase):
 
         available_templates = {
             'review': {
-                'page' : [
+                'page' : set([
                     ('page/test.html', 'Test Seite'),
                     ('page/REVIEW.html', 'Review marker'),
                     ('page/free_page.html', 'Freie Seite'),
-                ],
+                ]),
             },
             'preview' : {
-                'page' : [
+                'page' : set([
                     ('page/test.html', 'Test Seite'),
                     ('page/PREVIEW.html', 'Preview marker'),
                     ('page/free_page.html', 'Freie Seite'),
-                ],
+                ]),
             },
             'published': {
-                'page' : [
+                'page' : set([
                     ('page/test.html', 'Test Seite'),
                     ('page/free_page.html', 'Freie Seite'),
-                ],
+                ]),
             }
         }
 
-        preview_templates = self.app.get_online_content_templates('page')
+        preview_templates = set(self.app.get_online_content_templates('page'))
 
         self.assertEqual(preview_templates, available_templates['preview']['page'])
 
 
     def test_get_online_content_template(self):
 
-        template_names = ['feature/news.html', 'page/test.html', 'page/free_page.html', 'page/PREVIEW.html']
+        template_names = ['feature/news.html', 'page/test.html', 'page/free_page.html', 'page/PREVIEW.html',]
 
         for template_name in template_names:
             template = self.app.get_online_content_template(template_name)

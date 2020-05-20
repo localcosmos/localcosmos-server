@@ -39,7 +39,7 @@ class LazyTaxonBase:
 
             # in this case, it is a taxon directly from the taxonomic database
             elif hasattr(self.instance, 'source_id'):
-                # remove ".model" from module
+                # remove ".models" from module
                 self.taxon_source = ('.').join(self.instance.__module__.split('.')[:-1])
                 #self.taxon_source = 'taxonomy.sources.%s' % self.instance._meta.app_label
             

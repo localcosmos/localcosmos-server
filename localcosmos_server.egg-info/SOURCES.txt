@@ -67,6 +67,7 @@ localcosmos_server/datasets/urls.py
 localcosmos_server/datasets/views.py
 localcosmos_server/datasets/widgets.py
 localcosmos_server/datasets/migrations/0001_initial.py
+localcosmos_server/datasets/migrations/0002_auto_20200506_0845.py
 localcosmos_server/datasets/migrations/__init__.py
 localcosmos_server/datasets/templates/datasets/dataset_validation_routine.html
 localcosmos_server/datasets/templates/datasets/edit_dataset.html
@@ -118,6 +119,7 @@ localcosmos_server/online_content/api/__init__.py
 localcosmos_server/online_content/api/urls.py
 localcosmos_server/online_content/api/views.py
 localcosmos_server/online_content/migrations/0001_initial.py
+localcosmos_server/online_content/migrations/0002_auto_20200511_0923.py
 localcosmos_server/online_content/migrations/__init__.py
 localcosmos_server/online_content/static/online_content/online_content.css
 localcosmos_server/online_content/static/online_content/online_content.js
