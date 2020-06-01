@@ -3,6 +3,9 @@ Installation using docker
 
 Duration: 15-30 minutes.
 
+This tutorial has been tested on a fresh minimal install of Ubuntu server 20.04.
+
+
 1. Install and Configure nginx
 ------------------------------
 This is only required for a production environment. If you test on your local machine, you can skip this step.
