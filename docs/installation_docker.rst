@@ -1,7 +1,7 @@
 Installation using docker
 =========================
 
-Duration: 10-15 minutes.
+Duration: 15-30 minutes.
 
 1. Install and Configure nginx
 ------------------------------
@@ -16,7 +16,14 @@ Create the nginx conf file for your app. Replace ``<my-project.org>`` with the d
 
 	.. code-block:: bash
 		
-		touch /etc/nginx/sites-available/<my-project.org>.conf>
+		sudo touch /etc/nginx/sites-available/<my-project.org>.conf
+		
+		
+For example, if you plan to host your server at ``treesofbavaria.org``, use the following command:
+
+	.. code-block:: bash
+		
+		sudo touch /etc/nginx/sites-available/treesofbavaria.org.conf
 		
 
 Put the following in your just created ``.conf`` file. Again, replace ``<my-project.org>`` with the domain of your project
@@ -37,7 +44,7 @@ Put the following in your just created ``.conf`` file. Again, replace ``<my-proj
 			listen 443;
 			server_name <my-project.org> www.<my_project.org>;
 
-			client_max_body_size 20M;
+			client_max_body_size 50M;
 
 			location / {
 				proxy_http_version 1.1;
@@ -95,7 +102,7 @@ On your server, create a folder for your project.
 
 	.. code-block:: bash
 
-		mkdir /opt/<my-project-name>
+		sudo mkdir /opt/<my-project-name>
 
 
 Create the file docker-compose.yml
@@ -103,7 +110,7 @@ Create the file docker-compose.yml
 	.. code-block:: bash
 
 		cd /opt/<my-project-name>
-		touch docker-compose.yml
+		sudo touch docker-compose.yml
 
 
 Put the following content into ``docker-compose.yml``. Replace ``<my-project-name>`` with the name of your project. Also Replace ``<db_username>`` and ``<db_password>``. This will **set** your database credentials, so do not share these values openly.
@@ -122,17 +129,17 @@ Also replace ``<.myproject.org>`` with the domain you run your Localcosmos Priva
 			build: .
 			volumes:
 			  - type: volume
-				source: www
-				target: /var/www/localcosmos/
+			    source: www
+			    target: /var/www/localcosmos/
 			  - type: volume
 				source: database_config
 				target: /etc/postgresql/
 			  - type: volume
-				source: database_log
-				target: /var/log/postgresql/
+			    source: database_log
+			    target: /var/log/postgresql/
 			  - type: volume
-				source: database_data
-				target: /var/lib/postgresql/
+			    source: database_data
+			    target: /var/lib/postgresql/
 			ports:
 			  - 9202:8001
 			environment:
@@ -171,6 +178,22 @@ Replace ``<email_host>``, ``<email_port>``, ``<email_host_user>``, ``<email_host
 
 		cd /opt/<my-project-name>
 		sudo docker-compose up -d
+		
+		
+6. Enable nginx conf and reload nginx conf
+------------------------------------------
+First, add your nginx conf to ``sites-enabled``. Replace ``<my-project.org>`` with the name of you project.
+
+	.. code-block:: bash
+
+		sudo ln -s /etc/nginx/sites-available/<my-project.org>.conf /etc/nginx/sites-enabled/
+		
+
+Now, reload your nginx conf with the following command.
+
+	.. code-block:: bash
+
+		sudo service nginx reload
 
 
 After Installation, visit ``localhost:9202/server/control-panel/`` or ``<myproject.org>/server/control-panel/`` and follow the on-screen instructions.
