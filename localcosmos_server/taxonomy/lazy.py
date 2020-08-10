@@ -27,6 +27,7 @@ class LazyTaxonBase:
             self.taxon_uuid = str(self.instance.taxon_uuid)
             self.taxon_nuid = self.instance.taxon_nuid
             self.taxon_latname = self.instance.taxon_latname
+            self.taxon_author = self.instance.taxon_author
             self.taxon_include_descendants = getattr(self.instance, 'taxon_include_descendants', False)
 
             self.origin = self.instance.__class__.__name__
@@ -47,10 +48,11 @@ class LazyTaxonBase:
                 raise ValueError('Non-taxonomic instance passed to LazyTaxon')
 
 
-        elif 'taxon_uuid' in kwargs and 'taxon_latname' in kwargs and 'taxon_source' in kwargs and 'taxon_nuid' in kwargs:
+        elif 'taxon_uuid' in kwargs and 'taxon_latname' in kwargs and 'taxon_author' in kwargs and 'taxon_source' in kwargs and 'taxon_nuid' in kwargs:
             self.taxon_uuid = kwargs['taxon_uuid']
             self.taxon_nuid = kwargs['taxon_nuid']
             self.taxon_latname = kwargs['taxon_latname']
+            self.taxon_author = kwargs['taxon_author']
             self.taxon_source = kwargs['taxon_source']
             self.taxon_include_descendants = kwargs.get('taxon_include_descendants', False)
 
@@ -99,6 +101,7 @@ class LazyTaxonBase:
         obj = {
             'label': label,
             'taxon_latname': self.taxon_latname,
+            'taxon_author': self.taxon_author,
             'taxon_uuid': str(self.taxon_uuid),
             'taxon_nuid': self.taxon_nuid, 
             'taxon_source' : self.taxon_source,
@@ -108,6 +111,7 @@ class LazyTaxonBase:
     def as_json(self):
         obj = {
             'taxon_latname': self.taxon_latname,
+            'taxon_latname': self.taxon_author,
             'taxon_uuid': self.taxon_uuid,
             'taxon_nuid': self.taxon_nuid, 
             'taxon_source' : self.taxon_source,

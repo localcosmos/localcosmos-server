@@ -25,6 +25,7 @@ class TaxonAutocompleteWidget(MultiWidget):
         widgets = [
             HiddenInput(attrs=attrs), # taxon_source
             HiddenInput(attrs=attrs), # taxon_latname
+            HiddenInput(attrs=attrs), # taxon_author
             HiddenInput(attrs=attrs), # taxon_uuid
             HiddenInput(attrs=attrs), # taxon_nuid
         ]
@@ -69,8 +70,8 @@ class TaxonAutocompleteWidget(MultiWidget):
     def decompress(self, lazy_taxon):
 
         if lazy_taxon:
-            data_list = [lazy_taxon.taxon_source, lazy_taxon.taxon_latname, str(lazy_taxon.taxon_uuid),
-                         lazy_taxon.taxon_nuid]
+            data_list = [lazy_taxon.taxon_source, lazy_taxon.taxon_latname, lazy_taxon.taxon_author,
+                         str(lazy_taxon.taxon_uuid), lazy_taxon.taxon_nuid]
             return data_list
 
         return []

@@ -71,6 +71,7 @@ class ModelWithTaxonCommon(models.Model):
             'taxon_uuid' : str(lazy_taxon.taxon_uuid),
             'taxon_nuid' : lazy_taxon.taxon_nuid,
             'taxon_latname' : lazy_taxon.taxon_latname,
+            'taxon_author' : lazy_taxon.taxon_author,
             'taxon_source' : lazy_taxon.taxon_source,
             'taxon_include_descendants' : lazy_taxon.taxon_include_descendants,
         }
@@ -147,6 +148,7 @@ class ModelWithTaxon(ModelWithTaxonCommon):
     taxon_uuid = models.UUIDField(null=True)
     taxon_nuid = models.CharField(max_length=255, null=True)
     taxon_latname = models.CharField(max_length=255, null=True)
+    taxon_author = modelsCharField(max_length=255, null=True)
     taxon_source = models.CharField(max_length=255, null=True)
 
     taxon_include_descendants = models.BooleanField(default=False)
@@ -156,6 +158,7 @@ class ModelWithTaxon(ModelWithTaxonCommon):
         self.taxon_uuid = None
         self.taxon_nuid = None
         self.taxon_latname = None
+        self.taxon_author = None
         self.taxon_source = None
 
         self.save()
@@ -170,6 +173,7 @@ class ModelWithRequiredTaxon(ModelWithTaxonCommon):
     taxon_uuid = models.UUIDField()
     taxon_nuid = models.CharField(max_length=255)
     taxon_latname = models.CharField(max_length=255)
+    taxon_author = modelsCharField(max_length=255, null=True) # some higher taxa have no author
     taxon_source = models.CharField(max_length=255)
 
     taxon_include_descendants = models.BooleanField(default=False)
