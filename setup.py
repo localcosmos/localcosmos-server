@@ -4,8 +4,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires = [
-    'django==3.0.*',
-    'djangorestframework==3.11.0',
+    'django==3.1.*',
+    'djangorestframework==3.11.1',
     'django-imagekit==4.0.2',
     'django-road',
     'content-licencing',
@@ -13,14 +13,14 @@ install_requires = [
     'rules==2.2',
     'django-el-pagination==3.3.0',
     'django-octicons==1.0.2',
-    'django-countries==6.1.2',
-    'django-cors-headers==3.2.1',
+    'django-countries==6.1.3',
+    'django-cors-headers==3.5.0',
     'Pillow',
 ]
 
 setup(
     name='localcosmos_server',
-    version='0.7.5',
+    version='0.8',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",

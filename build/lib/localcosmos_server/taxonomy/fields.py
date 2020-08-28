@@ -36,7 +36,8 @@ class TaxonField(forms.MultiValueField):
         fields = [
             forms.CharField(), # taxon_source
             forms.CharField(), # taxon_latname
-            forms.CharField(), # taxon_uuid
+            forms.CharField(required=False), # taxon_author
+            forms.CharField(), # name_uuid
             forms.CharField(), # taxon_nuid
         ]
 
@@ -55,12 +56,13 @@ class TaxonField(forms.MultiValueField):
             taxon_kwargs = {
                 'taxon_source' : data_list[0],
                 'taxon_latname' : data_list[1],
-                'taxon_uuid' : data_list[2],
-                'taxon_nuid' : data_list[3],
+                'taxon_author' : data_list[2],
+                'name_uuid' : data_list[3],
+                'taxon_nuid' : data_list[4],
             }
 
-            if len(data_list) == 5:
-                taxon_kwargs['taxon_include_descendants'] = data_list[4]
+            if len(data_list) == 6:
+                taxon_kwargs['taxon_include_descendants'] = data_list[5]
 
             lazy_taxon = self.lazy_taxon_class(**taxon_kwargs)
 

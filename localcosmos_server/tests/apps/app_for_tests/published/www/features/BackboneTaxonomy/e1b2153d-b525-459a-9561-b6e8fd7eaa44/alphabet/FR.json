@@ -1,7 +1,7 @@
 [
     {
         "taxon_source": "taxonomy.sources.col",
-        "taxon_uuid": "f141fcc3-699b-44e7-8485-90c5a61e43e6",
+        "name_uuid": "f141fcc3-699b-44e7-8485-90c5a61e43e6",
         "taxon_nuid": "00600200700x00c00800j",
         "taxon_latname": "Fraxinus excelsior",
         "gbif_nubKey": 3172358

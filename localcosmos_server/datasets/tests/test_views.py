@@ -244,8 +244,9 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
     post_data = {
         "7dfd9ff4-456e-426d-9772-df5824dab18f_0" : "taxonomy.sources.col", # source
         "7dfd9ff4-456e-426d-9772-df5824dab18f_1" : "Picea abies changed", # latname
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_2" : "1541aa08-7c23-4de0-9898-80d87e9227b4", # uuid
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_3" : "006002009001005007002", # nuid
+        "7dfd9ff4-456e-426d-9772-df5824dab18f_2" : "Linnaeus changed", # latname
+        "7dfd9ff4-456e-426d-9772-df5824dab18f_3" : "1541aa08-7c23-4de0-9898-80d87e9227b4", # uuid
+        "7dfd9ff4-456e-426d-9772-df5824dab18f_4" : "006002009001005007002", # nuid
         "98332a11-d56e-4a92-aeda-13e2f74453cb" : {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}}, "type": "Point", "coordinates": [33.33, 44.44]}, "properties": {"accuracy": 1}},
         "33cf1019-c8a1-4091-8c23-c95489c39094" : {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1234567, "timezone_offset": 120}, "type": "Temporal"},
         "e46c1a77-2070-49b4-a027-ca6b345cdca3" : "on", # BooleanField
@@ -350,12 +351,16 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
                 elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_1":
                     # taxon
                     self.assertEqual(dataset_value['taxon_latname'], value)
-
+                    
                 elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_2":
                     # taxon
-                    self.assertEqual(dataset_value['taxon_uuid'], value)
+                    self.assertEqual(dataset_value['taxon_author'], value)
 
                 elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_3":
+                    # taxon
+                    self.assertEqual(dataset_value['name_uuid'], value)
+
+                elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_4":
                     # taxon
                     self.assertEqual(dataset_value['taxon_nuid'], value)
 

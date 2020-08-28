@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from localcosmos_server.models import App, SecondaryAppLanguages
 from localcosmos_server.generic_views import AjaxDeleteView
 
-from localcosmos_server import VERSION as SERVER_VERSION
+from localcosmos_server import __version__ as SERVER_VERSION
 
 from .forms import InstallAppForm, EditAppForm
 

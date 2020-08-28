@@ -112,7 +112,7 @@ class ManageTaxonomicRestrictions(FormView):
 
         restriction = self.restriction_model.objects.filter(
             content_type=self.content_type, object_id=self.content_instance.id,
-            taxon_uuid=taxon.taxon_uuid).first()
+            taxon_latname=taxon.taxon_latname, taxon_author=taxon.taxon_author).first()
 
         if not restriction:
             

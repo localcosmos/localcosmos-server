@@ -26,7 +26,7 @@ class TaxonAutocompleteWidget(MultiWidget):
             HiddenInput(attrs=attrs), # taxon_source
             HiddenInput(attrs=attrs), # taxon_latname
             HiddenInput(attrs=attrs), # taxon_author
-            HiddenInput(attrs=attrs), # taxon_uuid
+            HiddenInput(attrs=attrs), # name_uuid
             HiddenInput(attrs=attrs), # taxon_nuid
         ]
 
@@ -71,7 +71,7 @@ class TaxonAutocompleteWidget(MultiWidget):
 
         if lazy_taxon:
             data_list = [lazy_taxon.taxon_source, lazy_taxon.taxon_latname, lazy_taxon.taxon_author,
-                         str(lazy_taxon.taxon_uuid), lazy_taxon.taxon_nuid]
+                         str(lazy_taxon.name_uuid), lazy_taxon.taxon_nuid]
             return data_list
 
         return []

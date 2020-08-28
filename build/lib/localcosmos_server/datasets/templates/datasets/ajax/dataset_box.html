@@ -3,7 +3,7 @@
 	<div class="card-body">
 		<h5 class="card-title">
 			{% if dataset.taxon_latname %}
-				{% get_app_locale dataset.taxon.taxon_uuid as vernacular %}
+				{% get_app_locale dataset.taxon.name_uuid as vernacular %}
 					{{ vernacular }} ({{ dataset.taxon_latname }})
 				{% if vernacular %}
 				{% else %}

@@ -19,15 +19,16 @@
 		// these are the input fields that are POST variables
 		var taxon_source_input = $("#" + base_id + "_0");
 		var taxon_latname_input = $("#" + base_id + "_1");
-		var taxon_uuid_input = $("#" + base_id + "_2");
-		var taxon_nuid_input = $("#" + base_id + "_3");
+		var taxon_author_input = $("#" + base_id + "_2");
+		var name_uuid_input = $("#" + base_id + "_3");
+		var taxon_nuid_input = $("#" + base_id + "_4");
 
 
 		// remove taxon values if key is pressed
 		taxon_verbose_input.keyup(function(){
 			taxon_source_input.val('');
 			taxon_latname_input.val('');
-			taxon_uuid_input.val('');
+			name_uuid_input.val('');
 			taxon_nuid_input.val('');
 		});
 		
@@ -36,7 +37,7 @@
 
 			no_results_indicator.hide();
 
-			if (taxon_uuid_input.val().length == 0){
+			if (name_uuid_input.val().length == 0){
 				taxon_verbose_input.val('');
 				taxon_verbose_input.removeClass("is-valid");
 			}
@@ -87,7 +88,8 @@
 									"name": item.label,
 									"taxon_nuid": item.taxon_nuid,
 									"taxon_latname": item.taxon_latname,
-									"taxon_uuid": item.taxon_uuid,
+									"taxon_author": item.taxon_author,
+									"name_uuid": item.name_uuid,
 									"taxon_source": item.taxon_source
 								};
 
@@ -105,12 +107,13 @@
 				// set hidden input values
 				taxon_source_input.val(item.taxon_source);
 				taxon_latname_input.val(item.taxon_latname);
-				taxon_uuid_input.val(item.taxon_uuid);
+				taxon_author_input.val(item.taxon_author);
+				name_uuid_input.val(item.name_uuid);
 				taxon_nuid_input.val(item.taxon_nuid);
 
 				// fire event on uuid input
 				var event = new Event("change");
-				var element = document.getElementById("" + base_id + "_2");
+				var element = document.getElementById("" + base_id + "_3");
 				element.dispatchEvent(event);
 				
 				taxon_verbose_input.addClass('is-valid');

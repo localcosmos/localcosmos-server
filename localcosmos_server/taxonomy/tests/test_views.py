@@ -42,9 +42,10 @@ class TestSeachAppTaxon(CommonSetUp, WithPublishedApp, WithApp, WithUser, TestCa
         expected_choices = [{
             'label': 'Eiche',
             'taxon_latname': 'Quercus robur',
+            'taxon_author' : 'Linnaeus',
             'taxon_nuid': '00600200700q0030070cx',
             'taxon_source': 'taxonomy.sources.col',
-            'taxon_uuid': 'fc542c23-258f-4013-bad5-7f9c6a9cfb0d'
+            'name_uuid': 'fc542c23-258f-4013-bad5-7f9c6a9cfb0d'
         }]
         self.assertEqual(choices, expected_choices)
 
@@ -54,9 +55,10 @@ class TestSeachAppTaxon(CommonSetUp, WithPublishedApp, WithApp, WithUser, TestCa
         expected_choices_2 = [{
             'label': 'Quercus robur',
             'taxon_latname': 'Quercus robur',
+            'taxon_author' : 'Linnaeus',
             'taxon_nuid': '00600200700q0030070cx',
             'taxon_source': 'taxonomy.sources.col',
-            'taxon_uuid': 'fc542c23-258f-4013-bad5-7f9c6a9cfb0d'
+            'name_uuid': 'fc542c23-258f-4013-bad5-7f9c6a9cfb0d'
         }]
 
         response = self.client.get(reverse('search_app_taxon', kwargs=url_kwargs), get_parameters)
@@ -218,13 +220,14 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
 
         prefix = view.get_prefix()
 
-        taxon_uuid = '1541aa08-7c23-4de0-9898-80d87e9227b4'
+        name_uuid = '1541aa08-7c23-4de0-9898-80d87e9227b4'
 
         post_data_unprefixed = {
             'taxon_0' : 'taxonomy.sources.col', 
             'taxon_1' : 'Picea abies',
-            'taxon_2' : taxon_uuid,
-            'taxon_3' : '006002009001005007002',
+            'taxon_2' : 'Linnaeus',
+            'taxon_3' : name_uuid,
+            'taxon_4' : '006002009001005007002',
         }
 
         post_data = {}
@@ -250,7 +253,7 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
         self.assertTrue(qry.exists())
 
         restriction = qry.first()
-        self.assertEqual(restriction.taxon.taxon_uuid, taxon_uuid)
+        self.assertEqual(restriction.taxon.name_uuid, name_uuid)
 
         
 @test_settings
@@ -265,7 +268,8 @@ class TestRemoveAppTaxonomicRestriction(CommonSetUp, GetViewMixin, WithApp, With
             object_id = self.user.id,
             taxon_source = 'taxonomy.sources.col',
             taxon_latname = 'Picea abies',
-            taxon_uuid = '1541aa08-7c23-4de0-9898-80d87e9227b4',
+            taxon_author = 'Linnaeus',
+            name_uuid = '1541aa08-7c23-4de0-9898-80d87e9227b4',
             taxon_nuid = '006002009001005007002',
         )
 

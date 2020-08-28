@@ -178,7 +178,7 @@ class TestObservationForm(WithApp, TestCase):
                 # check the taxon
                 self.assertEqual(value.taxon_source, reported_value['taxon_source'])
                 self.assertEqual(value.taxon_latname, reported_value['taxon_latname'])
-                self.assertEqual(value.taxon_uuid, reported_value['taxon_uuid'])
+                self.assertEqual(value.name_uuid, reported_value['name_uuid'])
             elif key == temporal_reference_uuid:
                 self.assertEqual(value, datetime_from_cron(reported_value))
             else:

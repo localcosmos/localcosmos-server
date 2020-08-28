@@ -1,7 +1,7 @@
 [
     {
         "taxon_source": "taxonomy.sources.col",
-        "taxon_uuid": "d085d231-e44a-44a0-946f-46604e4a8326",
+        "name_uuid": "d085d231-e44a-44a0-946f-46604e4a8326",
         "taxon_nuid": "00600200701b00702e00r",
         "taxon_latname": "Sorbus aucuparia",
         "gbif_nubKey": 3012167

@@ -59,7 +59,7 @@ TEST_DATA_2 = {
             "client_id": "f6a7f83a-7b2e-4fbc-8f1a-168904231aaf",
             "client_platform": "browser",
             "0f444e85-e31d-443d-afd3-2fa35df08ce3": {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1576236681011, "timezone_offset": -60}, "type": "Temporal"},
-            "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {"taxon_nuid": "006002009001005005002", "taxon_uuid": "77380de8-8087-41b4-9577-67b929593b0b", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Larix decidua"},
+            "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {"taxon_nuid": "006002009001005005002", "name_uuid": "77380de8-8087-41b4-9577-67b929593b0b", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Larix decidua", "taxon_author":"Linnaeus"},
             "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0": None,
             "a4d53718-715f-4436-9b4c-09fce7978153": {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}}, "type": "Point", "coordinates": [11.079045867921542, 49.66298305845603]}, "properties": {"accuracy": 1}}
         },
@@ -70,7 +70,7 @@ TEST_DATA_2 = {
                 {"role": "taxonomic_reference", "uuid": "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce", "options": {}, "version": 1, "position": -3, "definition": {"label": "Baumart", "widget": "BackboneTaxonAutocompleteWidget", "initial": None, "required": True, "help_text": None, "is_sticky": False},"field_class": "TaxonField", "widget_attrs": {}, "taxonomic_restriction": []},
                 {"role": "geographic_reference", "uuid": "a4d53718-715f-4436-9b4c-09fce7978153", "options": {}, "version": 1, "position": -2, "definition": {"label": "Ort", "widget": "MobilePositionInput", "initial": None, "required": True, "help_text": None, "is_sticky": False}, "field_class": "PointJSONField", "widget_attrs": {}, "taxonomic_restriction": []},
                 {"role": "temporal_reference", "uuid": "0f444e85-e31d-443d-afd3-2fa35df08ce3", "options": {}, "version": 1, "position": -1, "definition": {"label": "Zeitpunkt", "widget": "SelectDateTimeWidget", "initial": None, "required": True, "help_text": None, "is_sticky": False}, "field_class": "DateTimeJSONField", "widget_attrs": {}, "taxonomic_restriction": []},
-                {"role": "regular", "uuid": "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0", "options": {}, "version": 1, "position": 4, "definition": {"label": "Eichenprozessionsspinner", "widget": "CheckboxInput", "initial": None, "required": False, "help_text": None, "is_sticky": False}, "field_class": "BooleanField", "widget_attrs": {}, "taxonomic_restriction": [{"taxon_nuid": "00600200700q003007", "taxon_uuid": "99000227-c450-4eb4-a6e4-e974d587cdd8", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Quercus", "restriction_type": "exists"}]},
+                {"role": "regular", "uuid": "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0", "options": {}, "version": 1, "position": 4, "definition": {"label": "Eichenprozessionsspinner", "widget": "CheckboxInput", "initial": None, "required": False, "help_text": None, "is_sticky": False}, "field_class": "BooleanField", "widget_attrs": {}, "taxonomic_restriction": [{"taxon_nuid": "00600200700q003007", "name_uuid": "99000227-c450-4eb4-a6e4-e974d587cdd8", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Quercus", "restriction_type": "exists"}]},
                 {"role": "regular", "uuid": "85e8e05c-5a60-46f8-b49c-b6debbe19997", "options": {}, "version": 1, "position": 5, "definition": {"label": "Bilder", "widget": "CameraAndAlbumWidget", "initial": None, "required": False, "help_text": None, "is_sticky": False}, "field_class": "PictureField", "widget_attrs": {}, "taxonomic_restriction": []}
                 ],
             "options": {},
@@ -278,9 +278,10 @@ class TestDataset(WithValidationRoutine, WithDataset, WithApp, WithUser, TestCas
         altered_longitude = TEST_LONGITUDE + 1
 
         altered_taxon_nuid = "006002009001005005002"
-        altered_taxon_uuid = "77380de8-8087-41b4-9577-67b929593b0b"
+        altered_name_uuid = "77380de8-8087-41b4-9577-67b929593b0b"
         altered_taxon_source = "taxonomy.sources.col"
         altered_taxon_latname =  "Larix decidua"
+        altered_taxon_author = "Linnaeus 12345"
 
 
         alterations = {
@@ -298,9 +299,10 @@ class TestDataset(WithValidationRoutine, WithDataset, WithApp, WithUser, TestCas
                 },
                 "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {
                     "taxon_nuid": altered_taxon_nuid,
-                    "taxon_uuid": altered_taxon_uuid,
+                    "name_uuid": altered_name_uuid,
                     "taxon_source": altered_taxon_source,
                     "taxon_latname": altered_taxon_latname,
+                    "taxon_author" : altered_taxon_author,
                 },
                 "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0": None,
                 "a4d53718-715f-4436-9b4c-09fce7978153": {
@@ -341,7 +343,7 @@ class TestDataset(WithValidationRoutine, WithDataset, WithApp, WithUser, TestCas
         self.assertEqual(new_timestamp, dataset.timestamp)
 
         self.assertEqual(dataset.taxon.taxon_latname, altered_taxon_latname)
-        self.assertEqual(dataset.taxon.taxon_uuid, altered_taxon_uuid)
+        self.assertEqual(dataset.taxon.name_uuid, altered_name_uuid)
         self.assertEqual(dataset.taxon.taxon_source, altered_taxon_source)
         self.assertEqual(dataset.taxon.taxon_nuid, altered_taxon_nuid)
 
@@ -482,9 +484,10 @@ class TestDatasetValidationRoutine(WithValidationRoutine, WithApp, TestCase):
 
         test_taxon_kwargs = {
             "taxon_source": "taxonomy.sources.col",
-            "taxon_uuid": "eb53f49f-1f80-4505-9d56-74216ac4e548",
+            "name_uuid": "eb53f49f-1f80-4505-9d56-74216ac4e548",
             "taxon_nuid": "006002009001005001001",
             "taxon_latname": "Abies alba",
+            "taxon_author" : "Linnaeus",
             "gbif_nubKey": 2685484,
         }
         lazy_taxon = LazyAppTaxon(**test_taxon_kwargs)
@@ -502,7 +505,7 @@ class TestDatasetValidationRoutine(WithValidationRoutine, WithApp, TestCase):
         restriction.save()
 
         restrictions = step.taxonomic_restrictions.all()
-        self.assertEqual(restrictions[0].taxon.taxon_uuid, lazy_taxon.taxon_uuid)
+        self.assertEqual(restrictions[0].taxon.name_uuid, lazy_taxon.name_uuid)
 
         
         

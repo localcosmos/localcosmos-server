@@ -53,8 +53,9 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         post_data = {
             'taxon_0': "taxonomy.sources.col",
             'taxon_1': "Picea abies",
-            'taxon_2' : "1541aa08-7c23-4de0-9898-80d87e9227b3",
-            'taxon_3' : "006002009001005007001",
+            'taxon_2': 'Linnaeus',
+            'taxon_3' : "1541aa08-7c23-4de0-9898-80d87e9227b3",
+            'taxon_4' : "006002009001005007001",
         }
         
         form = FormForTest(post_data)
@@ -67,11 +68,11 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         content_type = ContentType.objects.get_for_model(user)
         created_restriction = TaxonomicRestriction.objects.get(content_type=content_type, object_id=user.id)
         self.assertEqual(created_restriction.restriction_type, 'exists')
-        self.assertEqual(str(created_restriction.taxon_uuid), post_data['taxon_2'])
+        self.assertEqual(str(created_restriction.name_uuid), post_data['taxon_3'])
         self.assertEqual(created_restriction.taxon_source, post_data['taxon_0'])
         self.assertEqual(created_restriction.taxon_latname, post_data['taxon_1'])
-        self.assertEqual(created_restriction.taxon_nuid, post_data['taxon_3'])
-
+        self.assertEqual(created_restriction.taxon_nuid, post_data['taxon_4'])
+        self.assertEqual(created_restriction.taxon_author, post_data['taxon_2'])
 
 
     def test_save_taxonomic_restriction_with_type(self):
@@ -81,8 +82,9 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         post_data = {
             'taxon_0': "taxonomy.sources.col",
             'taxon_1': "Picea abies",
-            'taxon_2' : "1541aa08-7c23-4de0-9898-80d87e9227b3",
-            'taxon_3' : "006002009001005007001",
+            'taxon_2': 'Linnaeus',
+            'taxon_3' : "1541aa08-7c23-4de0-9898-80d87e9227b3",
+            'taxon_4' : "006002009001005007001",
             'restriction_type' : 'optional',
         }
         
@@ -96,10 +98,11 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         content_type = ContentType.objects.get_for_model(user)
         created_restriction = TaxonomicRestriction.objects.get(content_type=content_type, object_id=user.id)
         self.assertEqual(created_restriction.restriction_type, 'optional')
-        self.assertEqual(str(created_restriction.taxon_uuid), post_data['taxon_2'])
+        self.assertEqual(str(created_restriction.name_uuid), post_data['taxon_3'])
         self.assertEqual(created_restriction.taxon_source, post_data['taxon_0'])
         self.assertEqual(created_restriction.taxon_latname, post_data['taxon_1'])
-        self.assertEqual(created_restriction.taxon_nuid, post_data['taxon_3'])
+        self.assertEqual(created_restriction.taxon_nuid, post_data['taxon_4'])
+        self.assertEqual(created_restriction.taxon_author, post_data['taxon_2'])
         
 
     def test_save_taxonomic_restriction_no_taxon(self):

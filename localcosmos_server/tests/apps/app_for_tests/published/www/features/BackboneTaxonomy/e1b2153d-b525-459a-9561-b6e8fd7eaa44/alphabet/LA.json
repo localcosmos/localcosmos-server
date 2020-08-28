@@ -1,7 +1,7 @@
 [
     {
         "taxon_source": "taxonomy.sources.col",
-        "taxon_uuid": "77380de8-8087-41b4-9577-67b929593b0b",
+        "name_uuid": "77380de8-8087-41b4-9577-67b929593b0b",
         "taxon_nuid": "006002009001005005002",
         "taxon_latname": "Larix decidua",
         "gbif_nubKey": 2686212

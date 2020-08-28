@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.translation import gettext_lazy as _
-from django.contrib.postgres.fields import JSONField
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import connection
@@ -71,7 +70,7 @@ class Dataset(ModelWithTaxon):
     ### data
     # all data except the taxononmic inherited from ModelWithTaxon is stored in the json data column without schema
     # for quicker queries, some fields have their own (redundant) db columns below
-    data = JSONField()
+    data = models.JSONField()
 
     ### redundant fields for quick DB queries
     # geographic reference, useful for anycluster and quick GIS queries
@@ -99,7 +98,7 @@ class Dataset(ModelWithTaxon):
     validation_step = models.CharField(max_length=255, null=True)
 
     # a list of errors
-    validation_errors = JSONField(null=True)
+    validation_errors = models.JSONField(null=True)
     is_valid = models.BooleanField(default=False)
     
 

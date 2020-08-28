@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.contrib.postgres.fields import JSONField
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.db import transaction
@@ -55,13 +54,7 @@ class LocalcosmosUser(AbstractUser):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     slug = models.SlugField(unique=True)
 
-    details = JSONField(null=True)
-
-    # moved to details JSONField
-    #name_on_gbif = models.BooleanField(default=False, verbose_name=_("Publish first and last name on GBIF?"))
-    #default_content_licence = models.CharField(max_length=255, choices=LICENCE_CHOICES,
-    #                                           default=settings.CONTENT_LICENCING_DEFAULT_LICENCE)
-    #accept_messages = models.BooleanField(default=True)
+    details = models.JSONField(null=True)
     
     follows = models.ManyToManyField('self', related_name='followed_by')
 
@@ -499,7 +492,7 @@ class App(models.Model):
 
 class SecondaryAppLanguages(models.Model):
     app = models.ForeignKey(App, on_delete=models.CASCADE)
-    language_code = models.CharField(max_length=15, choices=settings.LANGUAGES)
+    language_code = models.CharField(max_length=15)
 
     class Meta:
         unique_together = ('app', 'language_code')
@@ -546,7 +539,7 @@ class TaxonomicRestrictionBase(ModelWithRequiredTaxon):
 
     class Meta:
         abstract = True
-        unique_together = ('content_type', 'object_id', 'taxon_uuid')
+        unique_together = ('content_type', 'object_id', 'taxon_latname', 'taxon_author')
 
 
 class TaxonomicRestriction(TaxonomicRestrictionBase):

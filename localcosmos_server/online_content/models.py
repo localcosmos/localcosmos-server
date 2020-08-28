@@ -318,7 +318,7 @@ TITLE_MAX_LENGTH = 255
 class LocalizedTemplateContent(models.Model):
     template_content = models.ForeignKey(TemplateContent, on_delete=models.CASCADE)
     slug = models.SlugField(unique=True)# localized slug
-    language = models.CharField(max_length=7, choices=settings.LANGUAGES)
+    language = models.CharField(max_length=15)
 
     # title
     # the title is needed e.g. for displaying a name of the content in the admin
@@ -874,7 +874,7 @@ class LocalizedCMSMicroContentManager(models.Manager):
 
 class LocalizedCMSMicroContent(models.Model):
     
-    language = models.CharField(max_length=7, choices=settings.LANGUAGES)
+    language = models.CharField(max_length=15)
 
     creator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='+', null=True)
     created_at = models.DateTimeField(auto_now_add=True)

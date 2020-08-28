@@ -582,9 +582,10 @@ class TestTaxonomicRestriction(WithUser, TestCase):
 
     test_taxon_kwargs = {
         "taxon_source": "taxonomy.sources.col",
-        "taxon_uuid": "eb53f49f-1f80-4505-9d56-74216ac4e548",
+        "name_uuid": "eb53f49f-1f80-4505-9d56-74216ac4e548",
         "taxon_nuid": "006002009001005001001",
         "taxon_latname": "Abies alba",
+        "taxon_author" : "Linnaeus",
         "gbif_nubKey": 2685484,
     }
 
@@ -611,7 +612,7 @@ class TestTaxonomicRestriction(WithUser, TestCase):
         self.assertEqual(restriction.object_id, user.id)
         self.assertEqual(restriction.content_type, content_type)
         self.assertEqual(restriction.content, user)
-        self.assertEqual(str(restriction.taxon.taxon_uuid), str(lazy_taxon.taxon_uuid))
+        self.assertEqual(str(restriction.taxon.name_uuid), str(lazy_taxon.name_uuid))
         
         
         

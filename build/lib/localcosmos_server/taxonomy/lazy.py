@@ -24,10 +24,13 @@ class LazyTaxonBase:
 
             self.instance = kwargs['instance']
 
-            self.taxon_uuid = str(self.instance.taxon_uuid)
-            self.taxon_nuid = self.instance.taxon_nuid
             self.taxon_latname = self.instance.taxon_latname
+            self.taxon_author = self.instance.taxon_author
             self.taxon_include_descendants = getattr(self.instance, 'taxon_include_descendants', False)
+
+            # these values change across tree versions
+            self.name_uuid = str(self.instance.name_uuid)
+            self.taxon_nuid = self.instance.taxon_nuid
 
             self.origin = self.instance.__class__.__name__
 
@@ -47,12 +50,14 @@ class LazyTaxonBase:
                 raise ValueError('Non-taxonomic instance passed to LazyTaxon')
 
 
-        elif 'taxon_uuid' in kwargs and 'taxon_latname' in kwargs and 'taxon_source' in kwargs and 'taxon_nuid' in kwargs:
-            self.taxon_uuid = kwargs['taxon_uuid']
-            self.taxon_nuid = kwargs['taxon_nuid']
+        elif 'taxon_latname' in kwargs and 'taxon_author' in kwargs and 'taxon_source' in kwargs and 'taxon_nuid' in kwargs and 'name_uuid' in kwargs:
             self.taxon_latname = kwargs['taxon_latname']
+            self.taxon_author = kwargs['taxon_author']
             self.taxon_source = kwargs['taxon_source']
             self.taxon_include_descendants = kwargs.get('taxon_include_descendants', False)
+
+            self.taxon_nuid = kwargs['taxon_nuid']
+            self.name_uuid = kwargs['name_uuid']
 
         else:
             raise ValueError('Unable to instantiate LazyTaxon, improper parameters given: %s' %kwargs)
@@ -99,18 +104,20 @@ class LazyTaxonBase:
         obj = {
             'label': label,
             'taxon_latname': self.taxon_latname,
-            'taxon_uuid': str(self.taxon_uuid),
-            'taxon_nuid': self.taxon_nuid, 
+            'taxon_author': self.taxon_author,
+            'taxon_nuid': self.taxon_nuid,
             'taxon_source' : self.taxon_source,
+            'name_uuid': str(self.name_uuid),
         }
         return obj
 
     def as_json(self):
         obj = {
             'taxon_latname': self.taxon_latname,
-            'taxon_uuid': self.taxon_uuid,
+            'taxon_author': self.taxon_author,
             'taxon_nuid': self.taxon_nuid, 
             'taxon_source' : self.taxon_source,
+            'name_uuid': self.name_uuid,
         }
 
         return obj
@@ -122,11 +129,10 @@ class LazyTaxonBase:
 
             for taxonomic_restriction in taxonomic_restrictions:
 
-                if taxonomic_restriction.taxon_uuid == self.taxon_uuid:
+                if taxonomic_restriction.taxon_latname == self.taxon_latname and taxonomic_restriction.taxon_author == self.taxon_author:
                     return True
 
             return False
-
         
         return True
 
@@ -134,6 +140,13 @@ class LazyTaxonBase:
     # default str output
     def __str__(self):
         return self.taxon_latname
+
+    def __eq__(self, other):
+
+        if other and isinstance(other, LazyTaxonBase):
+            if self.taxon_source == other.taxon_source and self.taxon_latname == other.taxon_latname and self.taxon_author == self.taxon_author and str(self.name_uuid) == str(other.name_uuid):
+                return True
+        return False
     
 
 ##################################################################################################################
@@ -165,7 +178,7 @@ class LazyTaxonListBase:
             raise ValueError('LazyTaxonList needs the attribute LazyTaxonClass')
         
         self.querysets = []
-        self.taxon_uuids = []
+        self.name_uuids = []
         self.taxonlist = None
         
         if queryset is not None:
@@ -186,7 +199,7 @@ class LazyTaxonListBase:
         for queryset in self.querysets:
             for instance in queryset:
                 taxon = self.LazyTaxonClass(instance)
-                self.taxon_uuids.append(str(taxon.taxon_uuid))
+                self.name_uuids.append(str(taxon.name_uuid))
                 self.taxonlist.append(taxon)
         
         return self.taxonlist
@@ -197,11 +210,11 @@ class LazyTaxonListBase:
         for queryset in self.querysets:
             
             # this is just a safety precaution filtering out all entries without taxa
-            queryset = queryset.exclude(taxon_uuid=None)
+            queryset = queryset.exclude(name_uuid=None)
             
             for instance in queryset:
                 taxon = self.LazyTaxonClass(instance=instance)
-                self.taxon_uuids.append(taxon.taxon_uuid)
+                self.name_uuids.append(taxon.name_uuid)
                 self.taxonlist.append(taxon)
 
         return self.taxonlist
@@ -211,7 +224,7 @@ class LazyTaxonListBase:
         if self.taxonlist is None:
             taxonlist = self.taxa()
 
-        return self.taxon_uuids
+        return self.name_uuids
 
 
     def filter(self, **kwargs):
@@ -251,7 +264,7 @@ class LazyTaxonListBase:
         for queryset in self.querysets:
 
             for taxon in queryset:
-                if lazy_taxon.taxon_uuid == taxon.taxon_uuid:
+                if lazy_taxon.taxon_latname == taxon.taxon_latname and lazy_taxon.taxon_author == taxon.taxon_author:
                     return True
 
         return False
