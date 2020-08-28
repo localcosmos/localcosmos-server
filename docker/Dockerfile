@@ -6,8 +6,8 @@
 ############################################################
 
 # Set the base image to Ubuntu
-FROM ubuntu:18.04
-ENV UBUNTU_NAME=bionic
+FROM ubuntu:20.04
+ENV UBUNTU_NAME=focal
 
 MAINTAINER Thomas Uher <thomas.uher@sisol-systems.com>
 
@@ -23,8 +23,8 @@ RUN apt-get update &&\
     apt-get install -y --no-install-recommends nginx gettext-base &&\
 	apt-get install -y --no-install-recommends python3 python3-dev python3-pip python3-setuptools &&\
 	apt-get install -y --no-install-recommends make gcc &&\
-	apt-get install -y --no-install-recommends postgresql-10 postgresql-10-postgis-2.4 libpq-dev postgresql-server-dev-10 \
-      postgresql-client-10 postgresql-contrib-10  postgresql-10-postgis-scripts &&\
+	apt-get install -y --no-install-recommends postgresql-12 postgresql-12-postgis-3 libpq-dev postgresql-server-dev-12 \
+      postgresql-client-12 postgresql-contrib-12  postgresql-12-postgis-scripts &&\
 	apt-get clean autoclean &&\
     apt-get autoremove -y &&\
 	rm -rf /var/lib/{apt,dpkg,cache,log}/
@@ -48,7 +48,7 @@ RUN make &&\
 
 # install django, localcosmos_server
 RUN pip3 install wheel &&\
-    pip3 install django==2.2.* uwsgi &&\
+    pip3 install django==3.1.* uwsgi &&\
     pip3 install localcosmos_server
 
 # create the django project
