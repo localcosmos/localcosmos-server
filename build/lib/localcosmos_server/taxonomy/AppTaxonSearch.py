@@ -18,7 +18,12 @@ class AppTaxonSearch:
 
         self.vernacular_filepath = None
 
-        app_features = self.app.get_features()
+        if self.app.published_version:
+            app_state='published'
+        else:
+            app_state='preview'
+            
+        app_features = self.app.get_features(app_state=app_state)
 
         app_root = app.published_version_path
         self.latname_alphabet_folder = os.path.join(app_root, app_features['BackboneTaxonomy']['alphabet'])
