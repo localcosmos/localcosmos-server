@@ -4,6 +4,9 @@ from django.conf import settings
 
 from .widgets import CropImageInput
 
+VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'svg']
+from django.core.validators import FileExtensionValidator
+
 
 class FormLocalizationMixin:
     
@@ -115,7 +118,8 @@ class ManageContentImageFormCommon:
         # unfortunately, a file field cannot be prepoluated due to html5 restrictions
         # therefore, source_image has to be optional. Otherwise, editing would be impossible
         # check if a new file is required in clean
-        source_image_field = forms.ImageField(widget=CropImageInput, required=False)
+        source_image_field = forms.ImageField(widget=CropImageInput, required=False,
+                                              validators=[FileExtensionValidator(VALID_IMAGE_EXTENSIONS)])
         source_image_field.widget.current_image = self.current_image
 
         return source_image_field

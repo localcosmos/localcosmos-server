@@ -58,7 +58,7 @@ class LCAuthTokenSerializer(AuthTokenSerializer):
                     raise serializers.ValidationError(_('No user found for that username or email address.'))
 
                 # set the correct username
-                username = unathorized_user.username
+                username = unauthorized_user.username
 
 
             # AUTHENTICATE THE USER
