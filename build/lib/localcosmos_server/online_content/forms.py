@@ -165,6 +165,7 @@ class UploadFileForm(forms.Form):
 
 class UploadImageForm(UploadFileForm):
     file = forms.ImageField()
+    
 
 from content_licencing.mixins import LicencingFormMixin
 from collections import OrderedDict

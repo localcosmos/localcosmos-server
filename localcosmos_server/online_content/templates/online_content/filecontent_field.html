@@ -1,5 +1,5 @@
 {% load i18n static online_content_tags imagekit %}
-{% with cms_object=field.field.cms_object %}
+{% with cms_object=field.field.cms_tag %}
 
 <div class="col-4 col-md-3 col-lg-2 fileupload" {% if not cms_object.meta_instance.pk %}data-new="1"{% endif %}>
 	

@@ -22,15 +22,26 @@
 		var taxon_author_input = $("#" + base_id + "_2");
 		var name_uuid_input = $("#" + base_id + "_3");
 		var taxon_nuid_input = $("#" + base_id + "_4");
-
-
-		// remove taxon values if key is pressed
-		taxon_verbose_input.keyup(function(){
+		
+		
+		function clear_taxon(event){
 			taxon_source_input.val('');
 			taxon_latname_input.val('');
+			taxon_author_input.val('');
 			name_uuid_input.val('');
 			taxon_nuid_input.val('');
+		}
+		
+		//clear taxon when source is changed
+		search_taxon_source.on("change", function(event){
+			clear_taxon(event);
+			taxon_verbose_input.val('');
+			taxon_verbose_input.removeClass("is-valid");
 		});
+		
+
+		// remove taxon values if key is pressed
+		taxon_verbose_input.keyup(clear_taxon);
 		
 		// manage taxon_verbose input visual styles
 		taxon_verbose_input.focusout(function(){

@@ -16,6 +16,15 @@ class TemplateParser:
         self.template = template
         self.cms_tags = []
 
+
+    def get_cms_tag(self, microcontent_category, microcontent_type, *tag_content, **tag_kwargs):
+
+        cms_tag = CMSTag(self.app, self.template_content, microcontent_category, microcontent_type,
+                         *tag_content, **tag_kwargs)
+
+        return cms_tag
+        
+
     def parse(self):
 
         cms_tags_str = []
@@ -82,8 +91,7 @@ class TemplateParser:
                     parts = arg.split("-")
                     tag_kwargs[parts[0]] = tag_kwargs[parts[1]]
             
-            tagobj = CMSTag(self.app, self.template_content, microcontent_category, microcontent_type, *tag_content,
-                            **tag_kwargs)
+            tagobj = self.get_cms_tag(microcontent_category, microcontent_type, *tag_content, **tag_kwargs)
 
             self.cms_tags.append(tagobj)
 

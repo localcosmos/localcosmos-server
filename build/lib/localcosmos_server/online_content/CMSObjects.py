@@ -24,7 +24,7 @@ class CMSTag:
         self.args = list(args)
 
         # unlocalized model
-        self.Model = microcontent_category_model_map[microcontent_category]['draft']
+        self.Model = self._get_model(microcontent_category)
 
         self.multi = False
         self.min_num = kwargs.get('min', 0)
@@ -44,6 +44,10 @@ class CMSTag:
             self.args.append('multi')
 
 
+    def _get_model(self, microcontent_category):
+        Model = microcontent_category_model_map[microcontent_category]['draft']
+        return Model
+    
     """
     return a form field instance with an cms object attached to it
     """
@@ -52,7 +56,7 @@ class CMSTag:
         widget_attrs = {
             'data-microcontentcategory' : self.microcontent_category,
             'data-microcontenttype' : self.microcontent_type,
-            'data-type' : '%s-%s' % (self.microcontent_category, self.microcontent_type),
+            'data-type' : '{0}-{1}'.format(self.microcontent_category, self.microcontent_type),
         }
 
         return widget_attrs
@@ -115,7 +119,7 @@ class CMSTag:
                         is_last = True
 
                 # this field_name is used if no instance with pk is given
-                field_name = '%s-%s' % (self.microcontent_type, field_count)
+                field_name = '{0}-{1}'.format(self.microcontent_type, field_count)
                 field = self._create_field(language, meta_instance, localized_instance, widget_attrs,
                                            is_first=is_first, is_last=is_last, field_name=field_name)
                 form_fields.append(field)
@@ -177,7 +181,7 @@ class CMSTag:
         widget_attrs = widget_attrs.copy()
 
         if localized_instance.pk:
-            field_name = 'pk-%s-%s' %(localized_instance.microcontent.pk, self.microcontent_type)
+            field_name = 'pk-{0}-{1}'.format(localized_instance.microcontent.pk, self.microcontent_type)
             widget_attrs['data-localized-pk'] = localized_instance.pk
             widget_attrs['data-meta-pk'] = localized_instance.microcontent.pk
         else:

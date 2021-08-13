@@ -304,7 +304,6 @@ class ManageTemplateContent(ManageMicroContents):
         self.localized_template_content.refresh_from_db()
         context['localized_template_content'] = self.localized_template_content
 
-        
 
         app_preview_url_suffix = '/online-content/%s/%s/' % (self.localized_template_content.slug,
                                                              self.localized_template_content.preview_token)
