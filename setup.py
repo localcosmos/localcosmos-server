@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 install_requires = [
     'django==3.1.*',
-    'djangorestframework==3.11.1',
+    'djangorestframework==3.11.2',
     'django-imagekit==4.0.2',
     'django-road',
     'content-licencing',
