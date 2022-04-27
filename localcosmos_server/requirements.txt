@@ -11,3 +11,4 @@ django-octicons==1.0.2
 django-countries==6.1.3
 django-cors-headers==3.5.0
 Pillow
+matplotlib

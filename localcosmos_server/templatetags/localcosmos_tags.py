@@ -9,6 +9,7 @@ from django.urls import reverse
 from localcosmos_server.taxonomy.forms import AddSingleTaxonForm, TypedTaxonomicRestrictionForm
 from localcosmos_server.models import TaxonomicRestriction
 
+
 '''
     render taxonomic restrictions from app taxa
 '''

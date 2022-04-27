@@ -1,0 +1,43 @@
+.interactiveImageField-container {
+	width: 100%;
+}
+
+.interactiveImageField-toolbar {
+	display: flex;
+	background: rgb(80,80,80);
+	border-radius: .5em;
+	color: #FFFFFF;
+	justify-content: center;
+	align-items: center;
+}
+
+.interactiveImageField-toolbar .toolbar-button {
+	width: 3rem;
+	height: 2.5rem;
+	padding: .5rem;
+	display: flex;
+	margin-right: 1rem;
+	margin-left: 1rem;
+	border-radius: .5em;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.interactiveImageField-toolbar .toolbar-button.active {
+	cursor: default;
+}
+
+.interactiveImageField-toolbar .toolbar-button.active, .interactiveImageField-toolbar .toolbar-button:hover {
+	background-color: rgb(120,120,120);
+}
+
+.interactiveImageField-toolbar .toolbar-button img {
+	width: auto;
+	height: 100%;
+}
+
+.interactiveImageField-toolbar .toolbar-button input {
+	width: 3rem !important;
+	height: 100% !important;
+}

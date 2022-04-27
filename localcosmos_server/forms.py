@@ -91,6 +91,8 @@ class ManageContentImageFormCommon:
 
     licencing_model_field = 'source_image'
 
+    allow_features = False
+
     def __init__(self, *args, **kwargs):
         self.current_image = kwargs.pop('current_image', None)
         super().__init__(*args, **kwargs)
@@ -104,6 +106,7 @@ class ManageContentImageFormCommon:
             'source_image',
             'image_type',
             'crop_parameters',
+            'features',
             'md5',
             'creator_name',
             'creator_link',
@@ -118,7 +121,7 @@ class ManageContentImageFormCommon:
         # unfortunately, a file field cannot be prepoluated due to html5 restrictions
         # therefore, source_image has to be optional. Otherwise, editing would be impossible
         # check if a new file is required in clean
-        source_image_field = forms.ImageField(widget=CropImageInput, required=False,
+        source_image_field = forms.ImageField(widget=CropImageInput(allow_features=self.allow_features), required=False,
                                               validators=[FileExtensionValidator(VALID_IMAGE_EXTENSIONS)])
         source_image_field.widget.current_image = self.current_image
 
@@ -162,6 +165,27 @@ class ManageContentImageFormCommon:
                 raise forms.ValidationError(_('You selected an invalid area of the image.'))
 
         return crop_parameters
+
+
+    def clean_features(self):
+
+        features = self.cleaned_data.get('features')
+
+        if (isinstance(features, str)):
+
+            # prevent storing an empty string in the db
+            if len(features) > 0:
+                features = json.loads(features)
+            else:
+                features = None
+
+        if features:
+            if isinstance(features, list) == False:
+                del self.cleaned_data['features']
+                raise forms.ValidationError(_('Invalid features drawn on canvas.'))
+
+        return features
+
         
     # if an image is present, at least crop_parameters and creator_name have to be present
     def clean(self):

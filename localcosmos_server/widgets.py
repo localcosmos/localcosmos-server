@@ -7,7 +7,7 @@ from django.utils.encoding import (
 from django.utils.html import conditional_escape, format_html, html_safe
 from django.utils.safestring import mark_safe
 
-from django.forms.widgets import FileInput
+from django.forms.widgets import FileInput, HiddenInput
 
 from django.contrib.contenttypes.models import ContentType
 
@@ -19,6 +19,7 @@ class ImageInputWithPreview(FileInput):
 
     def __init__(self, *args, **kwargs):
         self.current_image = kwargs.pop('current_image', None)
+        self.allow_features = kwargs.pop('allow_features', False)
         super().__init__(*args, **kwargs)
 
     def get_context(self, name, value, attrs):
@@ -26,12 +27,26 @@ class ImageInputWithPreview(FileInput):
         context = super().get_context(name, value, attrs)
 
         context['current_image'] = self.current_image
+        context['allow_features'] = self.allow_features
 
         return context
 
 
 class CropImageInput(ImageInputWithPreview):
     template_name = 'localcosmos_server/widgets/crop_image_input.html'
+
+
+import json
+class HiddenJSONInput(HiddenInput):
+    
+    def format_value(self, value):
+        """
+        Return a value as it should appear when rendered in a template.
+        """
+        if value == '' or value is None:
+            return None
+        
+        return json.dumps(value)
     
 
 class AjaxFileInput(FileInput):

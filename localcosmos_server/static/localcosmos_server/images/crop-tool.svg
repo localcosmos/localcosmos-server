@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="13.229167mm"
+   height="13.229167mm"
+   viewBox="0 0 13.229167 13.229167"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="crop-tool.svg"
+   inkscape:export-filename="/home/tom/localcosmos-workspace/code/localcosmos-server/localcosmos_server/static/localcosmos_server/images/crop-tool.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="24.886869"
+     inkscape:cx="5.283911"
+     inkscape:cy="10.52764"
+     inkscape:window-width="2560"
+     inkscape:window-height="1371"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid892"
+       originx="-32.543749"
+       originy="-72.760417" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-32.54375,-72.760416)">
+    <path
+       style="fill:none;stroke:#dddddd;stroke-width:1.89607px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 36.356076,72.760416 v 9.284835 h 9.416841"
+       id="path894" />
+    <path
+       style="fill:none;stroke:#dddddd;stroke-width:1.89607px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 32.54375,76.532464 h 9.467293 v 9.457119"
+       id="path896" />
+  </g>
+</svg>
