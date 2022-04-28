@@ -85,6 +85,38 @@ class InteractiveImageField {
 
         this.toolbar = new InteractiveImageFieldToolbar(this);
 
+        this.bindImageField();
+
+    }
+
+    readImageFieldImage (onsuccess, onfail) {
+        var reader = new FileReader();
+		reader.onloadend = function(e) {
+
+			onsuccess(this.result);
+		};
+
+        reader.onerror = onfail;
+
+		let file = this.imageInput.files[0];
+		reader.readAsDataURL(file);
+		
+    }
+
+    bindImageField(){
+        var self = this;
+
+        this.imageInput.addEventListener("change", function(event){
+
+            self.readImageFieldImage(function(imageSrc){
+
+                self.setImage(imageSrc);
+
+            }, function(){
+                // failed
+                alert("[InteractiveImageField.js] error reading image");
+            });
+		});
     }
 
     createHTML (){
