@@ -3,7 +3,7 @@ __pycache__
 demo-app
 build
 dist
-#localcosmos_server.egg-info
+localcosmos_server.egg-info
 
 # files
 *.pyc
