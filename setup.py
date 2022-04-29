@@ -16,11 +16,12 @@ install_requires = [
     'django-countries==6.1.3',
     'django-cors-headers==3.5.0',
     'Pillow',
+    'matplotlib',
 ]
 
 setup(
     name='localcosmos_server',
-    version='0.9.1',
+    version='0.9.3',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",

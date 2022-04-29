@@ -517,7 +517,10 @@ class InteractiveImageField {
         
         this.addCropArea(resetCropArea);
 
+        this.setCropParametersInputValue();
+
         this.addArrows(resetCropArea);
+        this.setFeaturesInputValue();
 
         // start in crop mode
         this.toolbar.show();
