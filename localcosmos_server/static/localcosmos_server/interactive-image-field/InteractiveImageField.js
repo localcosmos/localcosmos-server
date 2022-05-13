@@ -58,7 +58,9 @@ class InteractiveImageField {
             "greyAreaFillColor" : "rgba(0,0,0,0.5)",
             "relativeArrowStrokeWidth" : 0.02,
             "relativeArrowLength" : 0.5,
-            "defaultArrowColor" : "#000000"
+            "defaultArrowColor" : "#000000",
+            "cropMode" : "contains", // contained: crop area contained inside image, contains: crop area contains image (can be larger than image)
+            "stageBackground" : "#FFFFFF" // only used if cropMode == "contains"
         };
 
         for (let key in options){
@@ -66,6 +68,7 @@ class InteractiveImageField {
         }
 
         this.stage = null;
+        this.konvaImage = null;
         this.cropArea = null;
         this.cropAreaGrey = null;
         this.image = null;
@@ -125,6 +128,10 @@ class InteractiveImageField {
         this.container.prepend(this.imageContainer);
     }
 
+    /*
+    * The origin (0/0) of the coordinate system which the crop paramters refer to is the top left corner of the image
+    * this way, the stage can be altered without compromising the validity of the crop parameters
+    */
     setCropParametersInputValue (){
         if (this.cropArea != null){
 
@@ -132,9 +139,11 @@ class InteractiveImageField {
 
             let cropAreaRect = this.cropArea.getClientRect();
 
+            let imageRect = this.konvaImage.getClientRect();
+
             var data = {
-                "x" : Math.round(cropAreaRect.x * reverseScalingFactor),
-                "y" : Math.round(cropAreaRect.y * reverseScalingFactor),
+                "x" : Math.round( (cropAreaRect.x - imageRect.x) * reverseScalingFactor),
+                "y" : Math.round( (cropAreaRect.y - imageRect.y) * reverseScalingFactor),
                 "width" : Math.round(cropAreaRect.width * reverseScalingFactor),
                 "height" : Math.round(cropAreaRect.height * reverseScalingFactor),
                 "rotate" : 0,
@@ -225,46 +234,85 @@ class InteractiveImageField {
 
     }
 
+
     addStage () {
 
-        let originalHeight = this.image.height;
+        let stageWidth = this.imageContainer.offsetWidth;
+        let stageHeight = stageWidth;
 
-        let scalingFactor = this.getScalingFactor();
+        if (this.options.cropMode == "contained"){
 
-        if (this.DEBUG == true){
-            console.log("[InteractiveImageField] loading stage. image height: " + this.image.height + " , image width : " + this.image.width + " scalingFactor: " + scalingFactor);
+            let originalHeight = this.image.height;
+
+            let scalingFactor = this.getScalingFactor();
+
+            if (this.DEBUG == true){
+                console.log("[InteractiveImageField] loading stage. image height: " + this.image.height + " , image width : " + this.image.width + " scalingFactor: " + scalingFactor);
+            }
+            
+            stageHeight = parseInt(originalHeight * scalingFactor);
+
+
+            if (this.DEBUG == true){
+                console.log("instantiating Konva.Stage width: " + stageWidth + " height: " + stageHeight);
+            }
         }
-
-        let imageCanvasWidth = this.imageContainer.offsetWidth;
-        let imageCanvasHeight = parseInt(originalHeight * scalingFactor);
 
         if (this.stage != null){
             this.stage.destroy();
         }
-
-        if (this.DEBUG == true){
-            console.log("instantiating Konva.Stage width: " + imageCanvasWidth + " height: " + imageCanvasHeight);
-        }
-
+        
         this.stage = new Konva.Stage({
             container: this.imageContainer.id,   // id of container <div>
-            width: imageCanvasWidth,
-            height: imageCanvasHeight
+            width: stageWidth,
+            height: stageHeight
         });
     }
 
+    // if the image contains the crop area, the image has the same size like the stage
+    // if the crop area contains the image (crop area can extend image), only one dimension (height or width) fits into the stage and equals the stage
     addKonvaImage () {
 
-        let konvaImage = new Konva.Image({
-            x: 0,
-            y: 0,
+        // in "contained" mode, the image dimensions equal the stage dimensions
+        let imageWidth = this.stage.width();
+        let imageHeight = this.stage.height();
+        let offsetX = 0;
+        let offsetY = 0;
+
+        // in "contains" mode, the stage is square and the image fits into the stage
+        if (this.options.cropMode == "contains") {
+            // crop area contains image
+
+            let scalingFactor = this.getScalingFactor();
+
+            imageWidth = this.image.width * scalingFactor;
+            imageHeight = this.image.height * scalingFactor;
+
+            offsetX = ( this.stage.width() / 2 ) - ( imageWidth / 2)
+            offsetY = ( this.stage.height() / 2 ) - ( imageHeight / 2 ) 
+        }
+
+        this.konvaImage = new Konva.Image({
+            x: offsetX,
+            y: offsetY,
             image: this.image,
-            width: this.stage.width(),
-            height: this.stage.height()
+            width: imageWidth,
+            height: imageHeight
         });
 
         let imageLayer = new Konva.Layer();
-        imageLayer.add(konvaImage);
+
+        let background = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: this.stage.width(),
+            height: this.stage.height(),
+            fill : this.options.stageBackground
+        });
+
+        imageLayer.add(background);
+
+        imageLayer.add(this.konvaImage);
 
         this.stage.add(imageLayer);
 
@@ -308,6 +356,7 @@ class InteractiveImageField {
 
         let scalingFactor = this.getScalingFactor()
 
+        // 1 pixel tolerance
         let initialCropSquareLength = Math.min(this.stage.width(), this.stage.height());
 
         // add the crop area
@@ -336,8 +385,8 @@ class InteractiveImageField {
 
             cropParameters = {
 
-                x : cropParametersInputValue.x * scalingFactor,
-                y : cropParametersInputValue.y * scalingFactor,
+                x : ( cropParametersInputValue.x * scalingFactor) + this.konvaImage.x(),
+                y : ( cropParametersInputValue.y * scalingFactor) + this.konvaImage.y(),
                 width : cropSquareLength,
                 height: cropSquareLength
 
@@ -385,15 +434,23 @@ class InteractiveImageField {
             enabledAnchors :['top-left','top-right', 'bottom-left', 'bottom-right'],
             shouldOverdrawWholeArea : true,
             boundBoxFunc: (oldBox, newBox) => {
+
                 const box = this.getClientRect(newBox);
                 const isOut =
                     box.x < 0 ||
                     box.y < 0 ||
-                    box.x + box.width > this.stage.width() ||
-                    box.y + box.height > this.stage.height();
+                    Math.round(box.x + box.width) > this.stage.width() ||
+                    Math.round(box.y + box.height) > this.stage.height();
                 // if new bounding box is out of visible viewport, let's just skip transforming
                 // this logic can be improved by still allow some transforming if we have small available space
+                // apply Math.round() to prevent scaling the rect resulting box.x + box.width in something like 300.00000003 while stage.width() being 300
                 if (isOut) {
+
+                    if (this.DEBUG == true){
+                        console.log(box.x + box.width + "   VS stage " + this.stage.width())
+                        console.log("[InteractiveImageField] isOut, using old box");
+                    }
+
                     return oldBox;
                 }
                 return newBox;
@@ -1095,11 +1152,15 @@ class InteractiveImageField {
     }
 
     // helper methods
+    // the scaling factor describes the scaling of the image, which is necessary to fit it into the stage
+    // if cropArea contains the image, the larger dimension of width/height defines the scaling factor
     getScalingFactor () {
 
         if (this.DEBUG == true){
             console.log("[InteractiveImageField] calculating scaling factor. container.offsetWidth: " + this.container.offsetWidth + " stage: " + this.stage + " image width: " + this.image.width);
         }
+
+        let scalingFactor = null;
 
         let stageWidth = this.container.offsetWidth;
 
@@ -1107,7 +1168,23 @@ class InteractiveImageField {
             stageWidth = this.stage.width();
         }
 
-        return stageWidth / this.image.width;
+        if (this.options.cropMode == "contains"){
+            // stage is present
+            let stageHeight = this.stage.height();
+            
+
+            if (this.image.height >= this.image.width){
+                scalingFactor = stageHeight / this.image.height;
+            }
+            else {
+                scalingFactor = stageWidth / this.image.width;
+            }
+        }
+        else {
+            scalingFactor = stageWidth / this.image.width;
+        }
+
+        return scalingFactor;
     }
 
     getClientRect(rotatedBox) {

@@ -2,6 +2,10 @@ import urllib.request, json, codecs # gbif_id
 from urllib.parse import quote_plus
 from http.client import RemoteDisconnected
 
+from django.conf import settings
+
+SUPPORTED_LAZY_TAXONOMY_SOURCES = [db[0] for db in settings.LAZY_TAXONOMY_SOURCES]
+
 ##################################################################################################################
 #
 # LazyTaxon
@@ -34,20 +38,12 @@ class LazyTaxonBase:
 
             self.origin = self.instance.__class__.__name__
 
-            # if the instance has an attribute taxon_source it derives from ModelWithTaxonCommon
-            # if the instance has an attribute source_id it derives from the DB - might be deprecated
+            taxon_source = self.get_taxon_source(self.instance)
 
-            if hasattr(self.instance, 'taxon_source'):
-                self.taxon_source = self.instance.taxon_source                
+            if not taxon_source:
+                raise ValueError('Non-taxonomic instance passed to LazyTaxon. Could not determine taxon_source.')
 
-            # in this case, it is a taxon directly from the taxonomic database
-            elif hasattr(self.instance, 'source_id'):
-                # remove ".models" from module
-                self.taxon_source = ('.').join(self.instance.__module__.split('.')[:-1])
-                #self.taxon_source = 'taxonomy.sources.%s' % self.instance._meta.app_label
-            
-            else:
-                raise ValueError('Non-taxonomic instance passed to LazyTaxon')
+            self.taxon_source = taxon_source
 
 
         elif 'taxon_latname' in kwargs and 'taxon_author' in kwargs and 'taxon_source' in kwargs and 'taxon_nuid' in kwargs and 'name_uuid' in kwargs:
@@ -62,6 +58,28 @@ class LazyTaxonBase:
         else:
             raise ValueError('Unable to instantiate LazyTaxon, improper parameters given: %s' %kwargs)
 
+
+    def get_taxon_source(self, instance):
+
+        taxon_source = None
+        
+        # if the instance has an attribute taxon_source it derives from ModelWithTaxonCommon
+        # if the instance has an attribute source_id it derives from the DB - might be deprecated
+
+        if hasattr(instance, 'taxon_source'):
+            taxon_source = instance.taxon_source                
+
+        # in this case, it is a taxon directly from the taxonomic database
+        else:
+            # remove ".models" from module
+            taxon_source = ('.').join(instance.__module__.split('.')[:-1])
+            #self.taxon_source = 'taxonomy.sources.%s' % instance._meta.app_label
+
+            if taxon_source not in SUPPORTED_LAZY_TAXONOMY_SOURCES:
+                raise ValueError('unsupported taxonomic source passed to LazyTaxon: {0}'.format(taxon_source))
+        
+        return taxon_source
+    
 
     def gbif_nubKey(self):
 
