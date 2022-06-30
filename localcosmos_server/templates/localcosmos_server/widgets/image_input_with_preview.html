@@ -8,3 +8,28 @@
 <p>
 	{% include "django/forms/widgets/file.html" %}
 </p>
+
+<script>
+	(function(){
+
+		var fileInput = document.getElementById('{{ widget.attrs.id }}');
+		var imagePreview = document.getElementById('{{ widget.attrs.id }}_preview');
+
+		function loadImage(event){
+
+			var reader = new FileReader();
+
+			reader.onloadend = function(event) {
+
+				imagePreview.src = this.result;
+
+			};
+
+			let file = fileInput.files[0];
+			reader.readAsDataURL(file);
+		}
+
+		fileInput.addEventListener("change", loadImage);
+
+	})()
+</script>

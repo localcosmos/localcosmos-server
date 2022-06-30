@@ -12,7 +12,7 @@ from localcosmos_server.online_content.forms import (CreateTemplateContentForm, 
 
 import os
 
-# available template_type s of Flat theme
+# available template_type s of Flat frontend
 TEMPLATE_TYPES = ['page', 'feature']
 
 class WithPublishedApp:
@@ -35,7 +35,7 @@ class TestCreateTemplateContentForm(WithPublishedApp, WithApp, TestCase):
 
         app_root = settings.LOCALCOSMOS_APPS_ROOT
 
-        templates_root = os.path.join(self.app.published_version_path, 'themes', 'Flat', 'online_content',
+        templates_root = os.path.join(self.app.published_version_path, 'online_content',
                                       'templates')
 
         for template_type in TEMPLATE_TYPES:

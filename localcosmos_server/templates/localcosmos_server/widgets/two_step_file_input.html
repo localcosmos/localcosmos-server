@@ -4,15 +4,20 @@
 		
 		{% include 'django/forms/widgets/file.html' %}
 
-		<label {% if instance %}style="background-image:url('{{ instance.image_store.source_image.url }}?_={% now 'U' %}'); background-size:contain;"{% endif %}></label>
+
+		<div {% if image_container_id %}id="{{ image_container_id }}"{% endif %} class="imagebox" style="{% if instance %}background-image:url('{{ instance.image_store.source_image.url }}?_={% now 'U' %}'); background-size:contain;{% endif %} {% if ratio %}width:{{ ratio.absolute_width }}rem; height:{{ ratio.absolute_height }}rem{% endif %}">
+			{% if ratio and not instance %}
+				<span>{{ ratio.verbose }}</span>
+			{% endif %}
+		</div>
 
 		<div class="btn-group dropup">
 			<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				{% trans 'Modify' %}
 			</button>
 			<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">
-				<a class="dropdown-item xhr" data-url="{{ url }}" ajax-target="ModalContent">{% if instance %}{% trans 'Change image' %}{% else %}{% trans 'Add image' %}{% endif %}</a>
-				{% if instance %}
+				<a class="dropdown-item xhr" data-url="{{ url }}" ajax-target="LargeModalContent">{% if instance %}{% trans 'Change image' %}{% else %}{% trans 'Add image' %}{% endif %}</a>
+				{% if instance and delete_url_name %}
 					<a class="dropdown-item xhr" data-url="{% url delete_url_name content_type.id instance.pk %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
 				{% endif %}
 			</div>

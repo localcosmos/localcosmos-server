@@ -90,15 +90,6 @@ class GetOnlineContent(APIView):
 
         if 'preview_token' in self.request.query_params:
             context['preview'] = True
-
-        # set the base_template
-        # context["base_template"] = "base.html"
-        
-        # sections may use different base templates
-        if "section" in kwargs:
-            section = kwargs["section"]
-            settings = request.cms.load_theme_settings()
-            context["base_template"] = settings["sections"][section]["extends"]
         
         return context
 
@@ -145,9 +136,9 @@ class GetOnlineContentList(APIView):
 
                 flag_tree = TemplateContentFlags.objects.get_tree(app, flag, language, app_state=app_state)
 
-                # read the template_name from theme settings
-                theme_settings = app.get_online_content_settings()
-                template_name = theme_settings['flags'][flag]['template_name']
+                # read the template_name from online_content_settings
+                online_content_settings = app.get_online_content_settings()
+                template_name = online_content_settings['flags'][flag]['template_name']
 
                 template = app.get_online_content_template(template_name)
 

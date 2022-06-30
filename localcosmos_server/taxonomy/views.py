@@ -67,7 +67,7 @@ class ManageTaxonomicRestrictions(FormView):
             'taxon_search_url' : self.get_taxon_search_url(),
         }
 
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             form_kwargs['fixed_taxon_source'] = 'AppTaxa'
 
         return form_kwargs

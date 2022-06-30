@@ -19,7 +19,7 @@ from urllib.error import HTTPError, URLError
 
 import json, os, shutil, zipfile
 
-LOCALCOSMOS_OPEN_SOURCE = getattr(settings, 'LOCALCOSMOS_OPEN_SOURCE')
+LOCALCOSMOS_PRIVATE = getattr(settings, 'LOCALCOSMOS_PRIVATE')
 
 class LoginRequiredMixin:
 
@@ -51,7 +51,7 @@ class ServerControlPanelHome(LoginRequiredMixin, AppsContextMixin, TemplateView)
 class LCPrivateOnlyMixin:
     
     def dispatch(self, request, *args, **kwargs):
-        if LOCALCOSMOS_OPEN_SOURCE == False:
+        if LOCALCOSMOS_PRIVATE == False:
             raise Http404('The resource you requested is only available on LC Private installations')
         return super().dispatch(request, *args, **kwargs)
 
@@ -230,7 +230,7 @@ class UninstallApp(LoginRequiredMixin, AjaxDeleteView):
         return _('Do you really want to uninstall %s?' % self.object)
 
     def get(self, request, *args, **kwargs):
-        if LOCALCOSMOS_OPEN_SOURCE == False:
+        if LOCALCOSMOS_PRIVATE == False:
             raise Http404('Not available on Local Cosmos commercial')
 
         return super().get(request, *args, **kwargs)

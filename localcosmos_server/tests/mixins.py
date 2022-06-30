@@ -43,9 +43,10 @@ class WithApp:
     app_primary_language = 'de'
     app_secondary_languages = ['en']
 
-    testapp_relative_www_path = 'app_for_tests/published/www/'
+    testapp_relative_www_path = 'app_for_tests/release/webapp/www/'
 
-    testapp_relative_review_www_path = 'app_for_tests/review/www/'
+    # the builder does not create a review folder. the review folder is only for this test suite
+    testapp_relative_review_www_path = 'app_for_tests/review/webapp/www/'
     testapp_relative_preview_www_path = 'app_for_tests/preview/www/'
     
 

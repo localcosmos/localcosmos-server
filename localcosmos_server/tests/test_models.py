@@ -1,7 +1,7 @@
 ###################################################################################################################
 #
 # TESTS FOR MODELS
-# - this file only covers settings.LOCALCOSMOS_OPEN_SOURCE == True
+# - this file only covers settings.LOCALCOSMOS_PRIVATE == True
 #
 ###################################################################################################################
 from django.conf import settings
@@ -167,10 +167,10 @@ class TestApp(WithApp, TestCase):
         self.published_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path)
 
         self.review_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                self.testapp_relative_preview_www_path)
+                                                self.testapp_relative_review_www_path)
 
         self.preview_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                 self.testapp_relative_review_www_path)
+                                                 self.testapp_relative_preview_www_path)
 
         self.app.published_version_path = self.published_version_path
         self.app.preview_version_path = self.preview_version_path
@@ -220,6 +220,8 @@ class TestApp(WithApp, TestCase):
 
     # settings in app.published_version_path
     def test_get_settings(self):
+        self.assertTrue(self.app.published_version_path is not None)
+        print(self.app.published_version_path)
         self.assertTrue(os.path.isdir(self.app.published_version_path))
 
         app_settings = self.app.get_settings()
@@ -231,10 +233,6 @@ class TestApp(WithApp, TestCase):
         app_features = self.app.get_features()
         self.assertEqual(type(app_features), dict)
 
-    def test_get_api_settings(self):
-
-        app_api_settings = self.app.get_api_settings()
-        self.assertEqual(type(app_api_settings), dict)
 
     def test_get_installed_app_path(self):
         app_path = self.app.get_installed_app_path(app_state='published')
@@ -253,19 +251,6 @@ class TestApp(WithApp, TestCase):
         
         self.app.published_version_path = self.published_version_path
         self.app.save()
-
-    def test_get_theme_path(self):
-        expected_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path,
-                                           'themes/Flat')
-
-        theme_path = self.app.get_theme_path()
-
-        self.assertEqual(theme_path, expected_theme_path)
-        self.assertTrue(os.path.isdir(theme_path))
-
-    def test_get_theme_config(self):
-        theme_config = self.app.get_theme_config()
-        self.assertEqual(type(theme_config), dict)
 
 
     def test_get_online_content_app_state(self):
@@ -290,7 +275,11 @@ class TestApp(WithApp, TestCase):
 
         available_templates = {
             'feature' : [('feature/news.html', 'News Eintrag')],
-            'page' : [('page/free_page.html', 'Freie Seite'), ('page/test.html', 'Test Seite'),],
+            'page' : [
+                ('page/factsheet.html', 'Fact Sheet'),
+                ('page/free_page.html', 'Freie Seite'),
+                ('page/test.html', 'Test Seite'),
+            ],
         }
 
         for template_type in template_types:
@@ -398,6 +387,8 @@ class TestCommercialApp(WithApp, TestCase):
         preview_settings = self.app.get_settings()
         self.assertEqual(preview_settings['PREVIEW'], True)
 
+        # the settings entry does not normally occur. It is only present for identifying
+        # the settings file during this test
         review_settings = self.app.get_settings(app_state='review')
         self.assertEqual(review_settings['REVIEW'], True)
         self.assertEqual(review_settings['PREVIEW'], False)
@@ -408,13 +399,13 @@ class TestCommercialApp(WithApp, TestCase):
 
         self.publish_app()
         published_settings = self.app.get_settings(app_state='published')
-        self.assertFalse('REVIEW' in published_settings)
+        self.assertIn('REVIEW', published_settings)
         self.assertEqual(published_settings['PREVIEW'], False)
 
     def test_get_features(self):
 
         preview_features = self.app.get_features()
-        self.assertEqual(preview_features['PREVIEW'], True)
+        self.assertEqual(preview_features, {})
 
         review_features = self.app.get_features(app_state='review')
         self.assertEqual(review_features['REVIEW'], True)
@@ -427,64 +418,6 @@ class TestCommercialApp(WithApp, TestCase):
         self.assertFalse('REVIEW' in published_features)
         self.assertFalse('PREVIEW' in published_features)
 
-    def test_get_api_settings(self):
-
-        preview_api_settings = self.app.get_api_settings(app_state='preview')
-        self.assertEqual(preview_api_settings['PREVIEW'], True)
-
-        review_api_settings = self.app.get_api_settings(app_state='review')
-        self.assertEqual(review_api_settings['REVIEW'], True)
-
-        fallback_api_settings = self.app.get_api_settings(app_state='published')
-        self.assertEqual(fallback_api_settings['REVIEW'], True)
-
-        self.publish_app()
-        published_api_settings = self.app.get_api_settings(app_state='published')
-        self.assertFalse('REVIEW' in published_api_settings)
-        self.assertFalse('PREVIEW' in published_api_settings)
-
-
-    def test_get_theme_path(self):
-        expected_preview_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                   self.testapp_relative_preview_www_path, 'themes/Flat')
-
-        expected_review_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                  self.testapp_relative_review_www_path, 'themes/Flat')
-
-        expected_published_theme_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                     self.testapp_relative_www_path, 'themes/Flat')
-
-
-        preview_theme_path = self.app.get_theme_path()
-        self.assertEqual(preview_theme_path, expected_preview_theme_path)
-
-        review_theme_path = self.app.get_theme_path(app_state='review')
-        self.assertEqual(review_theme_path, expected_review_theme_path)
-
-        fallback_theme_path = self.app.get_theme_path(app_state='published')
-        self.assertEqual(fallback_theme_path, expected_review_theme_path)
-
-        self.publish_app()
-        published_theme_path = self.app.get_theme_path(app_state='published')
-        self.assertEqual(published_theme_path, expected_published_theme_path)
-
-
-    def test_get_theme_config(self):
-
-        preview_theme_config = self.app.get_theme_config(app_state='preview')
-        self.assertEqual(preview_theme_config['PREVIEW'], True)
-
-        review_theme_config = self.app.get_theme_config(app_state='review')
-        self.assertEqual(review_theme_config['REVIEW'], True)
-
-        fallback_theme_config = self.app.get_theme_config(app_state='published')
-        self.assertEqual(fallback_theme_config['REVIEW'], True)
-
-        self.publish_app()
-        published_theme_config = self.app.get_theme_config(app_state='published')
-        self.assertFalse('REVIEW' in published_theme_config)
-        self.assertFalse('PREVIEW' in published_theme_config)
-        
 
     def test_get_online_content_app_state(self):
 
@@ -494,7 +427,7 @@ class TestCommercialApp(WithApp, TestCase):
     def test_get_online_conent_templates_path(self):
 
         expected_oct_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                            self.testapp_relative_preview_www_path, 'themes/Flat/online_content/templates')
+                            self.testapp_relative_preview_www_path, 'online_content/templates')
 
 
 
@@ -515,24 +448,19 @@ class TestCommercialApp(WithApp, TestCase):
     def test_get_online_content_templates(self):
 
         available_templates = {
-            'review': {
-                'page' : set([
-                    ('page/test.html', 'Test Seite'),
-                    ('page/REVIEW.html', 'Review marker'),
-                    ('page/free_page.html', 'Freie Seite'),
-                ]),
-            },
             'preview' : {
                 'page' : set([
                     ('page/test.html', 'Test Seite'),
                     ('page/PREVIEW.html', 'Preview marker'),
                     ('page/free_page.html', 'Freie Seite'),
+                    ('page/factsheet.html', 'Fact Sheet'),
                 ]),
             },
-            'published': {
+            'release': {
                 'page' : set([
                     ('page/test.html', 'Test Seite'),
                     ('page/free_page.html', 'Freie Seite'),
+                    ('page/factsheet.html', 'Fact Sheet'),
                 ]),
             }
         }

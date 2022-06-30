@@ -18,7 +18,7 @@ LOGOUT_REDIRECT_URL = '/server/loggedout/'
 
 
 # this setting is used in localcosmos_server.models.App
-LOCALCOSMOS_OPEN_SOURCE = True
+LOCALCOSMOS_PRIVATE = True
 
 # USER MODEL
 AUTH_USER_MODEL = 'localcosmos_server.LocalcosmosUser'

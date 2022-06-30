@@ -246,21 +246,4 @@ class CMSObject:
         self.localized_instance = localized_instance
         self.kwargs = kwargs
 
-
-class Theme:
-
-    def __init__(self, theme_name):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.dir_path = os.path.join(dir_path, "themes", theme_name)
-
-        if not os.path.isdir(self.dir_path):
-            raise FileNotFoundError("The theme %s could not be found." % theme_name)
-
-        settings_file_path = os.path.join(self.dir_path, "settings.json")
-
-        if not os.path.isfile(settings_file_path):
-            raise FileNotFoundError("settings file for theme %s could not be found." % theme_name)
-
-        with open(settings_file_path, "r") as f:
-            self.settings = json.load(f)
         

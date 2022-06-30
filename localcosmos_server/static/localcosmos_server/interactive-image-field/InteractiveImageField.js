@@ -54,7 +54,8 @@ class InteractiveImageField {
         this.featuresInput = featuresInput;
 
         this.options = {
-            "arrowsEnalbed" : true,
+            "cropAreaRatio" : "1:1",
+            "allowFeatures" : true,
             "greyAreaFillColor" : "rgba(0,0,0,0.5)",
             "relativeArrowStrokeWidth" : 0.02,
             "relativeArrowLength" : 0.5,
@@ -354,41 +355,62 @@ class InteractiveImageField {
 
         let self = this;
 
-        let scalingFactor = this.getScalingFactor()
+        let initialCropAreaWidth;
+        let initialCropAreaHeight;
+        let xOffset = 0;
+        let yOffset = 0;
 
-        // 1 pixel tolerance
-        let initialCropSquareLength = Math.min(this.stage.width(), this.stage.height());
+        let ratioParameters = this.options.cropAreaRatio.split(":");
+
+        let ratioRelativeWidth = ratioParameters[0];
+        let ratioRelativeHeight = ratioParameters[1];
+        let ratioFactor = ratioRelativeWidth / ratioRelativeHeight;
+
+        let xDiff = this.stage.width() - ratioRelativeWidth;
+        let yDiff = this.stage.height() - ratioRelativeHeight;
+
+        if (xDiff < yDiff){
+            // width
+            initialCropAreaWidth = this.stage.width();
+            initialCropAreaHeight = initialCropAreaWidth * ( 1 / ratioFactor);
+            yOffset = ( this.stage.height() / 2 ) - ( initialCropAreaHeight / 2 );
+        }
+        else {
+            initialCropAreaHeight = this.stage.height();
+            initialCropAreaWidth = initialCropAreaHeight * ratioFactor;
+            xOffset = ( this.stage.width() / 2 ) - ( initialCropAreaWidth / 2 );
+        }
 
         // add the crop area
         let cropParameters = {
-            x: 0,
-            y: 0,
-            width: initialCropSquareLength,
-            height: initialCropSquareLength
+            x: xOffset,
+            y: yOffset,
+            width: initialCropAreaWidth,
+            height: initialCropAreaHeight
         };
         
 
         // the cropparams in the db and .value of the field are relative to the actual image size, not the responsive image size (which changes all the time)
         if (this.cropParametersInput.value.length && resetCropArea == false){
 
+            let scalingFactor = this.getScalingFactor();
+
             let cropParametersInputValue = JSON.parse(this.cropParametersInput.value);
 
-            // make sure it is a square
-            let cropWidth = cropParametersInputValue.width * scalingFactor;
-            let cropHeight = cropParametersInputValue.height * scalingFactor; 
+            let cropAreaWidth = cropParametersInputValue.width * scalingFactor;
+            let cropAreaHeight = cropParametersInputValue.height * scalingFactor; 
 
-            let cropSquareLength = Math.min(cropWidth, cropHeight);
-
-            if (cropSquareLength > initialCropSquareLength){
-                cropSquareLength = initialCropSquareLength;
+            if (cropAreaWidth > initialCropAreaWidth || cropAreaHeight > initialCropAreaHeight){
+                cropAreaWidth = initialCropAreaWidth;
+                cropAreaHeight = initialCropAreaHeight;
             }
 
             cropParameters = {
 
                 x : ( cropParametersInputValue.x * scalingFactor) + this.konvaImage.x(),
                 y : ( cropParametersInputValue.y * scalingFactor) + this.konvaImage.y(),
-                width : cropSquareLength,
-                height: cropSquareLength
+                width : cropAreaWidth,
+                height: cropAreaHeight
 
             };
         }
@@ -1296,12 +1318,14 @@ class InteractiveImageFieldToolbar {
         });
 
         // arrow mode button
-        this.arrowModeButton = this.createButtonHTML("/static/localcosmos_server/images/arrow-tool.png");
-        this.toolsContainer.append(this.arrowModeButton);
+        if (this.interactiveImageField.options.allowFeatures == true){
+            this.arrowModeButton = this.createButtonHTML("/static/localcosmos_server/images/arrow-tool.png");
+            this.toolsContainer.append(this.arrowModeButton);
 
-        this.arrowModeButton.addEventListener("click", function(event){
-            self.activateArrowMode();
-        });
+            this.arrowModeButton.addEventListener("click", function(event){
+                self.activateArrowMode();
+            });
+        }
 
     }
 
@@ -1376,9 +1400,11 @@ class InteractiveImageFieldToolbar {
 
     activateCropMode (){
 
-        this.arrowModeButton.classList.remove("active");
-        this.arrowToolsContainer.classList.add("d-none");
-        this.interactiveImageField.arrowsTransformLayer.visible(false);
+        if (this.interactiveImageField.options.allowFeatures == true){
+            this.arrowModeButton.classList.remove("active");
+            this.arrowToolsContainer.classList.add("d-none");
+            this.interactiveImageField.arrowsTransformLayer.visible(false);
+        }
 
         this.cropModeButton.classList.add("active");
         this.interactiveImageField.cropAreaTransformLayer.visible(true);

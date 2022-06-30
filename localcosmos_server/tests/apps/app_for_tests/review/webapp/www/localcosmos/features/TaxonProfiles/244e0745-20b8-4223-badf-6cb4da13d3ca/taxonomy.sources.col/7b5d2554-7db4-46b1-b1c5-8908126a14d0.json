@@ -1,0 +1,173 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_latname": "Acer pseudoplatanus",
+    "taxon_author": "L.",
+    "name_uuid": "7b5d2554-7db4-46b1-b1c5-8908126a14d0",
+    "taxon_nuid": "00600800601d00800102r",
+    "vernacular": {
+        "de": "Bergahorn"
+    },
+    "all_vernacular_names": {},
+    "node_names": [
+        "Bergahorn"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gegenständig",
+                    "image_url": "localcosmos/user_content/content_images/9aea8a4e-035b-456c-95fe-42023d79a827.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gelappt",
+                    "image_url": "localcosmos/user_content/content_images/d2c9c7ed-01a6-4673-addb-428e904600ca.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "localcosmos/user_content/content_images/8e154a8d-8ae9-479d-ae02-b9bfe530dcc1.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattanfangs",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/3e7e0555-3217-4a6b-96eb-0648e27dd018.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gezackt",
+                    "image_url": "localcosmos/user_content/content_images/7dfbbfab-dd58-403e-8443-0b283480039f.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "schuppig",
+                    "image_url": "localcosmos/user_content/content_images/19d1a180-bea4-42f4-a7b5-46116a2e2a44.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        107,
+                        100,
+                        0,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(107,100,0,1.0)",
+                    "gradient": false,
+                    "description": null
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Unsere Vorfahren zählten den Bergahorn zu den 'heiteren' Bäumen. Er stand unter anderem für Ruhe, Gelassenheit und Harmonie. Türschwellen aus Ahornholz boten Schutz vor Hexen und Zauberern. Für die Kelten symbolisierte das weiße Holz eine besondere innere Reinheit. Bei den Griechen war der Bergahorn dem Kriegsgott Ares geweiht. Der botanische Gattungsname Acer ist lateinisch und bedeutet spitz, scharf. Das Wort bezieht sich auf die spitzen Blätter.\n\nDer Bergahorn wurde früher ebenso wie der amerikanische Zuckerahorn zur Zuckerherstellung verwendet. Wirtschaftliche Bedeutung erhielt der Ahornsirup vor allem in Not- und Kriegszeiten. 100 Liter Baumsaft waren nötig um etwa ein Kilogramm Zucker zu gewinnen. Dabei musste sehr sorgsam vorgegangen werden, um ein Verbluten des Baumes zu verhindern.",
+            "text_key": "taxon_text_1_10"
+        },
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Vor allem im Jugendstadium treten Gefährdungen auf. Neben einer mäßigen Spätfrostgefährdung ist Wildverbiss der wichtigste Gefährdungsfaktor. Auch Fege- und Schälschäden machen dem Bergahorn zu schaffen. Auf vergrasten Flächen leiden die jungen Pflanzen häufig unter Mäusefraß.",
+            "text_key": "taxon_text_2_11"
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Bergahorne sind Lebensraum für viele Vogelarten, Insekten, Pilze und Misteln. Besonders Blattläuse mögen den Baum wegen seines hohen Zuckergehaltes, und dementsprechend auch die Ameisen, die die Blattläuse melken. Auch Vögel und Mäuse ritzen gelegentlich die Rinde an, um an den zuckerhaltigen Frühjahrssaft zu gelangen. Die Samen werden von zahlreichen Tieren gefressen.",
+            "text_key": "taxon_text_3_12"
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "localcosmos/user_content/content_images/071c4568-07b1-4ea1-98fe-00e41dff439e.png",
+                "small_url": "localcosmos/user_content/content_images/cf71b70f-2563-466e-8d49-7a8c4f7b139a.png",
+                "large_url": "localcosmos/user_content/content_images/1d036515-ff88-4c1e-aed9-2a98c7a18f26.png"
+            }
+        ],
+        "taxon_images": []
+    },
+    "synonyms": {
+        "taxon_latname": "Acer worleei",
+        "taxon_author": "Hort. ex Dippel"
+    },
+    "gbif_nubKey": null
+}

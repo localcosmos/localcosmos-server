@@ -1,0 +1,18 @@
+[
+    {
+        "taxon_source": "taxonomy.sources.col",
+        "taxon_latname": "Acer campestre",
+        "taxon_author": "L.",
+        "name_uuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "taxon_nuid": "00600800601d00800100d",
+        "gbif_nubKey": null
+    },
+    {
+        "taxon_source": "taxonomy.sources.col",
+        "taxon_latname": "Acer pseudoplatanus",
+        "taxon_author": "L.",
+        "name_uuid": "7b5d2554-7db4-46b1-b1c5-8908126a14d0",
+        "taxon_nuid": "00600800601d00800102r",
+        "gbif_nubKey": null
+    }
+]

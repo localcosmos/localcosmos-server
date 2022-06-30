@@ -1,0 +1,189 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_latname": "Quercus robur",
+    "taxon_author": "L.",
+    "name_uuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+    "taxon_nuid": "00600800600p0030070db",
+    "vernacular": {
+        "de": "Eiche"
+    },
+    "all_vernacular_names": {},
+    "node_names": [
+        "Eiche"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "wechselständig",
+                    "image_url": "localcosmos/user_content/content_images/76e04c52-87f3-401e-b496-7f5653760e52.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gelappt",
+                    "image_url": "localcosmos/user_content/content_images/d36d42e2-32ce-43ff-99d5-ab72c92f74c1.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "ohne Spitze",
+                    "image_url": "localcosmos/user_content/content_images/1c74d379-7180-48d4-bc33-fdc2f855ba65.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattanfangs",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/127b8084-62b8-4992-b3ba-691663eb911a.png"
+                },
+                {
+                    "encoded_space": "ungebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/ee5679c4-0348-4622-85c1-d02f8c1c4b57.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "localcosmos/user_content/content_images/4924c76f-6fd9-46ef-96d6-07038d9066e5.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gefurcht",
+                    "image_url": "localcosmos/user_content/content_images/d87c3ee0-02ab-4511-8452-3fedfbd2b66e.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        104,
+                        71,
+                        3,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(104,71,3,1.0)",
+                    "gradient": false,
+                    "description": null
+                },
+                {
+                    "encoded_space": [
+                        107,
+                        100,
+                        0,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(107,100,0,1.0)",
+                    "gradient": false,
+                    "description": null
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Sie zählt zu den wertvollsten Holzarten in unseren Wälder. Besonders berühmt sind die Spessarteichen. Wenn diese Bäume ab einem Alter von etwa 240 Jahren als Furnierstämme geerntet werden, haben sie Höhen von bis zu 40 Metern erreicht. Freistehende Eichen sind oft knorrige Baumgestalten mit einem dicken, kurzen Stamm und einer breit ausladenden Krone. Solche Bäume erreichen oft ein hohes Alter von mehreren hundert Jahren.",
+            "text_key": "taxon_text_1_1"
+        },
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Dank ihres tief reichenden Wurzelwerks sind Eichen besonders sturmfest, stabil und auch gegen längere Trockenphasen gut gerüstet. Eine besondere Rolle spielen die blattfressenden Raupen der Schmetterlinge wie Schwammspinner, Frostspanner oder Eichenprozessionsspinner. Die Eichen haben sich jedoch insoweit darauf eingerichtet, als dass sie Fraßschäden des Frühjahrs durch den Johannistrieb Ende Juni wieder ausgeglichen können.\n\nHäufige Fraßereignisse in aufeinanderfolgenden Jahren oder gleichzeitiger Fraß verschiedener Schädlinge können diese Regenerationsfähigkeit aber überfordern. Dann werden Bekämpfungsmaßnahmen nötig.\n\nVor allem in den warmen Regionen bereitet in den letzten Jahren der Eichenprozessionsspinner den Waldschützern Sorgen, wenn die giftigen Raupenhaare die Gesundheit der Waldbesucher beeinträchtigen.",
+            "text_key": "taxon_text_2_2"
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Eine herausragende Rolle spielen die Eichenwaldgesellschaften im Hinblick auf die Zahl der vorkommenden Tier- und Pflanzenarten, da sie wegen ihrer lichteren Kronen besonders reich an licht- und wärmebedürftigen Arten sind. Beispielsweise kommen von den Großschmetterlingen 179 Arten an Eiche, aber nur 28 Arten an Fichte und von den holzbesiedelnden Käfern 900 Arten an Eiche und nur 300 Arten an Fichte vor.\n\nAuch der Eremit, eine äußerst seltene Käferart, entwickelt sich in sogenannten Mulmhöhlen, wie sie beispielsweise alte knorrige Eichen aufweisen können.\nAndere baumhöhlenbewohnende „Untermieter“ wie Mittelspecht, Halsbandschnäpper und Fledermäuse finden in Eichenwäldern dauerhafte Lebensstätten.\n\nEine besonders bedeutungsvolle Ausprägung sind Eichenwälder auf Sonderstandorten wie nährstoffarmen, trockenen Sandböden, auf trocken- warmen Silikatfelsstandorten, auf sonnseitigen tonigen Pelosolen und flachgründigen Rendzinen. Einige dieser speziellen Wälder stehen unter besonderem gesetzlichen Schutz.",
+            "text_key": "taxon_text_3_3"
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "localcosmos/user_content/content_images/252bebce-9eaa-4bb6-9539-5db721aaf670.png",
+                "small_url": "localcosmos/user_content/content_images/c67c4169-d39c-45a9-aea3-3bc370922310.png",
+                "large_url": "localcosmos/user_content/content_images/393b48bc-0f92-4950-8f1f-ab88f8a6e355.png"
+            }
+        ],
+        "taxon_images": []
+    },
+    "synonyms": {
+        "taxon_latname": "Quercus robur longipeduncula",
+        "taxon_author": "Ehrh., not validly publ."
+    },
+    "gbif_nubKey": null
+}

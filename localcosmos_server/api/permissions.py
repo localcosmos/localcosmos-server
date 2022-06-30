@@ -25,9 +25,9 @@ class CanCreateDataset(permissions.BasePermission):
         if 'review' in request.data:
             app_state = 'review'
         
-        api_settings = app.get_api_settings(app_state=app_state)
+        app_settings = app.get_settings(app_state=app_state)
         
-        allow_anonymous_observations = api_settings['allow_anonymous_observations']
+        allow_anonymous_observations = app_settings.get('allow_anonymous_observations', False)
 
         if allow_anonymous_observations == False and request.user.is_authenticated == False:
             return False

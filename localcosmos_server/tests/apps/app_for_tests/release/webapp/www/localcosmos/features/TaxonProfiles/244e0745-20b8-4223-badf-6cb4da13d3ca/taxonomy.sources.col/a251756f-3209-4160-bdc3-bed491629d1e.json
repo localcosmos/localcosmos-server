@@ -1,0 +1,181 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_latname": "Fagus sylvatica",
+    "taxon_author": "L.",
+    "name_uuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+    "taxon_nuid": "00600800600p00300400b",
+    "vernacular": {
+        "de": "Rotbuche"
+    },
+    "all_vernacular_names": {},
+    "node_names": [
+        "Rotbuche"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "wechselständig",
+                    "image_url": "localcosmos/user_content/content_images/c4c584ae-50c9-44ab-bd97-392051a8fd19.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "oval",
+                    "image_url": "localcosmos/user_content/content_images/9cccb5f6-1bbe-4af8-95bd-39a15e83a6aa.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "localcosmos/user_content/content_images/0a9479c4-2b5c-4e0a-9abb-03431733f94d.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattanfangs",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/c336641c-8bcf-4630-9157-3ba8370e16b9.png"
+                },
+                {
+                    "encoded_space": "ungebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/c68752c3-6300-4142-8395-97a3648a326c.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "localcosmos/user_content/content_images/92da061a-0207-41e7-8891-cc3d4f0bf76f.png"
+                },
+                {
+                    "encoded_space": "wellig",
+                    "image_url": "localcosmos/user_content/content_images/e5b48228-7368-45d4-b146-ba92f61783c0.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "localcosmos/user_content/content_images/91dd23c5-44b6-4d81-bd17-95da5c94d531.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        107,
+                        100,
+                        0,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(107,100,0,1.0)",
+                    "gradient": false,
+                    "description": null
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Der Begriff für unsere Buchstaben leitet sich von Buchen-Holzstäben ab. Sie wurden zum Deuten der auf ihnen eingeritzten Runen vom Boden auf-'gelesen'. Die althochdeutsche 'buoh', eine Holzschreibtafel aus Buche, ist der Namensgeber für unsere Bücher.\n\nEin über ganz Deutschland hinaus bekanntes Baumexemplar war die Bavaria-Buche. Sie stand nahe dem Ortsteil Pondorf der Gemeinde Altmannstein im oberbayerischen Landkreis Eichstätt im Naturpark Altmühltal. Ihr Alter wurde auf 500 bis 800 Jahre geschätzt, ihr Stammumfang betrug neun Meter, die Krone wies einen Durchmesser von über 30 Metern auf. Durch Sturmschäden in den Jahren 1995, 2006 und 2013 brachen nach und nach alle Hauptäste der ehemals halbkugelförmigen Krone. Das Bruchholz verblieb als Totholzbiotop an Ort und Stelle.",
+            "text_key": "taxon_text_1_7"
+        },
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Die Buche ist eine vergleichsweise risikoarme Baumart. Buchen- und Buchenmischbestände bilden stabile Wälder.\nJunge Buchen sind vor allem gegenüber Spätfrösten empfindlich. Für Mäuse und Schalenwild sind die Samen – die Bucheckern – besondere Leckerbissen. Wildverbiss und Schälschäden treten ebenfalls an der Buche auf.\n\nAn der Buche treten auch eine Reihe von Insekten wie der Buchenwickler, der Buchenspringrüssler, der Buchenprachtkäfer und der Kleine Buchenborkenkäfer auf. Auch Pilze befallen das Buchenholz. Bedeutsam sind vor allem Weißfäuleerreger, wie zum Beispiel der Zunderschwamm oder der Brandkrustenpilz, die das Holz zersetzen.",
+            "text_key": "taxon_text_2_8"
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Typische Buchenwaldbewohner sind Frühblüher wie Buschwindröschen, Waldbingelkraut, Waldmeister und Zwiebelzahnwurz. Sie nutzen das Licht, das im unbelaubten Frühjahrswald bis auf den Waldboden fallen kann.\n\nEin Charaktervogel buchenreicher Wälder ist der Schwarzspecht. Er meißelt seine Brut- und Schlafhöhlen in starke Stämme.\n\nHohltaube und Rauhfußkauz nutzen diese Baumhöhlen als 'Nachmieter'. Abgestorbenes Buchenholz ist für viele holzbewohnende Käferarten ein wichtiger Lebensraum.",
+            "text_key": "taxon_text_3_9"
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "localcosmos/user_content/content_images/90c25583-0ff4-4002-bc16-c11bc2fdca75.png",
+                "small_url": "localcosmos/user_content/content_images/ba82d571-ac62-4aa6-9ec3-b0d261737a27.png",
+                "large_url": "localcosmos/user_content/content_images/b7e46604-ff0d-4a6c-910a-e9db3f3be044.png"
+            }
+        ],
+        "taxon_images": []
+    },
+    "synonyms": {
+        "taxon_latname": "Fagus sylvatica suntalensis",
+        "taxon_author": "Beissn."
+    },
+    "gbif_nubKey": null
+}

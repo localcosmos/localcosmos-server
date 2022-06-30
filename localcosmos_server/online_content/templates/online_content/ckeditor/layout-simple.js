@@ -1,3 +1,3 @@
 { 
-	toolbar: ['bold', 'italic', '|', 'undo', 'redo']
+	toolbar: ['bold', 'italic', 'underline', '|', 'undo', 'redo']
 }

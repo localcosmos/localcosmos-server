@@ -1,0 +1,168 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_latname": "Juglans regia",
+    "taxon_author": "L.",
+    "name_uuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+    "taxon_nuid": "00600800600p00400600p",
+    "vernacular": {
+        "de": "Walnuss"
+    },
+    "all_vernacular_names": {},
+    "node_names": [
+        "Walnuss"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "wechselständig",
+                    "image_url": "localcosmos/user_content/content_images/895e9a61-db8a-4637-9dc6-9b1983e70491.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gefiedert",
+                    "image_url": "localcosmos/user_content/content_images/8adf58f6-e8c4-4d32-b33f-360535dc52a6.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "localcosmos/user_content/content_images/11c95d2f-9ba5-40f5-8043-9c41d6fd035b.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattanfangs",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "ungebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/24c58775-cf29-4c68-90bf-72ffcda595c0.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "localcosmos/user_content/content_images/24c506af-f551-4131-97cc-6f38099b515d.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gefurcht",
+                    "image_url": "localcosmos/user_content/content_images/f6625201-7a53-4c11-9d21-671ec1adf116.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        104,
+                        71,
+                        3,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(104,71,3,1.0)",
+                    "gradient": false,
+                    "description": null
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Auf den Blättern verursachen einige pilzliche Erreger Blattflecken, die die Bäume nur wenig beeinflussen. Ein Befall der Früchte kann allerdings den Ausfall der Ernte nach sich ziehen. Auch wenn viele alte Walnussbäume im Kernholz teilweise massive Fäulen zeigen, ist die Zahl der bisher beobachteten Holzpilze an der Walnuss noch sehr gering.",
+            "text_key": "taxon_text_2_30"
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Vor allem die Inhaltsstoffe des Baumes schränken die Insektenfauna an der Walnuss stark ein. Aus Deutschland sind bisher keine phytophagen Käfer oder Schmetterlingsraupen an den Blättern der Walnuss bekannt. Im Holz werden zwar das Blausieb und der Weidenbohrer vereinzelt beobachtet, Borkenkäfer oder Frischholzbesiedler kommen an Walnüssen jedoch nicht vor.",
+            "text_key": "taxon_text_3_31"
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "localcosmos/user_content/content_images/45432fcb-eab1-4454-be19-f54cc7a05fb2.png",
+                "small_url": "localcosmos/user_content/content_images/20360ebe-c2c0-40fe-a2e8-8ae663b398c9.png",
+                "large_url": "localcosmos/user_content/content_images/e982a0a5-c40e-4159-b1ef-c7a84f276bc7.png"
+            }
+        ],
+        "taxon_images": []
+    },
+    "synonyms": {
+        "taxon_latname": "Juglans maxima",
+        "taxon_author": "Loud."
+    },
+    "gbif_nubKey": null
+}

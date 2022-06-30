@@ -100,20 +100,17 @@ class ManageTemplateContentForm(ManageMicroContentsForm):
 
 
     def _append_additional_fields(self):
-        # read the theme conf and add the page types defined there
-        theme_settings = self.template_content.get_theme_settings()
+        # read the frontend settings and add the page types defined there
+        online_content_settings = self.template_content.get_online_content_settings()
 
         page_flag_choices = []
-        
-        for navigation_type, navigation in theme_settings['flags'].items():
-            page_flag_choices.append(
-                (navigation_type, _(navigation['name']))
-            )
 
-        for section, definition in theme_settings['sections'].items():
-            page_flag_choices.append(
-                (section, _(section))
-            )
+        if 'flags' in online_content_settings:
+        
+            for navigation_type, navigation in online_content_settings['flags'].items():
+                page_flag_choices.append(
+                    (navigation_type, _(navigation['name']))
+                )
 
         if self.template_content.template_type == 'page':
             self.fields['page_flags'].choices = page_flag_choices
@@ -185,7 +182,7 @@ class UploadImageWithLicenceForm(ManageContentImageFormCommon, LicencingFormMixi
         return source_image_field
 
 
-# check if the template already exists in templates provided by the theme
+# check if the template already exists in templates provided by the frontend
 class UploadCustomTemplateForm(forms.Form):
 
     template = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['html'])])
@@ -201,7 +198,7 @@ class UploadCustomTemplateForm(forms.Form):
 
         templates_path = os.path.join(self.app.get_online_content_templates_path(), 'page')
 
-        # iterate over templates shipped with the theme
+        # iterate over templates shipped with the frontend
         for filename in os.listdir(templates_path):
             if filename == uploaded_filename:
                 raise forms.ValidationError(_('This template already exists.'))

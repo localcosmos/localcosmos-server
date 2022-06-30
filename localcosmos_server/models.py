@@ -64,7 +64,7 @@ class LocalcosmosUser(AbstractUser):
 
     # do not alter the delete method
     def delete(self, using=None, keep_parents=False):
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             super().delete(using=using, keep_parents=keep_parents)
         else:
             # localcosmos.org uses django-tenants
@@ -155,7 +155,7 @@ class App(models.Model):
     name = models.CharField(max_length=255)
 
     # the url this app is served at according to your nginx/apache setup
-    # online content uses this to load a preview on the open source installation
+    # online content uses this to load a preview on the LC private installation
     url = models.URLField(null=True)
 
     # url for downloading the currently released apk
@@ -175,15 +175,15 @@ class App(models.Model):
     published_version = models.IntegerField(null=True)
 
     # an asbolute path on disk to a folder containing a www folder with static index.html file
-    # online content uses published_version_path if LOCALCOSMOS_OPEN_SOURCE == True
+    # online content uses published_version_path if LOCALCOSMOS_PRIVATE == True
     # online content reads templates and config files from disk
-    # usually, published_version_path is settings.LOCALCOSMOS_APPS_ROOT/{App.uid}/live/www/
+    # usually, published_version_path is settings.LOCALCOSMOS_APPS_ROOT/{App.uid}/published/www/
     # make sure published_version_path is served by your nginx/apache
     published_version_path = models.CharField(max_length=255, null=True)
 
     # COMMERCIAL ONLY
     # an asbolute path on disk to a folder containing a www folder with static index.html file
-    # online content uses preview_version_path if LOCALCOSMOS_OPEN_SOURCE == False
+    # online content uses preview_version_path if LOCALCOSMOS_PRIVATE == False
     # online content reads templates and config files from disk
     # usually, preview_version_path is settings.LOCALCOSMOS_APPS_ROOT/{App.uid}/preview/www/
     # make sure preview_version_path is served by your nginx/apache
@@ -191,7 +191,7 @@ class App(models.Model):
 
     # COMMERCIAL ONLY
     # an asbolute path on disk to a folder containing a www folder with static index.html file
-    # usually, review_version_path is settings.LOCALCOSMOS_APPS_ROOT/{App.uid}/preview/www/
+    # usually, review_version_path is settings.LOCALCOSMOS_APPS_ROOT/{App.uid}/review/www/
     # make sure review_version_path is served by your nginx/apache
     # review_version_path is used by the localcosmos_server api
     review_version_path = models.CharField(max_length=255, null=True)
@@ -207,7 +207,7 @@ class App(models.Model):
 
 
     def get_url(self):
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             return self.url
 
         # commercial installation uses subdomains
@@ -218,7 +218,7 @@ class App(models.Model):
         return domain.domain
 
     def get_admin_url(self):
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             return reverse('appadmin:home', kwargs={'app_uid':self.uid})
 
         # commercial installation uses subdomains
@@ -232,9 +232,9 @@ class App(models.Model):
         return url
 
     # preview is used by online content on the commercial installation only
-    # on open source, preview url is the live url
+    # on lc private, preview url is the live url
     def get_preview_url(self):
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             return self.url
 
         from django_tenants.utils import get_tenant_domain_model
@@ -246,7 +246,7 @@ class App(models.Model):
 
     def get_installed_app_path(self, app_state):
 
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             app_state = 'published'
 
         if app_state == 'published':
@@ -255,7 +255,7 @@ class App(models.Model):
             # on the first build, there is no published_version_path, but only a review_version_path
             # the "review apk" is exactly the same as the later "published apk",
             # so fall back to review settings if no published settings are available
-            if root == None and settings.LOCALCOSMOS_OPEN_SOURCE == False:
+            if root == None and settings.LOCALCOSMOS_PRIVATE == False:
                 root = self.review_version_path
 
         elif app_state == 'preview':
@@ -269,7 +269,9 @@ class App(models.Model):
         
         return root
 
+    
     # read app settings from disk, online_content
+    # located at /www/settings.json, createb by AppPreviewBuilder or AppReleaseBuilder
     # app_state=='preview' or app_state=='review' are for commercial installation only
     def get_settings(self, app_state='preview'):
 
@@ -287,28 +289,19 @@ class App(models.Model):
     # app_state=='preview' or app_state=='review' are for commercial installation only
     # used eg by AppTaxonSearch.py
     def get_features(self, app_state='preview'):
-        root = self.get_installed_app_path(app_state)
-        
-        features_json_path = os.path.join(root, 'features.json')
 
-        with open(features_json_path, 'r') as features_file:
-            features = json.loads(features_file.read())
+        if app_state == 'preview':
+            features = {}
+
+        else:
+            root = self.get_installed_app_path(app_state)
+            
+            features_json_path = os.path.join(root, 'localcosmos', 'features.json')
+
+            with open(features_json_path, 'r') as features_file:
+                features = json.loads(features_file.read())
 
         return features
-
-    # api_settings is used by localcosmos_server.api, eg to determine allow_anonymous_observations
-    # api_settings only contains settings which make sense for the api (need_to_know basis)
-    # app_state='review' is for commercial installation only
-    def get_api_settings(self, app_state='published'):
-        
-        root = self.get_installed_app_path(app_state)
-
-        api_settings_json_path = os.path.join(root, 'api', 'settings.json')
-
-        with open(api_settings_json_path, 'r') as api_settings_file:
-            api_settings = json.loads(api_settings_file.read())
-
-        return api_settings
 
 
     def languages(self):
@@ -320,61 +313,40 @@ class App(models.Model):
     def secondary_languages(self):
         return SecondaryAppLanguages.objects.filter(app=self).values_list('language_code', flat=True)
 
-    ##############################################################################################################
-    # theme
-
-    def get_theme_path(self, app_state='preview'):
-        
-        app_settings = self.get_settings(app_state=app_state)
-        
-        theme_name = app_settings['THEME']
-        installed_app_path = self.get_installed_app_path(app_state)
-        return os.path.join(installed_app_path, 'themes', theme_name)
-
-    def get_theme_config(self, app_state='preview'):
-
-        theme_path = self.get_theme_path(app_state=app_state)
-        theme_config_path = os.path.join(theme_path, 'config.json')
-
-        with open(theme_config_path, 'r') as theme_config_file:
-            theme_config = json.loads(theme_config_file.read())
-
-        return theme_config
-        
+    
     ###############################################################################################################
     # online content specific
-    # on LOCALCOSMOS_OPEN_SOURCE==True app_state is always 'published'
-    # on LOCALCOSMOS_OPEN_SOURCE==False app_state is always 'preview'
+    # on LOCALCOSMOS_PRIVATE==True app_state is always 'published'
+    # on LOCALCOSMOS_PRIVATE==False app_state is always 'preview'
 
     def get_online_content_app_state(self):
 
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             return 'published'
 
         return 'preview'
 
-    # preview or published, depending on LOCALCOSMOS_OPEN_SOURCE
+    # preview or published, depending on LOCALCOSMOS_PRIVATE
     def get_online_content_templates_path(self):
         
         app_state = self.get_online_content_app_state()
-        
-        app_theme_path = self.get_theme_path(app_state=app_state)
-        return os.path.join(app_theme_path, 'online_content', 'templates')
+
+        return os.path.join(self.get_installed_app_path(app_state), 'online_content', 'templates')
 
 
     def get_user_uploaded_online_content_templates_path(self):
         return os.path.join(self.media_base_path, 'online_content', 'templates')
 
 
-    # return the online_content specific theme settings
+    # return the online_content specific app settings
     # called from online_content.api.views and online_content.models.TemplateContentFlagsManager
     def get_online_content_settings(self):
 
         app_state = self.get_online_content_app_state()
         
-        theme_config = self.get_theme_config(app_state=app_state)
+        app_settings = self.get_settings(app_state=app_state)
 
-        oc_settings = theme_config['online_content']
+        oc_settings = app_settings.get('online_content', {})
         return oc_settings
     
     # return a list of available templates, always use the preview version,
@@ -388,7 +360,7 @@ class App(models.Model):
 
         templates = []
 
-        # iterate over templates shipped with the theme
+        # iterate over templates shipped with the frontend
         for filename in os.listdir(templates_path):
 
             template_path = '{0}/{1}'.format(template_type, filename)
@@ -421,13 +393,13 @@ class App(models.Model):
         # engine is a template engine
         # Template can be instantiated directly, only with contents
 
-        # templates shipped with theme
+        # templates shipped with frontend
         templates_base_dir = self.get_online_content_templates_path()
 
         # templates uploaded by user
         user_uploaded_templates_base_dir = self.get_user_uploaded_online_content_templates_path()
 
-        # check if template is shipped with the theme
+        # check if template is shipped with the frontend
         template_path = os.path.join(templates_base_dir, template_name)
 
         if not os.path.isfile(template_path):

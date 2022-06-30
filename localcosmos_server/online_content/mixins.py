@@ -16,7 +16,7 @@ class OnlineContentMixin:
         else:
             self.app = App.objects.get(uid=kwargs['app_uid'])
 
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             app_state = 'published'
         else:
             app_state = 'preview'

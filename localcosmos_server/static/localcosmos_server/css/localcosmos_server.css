@@ -28,19 +28,20 @@ body {
 	z-index: -1;
 }
 
-.ajaxfileupload label, .twostepfileupload label {
+.ajaxfileupload label, .twostepfileupload .imagebox {
 	width: 50%;
     font-size: 1.25em;
     font-weight: 700;
     color: white;
     background-color: rgb(150,150,150);
-    display: block;
+    display: flex;
 	position:relative;
 	text-align: center;
-	vertical-align: middle;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center center;
+	justify-content: center;
+	align-items: center;
 }
 
 .ajaxfileupload label {
@@ -60,7 +61,7 @@ body {
 }
 
 
-.ajaxfileupload label:after, .twostepfileupload label:after {
+.ajaxfileupload label:after, .twostepfileupload .imagebox:after {
 	content: "";
 	display: block;
 	padding-bottom: 100%;

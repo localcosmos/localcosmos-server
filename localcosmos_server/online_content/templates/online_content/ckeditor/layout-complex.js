@@ -1,5 +1,5 @@
 {
-    toolbar: [ 'heading', '|', 'bold', 'italic', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+    toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 	link: {
         decorators: {
             addTargetToExternalLinks: {

@@ -10,7 +10,7 @@ LARGE_TEST_IMAGE_PATH = os.path.join(TESTS_ROOT, 'images', 'test-image-2560-1440
 TEST_MEDIA_ROOT = os.path.join(TESTS_ROOT, 'media_for_tests')
 
 test_settings = override_settings(
-    LOCALCOSMOS_OPEN_SOURCE = True,
+    LOCALCOSMOS_PRIVATE = True,
     LOCALCOSMOS_APPS_ROOT = os.path.join(TESTS_ROOT, 'apps'),
     MEDIA_ROOT = TEST_MEDIA_ROOT,
     DATASET_VALIDATION_CLASSES = (
@@ -20,7 +20,7 @@ test_settings = override_settings(
 )
 
 test_settings_commercial = override_settings(
-    LOCALCOSMOS_OPEN_SOURCE = False,
+    LOCALCOSMOS_PRIVATE = False,
     LOCALCOSMOS_APPS_ROOT = os.path.join(TESTS_ROOT, 'apps'),
     MEDIA_ROOT = TEST_MEDIA_ROOT,
 )

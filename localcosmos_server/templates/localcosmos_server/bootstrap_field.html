@@ -63,12 +63,6 @@
 			<div>
 				{{ field }}
 			</div>
-		{% elif field.field.widget|widget_class == "TwoStepDiskFileInput" %}
-			<label>{{ field.label }}</label> {% if field.field.required or field.field.is_required %}{% else %}<small>({% trans 'optional' %})</small>{% endif %}
-			{% if field.help_text %}
-				<small class="form-text text-muted">{{ field.help_text|safe }}</small>
-			{% endif %}
-			{{ field }}
 		{% else %}
 
 			{{ field.label_tag }} {% if field.field.required %}{% else %}<small>({% trans 'optional' %})</small>{% endif %} {% if field.field.widget|widget_class == "SelectDateWidget" %}<br>{% endif %}

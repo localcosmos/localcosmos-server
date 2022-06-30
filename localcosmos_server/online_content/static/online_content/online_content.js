@@ -9,25 +9,62 @@ function cms_add_element(identifier){
 
 		var current_num = container.children().length;
 
+		var next_num = current_num + 1;
+
+
+		function incrementId(element){
+
+			let old_id = element.getAttribute("id");
+			let old_id_head = old_id.split("--")[0];
+			
+			let new_id = old_id_head + "--" + next_num.toString();
+			element.setAttribute("id", new_id);
+
+			return new_id;
+
+		}
+
 		function addElement(){
 
-			var new_elem = container.children("[data-new=1]").first().clone(true, true);
+			var new_elem = container.children("[data-new=1]").last().clone(true, true);
 
 			// reset the val
 			new_elem.val('');
 
 			// images need id adjustment
-			var input =	new_elem.find("input");
-			if (input.length && input[0].hasAttribute("id")){
-				var old_id = input.attr("id");
-				var old_id_head = old_id.split("--")[0];
-				var next_num = current_num + 1;
-				var new_id = old_id_head + "--" + next_num.toString();
-				input.attr("id", new_id);
+			var inputs = new_elem.find("input");
 
-				var label = new_elem.find("label");
-				if (label.length > 0){
-					label.attr("for", new_id);
+			if (inputs.length){
+				let input = inputs[0]
+
+				if (input.hasAttribute("id")) {
+					let new_id = incrementId(input);
+
+					var labels = new_elem.find("label");
+					if (labels.length > 0){
+						let label = labels[0];
+						label.setAttribute("for", new_id);
+
+						if (label.hasAttribute("id")){
+							let new_label_id = incrementId(label);
+						}
+					}
+				}
+			}
+
+			// update bootstrap dropdown
+
+			var buttons = new_elem.find("button");
+			if (buttons.length){
+				let button = buttons[0];
+				if (button.hasAttribute("id")){
+					let new_id = incrementId(button);
+
+					let dropdown = button.nextElementSibling;
+					
+					if (dropdown.hasAttribute('aria-labelledby')){
+						dropdown.setAttribute('aria-labelledby', new_id);
+					}
 				}
 			}
 

@@ -129,3 +129,9 @@ def render_serializer_field(field, style):
 def get_app_locale(context, key):
     language = context['request'].LANGUAGE_CODE
     return context['request'].app.get_locale(key, language)
+
+
+@register.simple_tag
+def content_image_url(instance, image_type):
+    content_image = instance.image(image_type)
+    return content_image.image_url()

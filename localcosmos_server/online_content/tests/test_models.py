@@ -1,7 +1,7 @@
 ###################################################################################################################
 #
 # TESTS FOR MODELS
-# - this file only covers settings.LOCALCOSMOS_OPEN_SOURCE == True
+# - this file only covers settings.LOCALCOSMOS_PRIVATE == True
 #
 ###################################################################################################################
 from django.conf import settings
@@ -54,8 +54,6 @@ TEST_OC_SETTINGS = {
                     "template_name" : "flag/main_navigation.html",
                     "name" : "Main Navigation"
             }
-    },
-    "sections" : {
     }
 }
 
@@ -136,14 +134,14 @@ class TestTemplateContent(WithUser, WithApp, WithTemplateContent, TestCase):
             # ltc is tested separately
             
 
-    def test_get_theme_settings(self):
+    def test_get_online_content_settings(self):
 
         template_content = self.create_template_content()
         
-        theme_settings = template_content.get_theme_settings()
+        oc_settings = template_content.get_online_content_settings()
 
-        self.assertTrue('flags' in theme_settings)
-        self.assertTrue('verbose_template_names' in theme_settings)
+        self.assertTrue('flags' in oc_settings)
+        self.assertTrue('verbose_template_names' in oc_settings)
 
 
     def test_get_verbose_template_name(self):

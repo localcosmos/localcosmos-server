@@ -1,0 +1,23 @@
+{
+    "uuid": "27e26b18-9daa-4d96-86f7-724cfbf2f87f",
+    "version": 1,
+    "options": {},
+    "global_options": {},
+    "name": "Frontend",
+    "user_content": {
+        "texts": {
+            "about_app": "<p>about</p><blockquote><p>quote from some entity</p></blockquote><p>yes</p>",
+            "app_sources": "<p>app <strong>sources</strong></p>"
+        },
+        "images": {
+            "app_background": "localcosmos/user_content/frontend/images/app_background.png",
+            "app_launcher_icon": "localcosmos/user_content/frontend/images/app_launcher_icon.svg",
+            "app_pc_background": "localcosmos/user_content/frontend/images/app_pc_background.png",
+            "app_splashscreen": "localcosmos/user_content/frontend/images/app_splashscreen.svg",
+            "logo": "localcosmos/user_content/frontend/images/logo.svg",
+            "funding_partner_1": null,
+            "funding_partner_2": null,
+            "funding_partner_3": null
+        }
+    }
+}

@@ -10,7 +10,7 @@ import json, uuid
 
 def get_init_kwargs(request):
     kwargs = {}
-    if settings.LOCALCOSMOS_OPEN_SOURCE == False:
+    if settings.LOCALCOSMOS_PRIVATE == False:
         kwargs['schema_name'] = request.tenant.schema_name
     return kwargs
 

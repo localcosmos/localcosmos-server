@@ -2,9 +2,9 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
-from .widgets import CropImageInput
+from .widgets import CropImageInput, ImageInputWithPreview
 
-VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'svg']
+VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png']#, 'svg']
 from django.core.validators import FileExtensionValidator
 
 
@@ -91,10 +91,9 @@ class ManageContentImageFormCommon:
 
     licencing_model_field = 'source_image'
 
-    allow_features = False
-
     def __init__(self, *args, **kwargs):
         self.current_image = kwargs.pop('current_image', None)
+        self.content_instance = kwargs.pop('content_instance', None)
         super().__init__(*args, **kwargs)
 
         # get the source_image field
@@ -112,6 +111,7 @@ class ManageContentImageFormCommon:
             'creator_link',
             'source_link',
             'licence',
+            'requires_translation',
         ]
 
         self.order_fields(field_order)
@@ -121,8 +121,59 @@ class ManageContentImageFormCommon:
         # unfortunately, a file field cannot be prepoluated due to html5 restrictions
         # therefore, source_image has to be optional. Otherwise, editing would be impossible
         # check if a new file is required in clean
-        source_image_field = forms.ImageField(widget=CropImageInput(allow_features=self.allow_features), required=False,
-                                              validators=[FileExtensionValidator(VALID_IMAGE_EXTENSIONS)])
+
+        # read optional restrictions from the model using image_type
+        restrictions = {}
+
+        image_type = self.initial.get('image_type', 'image')
+
+        if 'image_type' in self.data:
+            image_type = self.data['image_type']
+
+        if hasattr(self, 'cleaned_data'):
+            image_type = self.cleaned_data.get('image_type', image_type)
+
+        restrictions = {}
+
+        if self.content_instance and hasattr(self.content_instance, 'get_content_image_restrictions'):
+            restrictions = self.content_instance.get_content_image_restrictions(image_type)
+
+
+        allow_features = restrictions.get('allow_features', True)
+        allow_cropping = restrictions.get('allow_cropping', True)
+
+        widget_kwargs = {
+            'restrictions' : restrictions,
+        }
+
+        valid_file_types = VALID_IMAGE_EXTENSIONS
+
+        field_class = forms.ImageField
+
+        widget_class = CropImageInput
+
+        if allow_features == False and allow_cropping == False:
+            widget_class = ImageInputWithPreview
+
+
+        # no cropping for svgs
+        if 'file_type' in restrictions:
+            valid_file_types = restrictions['file_type']
+            
+            # fall back to simple image with preview for svg
+            if 'svg' in restrictions['file_type']:
+                field_class = forms.FileField
+                widget_class = ImageInputWithPreview
+
+
+        if widget_class == ImageInputWithPreview and 'crop_parameters' in self.fields:
+             self.fields['crop_parameters'].required = False
+
+        widget=widget_class(**widget_kwargs)
+           
+
+        source_image_field = field_class(widget=widget, required=False,
+                                              validators=[FileExtensionValidator(valid_file_types)])
         source_image_field.widget.current_image = self.current_image
 
         return source_image_field

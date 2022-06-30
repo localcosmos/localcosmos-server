@@ -50,7 +50,7 @@ class TaxonAutocompleteWidget(MultiWidget):
 
         context = super().get_context(name, value, attrs)
 
-        if settings.LOCALCOSMOS_OPEN_SOURCE == True:
+        if settings.LOCALCOSMOS_PRIVATE == True:
             taxon_source_choices = []
         else:
             taxon_source_choices = settings.TAXONOMY_DATABASES

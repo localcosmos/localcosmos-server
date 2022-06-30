@@ -72,19 +72,19 @@ class TemplateContent(models.Model):
 
     objects = TemplateContentManager()
 
-    def get_theme_settings(self):
+    def get_online_content_settings(self):
         return self.app.get_online_content_settings()
 
     def verbose_template_name(self, language_code=None):
         if not language_code:
             language_code = self.app.primary_language
             
-        theme_settings = self.app.get_online_content_settings()
+        online_content_settings = self.app.get_online_content_settings()
 
         verbose_name = verbosify_template_name(self.template_name)
 
-        if self.template_name in theme_settings['verbose_template_names'] and language_code in theme_settings['verbose_template_names'][self.template_name]:
-            verbose_name = theme_settings['verbose_template_names'][self.template_name][language_code]
+        if self.template_name in online_content_settings['verbose_template_names'] and language_code in online_content_settings['verbose_template_names'][self.template_name]:
+            verbose_name = online_content_settings['verbose_template_names'][self.template_name][language_code]
 
         return verbose_name
         
@@ -98,7 +98,7 @@ class TemplateContent(models.Model):
     def locales(self):
         return LocalizedTemplateContent.objects.filter(template_content=self)
 
-    # template_path dependant of the apps theme setting
+    # template_path dependant of the apps frontend setting
     def template_path(self, app):
         return os.path.join(self.app.get_online_content_templates_path(), self.template_name)
 
@@ -601,8 +601,8 @@ class TemplateContentFlagsManager(models.Manager):
     # do not retrieve flags across apps
     def get_tree(self, app, flag, language, **kwargs):
 
-        theme_settings = app.get_online_content_settings()
-        max_flag_levels = theme_settings.get('max_flag_levels', 2)
+        online_content_settings = app.get_online_content_settings()
+        max_flag_levels = online_content_settings.get('max_flag_levels', 2)
 
         flags = self.filter(template_content__app=app, flag=flag)
 

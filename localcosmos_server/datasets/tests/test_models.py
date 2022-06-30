@@ -1,7 +1,7 @@
 ###################################################################################################################
 #
 # TESTS FOR MODELS
-# - this file only covers settings.LOCALCOSMOS_OPEN_SOURCE == True
+# - this file only covers settings.LOCALCOSMOS_PRIVATE == True
 #
 ###################################################################################################################
 from django.conf import settings

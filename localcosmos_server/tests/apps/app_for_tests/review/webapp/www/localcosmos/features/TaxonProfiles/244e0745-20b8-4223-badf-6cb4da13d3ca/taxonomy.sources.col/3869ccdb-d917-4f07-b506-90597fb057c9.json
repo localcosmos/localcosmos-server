@@ -1,0 +1,168 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_latname": "Prunus avium",
+    "taxon_author": "(L.) L.",
+    "name_uuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+    "taxon_nuid": "00600800601b00702c00l",
+    "vernacular": {
+        "de": "Wildkirsche"
+    },
+    "all_vernacular_names": {},
+    "node_names": [
+        "Wildkirsche"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "wechselständig",
+                    "image_url": "localcosmos/user_content/content_images/1315b835-8387-48aa-8e2d-eb6dd23df099.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "oval",
+                    "image_url": "localcosmos/user_content/content_images/0c1bc6d3-f34d-4ae3-9920-f3c39bc4d036.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "localcosmos/user_content/content_images/f2485c3e-24aa-48d9-880e-4be714c76940.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattanfangs",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "ungebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/441f0766-7e56-47d8-911c-3611b3650350.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gezackt",
+                    "image_url": "localcosmos/user_content/content_images/543a37f4-5b3f-4510-816b-e04f0dceff2a.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "localcosmos/user_content/content_images/1c879262-84f6-4806-a736-71b639d3b774.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        104,
+                        71,
+                        3,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(104,71,3,1.0)",
+                    "gradient": false,
+                    "description": null
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Waldschutz",
+            "text": "Vogelkirschen sind in erheblichem Umfang von Bakterien- und Pilzkrankheiten betroffen. Bei Aufforstungen mit Wildkirsche stellt der Bakterienbrand (Pseudomonas syringae) eine der Hauptgefahren für den Bestand dar. Ebenso gefährdet der Feuerbrand (Erwinia amylovora) die Kirsche",
+            "text_key": "taxon_text_2_37"
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Nach Literaturangaben verzehren 48 Vogelarten die bis einen Zentimeter dicken Steinfrüchte der Wildkirsche. Die wichtigsten Nutznießer sind Amsel, Singdrossel, Misteldrossel und Star. Insbesondere Ringeltaube, Eichelhäher und Pirol verbreiten die Wildkirsche über die mit dem Vogelkot wieder ausgeschiedenen Kirschkerne über Entfernungen von mehr als einem Kilometer. An der Vogelkirsche leben über 100 holzbesiedelnde Käfer, darunter außergewöhnlich farbenprächtige Arten, deren Heimat man eher in den Tropen vermuten würde.",
+            "text_key": "taxon_text_3_38"
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "localcosmos/user_content/content_images/487a94f6-a3a4-4dec-9e19-08d8eb71a321.png",
+                "small_url": "localcosmos/user_content/content_images/e7d8fd58-3bad-464b-ac7f-56278ea0b770.png",
+                "large_url": "localcosmos/user_content/content_images/7031a743-38e5-4a15-a071-cba8b6120fb4.png"
+            }
+        ],
+        "taxon_images": []
+    },
+    "synonyms": {
+        "taxon_latname": "Prunus cerasus juliana",
+        "taxon_author": "L."
+    },
+    "gbif_nubKey": null
+}

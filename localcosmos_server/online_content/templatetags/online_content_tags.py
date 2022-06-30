@@ -192,19 +192,6 @@ def template_content_translation_complete(template_content, language):
         return ltc.translation_complete()
 
 
-@register.simple_tag(takes_context=True)
-def get_sections(context, *args, **kwargs):
-    app = context['request'].app
-
-    settings = app.get_theme_settings()
-
-    sections = []
-    
-    for section, dic in settings['sections'].items():
-        sections.append(section)
-    return sections
-
-
 @register.simple_tag
 def get_localized_microcontent(instance, language):    
     return instance.get_content(language)

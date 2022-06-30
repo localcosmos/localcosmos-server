@@ -1,14 +1,7 @@
 {% load i18n static %}
 <div class="row justify-content-center">
 	<div class="col-10 col-md-8 col-lg-6">
-		<div id="interactiveimagefield-container">
-			{% if allow_features is True %}
-
-				
-			{% endif %}
-		</div>
-
-		
+		<div id="interactiveimagefield-container"></div>
 	</div>
 </div>
 <br>
@@ -24,8 +17,13 @@
 		var cropParametersInput = document.getElementById("id_crop_parameters");
 		var featuresInput = document.getElementById("id_features");
 
+		var options = {
+			'allowCropping' : {% if restrictions.allow_cropping %}true{% else %}false{% endif %},
+			'allowFeatures' : {% if restrictions.allow_features %}true{% else %}false{% endif %},
+			'cropAreaRatio' : '{% if restrictions.ratio %}{{ restrictions.ratio }}{% else %}1:1{% endif %}'
+		};
 
-		var interactiveImageField = new InteractiveImageField(container, imageInput, cropParametersInput, featuresInput);
+		var interactiveImageField = new InteractiveImageField(container, imageInput, cropParametersInput, featuresInput, options);
 
 		{% if current_image %}
 			var imageUrl = "{{ current_image.url }}";

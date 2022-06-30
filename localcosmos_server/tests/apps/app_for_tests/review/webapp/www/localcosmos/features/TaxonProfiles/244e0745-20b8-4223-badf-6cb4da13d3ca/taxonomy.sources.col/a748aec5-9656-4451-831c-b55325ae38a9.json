@@ -1,0 +1,168 @@
+{
+    "taxon_source": "taxonomy.sources.col",
+    "taxon_latname": "Betula pendula",
+    "taxon_author": "Roth",
+    "name_uuid": "a748aec5-9656-4451-831c-b55325ae38a9",
+    "taxon_nuid": "00600800600p00100201n",
+    "vernacular": {
+        "de": "Birke"
+    },
+    "all_vernacular_names": {},
+    "node_names": [
+        "Birke"
+    ],
+    "node_decision_rules": [],
+    "traits": [
+        {
+            "matrix_filter": {
+                "name": "Blattanordnung",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "wechselständig",
+                    "image_url": "localcosmos/user_content/content_images/44fabf73-6a0b-4811-bce4-db5fad9b577c.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "herzförmig",
+                    "image_url": "localcosmos/user_content/content_images/cd827dc1-bf9c-40c6-8792-f9c5bd0e6db4.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattendes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "mit Spitze",
+                    "image_url": "localcosmos/user_content/content_images/95592c65-6f9c-4d24-a764-408b9999a233.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattanfangs",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gebuchtet",
+                    "image_url": "localcosmos/user_content/content_images/9075eddb-c006-44fa-84fe-26a69c76dc8f.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form des Blattrandes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "gezackt",
+                    "image_url": "localcosmos/user_content/content_images/22ee7970-0f9c-4b14-9156-6e3a035c569a.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Form der Rinde",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "DescriptiveTextAndImagesFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": "glatt",
+                    "image_url": "localcosmos/user_content/content_images/b21eb141-9999-4831-b24d-e20093dd239f.png"
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Farbe des Stammes",
+                "is_multispace": true,
+                "description": null,
+                "filter_type": "ColorFilter",
+                "definition": null
+            },
+            "values": [
+                {
+                    "encoded_space": [
+                        238,
+                        238,
+                        238,
+                        1.0
+                    ],
+                    "image_url": "img/noimage.svg",
+                    "html": "rgba(238,238,238,1.0)",
+                    "gradient": false,
+                    "description": null
+                }
+            ]
+        },
+        {
+            "matrix_filter": {
+                "name": "Taxonomie",
+                "is_multispace": false,
+                "description": null,
+                "filter_type": "TaxonFilter",
+                "definition": null
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxon_text_type": "Interessantes",
+            "text": "Das Wort Birke ist auf einen Begriff im Indogermanischen zurückzuführen (*bherHg̑o) und bedeutet in Anspielung auf die helle Rinde so viel wie „glänzend, schimmernd“. Die Birke als Symbol der Fruchtbarkeit galt früher als Helfer in Liebesnöten. Dieser Verwendungszweck ist heute fast vergessen. Ihre Zweige, Rinde und die Blätter mussten für allerlei Mittel und Bräuche herhalten, von denen man sich eine Besserung in sexuellen Nöten erhoffte.",
+            "text_key": "taxon_text_1_13"
+        },
+        {
+            "taxon_text_type": "Baum als Lebensraum",
+            "text": "Die beiden einheimischen, baumförmigen Birkenarten, die Sandbirke (Betula pendula) und die Moorbirke (Betula pubescens), tragen wesentlich zur Erhöhung der biologischen Vielfalt in unseren Wäldern bei. Allgemein ist bekannt, dass unsere beiden Birkenarten zu den von Insektenarten beliebtesten Baumarten zählen.\n\nSo kommen über 160 Insektenarten an Sand- und Moorbirke vor. Die Birken gehören damit nach den Weidenarten und den beiden Eichen zu den von Insekten am stärksten genutzten einheimischen Baumarten.\n\nEine auf die Birke spezialisierte Käferart ist z.B. der Birken-Blattroller (Deporaus betulae, Rhynchitidae), der den vorderen Teil der Blattspreite in einen kunstvolles, tütenförmiges „Päckchen“ umbaut, in das er seine Eier ablegt. Eine auffallende spezialisierte Art ist die Große Birkenblattwespe.",
+            "text_key": "taxon_text_3_14"
+        }
+    ],
+    "images": {
+        "taxon_profile_images": [],
+        "node_images": [
+            {
+                "text": null,
+                "image_url": "localcosmos/user_content/content_images/48a88cf4-c3a9-460e-8d93-31f77d6cb2a5.png",
+                "small_url": "localcosmos/user_content/content_images/e89ddc33-3fe1-4e73-8a9c-b393bed1e90e.png",
+                "large_url": "localcosmos/user_content/content_images/546e71a4-9960-4cbb-87eb-6d1ae037378e.png"
+            }
+        ],
+        "taxon_images": []
+    },
+    "synonyms": {
+        "taxon_latname": "Betula alba pendula",
+        "taxon_author": "(Roth) W.T.Aiton"
+    },
+    "gbif_nubKey": null
+}
