@@ -131,11 +131,11 @@ class LazyTaxonBase:
 
     def as_json(self):
         obj = {
-            'taxon_latname': self.taxon_latname,
-            'taxon_author': self.taxon_author,
-            'taxon_nuid': self.taxon_nuid, 
-            'taxon_source' : self.taxon_source,
-            'name_uuid': self.name_uuid,
+            'taxonLatname': self.taxon_latname,
+            'taxonAuthor': self.taxon_author,
+            'taxonNuid': self.taxon_nuid, 
+            'taxonSource' : self.taxon_source,
+            'nameUuid': self.name_uuid,
         }
 
         return obj
