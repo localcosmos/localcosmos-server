@@ -241,7 +241,7 @@ class App(models.Model):
         Domain = get_tenant_domain_model()
         
         domain = Domain.objects.filter(tenant__schema_name='public').first()
-        return '{0}{1}{2}/preview/www/'.format(domain.domain, settings.APP_KIT_PREVIEW_URL, self.uid)
+        return '{0}.preview.{1}/'.format(self.uid, domain.domain)
 
 
     def get_installed_app_path(self, app_state):
@@ -360,16 +360,19 @@ class App(models.Model):
 
         templates = []
 
-        # iterate over templates shipped with the frontend
-        for filename in os.listdir(templates_path):
+        # the frontend might not supply online content templates
+        if os.path.isdir(templates_path):
 
-            template_path = '{0}/{1}'.format(template_type, filename)
-            verbose_name = template_path
+            # iterate over templates shipped with the frontend
+            for filename in os.listdir(templates_path):
 
-            if template_path in oc_settings['verbose_template_names'] and language in oc_settings['verbose_template_names'][template_path]:
-                verbose_name = oc_settings['verbose_template_names'][template_path][language]
+                template_path = '{0}/{1}'.format(template_type, filename)
+                verbose_name = template_path
 
-            templates.append((template_path, verbose_name))
+                if template_path in oc_settings['verbose_template_names'] and language in oc_settings['verbose_template_names'][template_path]:
+                    verbose_name = oc_settings['verbose_template_names'][template_path][language]
+
+                templates.append((template_path, verbose_name))
 
 
         # iterate over user uploaded templates

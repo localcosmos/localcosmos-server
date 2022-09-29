@@ -695,7 +695,7 @@ class InteractiveImageField {
         // Konva.Arrow requires points to be relative to the transform/bounding box of the arrow (not stage, not image)
         let relativeInitialPoint = {
             x : arrowDefinition.initialPoint.x - minX,
-            y : 0,
+            y : arrowDefinition.initialPoint.y - minY
         };
 
         let relativeTerminalPoint = {
