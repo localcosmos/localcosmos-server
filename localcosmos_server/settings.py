@@ -8,6 +8,7 @@ SITE_ID = 1
 
 FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 
+LAZY_TAXONOMY_SOURCES = []
 
 AUTHENTICATION_BACKENDS = (
         'rules.permissions.ObjectPermissionBackend',

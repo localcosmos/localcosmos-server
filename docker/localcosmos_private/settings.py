@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-l4*f++k5$u!cr(o#-hio-d9hl)9b&nb37%_6v3l^w#20(rr!*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 host_list = os.environ.get('ALLOWED_HOSTS', [])
@@ -117,7 +117,7 @@ DATABASES = {
         'NAME': os.environ['DATABASE_NAME'],
         'USER' : os.environ['DB_USER'],
         'PASSWORD' : os.environ['DB_PASSWORD'],
-        'HOST' : 'localhost',
+        'HOST' : os.environ['DB_HOST'],
     }
 }
 
@@ -191,3 +191,4 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
     
+from localcosmos_server.settings import *
