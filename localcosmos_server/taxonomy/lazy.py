@@ -4,7 +4,9 @@ from http.client import RemoteDisconnected
 
 from django.conf import settings
 
-SUPPORTED_LAZY_TAXONOMY_SOURCES = [db[0] for db in settings.LAZY_TAXONOMY_SOURCES]
+SUPPORTED_LAZY_TAXONOMY_SOURCES = []
+if hasattr(settings, 'LAZY_TAXONOMY_SOURCES'):
+    SUPPORTED_LAZY_TAXONOMY_SOURCES = [db[0] for db in settings.LAZY_TAXONOMY_SOURCES]
 
 ##################################################################################################################
 #
