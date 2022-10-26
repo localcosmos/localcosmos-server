@@ -6,9 +6,8 @@ from . import views
 urlpatterns = [
     # app unspecific
     path('', views.APIHome.as_view(), name='api_home'),
-    path('auth-token/', views.ObtainLCAuthToken.as_view()),
-    path('user/<int:user_id>/manage/', views.ManageAccount.as_view()),
-    path('user/<int:user_id>/delete/', views.DeleteAccount.as_view()),
+    path('user/manage/', views.ManageAccount.as_view()),
+    path('user/delete/', views.DeleteAccount.as_view()),
     path('user/register/', views.RegisterAccount.as_view()),
     path('password/reset/', views.PasswordResetRequest.as_view()),
     # app specific

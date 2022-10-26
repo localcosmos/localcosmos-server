@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     'django_countries',
     'corsheaders',
     'rest_framework',
-    'rest_framework.authtoken',
+    "drf_spectacular",
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
 
     'octicons',
     'imagekit',
@@ -190,5 +192,5 @@ EMAIL_USE_SSL = bool(os.environ.get('EMAIL_USE_SSL', False))
 EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
-    
+
 from localcosmos_server.settings import *

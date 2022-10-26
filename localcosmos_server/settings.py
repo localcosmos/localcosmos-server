@@ -1,6 +1,8 @@
 '''
     LOCALCOSMOS SERVER DJANGO SETTINGS
 '''
+from datetime import timedelta
+
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -51,20 +53,34 @@ CORS_ALLOW_CREDENTIALS = True
 # enable token authentication only for API
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'localcosmos_server.api.authentication.LCTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     #'DEFAULT_FILTER_BACKENDS': (
     #    'rest_framework.filters.DjangoFilterBackend',
     #),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25,
 }
 
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Localcosmos Server API',
+    'DESCRIPTION': 'API Documentation for the Localcosmos Server',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'PREPROCESSING_HOOKS': ['localcosmos_server.utils.api_filter_endpoints_hook'],
+}
+
 DATASET_VALIDATION_CLASSES = (
     #'localcosmos_server.datasets.validation.ReferenceFieldsValidator', # unfinished
     'localcosmos_server.datasets.validation.ExpertReviewValidator',
 )
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+}
 
 LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API = False
 
