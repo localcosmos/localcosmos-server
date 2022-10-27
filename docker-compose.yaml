@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    volumes:
+      - ./docker/localcosmos_private/settings.py:/opt/localcosmos/localcosmos_private/localcosmos_private/settings.py
+      - ./docker/localcosmos_private/urls.py:/opt/localcosmos/localcosmos_private/localcosmos_private/urls.py
+      - ./localcosmos_server:/opt/localcosmos/localcosmos_private/localcosmos_server
+    env_file: .env
+    depends_on:
+      - database
+    ports:
+      - 8000:8000
+    command: sh -c 'cd /opt/localcosmos/localcosmos_private && python manage.py runserver 0.0.0.0:8000'
+  database:
+    image: 'postgis/postgis:12-3.3'
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    env_file: .env
+
+volumes:
+  database:

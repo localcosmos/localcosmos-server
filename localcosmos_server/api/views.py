@@ -12,19 +12,17 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.views import APIView
-from rest_framework.exceptions import ParseError, NotFound
 from rest_framework.response import Response
-from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.authtoken.models import Token
+from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
+from drf_spectacular.utils import inline_serializer, extend_schema
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from rest_framework import status
 
 from localcosmos_server.models import App
-
-from .serializers import LCAuthTokenSerializer, AccountSerializer, RegistrationSerializer, PasswordResetSerializer
 from django_road.permissions import IsAuthenticatedOnly, OwnerOnly
-from .authentication import LCTokenAuthentication
 
+from .serializers import AccountSerializer, RegistrationSerializer, PasswordResetSerializer
 from localcosmos_server.mails import send_registration_confirmation_email
 
 import os, json
@@ -37,56 +35,30 @@ import os, json
 ##################################################################################################################
             
 
-'''
-    APIHome
+class APIHome(APIView):
+    """
     - does not require an app uuid
     - displays the status of the api
-'''
-class APIHome(APIView):
+    """
 
     def get(self, request, *args, **kwargs):
         return Response({'success':True})
 
 
-'''
-    APIDocumentation
-    - displays endpoints
-'''
 class APIDocumentation(APIView):
+    """
+    - displays endpoints
+    """
     pass
 
 
-'''
-    Token Authentication
-    - does not require an app uuid
-    - you authenticate with the server, app-unspecific
-    - the app-specific api calls depend on the app-specific user role
-'''
-from rest_framework.authtoken.views import ObtainAuthToken
-class ObtainLCAuthToken(ObtainAuthToken):
-    serializer_class = LCAuthTokenSerializer
-
-    # we have tro pass the uuid to the app, rest_framework.authtoken.views.ObtainAuthToken does not do this
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        user.last_login = timezone.now()
-        user.save()
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key, 'uuid':user.uuid})
-
-
-
-'''
-    User Account Registration, App specific
-'''
 class RegisterAccount(APIView):
+    """
+    User Account Registration, App specific
+    """
 
     permission_classes = ()
-    renderer_classes = (TemplateHTMLRenderer,)
-    template_name = 'localcosmos_server/api/register_account.html'
+    renderer_classes = (JSONRenderer,)
     serializer_class = RegistrationSerializer
 
 
@@ -107,52 +79,47 @@ class RegisterAccount(APIView):
 
     # this is for creating only
     def post(self, request, *args, **kwargs):
-        
-        serializer_context = { 'request': request }        
+        serializer_context = { 'request': request }
         serializer = self.serializer_class(data=request.data, context=serializer_context)
 
-        context = {
-            'user': request.user,
-            'success' : False,
-            'request' : request,
-        }
-        
+        context = { 'success' : False, }
+
         if serializer.is_valid():
             app_uuid = serializer.validated_data['app_uuid']
             
             user = serializer.save()
             request.user = user
-            context['user'] = user
+            context['user'] = AccountSerializer(user).data
             context['success'] = True
 
             # send registration email
-            send_registration_confirmation_email(user, app_uuid)
+            try:
+                send_registration_confirmation_email(user, app_uuid)
+            except:
+                # todo: log?
+                pass
             
         else:
             context['success'] = False
-            context['serializer'] = serializer
+            context['errors'] = serializer.errors
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
         # account creation was successful
-        context['serializer'] = self.serializer_class(data=request.data)
-        return Response(context)    
+        return Response(context)
 
 
-
-
-'''
-    Manage Account
-    - authenticated users only
-    - owner only
-    - [GET] delivers the form html to the client
-    - [POST] validates and saves - and returns html
-'''
 class ManageAccount(APIView):
+    '''
+        Manage Account
+        - authenticated users only
+        - owner only
+        - [GET] delivers the form html to the client
+        - [POST] validates and saves - and returns html
+    '''
 
     permission_classes = (IsAuthenticatedOnly, OwnerOnly)
-    authentication_classes = (LCTokenAuthentication,)
-    renderer_classes = (TemplateHTMLRenderer,)
-    template_name = 'localcosmos_server/api/manage_account.html'
+    authentication_classes = (JWTAuthentication,)
+    renderer_classes = (JSONRenderer,)
     serializer_class = AccountSerializer
 
     def get_object(self):
@@ -162,12 +129,9 @@ class ManageAccount(APIView):
 
     def get(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)
-        serializer_context = {
-            'serializer': serializer,
-            'user': request.user,
-            'request':request
-        }
-        return Response(serializer_context)
+        return Response({
+            'user': serializer.data
+        })
 
     # this is for updating only
     def put(self, request, *args, **kwargs):
@@ -203,7 +167,7 @@ class ManageAccount(APIView):
 class DeleteAccount(APIView):
 
     permission_classes = (IsAuthenticatedOnly, OwnerOnly)
-    authentication_classes = (LCTokenAuthentication,)
+    authentication_classes = (JWTAuthentication,)
     renderer_classes = (TemplateHTMLRenderer,)
     template_name = 'localcosmos_server/api/delete_account.html'
     serializer_class = AccountSerializer
@@ -298,44 +262,16 @@ class PasswordResetRequest(APIView):
 '''
 class AppAPIHome(APIView):
 
+    @extend_schema(
+        responses=inline_serializer('App', {
+            'api_status': str,
+            'app_name': str,
+        })
+    )
     def get(self, request, *args, **kwargs):
         app = App.objects.get(uuid=kwargs['app_uuid'])
         context = {
             'api_status' : 'online',
             'app_name' : app.name,
         }
-        return Response(context)
-
-
-##################################################################################################################
-#
-#   LEGAL REQUIREMENTS
-#
-##################################################################################################################
-class PrivacyStatement(APIView):
-    
-    permission_classes = ()
-    renderer_classes = (TemplateHTMLRenderer,)
-    template_name = 'localcosmos_server/api/legal/privacy_statement.html'
-
-
-    def get(self, request, *args, **kwargs):
-
-        app = App.objects.get(uuid=kwargs['app_uuid'])
-
-        # get app legal_notice.json
-        review = request.GET.get('review', False)
-        if review:
-            legal_notice_path = os.path.join(app.review_version_path, 'legal_notice.json')
-        else:
-            legal_notice_path = os.path.join(app.published_version_path, 'legal_notice.json')
-            
-        with open(legal_notice_path, 'r') as f:
-            legal_notice = json.loads(f.read())
-        
-        context = {
-            'legal_notice' : legal_notice,
-            'request':request,
-        }
-        
         return Response(context)

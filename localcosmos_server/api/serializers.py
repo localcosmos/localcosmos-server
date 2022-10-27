@@ -39,6 +39,8 @@ class LCAuthTokenSerializer(AuthTokenSerializer):
             
 
     # this uses email or username
+    # todo: subclass this into the simplejwt:
+    # see: https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
     def validate(self, attrs):
         username = attrs.get('username')
         password = attrs.get('password')
