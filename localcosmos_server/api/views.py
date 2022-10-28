@@ -8,7 +8,6 @@
 #
 ###################################################################################################################
 from django.contrib.auth import logout
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.views import APIView
@@ -16,16 +15,22 @@ from rest_framework.response import Response
 from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from drf_spectacular.utils import inline_serializer, extend_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from rest_framework import status
 
 from localcosmos_server.models import App
 from django_road.permissions import IsAuthenticatedOnly, OwnerOnly
 
-from .serializers import AccountSerializer, RegistrationSerializer, PasswordResetSerializer
+from .serializers import (AccountSerializer, RegistrationSerializer, PasswordResetSerializer,
+                            TokenObtainPairSerializerWithClientID)
+
 from localcosmos_server.mails import send_registration_confirmation_email
 
-import os, json
+from localcosmos_server.datasets.models import Dataset
+from localcosmos_server.models import UserClients
+
+import uuid
 
 
 ##################################################################################################################
@@ -52,7 +57,43 @@ class APIDocumentation(APIView):
     pass
 
 
-class RegisterAccount(APIView):
+class ManageUserClient:
+
+    def update_datasets(self, user, client):
+        # update datasets if the user has done anonymous uploads and then registers
+        # assign datasets with no user and the given client_id to the now known user
+        # this is only valid for android and iOS installations, not browser views
+        
+        client_datasets = Dataset.objects.filter(client_id=client.client_id, user__isnull=True)
+
+        for dataset in client_datasets:
+            dataset.user = user
+            dataset.save()
+
+
+    def get_client(self, user, platform, client_id):
+
+        if platform == 'browser':
+            # only one client_id per user and browser
+            client = UserClients.objects.filter(user=user, platform='browser').first()
+
+        else:
+            # check if the non-browser client is linked to user
+            client = UserClients.objects.filter(user=user, client_id=client_id).first()
+
+
+        # if no client link is present, create one
+        if not client:
+            client, created = UserClients.objects.get_or_create(
+                user = user,
+                client_id = client_id,
+                platform = platform,
+            )
+
+        return client
+
+
+class RegisterAccount(ManageUserClient, APIView):
     """
     User Account Registration, App specific
     """
@@ -61,33 +102,27 @@ class RegisterAccount(APIView):
     renderer_classes = (JSONRenderer,)
     serializer_class = RegistrationSerializer
 
-
-    def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class()
-        serializer.lc_initial = {
-            'client_id': request.GET['client_id'],
-            'platform' : request.GET['platform'],
-            'app_uuid' : request.GET['app_uuid'],
-        }
-        serializer_context = {
-            'serializer': serializer,
-            'request':request,
-        }
-        return Response(serializer_context)
-
-
-
     # this is for creating only
     def post(self, request, *args, **kwargs):
         serializer_context = { 'request': request }
         serializer = self.serializer_class(data=request.data, context=serializer_context)
 
-        context = { 'success' : False, }
+        context = { 
+            'success' : False,
+        }
 
         if serializer.is_valid():
             app_uuid = serializer.validated_data['app_uuid']
             
             user = serializer.save()
+
+            # create the client
+            platform = serializer.validated_data['platform']
+            client_id = serializer.validated_data['client_id']
+            client = self.get_client(user, platform, client_id)
+            # update datasets
+            self.update_datasets(user, client)
+
             request.user = user
             context['user'] = AccountSerializer(user).data
             context['success'] = True
@@ -113,8 +148,8 @@ class ManageAccount(APIView):
         Manage Account
         - authenticated users only
         - owner only
-        - [GET] delivers the form html to the client
-        - [POST] validates and saves - and returns html
+        - [GET] delivers the account as json to the client
+        - [POST] validates and saves - and returns json
     '''
 
     permission_classes = (IsAuthenticatedOnly, OwnerOnly)
@@ -139,21 +174,18 @@ class ManageAccount(APIView):
         serializer_context = { 'request': request }        
         serializer = self.serializer_class(data=request.data, instance=request.user, context=serializer_context)
 
-        context = {
-            'user': request.user,
+        context = { 
             'success' : False,
-            'request' : request,
         }
         
         if serializer.is_valid():
             serializer.save()
-            context['user'] = request.user
+            context['success'] = True
+            context['user'] = serializer.data
         else:
-            context['success'] = False
-            context['serializer'] = serializer
+            context['errors'] = serializer.errors
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
             
-        context['serializer'] = serializer
         return Response(context)    
 
 
@@ -249,8 +281,37 @@ class PasswordResetRequest(APIView):
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
             
         context['serializer'] = serializer
-        return Response(context)    
-        
+        return Response(context)
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+class TokenObtainPairViewWithClientID(ManageUserClient, TokenObtainPairView):
+
+    serializer_class = TokenObtainPairSerializerWithClientID
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        # serializer.user is available
+        # user is authenticated now, and serializer.user is available
+        # client_ids make sense for android and iOS, but not for browser
+        # if a browser client_id exists, use the existing browser client_id, otherwise create one
+        # only one browser client_id per user
+        platform = request.data['platform']
+        client_id = request.data['client_id']
+
+        client = self.get_client(serializer.user, platform, client_id)
+
+        # update datasets
+        self.update_datasets(serializer.user, client)
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
 
 ##################################################################################################################
 #

@@ -13,8 +13,8 @@ FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 LAZY_TAXONOMY_SOURCES = []
 
 AUTHENTICATION_BACKENDS = (
-        'rules.permissions.ObjectPermissionBackend',
-        'django.contrib.auth.backends.ModelBackend',
+    'rules.permissions.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 LOGOUT_REDIRECT_URL = '/server/loggedout/'

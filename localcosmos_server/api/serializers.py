@@ -1,114 +1,17 @@
 from rest_framework import serializers
-from rest_framework.authtoken.models import Token
 
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth import authenticate, get_user_model
-
-from localcosmos_server.datasets.models import Dataset
-from localcosmos_server.models import UserClients
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-import uuid
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+class TokenObtainPairSerializerWithClientID(TokenObtainPairSerializer):
 
-'''
-    AuthTokenSerializer
-    - [POST] requires username or email
-    - [POST] requires password, client_id and platform
-    - returns a token if auth was successful
-    - permissions if a user may perform an action on the tenant schema has to be done elsewhere.
-      Otherwise, one could login on his on project and authenticate with this token on any other project
-'''
-from rest_framework.authtoken.serializers import AuthTokenSerializer
-class LCAuthTokenSerializer(AuthTokenSerializer):
-
-    # optional for linking client_ids with users
+    # required for linking client_ids with users
     client_id = serializers.CharField()
     platform = serializers.CharField()
-
-
-    def update_datasets(self, user, client):
-        # client is present now
-        # update all Datasets with the user
-        # this is necessary: if the user has done anonymous uploads
-        client_datasets = Dataset.objects.filter(client_id=client.client_id, user__isnull=True)
-
-        for dataset in client_datasets:
-            dataset.update(user=user)
-            
-
-    # this uses email or username
-    # todo: subclass this into the simplejwt:
-    # see: https://django-rest-framework-simplejwt.readthedocs.io/en/latest/customizing_token_claims.html
-    def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
-
-        client_id = attrs.get('client_id')
-        platform = attrs.get('platform')
-
-        if username and password and client_id and platform:
-
-            # determine if the user exists, username can be the username or the email address
-            unauthorized_user = User.objects.filter(username=username).first()
-
-            if not unauthorized_user:
-                unauthorized_user = User.objects.filter(email=username).first()
-
-                if not unauthorized_user:
-                    raise serializers.ValidationError(_('No user found for that username or email address.'))
-
-                # set the correct username
-                username = unauthorized_user.username
-
-
-            # AUTHENTICATE THE USER
-            user = authenticate(request=self.context.get('request'), username=username, password=password)
-
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
-            if not user:
-                msg = _('Unable to log in with provided credentials.')
-                raise serializers.ValidationError(msg, code='authorization')
-
-            # user is authenticated now
-            # one client can be used by multiple users
-            # but only one client_id per browser
-            # if a browser client_id exists, the user will receive it from the server
-            if platform == 'browser':
-                client = UserClients.objects.filter(user=user, platform='browser').first()
-
-                if not client:
-                    # create a new browser client uuid for this user
-                    client_id = uuid.uuid4()
-
-            else:
-                # check if the non-browser client is linked to user
-                client = UserClients.objects.filter(user=user, client_id=client_id).first()
-
-
-            # if no client link is present, create one
-            if not client:
-                client, created = UserClients.objects.get_or_create(
-                    user = user,
-                    client_id = client_id,
-                    platform = platform,
-                )
-
-            # update datasets
-            self.update_datasets(user, client)
-
-
-        else:
-            msg = _('Must include "username", "password", "client_id" and "platform".')
-            raise serializers.ValidationError(msg, code='authorization')
-
-
-        attrs['user'] = user
-        return attrs
-
 
 '''
     private user serializer: only accessible for the account owner
@@ -175,13 +78,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['username'], validated_data['email'],
                                         validated_data['password'], **extra_fields)
 
-        user_client = UserClients(
-            user=user,
-            platform=validated_data['platform'],
-            client_id=validated_data['client_id'],
-        )
-
-        user_client.save()
         return user
     
 

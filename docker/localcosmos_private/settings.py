@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '-l4*f++k5$u!cr(o#-hio-d9hl)9b&nb37%_6v3l^w#20(rr!*'
+SECRET_KEY = 'YOUR SECRET KEY'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'django_countries',
     'corsheaders',
     'rest_framework',
-    "drf_spectacular",
+    'drf_spectacular',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 

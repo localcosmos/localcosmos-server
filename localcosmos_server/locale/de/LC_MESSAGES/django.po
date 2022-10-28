@@ -189,7 +189,7 @@ msgstr "Noch keine Nutzer."
 
 #: datasets/forms.py:52
 msgid "This step already exists in your Validation Routine"
-msgstr "Dieser Schritt existiert bereits in ihrer Validierungsroutine"
+msgstr "Dieser Schritt existiert bereits in deiner Validierungsroutine"
 
 #: datasets/models.py:347 datasets/tests/test_models.py:428
 msgid "Unidentified"
@@ -235,9 +235,9 @@ msgid ""
 "and have him check the datasets photo."
 msgstr ""
 "Das Erstellen einer Validierungsroutine für Beobachtungen kann dabei helfen, "
-"die Qualität ihrer gesammelten Daten zu verbessern. Sie können "
-"Validierungsschritte optional auf bestimmte Taxa becshränken. Zum Beispiel "
-"möchten Sie vielleicht, dass ein Experte sich Beobachtungen seltener Arten "
+"die Qualität der gesammelten Daten zu verbessern. Du kannst "
+"Validierungsschritte optional auf bestimmte Taxa beschränken. Zum Beispiel "
+"möchtest Du vielleicht, dass ein Experte sich Beobachtungen seltener Arten "
 "anschaut und das Foto des Datensatzes prüft."
 
 #: datasets/templates/datasets/dataset_validation_routine.html:18
@@ -349,7 +349,7 @@ msgstr "Beobachtung würde gelöscht."
 #: datasets/templates/datasets/validation/ajax/delete_dataset_image.html:6
 #: datasets/views.py:299
 msgid "Do you really want to delete this image?"
-msgstr "Wollen Sie dieses Bild wirklich löschen?"
+msgstr "Willst du dieses Bild wirklich löschen?"
 
 #: datasets/templates/datasets/validation/ajax/large_modal_image.html:4
 msgid "Image"
@@ -366,15 +366,15 @@ msgstr "Expertenreview"
 
 #: datasets/templates/datasets/validation/expert_review.html:16
 msgid "Thank you for your review"
-msgstr "Vielen Dank für ihr Review"
+msgstr "Vielen Dank für dein Review"
 
 #: datasets/templates/datasets/validation/expert_review.html:18
 msgid "You marked this observation as valid."
-msgstr "Sie haben diese Beobachtung als valide markiert."
+msgstr "Du hast diese Beobachtung als valide markiert."
 
 #: datasets/templates/datasets/validation/expert_review.html:20
 msgid "You marked this observation as invalid."
-msgstr "Sie haben diese Beobachtung als nicht valide markiert."
+msgstr "Du hast diese Beobachtung als nicht valide markiert."
 
 #: datasets/templates/datasets/validation/expert_review.html:24
 msgid "Back to overview"
@@ -382,7 +382,7 @@ msgstr "zurück zur Übersicht"
 
 #: datasets/templates/datasets/validation/expert_review.html:47
 msgid "Your review"
-msgstr "Ihr Review"
+msgstr "Dein Review"
 
 #: datasets/templates/datasets/validation/expert_review.html:51
 msgid ""
@@ -390,9 +390,9 @@ msgid ""
 "contains errors. If you have been able to correct the data, mark the "
 "observation as valid."
 msgstr ""
-"Bevor Sie ihr Review abschicken sollten Sie versuchen die Beobachtung zu "
-"korrigieren, falls diese Fehler enthält. Markieren Sie die Beobachtung als "
-"valide, alls es ihnen möglich war, die Daten zu korrigieren."
+"Bevor du dein Review abschickst solltest du versuchen, die Beobachtung zu "
+"korrigieren, falls diese Fehler enthält. Markiere die Beobachtung als "
+"valide, falls es dir möglich war, die Daten zu korrigieren."
 
 #: datasets/templates/datasets/validation/expert_review.html:61
 msgid "Submit review"
@@ -400,11 +400,11 @@ msgstr "Review abschicken"
 
 #: datasets/templates/datasets/widgets/picture_widget.html:15
 msgid "In your app this button opens the camera."
-msgstr "In ihrer App öffnet dieser Button die Kamera."
+msgstr "In deiner App öffnet dieser Button die Kamera."
 
 #: datasets/templates/datasets/widgets/picture_widget.html:18
 msgid "In your app this button opens the photo album."
-msgstr "In ihrer App öffnet dieser Button das Fotoalbum."
+msgstr "In deiner App öffnet dieser Button das Fotoalbum."
 
 #: datasets/templates/datasets/widgets/select_datetime_widget.html:13
 msgid "Select timestamp"
@@ -486,11 +486,11 @@ msgstr ""
 #: datasets/views.py:278
 #, python-brace-format
 msgid "Do you really want to remove {0}?"
-msgstr "Wollen Sie wirklich {0} entfernen?"
+msgstr "Willst du wirklich {0} entfernen?"
 
 #: datasets/views.py:289
 msgid "Do you really want to delete this obsersavtion?"
-msgstr "Wollen Sie wirklich diese Beobachtung löschen?"
+msgstr "Willst du wirklich diese Beobachtung löschen?"
 
 #: forms.py:40
 msgid "Username or email address"
@@ -502,7 +502,7 @@ msgstr "Nutername oder e-mail ungültig"
 
 #: forms.py:158
 msgid "You selected an invalid area of the image."
-msgstr "Sie haben einen ungültigen Bereich ihres Bildes ausgewählt."
+msgstr "Du hast einen ungültigen Bereich des Bildes ausgewählt."
 
 #: forms.py:179
 msgid "The image upload was not successful. Please try again."
@@ -638,7 +638,7 @@ msgstr "Veröffentlichung von %(template_content)s erfolgreich aufgehoben"
 #, python-format
 msgid "Do you really want to unpublish %(template_content)s?"
 msgstr ""
-"Wollen Sie die Veröffentlichung von %(template_content)s wirklich aufheben?"
+"Willst du die Veröffentlichung von %(template_content)s wirklich aufheben?"
 
 #: online_content/templates/online_content/ajax/unpublish_template_content.html:21
 #: online_content/templates/online_content/template_content_list_entry.html:83
@@ -660,7 +660,7 @@ msgstr "Inhalt löschen"
 
 #: online_content/templates/online_content/delete_microcontent.html:29
 msgid "Do you really want to delete this content?"
-msgstr "Wollen Sie diesen Inhalt wirklich löschen?"
+msgstr "Willst du diesen Inhalt wirklich löschen?"
 
 #: online_content/templates/online_content/filecontent_field.html:16
 #: templates/localcosmos_server/widgets/app_theme_image_file_input.html:15
@@ -697,11 +697,11 @@ msgstr "nicht für die Übersetzung bereit"
 
 #: online_content/templates/online_content/manage_template_content.html:40
 msgid "You marked the content in this language as ready for translation."
-msgstr "Sie haben diesen Inhalt als für die Übersetzung bereit markiert."
+msgstr "Du hast diesen Inhalt als für die Übersetzung bereit markiert."
 
 #: online_content/templates/online_content/manage_template_content.html:51
 msgid "Successfully saved your content as draft."
-msgstr "Ihr Inhalt wurde erfolgreich als Entwurf gespeichert."
+msgstr "Der Inhalt wurde erfolgreich als Entwurf gespeichert."
 
 #: online_content/templates/online_content/manage_template_content.html:63
 #: online_content/templates/online_content/template_content_list_entry.html:53
@@ -762,7 +762,7 @@ msgstr "Seiten"
 
 #: online_content/templates/online_content/online_content_base.html:36
 msgid "You do not have any online pages for this app yet."
-msgstr "Sie haben noch keine Seiten für diese App."
+msgstr "Du hast noch keine Seiten für diese App."
 
 #: online_content/templates/online_content/online_content_base.html:41
 msgid "Add new page"
@@ -774,7 +774,7 @@ msgstr "Features"
 
 #: online_content/templates/online_content/online_content_base.html:55
 msgid "You do not have any online feature content for this app yet."
-msgstr "Sie haben noch keinen Feature Content für diese App."
+msgstr "Du hast noch keinen Feature Content für diese App."
 
 #: online_content/templates/online_content/online_content_base.html:60
 msgid "Add new feature"
@@ -858,7 +858,7 @@ msgid ""
 "Absolute URL where your app will be served according to your web server "
 "configuration."
 msgstr ""
-"Absolute URL unter der die App gemäß der Konfiguration ihres Webservers "
+"Absolute URL unter der die App gemäß der Konfiguration des Webservers "
 "bereitgestellt wird."
 
 #: server_control_panel/forms.py:13
@@ -908,7 +908,7 @@ msgid ""
 "Use this url in the app kit on localcosmos.org to connect your app to this "
 "server."
 msgstr ""
-"Benutzen Sie diese url im App Kit auf localcosmos.org um ihre App mit diesem "
+"Benutze diese url im App Kit auf localcosmos.org um deine App mit diesem "
 "Server zu verbinden."
 
 #: server_control_panel/templates/server_control_panel/home.html:24
@@ -968,7 +968,7 @@ msgstr ""
 
 #: server_control_panel/templates/server_control_panel/home.html:107
 msgid "You have not installed any apps yet."
-msgstr "Sie haben noch keine Apps installiert."
+msgstr "Du hast noch keine Apps installiert."
 
 #: server_control_panel/templates/server_control_panel/home.html:114
 #: server_control_panel/templates/server_control_panel/install_app.html:8
@@ -985,7 +985,7 @@ msgid ""
 "Your app has been installed successfully. You can check its status in the "
 "overview."
 msgstr ""
-"Ihre App wurde erfolgreich installiert. Sie können deren Status in der  "
+"Deine App wurde erfolgreich installiert. Du kannst deren Status in der  "
 "Übersicht sehen."
 
 #: server_control_panel/templates/server_control_panel/install_app.html:29
@@ -995,16 +995,16 @@ msgstr "Wichtige Information"
 #: server_control_panel/templates/server_control_panel/install_app.html:35
 #, python-format
 msgid "Your web app will be installed in %(localcosmos_apps_root)sAPP_UID/"
-msgstr "Ihre WebApp wird nach %(localcosmos_apps_root)sAPP_UID/ installiert"
+msgstr "Deine WebApp wird in %(localcosmos_apps_root)sAPP_UID/ installiert"
 
 #: server_control_panel/templates/server_control_panel/install_app.html:36
 msgid "You can look up your APP_UID on localcosmos.org"
-msgstr "Sie können ihre APP_UID auf localcosmos.org nachschlagen"
+msgstr "Du kannst deine APP_UID auf localcosmos.org nachschlagen"
 
 #: server_control_panel/templates/server_control_panel/install_app.html:37
 msgid "Your webserver (nginx or apache) will serve your web app, not django"
 msgstr ""
-"Ihre WebApp wird von ihrem Webserver (nginx oder apache) bereitgestellt, "
+"Deine WebApp wird von deinem Webserver (nginx oder apache) bereitgestellt, "
 "nicht von django"
 
 #: server_control_panel/templates/server_control_panel/install_app.html:38
@@ -1013,16 +1013,16 @@ msgid ""
 "Make sure to set an alias to %(localcosmos_apps_root)sAPP_UID/www/ in your "
 "web server"
 msgstr ""
-"Stellen Sie sicher, dass is einen Alias für %(localcosmos_apps_root)sAPP_UID/"
-"www/ in ihrem Webserver konfigurieren"
+"Stelle sicher, dass ein Alias für %(localcosmos_apps_root)sAPP_UID/"
+"www/ in deinem Webserver konfiguriert ist"
 
 #: server_control_panel/templates/server_control_panel/install_app.html:39
 msgid ""
 "Your Android and iOS Apps will be able to connect to your server after you "
 "installed the web app"
 msgstr ""
-"Ihre Android und iOS Apps können erst mit ihrem Server verbinden, nachdem "
-"Sie die WebApp dort installiert haben."
+"Deine Android und iOS Apps können sich erst mit deinem Server verbinden, nachdem "
+"du die WebApp auf diesem installiert hast."
 
 #: server_control_panel/templates/server_control_panel/install_app.html:57
 msgid "The following errors occured during app import:"
@@ -1036,18 +1036,18 @@ msgstr "installieren"
 #, python-brace-format
 msgid "Error importing the app. Please upload a valid app .zip file: {0}"
 msgstr ""
-"Fehler beim import der App. Bitte löaden Sie eine valide App .zip Datei "
+"Fehler beim import der App. Bitte lade eine valide App .zip Datei "
 "hoch: {0}"
 
 #: server_control_panel/views.py:146
 #, python-brace-format
 msgid "The zip file you uploaded does not contain the app {0}"
-msgstr "Die zip Datei, die Sie hochgeladen haben enthielt nicht die App {0}"
+msgstr "Die zip Datei, die du hochgeladen hast enthielt nicht die App {0}"
 
 #: server_control_panel/views.py:230
 #, python-format
 msgid "Do you really want to uninstall %s?"
-msgstr "Wollen Sie wirklich %s deinstallieren ?"
+msgstr "Willst du %s wirklich deinstallieren ?"
 
 #: setup_forms.py:17
 msgid "The two password fields didn't match."
@@ -1076,7 +1076,7 @@ msgstr "Taxon"
 #: taxonomy/views.py:144
 #, python-format
 msgid "Do you really want to remove %s?"
-msgstr "Wollen Sie wirklich %s entfernen ?"
+msgstr "Willst du %s wirklich entfernen ?"
 
 #: templates/400.html:10
 msgid "Bad request"
@@ -1084,7 +1084,7 @@ msgstr "Bad request"
 
 #: templates/403.html:10
 msgid "You are not allowed to perform the operation you requested."
-msgstr "Sie sind nicht berechtigt, die angeforderte Operation durchzuführen."
+msgstr "Du bist nicht berechtigt, die angeforderte Operation durchzuführen."
 
 #: templates/404.html:10
 msgid "The requested page could not be found."
@@ -1122,7 +1122,7 @@ msgstr "Vielen Dank für die Registrierung auf %(url)s."
 #: templates/email/registration_confirmation.txt:13
 #, python-format
 msgid "Your username is: %(username)s"
-msgstr "Ihr Nutzername ist: %(username)s"
+msgstr "Dein Nutzername ist: %(username)s"
 
 #: templates/email/registration_confirmation.html:336
 msgid "Questions?"
@@ -1151,8 +1151,8 @@ msgid ""
 "We've emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
 msgstr ""
-"Wir haben ihnen Anweisungen geschickt, wie Sie ein neues Passwort setzen "
-"können, falls ein Account für dies e-mail Addresse existiert. Die e-mail "
+"Wir haben dir Anweisungen geschickt, wie du ein neues Passwort setzen "
+"kannst, falls ein Account für diese e-mail Addresse existiert. Die e-mail "
 "sollte in Kürze ankommen."
 
 #: templates/localcosmos_server/api/password_reset_form.html:10
@@ -1161,9 +1161,9 @@ msgid ""
 "If you don't receive an email, please make sure you've entered the address "
 "you registered with, and check your spam folder."
 msgstr ""
-"Falls Sie keine e-mail erhalten, müssen Sie sicherstellen, dass Sie auch "
-"diejenige e-mail Addresse eingeben, mit der Sie sich registriert haben. "
-"Schauen Sie auch im Spam-Ordner nach."
+"Falls du keine e-mail erhältst, musst du sicherstellen, dass du auch "
+"diejenige e-mail Addresse eingibst, mit der du dich registriert hast. "
+"Schaue auch im Spam-Ordner nach."
 
 #: templates/localcosmos_server/api/password_reset_form.html:17
 #: templates/localcosmos_server/registration/password_reset_form.html:18
@@ -1171,13 +1171,13 @@ msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
 msgstr ""
-"Passwort vergessen? Geben Sie unten ihre e-mail Adresse ein, und wir "
-"schicken ihnen Anweisungen, wie sie ein neues Passwort setzen können."
+"Passwort vergessen? Gib unten deine e-mail Adresse ein, und wir "
+"schicken dir Anweisungen, wie du ein neues Passwort setzen kannst."
 
 #: templates/localcosmos_server/api/password_reset_form.html:27
 #: templates/localcosmos_server/api/register_account.html:6
 msgid "There have been errors in the data you submitted."
-msgstr "Die von ihnen übermittelten Daten enthielten Fehler."
+msgstr "Die von dir übermittelten Daten enthielten Fehler."
 
 #: templates/localcosmos_server/api/register_account.html:12
 #, python-format
@@ -1185,8 +1185,8 @@ msgid ""
 "Welcome %(username)s. Your account has been created successfully and you "
 "have been logged in."
 msgstr ""
-"Willkommen %(username)s. Ihr Account wurde erfolgreich angelegt und Sie "
-"wurden angemeldet."
+"Willkommen %(username)s. Dein Account wurde erfolgreich angelegt und du "
+"wurdest angemeldet."
 
 #: templates/localcosmos_server/bootstrap_field.html:21
 msgid "no choices found"
@@ -1200,7 +1200,7 @@ msgstr "%(verbose_name)s löschen"
 #: templates/localcosmos_server/generic/delete_object.html:30
 #, python-format
 msgid "Do you really want to delete %(verbose_name)s?"
-msgstr "Wollen Sie wirklich %(verbose_name)s löschen?"
+msgstr "Willst du %(verbose_name)s wirklich löschen?"
 
 #: templates/localcosmos_server/legal/legal_notice.html:17
 msgid "Operator and contact person"
@@ -1222,11 +1222,11 @@ msgstr "abmelden"
 #: templates/localcosmos_server/registration/login.html:19
 #, python-format
 msgid "You are signed in as %(user)s"
-msgstr "Sie sind als %(user)s angemeldet"
+msgstr "Du bist als %(user)s angemeldet"
 
 #: templates/localcosmos_server/registration/loggedout.html:27
 msgid "You are signed out"
-msgstr "Sie sind abgemeldet"
+msgstr "Du bist abgemeldet"
 
 #: templates/localcosmos_server/registration/login.html:10
 #: templates/localcosmos_server/registration/login.html:28
@@ -1248,16 +1248,16 @@ msgstr "registrieren"
 
 #: templates/localcosmos_server/registration/password_change_done.html:17
 msgid "You have to use your new password the next time you log in."
-msgstr "Bei der nächsten Anmeldung müssen Sie ihr neues Paswort benutzen."
+msgstr "Bei der nächsten Anmeldung musst du dein neues Paswort benutzen."
 
 #: templates/localcosmos_server/registration/password_change_form.html:20
 msgid ""
 "Please enter your old password, for security's sake, and then enter your new "
 "password twice so we can verify you typed it in correctly."
 msgstr ""
-"Bitte geben Sie aus SWicherheitsgründen ihr altes Passwort ein. Danach geben "
-"Sie zweimal ihr neues Passwort ein, damit wir verifizieren können, dass Sie "
-"es korrekt eingegeben haben."
+"Bitte gib aus Sicherheitsgründen dein altes Passwort ein. Danach musst du "
+"zweimal dein neues Passwort eingeben, damit wir verifizieren können, dass du "
+"es korrekt eingegeben hast."
 
 #: templates/localcosmos_server/registration/password_change_form.html:25
 #: templates/localcosmos_server/registration/password_reset_confirm.html:25
@@ -1266,15 +1266,15 @@ msgstr "Passwort ändern"
 
 #: templates/localcosmos_server/registration/password_reset_complete.html:19
 msgid "Your password has been set. You may go ahead and sign in now."
-msgstr "Ihr Passwort wurde gesetzt. Sie können sich jetzt anmelden."
+msgstr "Dein Passwort wurde gesetzt. Du kannst dich jetzt anmelden."
 
 #: templates/localcosmos_server/registration/password_reset_confirm.html:20
 msgid ""
 "Please enter your new password twice so we can verify you typed it in "
 "correctly."
 msgstr ""
-"Bitte geben Sie ihr neues Passwort zweimal ein, damit wir verifizieren "
-"können, dass Sie es korrekt eingegeben haben."
+"Bitte gib dein neues Passwort zweimal ein, damit wir verifizieren "
+"können, dass du es korrekt eingegeben hast."
 
 #: templates/localcosmos_server/registration/password_reset_confirm.html:31
 msgid ""
@@ -1282,7 +1282,7 @@ msgid ""
 "used. Please request a new password reset."
 msgstr ""
 "Der Link für das Zurücksetzen des Passwortes war ungültig. Vermutlich, weil "
-"er bereits benutzt wurde. Bitte fordern Sie das Zurücksetzen des Passwortes "
+"er bereits benutzt wurde. Bitte fordere das Zurücksetzen des Passwortes "
 "neu an."
 
 #: templates/localcosmos_server/registration/password_reset_email.html:2
@@ -1302,7 +1302,7 @@ msgstr ""
 
 #: templates/localcosmos_server/registration/password_reset_email.html:10
 msgid "Thanks for using our site!"
-msgstr "Vielen Dank, dass Sie unsere App benutzen!"
+msgstr "Vielen Dank, dass du unsere App benutzt!"
 
 #: templates/localcosmos_server/registration/password_reset_email.html:12
 #, python-format
@@ -1329,8 +1329,8 @@ msgstr "Taxonomische Restriktionen verwalten"
 msgid ""
 "You have to publish your app before being able to set taxonomic restrictions"
 msgstr ""
-"Sie müssen ihre App veröffentlichen, bevor Sie Taxonomische Restriktionen "
-"festlegen können."
+"Du musst deine App veröffentlichen, bevor du Taxonomische Restriktionen "
+"festlegen kannst."
 
 #: templates/localcosmos_server/taxonomy/taxonomic_restrictions_form.html:5
 #, python-format
@@ -1388,7 +1388,7 @@ msgstr "Ungültige SVG Datei: svg nicht im xml tree der Datei gefunden."
 #, python-format
 msgid "Wrong image ratio. Upload a file with the dimensions w:h = %(ratio)s"
 msgstr ""
-"Falsche Bildabmessungen. Laden Sie eine Datei mit den Abmessungen Breite:"
+"Falsche Bildabmessungen. Lade eine Datei mit den Abmessungen Breite:"
 "Höhe = %(ratio)s hoch."
 
 #: validators.py:96 validators.py:189
