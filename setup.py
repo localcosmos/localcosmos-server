@@ -23,7 +23,7 @@ install_requires = [
 
 setup(
     name='localcosmos_server',
-    version='0.10.4',
+    version='0.11.0',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",

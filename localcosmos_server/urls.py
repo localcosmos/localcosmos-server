@@ -22,8 +22,8 @@ urlpatterns = [
     path('api/', include('localcosmos_server.online_content.api.urls')),
     path('api/anycluster/', include('localcosmos_server.anycluster_schema_urls')),
 
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('docs/', SpectacularSwaggerView.as_view(template_name='swagger-ui.html', url_name='schema'), name='swagger-ui'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(template_name='swagger-ui.html', url_name='schema'), name='swagger-ui'),
 ]
 
 if getattr(settings, 'LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API', False) == True:

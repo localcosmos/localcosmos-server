@@ -78,7 +78,8 @@ class LazyTaxonBase:
             #self.taxon_source = 'taxonomy.sources.%s' % instance._meta.app_label
 
             if taxon_source not in SUPPORTED_LAZY_TAXONOMY_SOURCES:
-                raise ValueError('unsupported taxonomic source passed to LazyTaxon: {0}'.format(taxon_source))
+                supported_taxonomic_sources = ','.join(SUPPORTED_LAZY_TAXONOMY_SOURCES)
+                raise ValueError('unsupported taxonomic source passed to LazyTaxon. {0} not in {1}'.format(taxon_source, supported_taxonomic_sources))
         
         return taxon_source
     
