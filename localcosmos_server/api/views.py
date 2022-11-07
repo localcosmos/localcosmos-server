@@ -124,7 +124,7 @@ class RegisterAccount(ManageUserClient, APIView):
             self.update_datasets(user, client)
 
             request.user = user
-            context['user'] = AccountSerializer(user).data
+            context['user'] = self.serializer_class(user).data
             context['success'] = True
 
             # send registration email
@@ -189,78 +189,40 @@ class ManageAccount(APIView):
         return Response(context)    
 
 
-'''
-    Delete Account
-    - authenticated users only
-    - owner only
-    - [GET] delivers the form html to the client
-    - [DELETE] deletes the account
-'''
 class DeleteAccount(APIView):
+    '''
+        Delete Account
+        - authenticated users only
+        - owner only
+        - [DELETE] deletes the account
+    '''
 
     permission_classes = (IsAuthenticatedOnly, OwnerOnly)
     authentication_classes = (JWTAuthentication,)
-    renderer_classes = (TemplateHTMLRenderer,)
-    template_name = 'localcosmos_server/api/delete_account.html'
+    renderer_classes = (JSONRenderer,)
     serializer_class = AccountSerializer
 
-
-    def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
-        serializer_context = {
-            'serializer': serializer,
-            'user': request.user,
-            'request':request
-        }
-        return Response(serializer_context)
-
-
     def delete(self, request, *args, **kwargs):
-
         request.user.delete()
-
         logout(request)
 
-        context = {
-            'user': request.user,
-            'success' : True,
-            'request' : request,
-        }
-        
+        context = { 'success': True }
         return Response(context)
     
 
 # a user enters his email address or username and gets an email
 from django.contrib.auth.forms import PasswordResetForm
 class PasswordResetRequest(APIView):
-
     serializer_class = PasswordResetSerializer
-    renderer_classes = (TemplateHTMLRenderer,)
+    renderer_classes = (JSONRenderer,)
     permission_classes = ()
-    
-    template_name = 'localcosmos_server/api/password_reset_form.html'
-
-
-    def get(self, request, *args, **kwargs):
-        
-        serializer = self.serializer_class()
-        serializer_context = {
-            'serializer': serializer,
-            'request':request,
-        }
-        
-        return Response(serializer_context)
-
 
     def post(self, request, *args, **kwargs):
 
         serializer_context = { 'request': request }        
         serializer = self.serializer_class(data=request.data, context=serializer_context)
 
-        context = {
-            'success' : False,
-            'request' : request,
-        }
+        context = {'success': False}
         
         if serializer.is_valid():
             form = PasswordResetForm(data=serializer.data)
@@ -269,7 +231,6 @@ class PasswordResetRequest(APIView):
             users = list(users)
 
             if not users:
-                context['serializer'] = serializer
                 context['error_message'] = _('No matching user found.')
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
@@ -277,10 +238,7 @@ class PasswordResetRequest(APIView):
             context['success'] = True
             
         else:
-            context['serializer'] = serializer
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
-            
-        context['serializer'] = serializer
         return Response(context)
 
 
