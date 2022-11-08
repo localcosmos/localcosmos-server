@@ -62,9 +62,22 @@ class LocalcosmosUser(AbstractUser):
 
     objects = LocalcosmosUserManager()
 
+
+    # there is a bug in django for Dataset.user.on_delete=models.SET_NULL (django 3.1)
+    # anonymize the datasets here instead of letting django call SET_NULL
+    def anonymize_datasets(self):
+        from localcosmos_server.datasets.models import Dataset
+        datasets = Dataset.objects.filter(user=self)
+        for dataset in datasets:
+            dataset.user = None
+
+        Dataset.objects.bulk_update(datasets, ['user'])
+
     # do not alter the delete method
     def delete(self, using=None, keep_parents=False):
+
         if settings.LOCALCOSMOS_PRIVATE == True:
+            self.anonymize_datasets()
             super().delete(using=using, keep_parents=keep_parents)
         else:
             # localcosmos.org uses django-tenants
@@ -82,6 +95,8 @@ class LocalcosmosUser(AbstractUser):
                 # delete user and all of its data across tenants
                 for tenant in Tenant.objects.all().exclude(schema_name='public'):
                     with schema_context(tenant.schema_name):
+
+                        self.anonymize_datasets()
                         
                         super().delete(using=using, keep_parents=keep_parents)
                         # reassign the ID because delete() sets it to None

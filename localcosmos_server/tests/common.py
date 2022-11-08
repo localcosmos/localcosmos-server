@@ -16,7 +16,8 @@ test_settings = override_settings(
     DATASET_VALIDATION_CLASSES = (
         'localcosmos_server.datasets.validation.ExpertReviewValidator',
         'localcosmos_server.datasets.validation.ReferenceFieldsValidator',
-    )
+    ),
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend',
 )
 
 test_settings_commercial = override_settings(
@@ -43,7 +44,13 @@ TEST_DATASET_DATA_WITH_ALL_REFERENCE_FIELDS = {
             "client_id": TEST_CLIENT_ID,
             "client_platform": "browser",
             "0f444e85-e31d-443d-afd3-2fa35df08ce3": {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": TEST_UTC_TIMESTAMP, "timezone_offset": TEST_TIMESTAMP_OFFSET}, "type": "Temporal"},
-            "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {"taxon_nuid": "006002009001005007001", "name_uuid": "1541aa08-7c23-4de0-9898-80d87e9227b3", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Picea abies", "taxon_author":"Linnaeus"},
+            "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {
+                "taxon_nuid": "006002009001005007001",
+                "name_uuid": "1541aa08-7c23-4de0-9898-80d87e9227b3",
+                "taxon_source": "taxonomy.sources.col",
+                "taxon_latname": "Picea abies",
+                "taxon_author":"Linnaeus"
+            },
             "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0": None,
             "a4d53718-715f-4436-9b4c-09fce7978153": {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}}, "type": "Point", "coordinates": [TEST_LONGITUDE, TEST_LATITUDE]}, "properties": {"accuracy": 1}}
         },

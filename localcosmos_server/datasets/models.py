@@ -114,6 +114,7 @@ class Dataset(ModelWithTaxon):
     # - iterate over all remaining steps as defined in DatasetValidationRoutine
     # - if no steps are defined, mark the dataset as valid, and set validation_step to 'completed'
     ###############################################################################################################
+
         
     @property
     def validation_routine(self):
@@ -235,9 +236,9 @@ class Dataset(ModelWithTaxon):
 
         if taxon_field_uuid in reported_values and type(reported_values[taxon_field_uuid]) == dict:
             taxon_json = reported_values[taxon_field_uuid]
-                
+
             lazy_taxon = self.LazyTaxonClass(**taxon_json)
-            self.set_taxon(lazy_taxon)
+            self.set_taxon(lazy_taxon) 
         
         # update coordinates or geographic_reference
         # {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
@@ -339,11 +340,12 @@ class Dataset(ModelWithTaxon):
         if created == True:
             self.validate()
      
-
+    '''
     def __str__(self):
         if self.taxon_latname:
-            return '%s' % (self.taxon_latname)
+            return '{}'.format(self.taxon_latname)
         return str(_('Unidentified'))
+    '''
     
 
     class Meta:

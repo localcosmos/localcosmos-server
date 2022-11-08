@@ -29,7 +29,8 @@ class ModelWithTaxonCommon(models.Model):
             self.set_taxon(lazy_taxon)
 
         elif self.pk:
-            if self.taxon_latname:
+
+            if self.taxon_latname and self.taxon_author and self.taxon_source and self.taxon_nuid and self.name_uuid:
                 lazy_taxon = self.LazyTaxonClass(instance=self)
                 self.set_taxon(lazy_taxon)
 
@@ -58,22 +59,27 @@ class ModelWithTaxonCommon(models.Model):
                     'taxon_source' : self.taxon_source,
                     'taxon_include_descendants' : self.taxon_include_descendants,
                 }
-                lazy_taxon = LazyTaxon(**lazy_taxon_kwargs)
+                lazy_taxon = LazyAppTaxon(**lazy_taxon_kwargs)
                 self.set_taxon(lazy_taxon)
                 
         return self.taxon
 
 
-    def set_taxon(self, lazy_taxon):
+    def set_taxon_parameters(self, lazy_taxon):
 
-        # allow setting with LazyTaxon or LazyAppTaxon
-        
         self.name_uuid = str(lazy_taxon.name_uuid)
         self.taxon_nuid = lazy_taxon.taxon_nuid
         self.taxon_latname = lazy_taxon.taxon_latname
         self.taxon_author = lazy_taxon.taxon_author
         self.taxon_source = lazy_taxon.taxon_source
         self.taxon_include_descendants = lazy_taxon.taxon_include_descendants
+
+
+    def set_taxon(self, lazy_taxon):
+
+        # allow setting with LazyTaxon or LazyAppTaxon
+        
+        self.set_taxon_parameters(lazy_taxon)
 
         # the lazy taxon, make sure it is the right LazyTaxonClass
         lazy_taxon_kwargs = {
@@ -86,6 +92,15 @@ class ModelWithTaxonCommon(models.Model):
         }
         
         self.taxon = self.LazyTaxonClass(**lazy_taxon_kwargs)
+
+
+    def remove_taxon(self):
+        self.name_uuid = None
+        self.taxon_nuid = None
+        self.taxon_latname = None
+        self.taxon_author = None
+        self.taxon_source = None
+        self.taxon_include_descendants = None
 
 
     def vernacular(self, language=None):
@@ -155,7 +170,7 @@ class ModelWithTaxonCommon(models.Model):
 
                 if str(tree_instance.name_uuid) != str(self.name_uuid) or tree_instance.taxon_nuid != self.taxon_nuid:
 
-                    new_lazy_taxon = LazyTaxon(instance=tree_instance)
+                    new_lazy_taxon = LazyAppTaxon(instance=tree_instance)
                     new_lazy_taxon.taxon_include_descendants = self.taxon_include_descendants
                     
                     self.set_taxon(new_lazy_taxon)
@@ -166,7 +181,7 @@ class ModelWithTaxonCommon(models.Model):
                 synonym_instance = lazy_taxon.synonym_instance()
                 tree_instance = synonym_instance.taxon
                 
-                new_lazy_taxon = LazyTaxon(instance=tree_instance)
+                new_lazy_taxon = LazyAppTaxon(instance=tree_instance)
                 new_lazy_taxon.taxon_include_descendants = self.taxon_include_descendants
                     
                 self.set_taxon(new_lazy_taxon)

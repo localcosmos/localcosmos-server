@@ -190,8 +190,6 @@ class GetJWTokenMixin:
         return response.data
 
 
-class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, TestCase):
-
     def get_authenticated_client(self, username, password):
 
         token_pair = self.get_jw_token(username, password)
@@ -206,6 +204,7 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, TestCase):
         return authed_client
 
 
+class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, TestCase):
 
     @test_settings
     def test_get(self):
@@ -291,13 +290,103 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, TestCase):
         self.assertIn('errors', authed_response.data)
 
 
-
-class TestPasswordResetRequest(TestCase):
+class TestDeleteAccount(GetJWTokenMixin, WithDataset, WithUser, WithApp, TestCase):
 
     @test_settings
-    def test_get(self):
-        pass
+    def test_delete(self):
+
+        superuser = self.create_superuser()
+        user = self.create_user()
+
+        user_exists = User.objects.filter(pk=user.id).exists()
+        self.assertTrue(user_exists)
+
+        authed_client = self.get_authenticated_client(user.username, self.test_password)
+        authed_response = authed_client.delete('/api/user/delete/')
+
+        self.assertEqual(authed_response.status_code, 200)
+
+        self.assertTrue(authed_response.data['success'])
+
+        user_exists = User.objects.filter(pk=user.id).exists()
+        self.assertFalse(user_exists)
+
+
+    @test_settings
+    def test_delete_anonymize_dataset(self):
+
+        superuser = self.create_superuser()
+        user = self.create_user()
+
+        dataset = self.create_dataset()
+
+        self.assertEqual(dataset.user, None)
+
+        dataset.user = user
+        dataset.save()
+        dataset = Dataset.objects.get(pk=dataset.id)
+
+        self.assertEqual(dataset.user, user)
+
+        authed_client = self.get_authenticated_client(user.username, self.test_password)
+        authed_response = authed_client.delete('/api/user/delete/')
+
+        user_exists = User.objects.filter(pk=user.id).exists()
+        self.assertFalse(user_exists)
+
+        dataset.refresh_from_db()
+        self.assertEqual(dataset.user, None)
+
+
+class TestPasswordResetRequest(GetJWTokenMixin, WithUser, WithApp, TestCase):
 
     @test_settings
     def test_post(self):
-        pass
+        
+        superuser = self.create_superuser()
+        user = self.create_user()
+
+        post_data = {
+            'email' : user.email
+        }
+
+        authed_client = self.get_authenticated_client(user.username, self.test_password)
+        authed_response = authed_client.post('/api/password/reset/', post_data, format='json')
+
+        self.assertEqual(authed_response.status_code, 200)
+
+        self.assertTrue(authed_response.data['success'])
+    
+            
+    @test_settings
+    def test_post_invalid(self):
+        
+        superuser = self.create_superuser()
+        user = self.create_user()
+
+        post_data = {}
+
+        authed_client = self.get_authenticated_client(user.username, self.test_password)
+        authed_response = authed_client.post('/api/password/reset/', post_data, format='json')
+
+        self.assertEqual(authed_response.status_code, 400)
+
+        self.assertFalse(authed_response.data['success'])
+
+
+    @test_settings
+    def test_post_no_user(self):
+        
+        superuser = self.create_superuser()
+        user = self.create_user()
+
+        post_data = {
+            'email' : 'nonexistant@example.com'
+        }
+
+        authed_client = self.get_authenticated_client(user.username, self.test_password)
+        authed_response = authed_client.post('/api/password/reset/', post_data, format='json')
+
+        self.assertEqual(authed_response.status_code, 400)
+
+        self.assertFalse(authed_response.data['success'])

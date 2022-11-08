@@ -203,6 +203,7 @@ class DeleteAccount(APIView):
     serializer_class = AccountSerializer
 
     def delete(self, request, *args, **kwargs):
+
         request.user.delete()
         logout(request)
 
