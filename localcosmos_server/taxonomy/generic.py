@@ -30,7 +30,7 @@ class ModelWithTaxonCommon(models.Model):
 
         elif self.pk:
 
-            if self.taxon_latname and self.taxon_author and self.taxon_source and self.taxon_nuid and self.name_uuid:
+            if self.taxon_latname and self.taxon_source and self.taxon_nuid and self.name_uuid:
                 lazy_taxon = self.LazyTaxonClass(instance=self)
                 self.set_taxon(lazy_taxon)
 
