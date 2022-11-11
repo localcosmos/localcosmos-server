@@ -58,6 +58,28 @@ COMPLETED_VALIDATION_STEP = 'completed'
 
 
 '''
+    ObservationForm
+'''
+class ObservationForm(models.Model):
+
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    version = models.TextField()
+    definition = models.JSONField()
+
+    class Meta:
+        unique_together=('uuid', 'version')
+
+
+'''
+    MetaData
+'''
+class MetaData(models.Model):
+
+    observation_form = models.ForeignKey(ObservationForm, on_delete=models.PROTECT)
+    data = models.JSONField()
+
+
+'''
     Dataset
     - datasets have to be validated AFTER being saved, which means going through the validation routine
     - after validation, the is_valid Bool is being set to True if validation was successful
@@ -71,6 +93,9 @@ class Dataset(ModelWithTaxon):
     # all data except the taxononmic inherited from ModelWithTaxon is stored in the json data column without schema
     # for quicker queries, some fields have their own (redundant) db columns below
     data = models.JSONField()
+    observation_form = models.ForeignKey(ObservationForm, on_delete=models.PROTECT)
+
+    meta_data = models.ForeignKey(MetaData, null=True, on_delete=models.PROTECT)
 
     ### redundant fields for quick DB queries
     # geographic reference, useful for anycluster and quick GIS queries
