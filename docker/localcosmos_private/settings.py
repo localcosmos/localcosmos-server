@@ -30,6 +30,7 @@ host_list = os.environ.get('ALLOWED_HOSTS', [])
 if host_list:
     ALLOWED_HOSTS = host_list.split('|')
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 

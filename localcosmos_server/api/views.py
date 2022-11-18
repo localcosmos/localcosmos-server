@@ -8,7 +8,9 @@
 #
 ###################################################################################################################
 from django.contrib.auth import logout
+from django.http import Http404
 from django.utils.translation import gettext_lazy as _
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -23,11 +25,11 @@ from localcosmos_server.models import App
 from django_road.permissions import IsAuthenticatedOnly, OwnerOnly
 
 from .serializers import (AccountSerializer, RegistrationSerializer, PasswordResetSerializer,
-                            TokenObtainPairSerializerWithClientID)
+                          TokenObtainPairSerializerWithClientID, DatasetSerializer, ObservationFormSerializer)
 
 from localcosmos_server.mails import send_registration_confirmation_email
 
-from localcosmos_server.datasets.models import Dataset
+from localcosmos_server.datasets.models import Dataset, ObservationForm
 from localcosmos_server.models import UserClients
 
 import uuid
@@ -55,6 +57,42 @@ class APIDocumentation(APIView):
     - displays endpoints
     """
     pass
+
+
+class ObservationFormList(CreateAPIView):
+    serializer_class = ObservationFormSerializer
+
+
+class ObservationFormDetail(RetrieveAPIView):
+    serializer_class = ObservationFormSerializer
+    queryset = ObservationForm.objects
+
+    def get_object(self):
+        try:
+            return self.queryset.get(uuid=self.kwargs['uuid'], version=self.kwargs['version'])
+        except ObservationForm.DoesNotExist:
+            raise Http404
+
+
+class DatasetList(ListAPIView, CreateAPIView):
+    queryset = Dataset.objects.all()
+    serializer_class = DatasetSerializer
+
+    # def post(self, request, *args, **kwargs):
+    #     serializer_context = {'request': request}
+    #     serializer = self.serializer_class(data=request.data, context=serializer_context)
+    #     context = {'success': False}
+    #
+    #     if serializer.is_valid():
+    #         dataset = serializer.save()
+    #         context['dataset'] = self.serializer_class(dataset).data
+    #         context['success'] = True
+    #     else:
+    #         context['success'] = False
+    #         context['errors'] = serializer.errors
+    #         return Response(context, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(context)
+
 
 
 class ManageUserClient:
@@ -107,7 +145,7 @@ class RegisterAccount(ManageUserClient, APIView):
         serializer_context = { 'request': request }
         serializer = self.serializer_class(data=request.data, context=serializer_context)
 
-        context = { 
+        context = {
             'success' : False,
         }
 

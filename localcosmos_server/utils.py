@@ -28,6 +28,6 @@ def api_filter_endpoints_hook(endpoints):
     #      pass
     # drop html endpoints
     endpoints = [endpoint for endpoint in endpoints if not endpoint[0].endswith("{format}")]
-    exposed_endpoints = [endpoint for endpoint in endpoints if re.match('/api/(user|app|password|online-content|token)/', endpoint[0])]
+    exposed_endpoints = [endpoint for endpoint in endpoints if re.match('/api/(user|datasets|observation-forms|app|password|online-content|token)/', endpoint[0])]
 
     return exposed_endpoints

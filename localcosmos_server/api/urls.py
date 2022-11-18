@@ -8,6 +8,9 @@ from . import views
 urlpatterns = [
     # app unspecific
     path('', views.APIHome.as_view(), name='api_home'),
+    path('observation-forms/', views.ObservationFormList.as_view()),
+    path('observation-forms/<uuid:uuid>/<int:version>', views.ObservationFormDetail.as_view()),
+    path('datasets/', views.DatasetList.as_view()),
     path('user/manage/', views.ManageAccount.as_view()),
     path('user/delete/', views.DeleteAccount.as_view()),
     path('user/register/', views.RegisterAccount.as_view()),
