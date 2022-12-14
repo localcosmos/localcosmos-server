@@ -79,7 +79,7 @@ class EmailOrUsernameAuthenticationForm(AuthenticationForm):
 
 '''
     ManageContentImageForm
-    - used by online_content and app_kit
+    - used by template_content and app_kit
     - expects LicencingFormMixin in Form
     - add an image to any content of the app, or an app directly
     - images have a type, default is 'image', possible types are eg 'background' or 'logo'
@@ -262,3 +262,88 @@ class ManageContentImageFormCommon:
         
         return cleaned_data
 
+
+from content_licencing.mixins import LicencingFormMixin, OptionalLicencingFormMixin
+from localcosmos_server.widgets import HiddenJSONInput
+class ManageContentImageForm(ManageContentImageFormCommon, LicencingFormMixin):
+    
+    # cropping
+    crop_parameters = forms.CharField(widget=forms.HiddenInput)
+
+    # features like arrows
+    features = forms.CharField(widget=HiddenJSONInput, required=False)
+
+    # image_type
+    image_type = forms.CharField(widget=forms.HiddenInput, required=False)
+
+    # md5
+    md5 = forms.CharField(widget=forms.HiddenInput, required=False)
+
+    requires_translation = forms.BooleanField(required=False)
+    
+
+    def clean_source_image(self):
+
+        source_image = self.cleaned_data.get('source_image')
+        if not source_image and not self.current_image:
+            raise forms.ValidationError('An image file is required.')
+
+        return source_image
+
+
+class ManageContentImageWithTextForm(FormLocalizationMixin, ManageContentImageForm):
+
+    input_language = forms.CharField(widget=forms.HiddenInput)
+
+    text = forms.CharField(max_length=355, required=False, widget=forms.Textarea,
+                           help_text=_('Text that will be shown together with this image.'))
+
+    localizeable_fields = ['text']
+    layoutable_simple_fields = ['text']
+
+
+class ManageLocalizedContentImageForm(ManageContentImageForm):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        del self.fields['requires_translation']
+
+
+'''
+    A form with an optional ContentImage. If the user uploads an image, creator_name and licence have to be present
+'''
+class OptionalContentImageForm(ManageContentImageFormCommon, OptionalLicencingFormMixin):
+
+    # cropping
+    crop_parameters = forms.CharField(widget=forms.HiddenInput, required=False)
+
+    # features like arrows
+    features = forms.CharField(widget=HiddenJSONInput, required=False)
+
+    # image_type
+    image_type = forms.CharField(widget=forms.HiddenInput, required=False)
+
+    # md5
+    md5 = forms.CharField(widget=forms.HiddenInput, required=False)
+
+    # if suggested images are provided, the user may click on the suggested image
+    referred_content_image_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
+
+    def fields_required(self, fields):
+        """Used for conditionally marking fields as required."""
+        for field in fields:
+            if not self.cleaned_data.get(field, None):
+                msg = forms.ValidationError(_('This field is required.'))
+                self.add_error(field, msg)
+
+
+    # if an image is present, at least crop_parameters, licence and creator_name have to be present
+    def clean(self):
+        cleaned_data = super().clean()
+        file_ = cleaned_data.get('source_image', None)
+
+        if file_ is not None:
+            self.fields_required(['creator_name', 'licence'])
+            
+        
+        return cleaned_data

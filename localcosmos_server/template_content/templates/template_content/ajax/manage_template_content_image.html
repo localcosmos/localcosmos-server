@@ -1,0 +1,31 @@
+{% extends 'localcosmos_server/ajax/server_content_image_form.html' %}
+{% load i18n localcosmos_tags %}
+
+{% block base_url %}{% if content_image %}{% url 'manage_template_content_image' content_image.id %}{% else %}{% url 'manage_template_content_image' content_type.id content_instance.id image_type %}{% endif %}{% endblock %}
+
+{% block script %}
+
+	{% block extra_script %}{% endblock %}
+
+	<script>
+
+		{% if request.method == 'POST' and form.is_valid %}
+
+			{% include 'template_content/ajax/reload_template_content_images.html' %}
+
+			$("#LargeModal").modal("hide");
+			$("#LargeModalContent").empty();
+
+		{% else %}
+			{% include 'localcosmos_server/snippets/ckeditor_js_snippet.html' %}
+		{% endif %}
+	</script>
+
+	<style>
+		.ck-editor__editable {
+			min-height: 50px;
+		}
+	</style>
+
+	
+{% endblock %}

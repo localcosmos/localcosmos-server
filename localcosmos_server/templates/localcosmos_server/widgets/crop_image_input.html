@@ -11,27 +11,29 @@
 <script>
 
 	(function () {
+		setTimeout(function(){
+			var container = document.getElementById("interactiveimagefield-container");
+			var imageInput = document.getElementById("{{ widget.attrs.id }}");
+			var cropParametersInput = document.getElementById("id_crop_parameters");
+			var featuresInput = document.getElementById("id_features");
 
-		var container = document.getElementById("interactiveimagefield-container");
-		var imageInput = document.getElementById("{{ widget.attrs.id }}");
-		var cropParametersInput = document.getElementById("id_crop_parameters");
-		var featuresInput = document.getElementById("id_features");
+			var options = {
+				'allowCropping' : {% if restrictions.allow_cropping %}true{% else %}false{% endif %},
+				'allowFeatures' : {% if restrictions.allow_features %}true{% else %}false{% endif %},
+				'cropAreaRatio' : '{% if restrictions.ratio %}{{ restrictions.ratio }}{% else %}1:1{% endif %}'
+			};
 
-		var options = {
-			'allowCropping' : {% if restrictions.allow_cropping %}true{% else %}false{% endif %},
-			'allowFeatures' : {% if restrictions.allow_features %}true{% else %}false{% endif %},
-			'cropAreaRatio' : '{% if restrictions.ratio %}{{ restrictions.ratio }}{% else %}1:1{% endif %}'
-		};
+		
+			var interactiveImageField = new InteractiveImageField(container, imageInput, cropParametersInput, featuresInput, options);
 
-		var interactiveImageField = new InteractiveImageField(container, imageInput, cropParametersInput, featuresInput, options);
-
-		{% if current_image %}
-			var imageUrl = "{{ current_image.url }}";
-			setTimeout(function(){
-				interactiveImageField.setImage(imageUrl);
-			}, 500)
-			
-		{% endif %}
+			{% if current_image %}
+				var imageUrl = "{{ current_image.url }}";
+				
+					interactiveImageField.setImage(imageUrl);
+				
+				
+			{% endif %}
+		}, 500)
 
 	})();
 

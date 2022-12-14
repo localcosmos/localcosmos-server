@@ -1,0 +1,17 @@
+{% extends 'localcosmos_server/ajax/delete_server_content_image.html' %}
+
+{% block success_js %}
+	<script>
+		$("#Modal").modal("hide");
+		{% if deleted %}
+		
+			{% include 'template_content/ajax/reload_template_content_images.html' %}
+
+			$("#Modal").modal("hide");
+			$("#ModalContent").empty();
+
+			reloadPreview();
+			
+		{% endif %}
+	</script>
+{% endblock %}

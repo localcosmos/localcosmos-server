@@ -1,0 +1,19 @@
+{% load static %}
+<script src="{% static 'template_content/template_content.js' %}"></script>
+<script src="{% static 'template_content/ckeditor5-build-classic/ckeditor.js' %}"></script>
+<script>
+
+	{% for field_name in form.layoutable_full_fields %}
+		ClassicEditor.create( document.querySelector('#id_{{ field_name }}'), {% include 'template_content/ckeditor/layout-complex.js' %});
+	{% endfor %}
+	{% for field_name in form.layoutable_simple_fields %}
+		ClassicEditor.create( document.querySelector('#id_{{ field_name }}'), {% include 'template_content/ckeditor/layout-simple.js' %});
+	{% endfor %}
+
+	var form = $("#contentform");
+
+	$(".formsubmit").on("click", function(ev){
+		form.attr("action", $(this).attr("data-href"));
+		form.attr("target", "");
+	});
+</script>

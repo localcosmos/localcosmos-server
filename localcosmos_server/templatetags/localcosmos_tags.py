@@ -13,7 +13,7 @@ from localcosmos_server.models import TaxonomicRestriction
 '''
     render taxonomic restrictions from app taxa
 '''
-def get_taxonomic_restriction_context(content, content_type, restrictions, taxon_search_url, typed):
+def get_taxonomic_restriction_context(content, content_type, restrictions, taxon_search_url, typed, action_url):
     
     form_class = AddSingleTaxonForm
     if typed == 'typed':
@@ -33,22 +33,45 @@ def get_taxonomic_restriction_context(content, content_type, restrictions, taxon
         'restrictions': restrictions,
         'content' : content,
         'content_type' : content_type,
+        'action_url' : action_url,
     }
     return context
 
-    
-@register.inclusion_tag('localcosmos_server/taxonomic_restrictions_form.html')
-def render_app_taxonomic_restriction(app, content, typed=None):
-
-    taxon_search_url = reverse('search_app_taxon', kwargs={'app_uid':app.uid})
+# combined restrictions for app_kit and localcosmos_server
+@register.inclusion_tag('localcosmos_server/taxonomy/taxonomic_restrictions.html')
+def render_taxonomic_restriction(app, content, typed=None):
 
     content_type = ContentType.objects.get_for_model(content)
-    restrictions = TaxonomicRestriction.objects.filter(
+
+    url_kwargs = {
+        'content_type_id' : content_type.id,
+        'object_id' : content.id,
+    }
+
+    if typed == 'typed':
+        url_kwargs['typed'] = 'typed'
+
+    if settings.LOCALCOSMOS_PRIVATE == True:
+
+        taxon_search_url = reverse('search_app_taxon', kwargs={'app_uid':app.uid})
+        RestrictionModel = TaxonomicRestriction
+
+        action_url = reverse('manage_app_taxonomic_restrictions', kwargs=url_kwargs)
+
+    else:
+        from app_kit.generic import AppContentTaxonomicRestriction
+
+        taxon_search_url = reverse('search_taxon')
+        RestrictionModel = AppContentTaxonomicRestriction
+
+        action_url = reverse('add_taxonomic_restriction',  kwargs=url_kwargs)
+    
+    restrictions = RestrictionModel.objects.filter(
         content_type=content_type,
         object_id=content.id,
     )
 
-    context = get_taxonomic_restriction_context(content, content_type, restrictions, taxon_search_url, typed)
+    context = get_taxonomic_restriction_context(content, content_type, restrictions, taxon_search_url, typed, action_url)
     return context
 
 

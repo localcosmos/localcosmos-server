@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'localcosmos_server.app_admin',
     'localcosmos_server.server_control_panel',
     'localcosmos_server.datasets',
-    'localcosmos_server.online_content',
+    'localcosmos_server.template_content',
 
     'django_road',    
     'anycluster',

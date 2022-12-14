@@ -31,7 +31,15 @@ urlpatterns = [
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_reset_complete.html'),
         name='password_reset_complete'),
-    
+    # server content images
+    path('manage-server-content-image/<int:content_type_id>/<int:object_id>/',
+        views.ManageServerContentImage.as_view(), name='manage_server_content_image'),
+    path('manage-server-content-image/<int:content_type_id>/<int:object_id>/<str:image_type>/',
+        views.ManageServerContentImage.as_view(), name='manage_server_content_image'),
+    path('manage-server-content-image/<int:content_image_id>/',
+        views.ManageServerContentImage.as_view(), name='manage_server_content_image'),
+    path('delete-server-content-image/<int:pk>/',
+        views.DeleteServerContentImage.as_view(), name='delete_server_content_image'),
     # SETUP GUI
     path('', include('localcosmos_server.setup_urls')),
     

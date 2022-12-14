@@ -13,13 +13,13 @@ urlpatterns = [
     
     # APP ADMIN
     path('app-admin/', include('localcosmos_server.app_admin.urls', namespace='appadmin')),
-    path('app-admin/', include('localcosmos_server.online_content.urls')), # cannot have the namespace appadmin
+    path('app-admin/', include('localcosmos_server.template_content.urls')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.datasets.urls', namespace='datasets')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.taxonomy.urls')), # cannot have the namespace appadmin
     # API
     path('api/', include('django_road.urls')),
     path('api/', include('localcosmos_server.api.urls')),
-    path('api/', include('localcosmos_server.online_content.api.urls')),
+    path('api/', include('localcosmos_server.template_content.api.urls')),
     path('api/anycluster/', include('localcosmos_server.anycluster_schema_urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -5,11 +5,13 @@ from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.db import transaction
 
+from django.templatetags.static import static
 
-from .taxonomy.generic import ModelWithRequiredTaxon
+
+from .taxonomy.generic import ModelWithTaxon, ModelWithRequiredTaxon
 from .taxonomy.lazy import LazyAppTaxon
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
 
 # online ocntent
@@ -18,7 +20,7 @@ from django.template.backends.django import DjangoTemplates
 
 from localcosmos_server.slugifier import create_unique_slug
 
-from localcosmos_server.online_content.utils import verbosify_template_name
+from content_licencing.models import ContentLicenceRegistry
 
 import uuid, os, json, shutil
     
@@ -256,6 +258,7 @@ class App(models.Model):
         Domain = get_tenant_domain_model()
         
         domain = Domain.objects.filter(tenant__schema_name='public').first()
+
         return '{0}.preview.{1}/'.format(self.uid, domain.domain)
 
 
@@ -285,7 +288,7 @@ class App(models.Model):
         return root
 
     
-    # read app settings from disk, online_content
+    # read app settings from disk, template_content
     # located at /www/settings.json, createb by AppPreviewBuilder or AppReleaseBuilder
     # app_state=='preview' or app_state=='review' are for commercial installation only
     def get_settings(self, app_state='preview'):
@@ -328,133 +331,6 @@ class App(models.Model):
     def secondary_languages(self):
         return SecondaryAppLanguages.objects.filter(app=self).values_list('language_code', flat=True)
 
-    
-    ###############################################################################################################
-    # online content specific
-    # on LOCALCOSMOS_PRIVATE==True app_state is always 'published'
-    # on LOCALCOSMOS_PRIVATE==False app_state is always 'preview'
-
-    def get_online_content_app_state(self):
-
-        if settings.LOCALCOSMOS_PRIVATE == True:
-            return 'published'
-
-        return 'preview'
-
-    # preview or published, depending on LOCALCOSMOS_PRIVATE
-    def get_online_content_templates_path(self):
-        
-        app_state = self.get_online_content_app_state()
-
-        return os.path.join(self.get_installed_app_path(app_state), 'online_content', 'templates')
-
-
-    def get_user_uploaded_online_content_templates_path(self):
-        return os.path.join(self.media_base_path, 'online_content', 'templates')
-
-
-    # return the online_content specific app settings
-    # called from online_content.api.views and online_content.models.TemplateContentFlagsManager
-    def get_online_content_settings(self):
-
-        app_state = self.get_online_content_app_state()
-        
-        app_settings = self.get_settings(app_state=app_state)
-
-        oc_settings = app_settings.get('online_content', {})
-        return oc_settings
-    
-    # return a list of available templates, always use the preview version,
-    # used by eg online_content.forms.CreateTemplateContentForm
-    # eg displays a selection in the AppAdmin
-    def get_online_content_templates(self, template_type):
-            
-        templates_path = os.path.join(self.get_online_content_templates_path(), template_type)
-        oc_settings = self.get_online_content_settings()
-        language = self.primary_language
-
-        templates = []
-
-        # the frontend might not supply online content templates
-        if os.path.isdir(templates_path):
-
-            # iterate over templates shipped with the frontend
-            for filename in os.listdir(templates_path):
-
-                template_path = '{0}/{1}'.format(template_type, filename)
-                verbose_name = template_path
-
-                if template_path in oc_settings['verbose_template_names'] and language in oc_settings['verbose_template_names'][template_path]:
-                    verbose_name = oc_settings['verbose_template_names'][template_path][language]
-
-                templates.append((template_path, verbose_name))
-
-
-        # iterate over user uploaded templates
-        user_uploaded_templates_path = os.path.join(self.get_user_uploaded_online_content_templates_path(),
-                                                    template_type)
-        
-        if os.path.isdir(user_uploaded_templates_path):
-            for filename in os.listdir(user_uploaded_templates_path):
-                template_path = '{0}/{1}'.format(template_type, filename)
-                verbose_name = verbosify_template_name(template_path)
-                templates.append((template_path, verbose_name))
-
-        return templates
-
-
-    def get_online_content_template(self, template_name):
-        # return an instance of Template
-        # Template(contents, origin, origin.template_name, self.engine,)
-        # contents is the content of the .html file
-        # origin is an Origin instance
-        # engine is a template engine
-        # Template can be instantiated directly, only with contents
-
-        # templates shipped with frontend
-        templates_base_dir = self.get_online_content_templates_path()
-
-        # templates uploaded by user
-        user_uploaded_templates_base_dir = self.get_user_uploaded_online_content_templates_path()
-
-        # check if template is shipped with the frontend
-        template_path = os.path.join(templates_base_dir, template_name)
-
-        if not os.path.isfile(template_path):
-
-            # if not check if the template was uploaded by the user
-            template_path = os.path.join(user_uploaded_templates_base_dir, template_name)
-
-            if not os.path.isfile(template_path):
-                msg = 'Online Content Template %s does not exist. Tried: %s' % (template_name, template_path)
-                raise TemplateDoesNotExist(msg)
-        
-        
-        params = {
-            'NAME' : 'OnlineContentEngine',
-            #'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [templates_base_dir, user_uploaded_templates_base_dir],
-            'APP_DIRS': False,
-            'OPTIONS': {
-                'context_processors': [
-                    'django.template.context_processors.debug',
-                    'django.template.context_processors.request',
-                    'django.contrib.auth.context_processors.auth',
-                    'django.contrib.messages.context_processors.messages',
-                ],
-                'loaders' : [
-                    'django.template.loaders.filesystem.Loader',
-                ]
-            },
-        }
-        engine = DjangoTemplates(params)
-
-        with open(template_path, encoding=engine.engine.file_charset) as fp:
-            contents = fp.read()
-
-        # use the above engine with dirs
-        template = Template(contents, engine=engine.engine)
-        return template
 
     # only published app
     def get_locale(self, key, language):
@@ -534,3 +410,308 @@ class TaxonomicRestrictionBase(ModelWithRequiredTaxon):
 
 class TaxonomicRestriction(TaxonomicRestrictionBase):
     pass
+
+
+
+
+'''
+    Generic Content Images
+'''
+class ServerContentImageMixin:
+
+    def get_model(self):
+        return ServerContentImage
+
+    def _content_images(self, image_type='image'):
+
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        ContentImageModel = self.get_model()
+
+        self.content_images = ContentImageModel.objects.filter(content_type=content_type, object_id=self.pk,
+                                                          image_type=image_type)
+
+        return self.content_images
+
+    def all_images(self):
+
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        ContentImageModel = self.get_model()
+
+        self.content_images = ContentImageModel.objects.filter(
+            content_type=content_type, object_id=self.pk)
+
+        return self.content_images
+
+    def images(self, image_type='image'):
+        return self._content_images(image_type=image_type)
+
+    def image(self, image_type='image'):
+        content_image = self._content_images(image_type=image_type).first()
+
+        if content_image:
+            return content_image
+
+        return None
+
+    def image_url(self, size=400):
+
+        content_image = self.image()
+
+        if content_image:
+            return content_image.image_url(size)
+
+        return static('noimage.png')
+
+    # this also deletes ImageStore entries and images on disk
+
+    def delete_images(self):
+
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        ContentImageModel = self.get_model()
+
+        content_images = ContentImageModel.objects.filter(
+            content_type=content_type, object_id=self.pk)
+
+        for image in content_images:
+            # delete model db entries
+            image_store = image.image_store
+            image.delete()
+
+            image_is_used = ContentImageModel.objects.filter(
+                image_store=image_store).exists()
+
+            if not image_is_used:
+                image_store.delete()
+
+    def get_content_images_primary_localization(self):
+
+        locale = {}
+
+        content_images = self.images()
+
+        for content_image in content_images:
+
+            if content_image.text and len(content_image.text) > 0:
+                locale[content_image.text] = content_image.text
+
+        return locale
+
+
+
+
+
+def get_image_store_path(instance, filename):
+    blankname, ext = os.path.splitext(filename)
+
+    new_filename = '{0}{1}'.format(instance.md5, ext)
+    path = '/'.join(['localcosmos-server', 'imagestore', '{0}'.format(instance.uploaded_by.pk),
+                     new_filename])
+    return path
+
+
+
+class ImageStoreAbstract(ModelWithTaxon):
+
+    LazyTaxonClass = LazyAppTaxon
+
+    # null Foreignkey means the user does not exist anymore
+    uploaded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+
+    
+    md5 = models.CharField(max_length=255)
+
+    # enables on delete cascade
+    licences = GenericRelation(ContentLicenceRegistry)
+
+    class Meta:
+        abstract=True
+
+
+class ServerImageStore(ImageStoreAbstract):
+    
+    source_image = models.ImageField(upload_to=get_image_store_path)
+
+
+
+class ContentImageAbstract(models.Model):
+
+    crop_parameters = models.TextField(null=True)
+
+    # for things like arrows/vectors on the image
+    # arrows are stored as [{"type" : "arrow" , "initialPoint": {x:1, y:1}, "terminalPoint": {x:2,y:2}, color: string}]
+    features = models.JSONField(null=True)
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.IntegerField()
+    content = GenericForeignKey('content_type', 'object_id')
+
+    # a content can have different images
+    # eg an image of type 'background' and an image of type 'logo'
+    image_type = models.CharField(max_length=100, default='image')
+
+    position = models.IntegerField(default=0)
+    is_primary = models.BooleanField(default=False)
+
+    # only primary language
+    text = models.CharField(max_length=355, null=True)
+
+    # flag if a translation is needed
+    requires_translation = models.BooleanField(
+        default=False)  # not all images require a translation
+
+
+    class Meta:
+        abstract=True
+
+
+import hashlib
+from PIL import Image
+class ContentImageProcessing:
+
+    def get_thumb_filename(self, size=400):
+
+        if self.image_store.source_image:
+            filename = os.path.basename(self.image_store.source_image.path)
+            blankname, ext = os.path.splitext(filename)
+
+            suffix = 'uncropped'
+            if self.crop_parameters:
+                suffix = hashlib.md5(
+                    self.crop_parameters.encode('utf-8')).hexdigest()
+
+            feature_suffix = 'nofeatures'
+            if self.features:
+                features_str = json.dumps(self.features)
+                feature_suffix = hashlib.md5(
+                    features_str.encode('utf-8')).hexdigest()
+
+            thumbname = '{0}-{1}-{2}-{3}{4}'.format(
+                blankname, suffix, feature_suffix, size, ext)
+            return thumbname
+
+        else:
+            return 'noimage.png'
+
+
+    def plot_features(self, pil_image):
+        raise NotImplementedError('Plotting Features not supported by LC Server')
+
+    # apply features and cropping, return pil image
+    # original_image has to be Pil.Image instance
+    # CASE 1: crop parameters given.
+    #   - make a canvas according to crop_parameters.width and crop_parameters.height
+    #
+    # CASE 2: no crop parameters given
+    #   1. apply features
+    #   2. thumbnail
+    def get_in_memory_processed_image(self, original_image, size):
+
+        # scale the image to match size
+        original_width, original_height = original_image.size
+
+        larger_original_side = max(original_width, original_height)
+        if larger_original_side < size:
+            size = larger_original_side
+
+        # fill color for the background, if the selection expands the original image
+        fill_color = (255, 255, 255, 255)
+
+        # offset of the image on the canvas
+        offset_x = 0
+        offset_y = 0
+
+        if self.crop_parameters:
+
+            square_size = max(original_width, original_height)
+            offset_x = int((square_size - original_width) / 2)
+            offset_y = int((square_size - original_height) / 2)
+            width = size
+            height = size
+
+            canvas = Image.new('RGBA', (square_size, square_size), fill_color)
+            canvas.paste(original_image, (offset_x, offset_y))
+
+        else:
+
+            # define width and height
+            width = size
+            scaling_factor = original_width / size
+            height = original_height * scaling_factor
+
+            canvas = Image.new(
+                'RGBA', (original_width, original_height), fill_color)
+            canvas.paste(original_image, (offset_x, offset_y))
+
+        # plot features and creator name
+        # matplotlib is awfully slow - only use it if absolutely necessary
+        if self.features:
+            image_source = self.plot_features(canvas)
+            canvas_with_features = Image.open(image_source)
+        else:
+            canvas_with_features = canvas
+
+        # ATTENTION: crop_parameters are relative to the top-left corner of the original image
+        # -> make them relative to the top left corner of square
+        if self.crop_parameters:
+            # {"x":253,"y":24,"width":454,"height":454,"rotate":0,"scaleX":1,"scaleY":1}
+            crop_parameters = json.loads(self.crop_parameters)
+
+            # first crop, then resize
+            # box: (left, top, right, bottom)
+            box = (
+                crop_parameters['x'] + offset_x,
+                crop_parameters['y'] + offset_y,
+                crop_parameters['x'] + offset_x + crop_parameters['width'],
+                crop_parameters['y'] + offset_y + crop_parameters['height'],
+            )
+
+            cropped_canvas = canvas_with_features.crop(box)
+
+        else:
+            cropped_canvas = canvas_with_features
+
+        cropped_canvas.thumbnail([width, height], Image.ANTIALIAS)
+
+        if original_image.format != 'PNG':
+            cropped_canvas = cropped_canvas.convert('RGB')
+
+        return cropped_canvas
+
+
+    def image_url(self, size=400, force=False):
+
+        if self.image_store.source_image.path.endswith('.svg'):
+            thumburl = self.image_store.source_image.url
+
+        else:
+
+            image_path = self.image_store.source_image.path
+            folder_path = os.path.dirname(image_path)
+
+            thumbname = self.get_thumb_filename(size)
+
+            thumbfolder = os.path.join(folder_path, 'thumbnails')
+            if not os.path.isdir(thumbfolder):
+                os.makedirs(thumbfolder)
+
+            thumbpath = os.path.join(thumbfolder, thumbname)
+
+            if not os.path.isfile(thumbpath) or force == True:
+
+                original_image = Image.open(self.image_store.source_image.path)
+
+                processed_image = self.get_in_memory_processed_image(
+                    original_image, size)
+
+                processed_image.save(thumbpath, original_image.format)
+
+            thumburl = os.path.join(os.path.dirname(
+                self.image_store.source_image.url), 'thumbnails', thumbname)
+
+        return thumburl
+
+
+class ServerContentImage(ContentImageProcessing, ContentImageAbstract):
+
+    image_store = models.ForeignKey(ServerImageStore, on_delete=models.CASCADE)

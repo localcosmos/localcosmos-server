@@ -1,0 +1,52 @@
+{% extends request.is_appadmin|yesno:"app_admin/base.html,app_kit/base.html" %}
+{% load i18n static %}
+
+{% block extra_style %}
+	<link href="{% static 'template_content/template_content.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+	<div class="container-fluid d-none d-md-block">
+		<div class="row">
+			<div class="col-12 text-center text-white bg-primary">
+				<h2>{{ app.name }}</h2>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-12 mt-4">
+			<h3>{{ app.name }} {% trans 'TemplateContent' %}</h3>
+			<hr>
+			
+			{% block subcontent %}
+				<h4>{% trans 'Pages' %}</h4>
+				{% if localized_template_contents %}
+					<div class="row">
+						{% for localized_template_content in localized_template_contents %}
+							{% with template_content=localized_template_content.template_content %}
+								<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
+									{% include 'template_content/template_content_list_entry.html' %}
+								</div>
+							{% endwith %}
+						{% endfor %}
+					</div>
+				{% else %}
+					{% trans 'You do not have any online pages for this app yet.' %}
+				{% endif %}
+				<br>
+				<div class="row mt-3">
+					<div class="col-12">
+						<a href="{% url 'create_template_content' app.uid 'page' %}" class="btn btn-outline-primary">{% trans 'Add new page' %}</a>
+					</div>
+				</div>
+			{% endblock %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block extra_script %}{% endblock %}
