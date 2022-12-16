@@ -10,7 +10,33 @@
 		<div class="row">
 			<div class="col-12">
 				<h3>
-					{{ localized_template_content.draft_title }} <img src="{% static 'localcosmos_server/images/countries/' %}{{ app.primary_language }}.gif" />
+					{% if localized_template_content %}
+						{{ localized_template_content.draft_title }} <img src="{% static 'localcosmos_server/images/countries/' %}{{ app.primary_language }}.gif" />
+						
+						<small><span class="badge badge-info">version {{ localized_template_content.draft_version }}</span></small>
+
+						{% if localized_template_content.published_version == localized_template_content.draft_version %}
+							<small><span class="badge badge-success">{% trans 'published' %}</span></small>
+						{% else %}
+							{% if localized_template_content.published_version %}
+								<small><span class="badge badge-warning">{% trans 'unpublished changes' %}</span></small>
+							{% else %}
+								<small><span class="badge badge-warning">{% trans 'not published' %}</span></small>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+					<!--
+					{% if app.secondary_languages %}
+						{% if localized_template_content.published_version == localized_template_content.draft_version %}
+						{% else %}
+							{% if localized_template_content.translation_ready %}
+								<small><span class="badge badge-info">{% trans 'ready for translation' %}</span></small>
+							{% else %}
+								<small><span class="badge badge-warning">{% trans 'not ready for translation' %}</span></small>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+					-->
 				</h3>
 
 				{% if saved %}
@@ -28,7 +54,8 @@
 
 		<div class="row">
 			<div class="col-12 col-md-6">
-			
+				
+				{% block taxonomic_restriction %}
 				<div class="row">
 					<div class="col-12">
 					
@@ -41,53 +68,57 @@
 				</div>
 				
 				<hr>
+
+				{% endblock %}
 				
 				<h4>{% trans 'Components' %}</h4>
-				<form id="contentform" action="{% url 'manage_localized_template_content' app.uid localized_template_content.id %}" method="POST">{% csrf_token %}
+				<form id="contentform" action="{% if app.primary_language == language %}{% url 'manage_localized_template_content' app.uid localized_template_content.id %}{% else %}{% url 'translate_template_content' app.uid template_content.id language %}{% endif %}" method="POST">{% csrf_token %}
 
-					{% for field in form %}
+					{% block form %}
+						{% for field in form %}
 
-						{% if field.field.content_definition.type == 'multi-image' %}
-		
-							{% if field.field.is_first %}
-								<div class="row field-label">
-									<div class="col-12">
-										{{ field.label }}
+							{% if field.field.content_definition.type == 'multi-image' %}
+			
+								{% if field.field.is_first %}
+									<div class="row field-label">
+										<div class="col-12">
+											{{ field.label }}
+										</div>
 									</div>
-								</div>
-								<div id="{{ field.field.content_key }}-container" class="row">
-							{% endif %}
+									<div id="{{ field.field.content_key }}-container" class="row">
+								{% endif %}
 
-							{% include 'template_content/widgets/filecontent_field.html' %}
-
-							{% if field.field.is_last %}
-								</div>
-								<div class="row">
-									<div class="col-12 text-center"><br>
-										<button type="button" class="btn btn-outline-secondary add-content-button" data-target="{{ field.field.content_key }}-container">{% blocktrans with name=field.label %}add {{ name }}{% endblocktrans %}</button>
-									</div>
-								</div>
-							{% endif %}
-		
-						{% elif field.field.content_definition.type == 'image' %}
-								
-							{% if field.is_hidden %}
-							{% else %}
-								<div class="row field-label">
-									<div class="col-12">
-										{{ field.label }}
-									</div>
-								</div>
-							{% endif %}
-							<div id="{{ field.field.content_key }}-container" class="row">
 								{% include 'template_content/widgets/filecontent_field.html' %}
-							</div>
 
-						{% else %}
-							{% include 'template_content/widgets/textcontent_field.html' %}
-						{% endif %}				
+								{% if field.field.is_last %}
+									</div>
+									<div class="row">
+										<div class="col-12 text-center"><br>
+											<button type="button" class="btn btn-outline-secondary add-content-button" data-target="{{ field.field.content_key }}-container">{% blocktrans with name=field.label %}add {{ name }}{% endblocktrans %}</button>
+										</div>
+									</div>
+								{% endif %}
+			
+							{% elif field.field.content_definition.type == 'image' %}
+									
+								{% if field.is_hidden %}
+								{% else %}
+									<div class="row field-label">
+										<div class="col-12">
+											{{ field.label }}
+										</div>
+									</div>
+								{% endif %}
+								<div id="{{ field.field.content_key }}-container" class="row">
+									{% include 'template_content/widgets/filecontent_field.html' %}
+								</div>
 
-					{% endfor %}
+							{% else %}
+								{% include 'template_content/widgets/textcontent_field.html' %}
+							{% endif %}				
+
+						{% endfor %}
+					{% endblock %}
 
 					<hr>
 					<p>

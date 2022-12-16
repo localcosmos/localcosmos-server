@@ -10,7 +10,6 @@ definition :
     {
       "templateName" : "Neobiota", # a verbose name, constant
       "version" : 1, # integer version
-      "templateFileName": "filename.xy",
       "templateUrl": "/fact-sheet/neobiota/{slug}", # the url supplied by the frontend for the preview
       "contents": {
         "headline": {

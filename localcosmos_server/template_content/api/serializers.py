@@ -10,7 +10,6 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
     navigationLinkName = serializers.SerializerMethodField()
     templateName = serializers.SerializerMethodField()
     version = serializers.SerializerMethodField()
-    templateFileName = serializers.SerializerMethodField()
     templateUrl = serializers.SerializerMethodField()
     contents = serializers.SerializerMethodField()
 
@@ -49,9 +48,6 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
     def get_version(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'version')
 
-    def get_templateFileName(self, localized_template_content):
-        return self.get_from_definition(localized_template_content, 'templateFileName')
-
     def get_templateUrl(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'templateUrl')
 
@@ -68,8 +64,10 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
         contents = template_definition['contents'].copy()
 
-        for content_key, content in supplied_contents.items():
-            contents[content_key]['value'] = content
+        if supplied_contents:
+
+            for content_key, content in supplied_contents.items():
+                contents[content_key]['value'] = content
         
         # add images to contents, according to the template definition
         for content_key, content_definition in template_definition['contents'].items():
@@ -101,7 +99,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalizedTemplateContent
-        fields = ['title', 'navigationLinkName', 'templateName', 'version', 'templateFileName', 'templateUrl', 'contents']
+        fields = ['title', 'navigationLinkName', 'templateName', 'version', 'templateUrl', 'contents']
 
 
 class ContentLicenceSerializer(serializers.ModelSerializer):

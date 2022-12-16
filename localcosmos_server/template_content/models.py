@@ -151,6 +151,25 @@ class TemplateContent(models.Model):
     def get_locale(self, language_code):
         return LocalizedTemplateContent.objects.filter(template_content=self, language=language_code).first()
 
+    def translation_complete(self, language_code):
+
+        translation_errors = []
+
+        ltc = LocalizedTemplateContent.objects.filter(template_content=self, language=language_code).first()
+
+        if not ltc:
+            translation_errors.append(_('Translation for the language %(language)s is missing') %{
+                'language':language_code})
+
+        else:
+            #if ltc.language != self.app.primary_language and ltc.translation_ready == False:
+            #    translation_errors.append(_('The translator for the language %(language)s is still working') %{
+            #    'language':language_code})
+                
+            translation_errors += ltc.translation_complete()
+
+
+        return translation_errors
 
     def publish(self, language='all'):
         
@@ -164,7 +183,7 @@ class TemplateContent(models.Model):
         else:
             languages = [language]
 
-        
+        # translation_ready is currently not in use
         # ltc.translation_ready is not set to True by the user if there is only one language
         # skip the check if the "translation" exists and also skip the check if the user has set
         # translation_ready to True, which is not the case because there is only a "publish" button
@@ -312,27 +331,45 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
 
     '''
-    - if the language is the primary language, check if all required fields are presend
-    - if the language is a secondart language, check if all fields of the primary language are translated
+    - if the language is the primary language, check if all required fields are present
+    - if the language is a secondary language, check if all fields of the primary language are translated
     '''
     def translation_complete(self):
 
         translation_errors = []
 
+        primary_language = self.template_content.app.primary_language
+
         template_definition = self.template_content.draft_template.definition
         contents = template_definition['contents']
 
-        for content_key, content_definition in contents.items():
+        if self.language == primary_language:
 
-            if content_definition['type'] == 'text':
+            for content_key, content_definition in contents.items():
 
-                if 'required' in content_definition and content_definition['required'] == False:
-                    continue
+                if content_definition['type'] == 'text':
 
-                content = self.draft_contents.get(content_key, None)
+                    if 'required' in content_definition and content_definition['required'] == False:
+                        continue
 
-                if not content:
-                    translation_errors.append(_('The component "%(component_name)s" is required but still missing for the language %(language)s') %{'component_name':content_key, 'language':self.language})
+                    content = self.draft_contents.get(content_key, None)
+
+                    if not content:
+                        translation_errors.append(_('The component "%(component_name)s" is required but still missing for the language %(language)s.') %{'component_name':content_key, 'language':self.language})
+        
+        # secondary languages: check if all fields that are present in the primary language have been translated
+        else:
+            primary_locale = self.template_content.get_locale(primary_language)
+
+            primary_contents = primary_locale.draft_contents
+
+            if not primary_contents:
+                translation_errors.append(_('Content is still missing for the language %(language)s.') % {'language':primary_language})
+
+            else:
+                for content_key, content in primary_contents.items():
+                    if content_key not in self.draft_contents or not self.draft_contents[content_key]:
+                        translation_errors.append(_('The translation for the language %(language)s is incomplete.') % {'language':primary_language})
 
         return translation_errors
 

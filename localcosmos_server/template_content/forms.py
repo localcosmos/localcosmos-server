@@ -47,16 +47,21 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
         self.fields['template_name'].choices = choices
 
 
+# translations initially do not supply a localized_template_content
 class TemplateContentFormFieldManager:
 
-    def __init__(self, localized_template_content):
+    def __init__(self, app, template_content, localized_template_content=None):
+        self.template_content = template_content
         self.localized_template_content = localized_template_content
+        self.primary_locale_template_content = template_content.get_locale(app.primary_language)
 
     def get_form_fields(self, content_key, content_definition, instances):
 
         form_fields = []
+        draft_contents = {}
 
-        draft_contents = self.localized_template_content.draft_contents
+        if self.localized_template_content and self.localized_template_content.draft_contents:
+            draft_contents = self.localized_template_content.draft_contents
 
         if content_definition['type'] == 'multi-image':
 
@@ -150,7 +155,10 @@ class TemplateContentFormFieldManager:
             })
                                                 
             form_field = forms.CharField(**field_kwargs)
-            form_field.cms_tag = self
+            form_field.primary_locale_content = None
+
+            if self.primary_locale_template_content.draft_contents:
+                form_field.primary_locale_content = self.primary_locale_template_content.draft_contents.get(content_key, None)
 
             field = {
                 'name' : content_key,
@@ -174,6 +182,7 @@ class TemplateContentFormFieldManager:
             'label' : label
         }
         
+        data_url = None
         delete_url = None
 
         if current_image:
@@ -191,15 +200,16 @@ class TemplateContentFormFieldManager:
             delete_url = reverse('delete_template_content_image', kwargs=delete_kwargs)
 
         else :
-            ltc_content_type = ContentType.objects.get_for_model(self.localized_template_content)
+            if self.localized_template_content:
+                ltc_content_type = ContentType.objects.get_for_model(self.localized_template_content)
 
-            data_url_kwargs = {
-                'content_type_id' : ltc_content_type.id,
-                'object_id' : self.localized_template_content.id,
-                'image_type' : content_key
-            }
+                data_url_kwargs = {
+                    'content_type_id' : ltc_content_type.id,
+                    'object_id' : self.localized_template_content.id,
+                    'image_type' : content_key
+                }
 
-            data_url = reverse('manage_template_content_image', kwargs=data_url_kwargs)
+                data_url = reverse('manage_template_content_image', kwargs=data_url_kwargs)
             
         widget_attrs['data-url'] = data_url  
         widget_attrs['accept'] = 'image/*'
@@ -236,12 +246,16 @@ class TemplateContentFormFieldManager:
 
 class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
 
-    def __init__(self, app, localized_template_content, *args, **kwargs):
+    def __init__(self, app, template_content, localized_template_content=None, *args, **kwargs):
+
+        language = kwargs.pop('language')
+        if localized_template_content:
+            language = localized_template_content.language
 
         super().__init__(*args, **kwargs)
 
         self.localized_template_content = localized_template_content
-        self.template_content = self.localized_template_content.template_content
+        self.template_content = template_content
 
         self.layoutable_full_fields = set([])
         self.layoutable_simple_fields = set([])
@@ -249,7 +263,7 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
 
         template_definition = self.template_content.draft_template.definition
 
-        field_manager = TemplateContentFormFieldManager(self.localized_template_content)
+        field_manager = TemplateContentFormFieldManager(app, self.template_content, self.localized_template_content)
 
         # content_key is the key in the json
         for content_key, content_definition in template_definition['contents'].items():
@@ -257,7 +271,8 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
             instances = []
 
             if content_definition['type'] in ['image', 'multi-image']:
-                instances = self.localized_template_content.images(image_type=content_key).order_by('pk')
+                if self.localized_template_content:
+                    instances = self.localized_template_content.images(image_type=content_key).order_by('pk')
 
 
             form_fields = field_manager.get_form_fields(content_key, content_definition, instances)
@@ -270,9 +285,14 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
                 
                 self.fields[field['name']] = field['field']
 
-                self.fields[field['name']].language = app.primary_language
+                self.fields[field['name']].language = language
                 
                 if content_definition.get('format', None) == 'layoutable-simple':
                     self.layoutable_simple_fields.add(field['name'])
                 elif content_definition.get('format', None) == 'layoutable-full':
                     self.layoutable_full_fields.add(field['name'])
+
+
+
+class TranslateTemplateContentForm(ManageLocalizedTemplateContentForm):
+    pass

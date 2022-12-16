@@ -1,0 +1,33 @@
+{% extends 'localcosmos_server/modals/modal_base.html' %}
+{% load i18n %}
+
+{% block title %}{% blocktrans %}Unpublish {{ template_content }}{% endblocktrans %}{% endblock %}
+{% block body %}
+	{% if success %}
+		<div class="alert alert-success">
+			{% blocktrans %}Successfully unpublished {{ template_content }}{% endblocktrans %}
+		</div>
+	{% else %}
+		{% blocktrans %}Do you really want to unpublish {{ template_content }}?{% endblocktrans %}
+	{% endif %}
+{% endblock %}
+
+{% block footer %}
+	{% if success %}
+		<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+	{% else %}
+		<form method="POST" class="xhr" action="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">
+			<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+			<button type="submit" class="btn btn-danger">{% trans 'Unpublish' %}</button>
+		</form>
+	{% endif %}
+{% endblock %}
+
+{% block script %}
+	{% if success %}
+		<script>
+			$("#Modal").modal("hide");
+			window.location.reload();
+		</script>
+	{% endif %}
+{% endblock %}
