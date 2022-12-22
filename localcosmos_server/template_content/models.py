@@ -329,7 +329,6 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
     objects = LocalizedTemplateContentManager()
 
-
     '''
     - if the language is the primary language, check if all required fields are present
     - if the language is a secondary language, check if all fields of the primary language are translated
@@ -369,9 +368,18 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
             else:
                 for content_key, content in primary_contents.items():
                     if content_key not in self.draft_contents or not self.draft_contents[content_key]:
-                        translation_errors.append(_('The translation for the language %(language)s is incomplete.') % {'language':primary_language})
+                        translation_errors.append(_('The translation for the language %(language)s is incomplete.') % {'language':self.language})
+                        break
 
         return translation_errors
+
+
+    @property
+    def translation_is_complete(self):
+        translation_errors = self.translation_complete()
+        if translation_errors:
+            return False
+        return True
 
 
     def publish_images(self):
@@ -407,10 +415,12 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
     def publish(self):
         # set title
         self.published_title = self.draft_title
-        self.navigation_link_name = self.draft_navigation_link_name
+        self.published_navigation_link_name = self.draft_navigation_link_name
         self.published_contents = self.draft_contents
 
-        self.publish_images()
+        # currently, images are not translatable. This can change in the future
+        if self.language == self.template_content.app.primary_language:
+            self.publish_images()
 
         if self.published_version != self.draft_version:
 
@@ -428,7 +438,7 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         if not self.pk:
 
             if self.language != self.template_content.app.primary_language:
-                master_ltc = self.template_content.get_localized(self.template_content.app.primary_language)
+                master_ltc = self.template_content.get_locale(self.template_content.app.primary_language)
                 self.draft_version = master_ltc.draft_version
 
         else:

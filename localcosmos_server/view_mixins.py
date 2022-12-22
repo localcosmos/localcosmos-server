@@ -1,7 +1,25 @@
 from localcosmos_server.models import TaxonomicRestriction
 from django.contrib.contenttypes.models import ContentType
 
+from localcosmos_server.models import App
 
+class AppMixin:
+
+    def dispatch(self, request, *args, **kwargs):
+
+        self.app = App.objects.get(uid=kwargs['app_uid'])
+        
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'app' : self.app,
+        })
+        return context
+
+    
 '''
     - deliver context for rendering taxonomic restriction form
     - provide a method to store a restriction in the db

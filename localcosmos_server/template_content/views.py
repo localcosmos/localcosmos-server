@@ -5,6 +5,7 @@ from django import forms
 from localcosmos_server.models import App
 from localcosmos_server.generic_views import AjaxDeleteView
 from localcosmos_server.views import ManageServerContentImage, DeleteServerContentImage
+from localcosmos_server.view_mixins import AppMixin
 
 from localcosmos_server.decorators import ajax_required
 from django.utils.decorators import method_decorator
@@ -14,24 +15,8 @@ from .forms import CreateTemplateContentForm, ManageLocalizedTemplateContentForm
 
 from urllib.parse import urljoin
 
-class TemplateContentMixin:
 
-    def dispatch(self, request, *args, **kwargs):
-
-        self.app = App.objects.get(uid=kwargs['app_uid'])
-        
-        return super().dispatch(request, *args, **kwargs)
-
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({
-            'app' : self.app,
-        })
-        return context
-
-
-class TemplateContentList(TemplateContentMixin, TemplateView):
+class TemplateContentList(AppMixin, TemplateView):
 
     template_name = 'template_content/template_content_base.html'
 
@@ -51,7 +36,7 @@ class TemplateContentList(TemplateContentMixin, TemplateView):
     - supplying a title
     - the title is always in the current language
 '''
-class CreateTemplateContent(TemplateContentMixin, FormView):
+class CreateTemplateContent(AppMixin, FormView):
 
     template_name = 'template_content/create_template_content.html'
     form_class = CreateTemplateContentForm
@@ -144,34 +129,25 @@ class ManageTemplateContentCommon:
         return preview_url
 
 
-class ManageLocalizedTemplateContent(ManageTemplateContentCommon, TemplateContentMixin, FormView):
-    
-    template_name = 'template_content/manage_localized_template_content.html'
-    form_class = ManageLocalizedTemplateContentForm
-
-    def dispatch(self, request, *args, **kwargs):
-        self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
-        self.template_content = self.localized_template_content.template_content
-        self.language = self.localized_template_content.language
-        return super().dispatch(request, *args, **kwargs)
-
-
     def get_initial(self):
-        
-        initial = {
-            'draft_title' : self.localized_template_content.draft_title,
-            'draft_navigation_link_name' : self.localized_template_content.draft_navigation_link_name,
-            'input_language' : self.localized_template_content.language,
-        }
 
-        if self.localized_template_content.draft_contents:
-            for content_key, data in self.localized_template_content.draft_contents.items():
-                initial[content_key] = data
+        initial = {}
+        
+        if self.save_localized_template_content:
+            initial = {
+                'draft_title' : self.localized_template_content.draft_title,
+                'draft_navigation_link_name' : self.localized_template_content.draft_navigation_link_name,
+                'input_language' : self.localized_template_content.language,
+            }
+
+            if self.localized_template_content.draft_contents:
+                for content_key, data in self.localized_template_content.draft_contents.items():
+                    initial[content_key] = data
         
         return initial
 
-    def form_valid(self, form):
-        
+    
+    def save_localized_template_content(self, form):
         self.localized_template_content.draft_title = form.cleaned_data['draft_title']
         self.localized_template_content.draft_navigation_link_name = form.cleaned_data['draft_navigation_link_name']
 
@@ -202,6 +178,22 @@ class ManageLocalizedTemplateContent(ManageTemplateContentCommon, TemplateConten
 
         self.localized_template_content.save()
 
+
+class ManageLocalizedTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
+    
+    template_name = 'template_content/manage_localized_template_content.html'
+    form_class = ManageLocalizedTemplateContentForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
+        self.template_content = self.localized_template_content.template_content
+        self.language = self.localized_template_content.language
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        
+        self.save_localized_template_content(form)
+
         context = self.get_context_data(**self.kwargs)
         return self.render_to_response(context)
 
@@ -211,9 +203,9 @@ class ManageLocalizedTemplateContent(ManageTemplateContentCommon, TemplateConten
     but display the primary language abov ethe input fields
     display images, bu do not offer translations for images
 '''
-class TranslateTemplateContent(ManageTemplateContentCommon, TemplateContentMixin, FormView):
+class TranslateTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
     
-    template_name = 'template_content/translate_template_content.html'
+    template_name = 'template_content/translate_localized_template_content.html'
     form_class = TranslateTemplateContentForm
 
     def dispatch(self, request, *args, **kwargs):
@@ -221,6 +213,21 @@ class TranslateTemplateContent(ManageTemplateContentCommon, TemplateContentMixin
         self.language = kwargs['language']
         self.localized_template_content = self.template_content.get_locale(self.language)
         return super().dispatch(request, *args, **kwargs)
+
+    
+    def form_valid(self, form):
+
+        self.localized_template_content = self.template_content.get_locale(self.language)
+
+        if not self.localized_template_content:
+            self.localized_template_content = LocalizedTemplateContent.objects.create(self.request.user, self.template_content,
+                self.language, form.cleaned_data['draft_title'], form.cleaned_data['draft_navigation_link_name'])
+
+        self.save_localized_template_content(form)
+
+        context = self.get_context_data(**self.kwargs)
+        return self.render_to_response(context)
+        
 
 '''
     get all fields for a content_key
@@ -295,7 +302,7 @@ class DeleteTemplateContentImage(DeleteServerContentImage):
 '''
     publish all languages at once, or one language
 '''
-class PublishTemplateContent(TemplateContentMixin, TemplateView):
+class PublishTemplateContent(AppMixin, TemplateView):
 
     template_name = 'template_content/template_content_list_entry.html'
 
@@ -318,7 +325,7 @@ class PublishTemplateContent(TemplateContentMixin, TemplateView):
         return context
 
 
-class UnpublishTemplateContent(TemplateContentMixin, TemplateView):
+class UnpublishTemplateContent(AppMixin, TemplateView):
 
     template_name = 'template_content/ajax/unpublish_template_content.html'
 

@@ -13,6 +13,8 @@ from .forms import AddSingleTaxonForm, TypedTaxonomicRestrictionForm
 
 from localcosmos_server.models import TaxonomicRestriction
 from localcosmos_server.generic_views import AjaxDeleteView
+from localcosmos_server.view_mixins import AppMixin
+from localcosmos_server.utils import get_taxon_search_url
 
 
 class SearchAppTaxon(TemplateView):
@@ -38,16 +40,16 @@ class SearchAppTaxon(TemplateView):
     Displays taxonomicrestrictions for an model instance in a model
     - intended for AppTaxa (from disk)
 '''
-class ManageTaxonomicRestrictions(FormView):
+class ManageTaxonomicRestrictionsCommon:
 
-    template_name = 'localcosmos_server/taxonomy/manage_taxonomic_restrictions.html'
+    template_name = 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html'
     form_class= AddSingleTaxonForm
 
     restriction_model = TaxonomicRestriction
 
 
     def get_taxon_search_url(self):
-        return reverse('search_app_taxon', kwargs={'app_uid':self.request.app.uid})
+        raise NotImplementedError('ManageTaxonomicRestrictionsCommon subclasses require a get_taxon_search_url method')
 
 
     def get_prefix(self):
@@ -87,7 +89,7 @@ class ManageTaxonomicRestrictions(FormView):
     # app-admin: only for published apps
     # app-kit: always
     def get_availability(self):
-        return self.request.app.published_version_path != None
+        return False
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -133,8 +135,24 @@ class ManageTaxonomicRestrictions(FormView):
         context['success'] = True
 
         return self.render_to_response(context)
+
+class ManageTaxonomicRestrictions(ManageTaxonomicRestrictionsCommon, AppMixin, FormView):
+
+    def get_taxon_search_url(self):
+        return get_taxon_search_url(self.app, self.content_instance)
+
+
+    def get_availability(self):
+        return self.request.app.published_version_path != None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['app'] = self.app
+        return context
         
 
+class ManageModalTaxonomicRestrictions(ManageTaxonomicRestrictions):
+    template_name = 'localcosmos_server/taxonomy/manage_modal_taxonomic_restrictions.html'
     
 class RemoveAppTaxonomicRestriction(AjaxDeleteView):
 

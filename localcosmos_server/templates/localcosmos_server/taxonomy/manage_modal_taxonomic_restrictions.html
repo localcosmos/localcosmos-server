@@ -17,7 +17,7 @@
 	
 	<div class="modal-body">
 		{% if is_available %}
-		<form method="POST" action="{% if typed == 'typed' %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id 'typed' %}{% else %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id %}{% endif %}" class="xhr" ajax-target="LargeModalContent">{% csrf_token %}
+		<form method="POST" action="{% if typed == 'typed' %}{% url 'manage_modal_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id 'typed' %}{% else %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id %}{% endif %}" class="xhr" ajax-target="LargeModalContent">{% csrf_token %}
 			{% include 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html' %}
 		</form>
 	{% else %}
@@ -31,5 +31,3 @@
 	</div>
 	
 {% endblock %}
-
-

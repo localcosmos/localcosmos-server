@@ -61,7 +61,7 @@
 							<span class="caret"></span>
 							</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenu-{{ validation_step.id }}">	
-								<a data-url="{% url 'manage_app_taxonomic_restrictions' request.app.uid validation_step|ctype_id validation_step.id %}" class="dropdown-item xhr" ajax-target="LargeModalContent">{% trans 'manage taxonomic restrictions' %}</a>
+								<a data-url="{% url 'manage_modal_app_taxonomic_restrictions' request.app.uid validation_step|ctype_id validation_step.id %}" class="dropdown-item xhr" ajax-target="LargeModalContent">{% trans 'manage taxonomic restrictions' %}</a>
 								<!--<div class="dropdown-divider"></div>
 								<a class="dropdown-item text-center moveforwardbutton" data-targetid="{{ nodelink.child.uuid }}">&#9664; {% trans 'Move up' %}</a>
 								<div class="dropdown-divider"></div>

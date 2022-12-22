@@ -11,6 +11,8 @@ from django.contrib.auth import get_user_model
 
 from localcosmos_server.forms import LocalizeableForm
 
+import re
+
 User = get_user_model()
 
 
@@ -158,7 +160,7 @@ class TemplateContentFormFieldManager:
             form_field.primary_locale_content = None
 
             if self.primary_locale_template_content.draft_contents:
-                form_field.primary_locale_content = self.primary_locale_template_content.draft_contents.get(content_key, None)
+                form_field.primary_locale_content = self.primary_locale_template_content.draft_contents.get(content_key, 'None')
 
             field = {
                 'name' : content_key,
@@ -224,7 +226,7 @@ class TemplateContentFormFieldManager:
 
 
     def _get_label(self, content_key, content_definition):
-        fallback_label = content_key.replace('_', ' ').capitalize()
+        fallback_label = label = re.sub(r'((?<=[a-z])[A-Z]|(?<!\A)[A-Z](?=[a-z]))', r' \1', content_key).capitalize()
         label = content_definition.get('label', fallback_label)
         return label
 
@@ -248,7 +250,7 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
 
     def __init__(self, app, template_content, localized_template_content=None, *args, **kwargs):
 
-        language = kwargs.pop('language')
+        language = kwargs.get('language', None)
         if localized_template_content:
             language = localized_template_content.language
 
@@ -295,4 +297,5 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
 
 
 class TranslateTemplateContentForm(ManageLocalizedTemplateContentForm):
+
     pass

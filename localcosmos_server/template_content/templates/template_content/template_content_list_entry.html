@@ -27,7 +27,7 @@
 							<span class="badge badge-info">{% blocktrans with version=locale.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
 
 							{% if locale.language in app.secondary_languages %}
-								{% if locale.translation_ready %}
+								{% if locale.translation_is_complete %}
 									{% if locale.draft_version != localized_template_content.draft_version %}
 										<span class="badge badge-warning">{% trans 'old version' %}</span>
 									{% else %}

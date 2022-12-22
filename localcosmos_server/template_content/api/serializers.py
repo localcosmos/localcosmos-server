@@ -64,6 +64,9 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
         contents = template_definition['contents'].copy()
 
+        primary_language = localized_template_content.template_content.app.primary_language
+        primary_locale_template_content = localized_template_content.template_content.get_locale(primary_language)
+
         if supplied_contents:
 
             for content_key, content in supplied_contents.items():
@@ -79,14 +82,14 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
             if content_definition['type'] == 'image':
 
-                content_image = localized_template_content.image(image_type=image_type)
+                content_image = primary_locale_template_content.image(image_type=image_type)
                 if content_image:
 
                     serializer = ContentImageSerializer(content_image)
                     contents[content_key]['value'] = serializer.data
 
             elif content_definition['type'] == 'multi-image':
-                content_images = localized_template_content.images(image_type=image_type)
+                content_images = primary_locale_template_content.images(image_type=image_type)
                 contents[content_key]['value'] = []
                 for content_image in content_images:
 

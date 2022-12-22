@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.urls import reverse
+
 import re
 
 
@@ -31,3 +34,13 @@ def api_filter_endpoints_hook(endpoints):
     exposed_endpoints = [endpoint for endpoint in endpoints if re.match('/api/(user|app|password|online-content|token)/', endpoint[0])]
 
     return exposed_endpoints
+
+
+def get_taxon_search_url(app, content=None):
+
+    if settings.LOCALCOSMOS_PRIVATE == False and content and content.__class__.__name__ == 'TemplateContent':
+        taxon_search_url = '/app-kit/searchtaxon/'
+    else:
+        taxon_search_url = reverse('search_app_taxon', kwargs={'app_uid':app.uid})
+
+    return taxon_search_url

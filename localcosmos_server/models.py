@@ -428,7 +428,7 @@ class ServerContentImageMixin:
         ContentImageModel = self.get_model()
 
         self.content_images = ContentImageModel.objects.filter(content_type=content_type, object_id=self.pk,
-                                                          image_type=image_type)
+                                                          image_type=image_type).order_by('position')
 
         return self.content_images
 

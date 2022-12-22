@@ -1,0 +1,56 @@
+{% extends 'template_content/manage_localized_template_content.html' %}
+{% load i18n imagekit static localcosmos_tags template_content_tags %}
+
+{% block taxonomic_restriction %}{% endblock %}
+
+
+{% block form_action %}{% url 'translate_template_content' app.uid template_content.id language %}{% endblock %}
+
+{% block form %}
+    {% for field in form %}
+
+        
+
+                {% if field.is_hidden %}
+                {% else %}
+
+                    {% if field.field.content_definition and field.field.content_definition.type == 'multi-image' %}
+                    {% elif field.field.content_definition and field.field.content_definition.type == 'image' %}
+                    {% else %}
+
+
+                        <h5 class="mt-5">{{ field.label }}</h5>
+
+                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ app.primary_language }}.gif" /> {{ app.primary_language }}
+                        <div class="card mb-2">
+                            <div class="card-body bg-light">
+
+                                {% get_content form.template_content field.name app.primary_language %}
+
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if field.field.content_definition and field.field.content_definition.type == 'multi-image' %}
+                {% elif field.field.content_definition and field.field.content_definition.type == 'image' %}
+                {% else %}
+
+                    {% if field.field.language %}
+                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+                    {% endif %}
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text|safe }}</small>
+                    {% endif %}
+                    {% if field.errors %}
+                        <div class="text-danger">{% for error in field.errors %}{{ error }}<br>{% endfor %}</div>
+                    {% endif %}
+                {% endif %}
+
+    {% endfor %}
+{% endblock %}
+
+{% block save_button_text %}{% trans 'save translation' %}{% endblock %}
