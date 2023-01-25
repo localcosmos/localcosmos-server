@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.views.generic import TemplateView, FormView
 from django.contrib.auth.views import LoginView
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.http import Http404
 
 from localcosmos_server.forms import EmailOrUsernameAuthenticationForm, ManageContentImageForm
@@ -22,7 +22,7 @@ class LogIn(LoginView):
             self.redirect_field_name,
             self.request.POST.get(self.redirect_field_name, '')
         )
-        url_is_safe = is_safe_url(
+        url_is_safe = url_has_allowed_host_and_scheme(
             url=redirect_to,
             allowed_hosts=self.get_success_url_allowed_hosts(),
             require_https=self.request.is_secure(),

@@ -1,19 +1,13 @@
 from django.conf import settings
 from django.contrib.gis import forms
 from django.forms.widgets import *
-from django.forms.utils import flatatt
-from django.template import loader, Context
-from django.utils.encoding import (
-    force_str, force_text
-)
+from django.utils.encoding import force_str
 from localcosmos_server.utils import datetime_from_cron
 
-from django.utils.html import conditional_escape, format_html, html_safe
+import re, json, datetime, time
 
-
-from localcosmos_server.taxonomy.widgets import TaxonAutocompleteWidget as BackboneTaxonAutocompleteWidget
-
-import json
+from django.utils.formats import get_format
+from django.utils import timezone
 
 '''
     JSONWidget consist of one hidden TextInput (the json)
@@ -94,17 +88,12 @@ class MobilePositionInput(JSONWidget):
 
         return context
 
+
+class PointOrAreaInput(JSONWidget):
+
+    template_name = 'datasets/widgets/point_or_area_input.html'
+
         
-
-
-from django.forms.widgets import Widget, Select
-import re
-import datetime, time
-from django.utils.dates import MONTHS
-from django.utils import datetime_safe
-from django.utils.formats import get_format
-from django.utils.safestring import mark_safe
-from django.utils import timezone
 class SelectDateTimeWidget(JSONWidget):
     """
     A Widget that splits date and time input into three <select> boxes.

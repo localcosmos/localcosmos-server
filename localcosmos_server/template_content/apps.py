@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class TemplateContentConfig(AppConfig):
-    name = 'template_content'
+    name = 'localcosmos_server.template_content'

@@ -227,11 +227,10 @@ class WithValidationRoutine:
             step.save()
 
 
-from localcosmos_server.online_content.models import (TemplateContent, LocalizedTemplateContent,
-    LocalizedDraftImageMicroContent, DraftImageMicroContent, DraftTextMicroContent, LocalizedDraftTextMicroContent)
+from localcosmos_server.template_content.models import (TemplateContent, LocalizedTemplateContent)
 
 
-class WithOnlineContent:
+class WithTemplateContent:
 
     template_content_title = 'Test template content'
     template_content_navigation_link_name = 'Test navigation link'
@@ -266,7 +265,7 @@ class WithOnlineContent:
             localized_template_content = LocalizedTemplateContent.objects.create(self.user, self.template_content,
                 language, draft_title, draft_navigation_link_name)
 
-
+    '''
     def create_draft_image_microcontent(self, template_content, microcontent_type, language):
 
         im = Image.new(mode='RGB', size=(200, 200)) # create a new image using PIL
@@ -321,7 +320,7 @@ class WithOnlineContent:
         draft_lmc.save()
 
         return draft_lmc
-    
+    '''
 
     def get_view(self, view_class, url_name):
         

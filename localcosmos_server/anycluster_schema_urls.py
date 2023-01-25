@@ -1,4 +1,3 @@
-from django.conf.urls import url
 from django.urls import path
 from . import anycluster_schema_views as views
 

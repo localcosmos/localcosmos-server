@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ServerControlPanelConfig(AppConfig):
-    name = 'server_control_panel'
+    name = 'localcosmos_server.server_control_panel'

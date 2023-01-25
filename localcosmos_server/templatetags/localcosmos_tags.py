@@ -158,3 +158,8 @@ def get_app_locale(context, key):
 def content_image_url(instance, image_type):
     content_image = instance.image(image_type)
     return content_image.image_url()
+
+
+@register.filter
+def is_ajax(request):
+    return request.headers.get('x-requested-with') == 'XMLHttpRequest'

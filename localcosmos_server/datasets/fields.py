@@ -6,7 +6,8 @@ from localcosmos_server.utils import datetime_from_cron
 
 import json
 
-from .widgets import JSONWidget, SelectDateTimeWidget, MobilePositionInput, CameraAndAlbumWidget
+from .widgets import (JSONWidget, SelectDateTimeWidget, MobilePositionInput, CameraAndAlbumWidget,
+                        PointOrAreaInput)
 
 
 class JSONField(forms.MultiValueField):
@@ -74,6 +75,18 @@ class DateTimeJSONField(JSONField):
 class PointJSONField(JSONField):
     
     widget = MobilePositionInput
+
+    def compress(self, data_list):
+
+        if data_list:
+            return json.loads(data_list[1])
+
+        return None
+
+
+class GeoJSONField(JSONField):
+    
+    widget = PointOrAreaInput
 
     def compress(self, data_list):
 

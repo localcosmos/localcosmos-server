@@ -25,7 +25,14 @@
 		</div>
 		<input id="{{ widget.attrs.id }}" type="hidden" name="{{ widget.attrs.name }}" />
 	</div>
+	<div class="col-12 text-center p-3">
+		<div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+			<button id="{{ widget.attrs.id }}_PointInput" type="button" class="btn btn-secondary">{% trans 'Point' %}</button>
+			<button id="{{ widget.attrs.id }}_AreaInput" type="button" class="btn btn-secondary">{% trans 'Area' %}</button>
+		</div>
+	</div>
 </div>
+
 <script>
 
 	(function () {

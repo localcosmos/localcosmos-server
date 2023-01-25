@@ -58,7 +58,7 @@ class LocalcosmosUser(AbstractUser):
 
     details = models.JSONField(null=True)
     
-    follows = models.ManyToManyField('self', related_name='followed_by')
+    follows = models.ManyToManyField('self')
 
     is_banned = models.BooleanField(default=False)
 

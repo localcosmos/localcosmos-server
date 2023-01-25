@@ -1,17 +1,6 @@
-from django import forms
-from django.forms.utils import flatatt
-from django.template import loader, Context
-from django.utils.encoding import (
-    force_str, force_text
-)
-from django.utils.html import conditional_escape, format_html, html_safe
-from django.utils.safestring import mark_safe
-
 from django.forms.widgets import FileInput, HiddenInput
-
 from django.contrib.contenttypes.models import ContentType
 
-from django.utils import translation
 
 class ImageInputWithPreview(FileInput):
 
