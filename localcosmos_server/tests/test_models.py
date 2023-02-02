@@ -16,6 +16,8 @@ from localcosmos_server.models import (LocalcosmosUser, UserClients, App, AppUse
 
 from localcosmos_server.datasets.models import Dataset
 
+from localcosmos_server.taxonomy.lazy import LazyAppTaxon
+
 from localcosmos_server.tests.common import test_settings, test_settings_commercial
 
 from .mixins import WithUser, WithApp
@@ -544,6 +546,121 @@ class TestTaxonomicRestriction(WithUser, TestCase):
         self.assertEqual(restriction.content, user)
         self.assertEqual(str(restriction.taxon.name_uuid), str(lazy_taxon.name_uuid))
         
+
+@test_settings
+class TestTaxonomicRestrictionManager(WithApp, TestCase):
+    
+    def setUp(self):
+        super().setUp()
+
+        taxon_0 = {
+            'taxon_source' : 'taxonomy.sources.col',
+            'taxon_latname' : 'Lacerta',
+            'taxon_author' : 'L.',
+            'taxon_nuid' : '001',
+            'name_uuid' : uuid.uuid4(),
+        }
+
+        taxon_1 = {
+            'taxon_source' : 'taxonomy.sources.col',
+            'taxon_latname' : 'Lacerta agilis',
+            'taxon_author' : 'L.',
+            'taxon_nuid' : '001001',
+            'name_uuid' : uuid.uuid4(),
+        }
+
+        synonym_1 = {
+            'taxon_source' : 'taxonomy.sources.col',
+            'taxon_latname' : 'Lacerta agilis synonym',
+            'taxon_author' : 'L.',
+            'taxon_nuid' : '001001',
+            'name_uuid' : uuid.uuid4(),
+        }
+
+        self.content_type = ContentType.objects.get_for_model(App)
+
+        self.lazy_taxon_0 = LazyAppTaxon(**taxon_0)
+        self.lazy_taxon_1 = LazyAppTaxon(**taxon_1)
+        self.synonym = LazyAppTaxon(**synonym_1)
+
+
+    def test_get_for_taxon_simple(self):
         
+        restriction = TaxonomicRestriction(
+            content_type = self.content_type,
+            object_id = self.app.id,
+        )
+
+        restriction.set_taxon(self.lazy_taxon_1)
+        restriction.save()
+
+        links = TaxonomicRestriction.objects.get_for_taxon(App, self.lazy_taxon_1)
+        self.assertEqual(links[0], restriction)
+
+        links = TaxonomicRestriction.objects.get_for_taxon(App, self.synonym)
+        self.assertEqual(links[0], restriction)
+
+        links = TaxonomicRestriction.objects.get_for_taxon(App, self.lazy_taxon_0)
+        self.assertEqual(list(links), [])
+
+
+    def test_get_for_taxon_higher(self):
         
+        restriction = TaxonomicRestriction(
+            content_type = self.content_type,
+            object_id = self.app.id,
+        )
+
+        restriction.set_taxon(self.lazy_taxon_0)
+        restriction.save()
+
+        links = TaxonomicRestriction.objects.get_for_taxon(App, self.lazy_taxon_1)
+        self.assertEqual(list(links), [])
+
+        links = TaxonomicRestriction.objects.get_for_taxon(App, self.synonym)
+        self.assertEqual(list(links), [])
+
+        links = TaxonomicRestriction.objects.get_for_taxon(App, self.lazy_taxon_0)
+        self.assertEqual(links[0], restriction)
+
+
+    def test_get_for_taxon_branch_simple(self):
+        
+        restriction = TaxonomicRestriction(
+            content_type = self.content_type,
+            object_id = self.app.id,
+        )
+
+        restriction.set_taxon(self.lazy_taxon_1)
+        restriction.save()
+
+        links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.lazy_taxon_1)
+        self.assertEqual(links[0], restriction)
+
+        links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.synonym)
+        self.assertEqual(links[0], restriction)
+
+        links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.lazy_taxon_0)
+        self.assertEqual(list(links), [])
+
+
+    def test_get_for_taxon_brnach_higher(self):
+        
+        restriction = TaxonomicRestriction(
+            content_type = self.content_type,
+            object_id = self.app.id,
+        )
+
+        restriction.set_taxon(self.lazy_taxon_0)
+        restriction.save()
+
+        links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.lazy_taxon_1)
+        self.assertEqual(links[0], restriction)
+
+        links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.synonym)
+        self.assertEqual(links[0], restriction)
+
+        links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.lazy_taxon_0)
+        self.assertEqual(links[0], restriction)
+
     

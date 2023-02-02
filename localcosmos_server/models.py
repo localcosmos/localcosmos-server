@@ -408,8 +408,44 @@ class TaxonomicRestrictionBase(ModelWithRequiredTaxon):
         unique_together = ('content_type', 'object_id', 'taxon_latname', 'taxon_author')
 
 
+class TaxonomicRestrictionManager(models.Manager):
+
+    def get_for_taxon_branch(self, object_model, lazy_taxon):
+
+        content_type = ContentType.objects.get_for_model(object_model)
+
+        taxon_source = lazy_taxon.taxon_source
+        nuid = lazy_taxon.taxon_nuid
+
+        taxon_nuids = []
+
+        while len(nuid) >= 3:
+            
+            taxon_nuids.append(nuid)
+            nuid = nuid[:-3]
+
+        queryset =  self.all().filter(content_type=content_type, taxon_source=taxon_source,
+            taxon_nuid__in=taxon_nuids)
+
+        return queryset
+
+
+    def get_for_taxon(self, object_model, lazy_taxon):
+
+        content_type = ContentType.objects.get_for_model(object_model)
+
+        taxon_source = lazy_taxon.taxon_source
+        taxon_nuid = lazy_taxon.taxon_nuid
+
+        queryset =  self.all().filter(content_type=content_type, taxon_source=taxon_source,
+            taxon_nuid=taxon_nuid)
+
+        return queryset
+
+
 class TaxonomicRestriction(TaxonomicRestrictionBase):
-    pass
+    
+    objects = TaxonomicRestrictionManager()
 
 
 

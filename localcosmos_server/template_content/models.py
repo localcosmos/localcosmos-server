@@ -76,14 +76,7 @@ class TemplateContentManager(models.Manager):
 
         if ascendants == False:
 
-            template_content_content_type = ContentType.objects.get_for_model(TemplateContent)
-            
-            taxon_latname = lazy_taxon.taxon_latname
-            taxon_author=lazy_taxon.taxon_author
-            taxon_source = lazy_taxon.taxon_source
-
-            template_content_links = TaxonomicRestriction.objects.filter(content_type=template_content_content_type,
-                taxon_source=taxon_source, taxon_latname=taxon_latname, taxon_author=taxon_author)
+            template_content_links = TaxonomicRestriction.objects.get_for_taxon(TemplateContent, lazy_taxon)
 
             template_content_ids = template_content_links.values_list('object_id', flat=True)
 
@@ -92,7 +85,11 @@ class TemplateContentManager(models.Manager):
 
         else:
             # get for all nuids, not implemented yet
-            taxon_nuid = lazy_taxon.taxon_nuid
+            template_content_links = TaxonomicRestriction.objects.get_for_taxon_branch(TemplateContent, lazy_taxon)
+
+            template_content_ids = template_content_links.values_list('object_id', flat=True)
+
+            template_contents = self.filter(pk__in=template_content_ids)
 
         
         return template_contents
