@@ -24,10 +24,6 @@ LOCALCOSMOS_PRIVATE = True
 # USER MODEL
 AUTH_USER_MODEL = 'localcosmos_server.LocalcosmosUser'
 
-# ROAD
-ROAD_MODEL_PERMISSIONS = 'localcosmos_server.api.road_permissions.ROAD_MODEL_PERMISSIONS'
-ROAD_MODEL_SERIALIZERS = 'localcosmos_server.api.road_serializers'
-
 ANYCLUSTER_GEODJANGO_MODEL = 'datasets.Dataset'
 ANYCLUSTER_COORDINATES_COLUMN = 'coordinates'
 ANYCLUSTER_COORDINATES_COLUMN_SRID = 3857
@@ -59,16 +55,34 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25,
+    'DEFAULT_RENDERER_CLASSES': (
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+        # Any other renders
+    ),
+
+    'DEFAULT_PARSER_CLASSES': (
+        # If you use MultiPartFormParser or FormParser, we also have a camel case version
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        # Any other parsers
+    ),
+    'JSON_UNDERSCOREIZE': {
+        'no_underscore_before_number': True,
+    },
 }
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Localcosmos Server API',
-    'DESCRIPTION': 'API Documentation for the Localcosmos Server',
+    'TITLE': 'Local Cosmos Server API',
+    'DESCRIPTION': 'API Documentation for the Local Cosmos Server',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'PREPROCESSING_HOOKS': ['localcosmos_server.utils.api_filter_endpoints_hook'],
+    'POSTPROCESSING_HOOKS':['drf_spectacular.contrib.djangorestframework_camel_case.camelize_serializer_fields']
 }
+
 
 DATASET_VALIDATION_CLASSES = (
     #'localcosmos_server.datasets.validation.ReferenceFieldsValidator', # unfinished

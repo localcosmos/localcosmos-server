@@ -2,6 +2,22 @@ from django.test import TestCase, override_settings
 import os
 
 TESTS_ROOT = os.path.dirname(os.path.realpath(__file__))
+TEST_DATA_ROOT = os.path.join(TESTS_ROOT, 'data_for_tests')
+TEST_OBSERVATION_FORM_JSON = os.path.join(TEST_DATA_ROOT, 'observation_form.json')
+TEST_APPS_ROOT = os.path.join(TESTS_ROOT, 'apps')
+
+
+TESTAPP_NAO_UID = 'app_no_anonymous_observations'
+TESTAPP_AO_UID = 'app_anonymous_observations'
+
+TESTAPP_NAO_RELATIVE_PATH = '{0}/release/sources/www/'.format(TESTAPP_NAO_UID)
+TESTAPP_AO_RELATIVE_PATH = '{0}/release/sources/www/'.format(TESTAPP_AO_UID)
+
+TESTAPP_NAO_PREVIEW_RELATIVE_PATH = '{0}/preview/sources/www/'.format(TESTAPP_NAO_UID)
+TESTAPP_AO_PREVIEW_RELATIVE_PATH = '{0}/preview/sources/www/'.format(TESTAPP_AO_UID)
+
+TESTAPP_NAO_ABSOLUTE_PATH = os.path.join(TEST_APPS_ROOT, TESTAPP_NAO_RELATIVE_PATH)
+TESTAPP_AO_ABSOLUTE_PATH = os.path.join(TEST_APPS_ROOT, TESTAPP_AO_RELATIVE_PATH)
 
 TEST_IMAGE_PATH = os.path.join(TESTS_ROOT, 'images', 'Leaf.jpg')
 
@@ -11,7 +27,7 @@ TEST_MEDIA_ROOT = os.path.join(TESTS_ROOT, 'media_for_tests')
 
 test_settings = override_settings(
     LOCALCOSMOS_PRIVATE = True,
-    LOCALCOSMOS_APPS_ROOT = os.path.join(TESTS_ROOT, 'apps'),
+    LOCALCOSMOS_APPS_ROOT = TEST_APPS_ROOT,
     MEDIA_ROOT = TEST_MEDIA_ROOT,
     DATASET_VALIDATION_CLASSES = (
         'localcosmos_server.datasets.validation.ExpertReviewValidator',
@@ -22,7 +38,7 @@ test_settings = override_settings(
 
 test_settings_commercial = override_settings(
     LOCALCOSMOS_PRIVATE = False,
-    LOCALCOSMOS_APPS_ROOT = os.path.join(TESTS_ROOT, 'apps'),
+    LOCALCOSMOS_APPS_ROOT = TEST_APPS_ROOT,
     MEDIA_ROOT = TEST_MEDIA_ROOT,
 )
 
@@ -35,6 +51,134 @@ TEST_TIMESTAMP_OFFSET = -60
 TEST_LATITUDE = 49.63497717058325
 TEST_LONGITUDE = 11.091344909741967
 
+
+
+class DataCreator:
+
+    def get_dataset_data(self, observation_form_json, alternative_data=False):
+        
+        data = {}
+
+        # iterate over all fields of observation_form_json and create test data
+        for field in observation_form_json['fields']:
+            
+            method_name = 'get_{0}_test_data'.format(field['fieldClass'])
+            field_data = getattr(self, method_name)(field, alternative_data)
+            data[field['uuid']] = field_data
+
+        return data
+
+
+    def get_TaxonField_test_data(self, field, alternative_data=False):
+
+        data = {
+            "taxonNuid": "006002009001005007001",
+            "nameUuid": "1541aa08-7c23-4de0-9898-80d87e9227b3",
+            "taxonSource": "taxonomy.sources.col",
+            "taxonLatname": "Picea abies",
+            "taxonAuthor":"Linnaeus"
+        }
+
+        return data
+
+    def get_PointJSONField_test_data(self, field, alternative_data=False):
+
+        data = {
+            "type": "Feature",
+            "geometry": {
+                "crs": {
+                    "type": "name",
+                    "properties": {
+                        "name": "EPSG:4326"
+                    }
+                },
+                "type": "Point",
+                "coordinates": [TEST_LONGITUDE, TEST_LATITUDE]
+            },
+            "properties": {
+                "accuracy": 1
+            }
+        },
+
+        return data
+
+    # use a polygon
+    def get_GeoJSONField_test_data(self, field, alternative_data=False):
+
+        data = {
+            "type": "Feature",
+            "geometry": {
+                "crs": {
+                    "type": "name",
+                    "properties": {
+                        "name": "EPSG:4326"
+                    }
+                },
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [100.0, 0.0],
+                        [101.0, 0.0],
+                        [101.0, 1.0],
+                        [100.0, 1.0],
+                        [100.0, 0.0]
+                    ]
+                ]
+            },
+            "properties": {}
+        }
+
+        return data
+
+    def get_DateTimeJSONField_test_data(self, field, alternative_data=False):
+
+        data = {
+            "cron": {
+                "type": "timestamp",
+                "format": "unixtime",
+                "timestamp": TEST_UTC_TIMESTAMP,
+                "timezone_offset": TEST_TIMESTAMP_OFFSET
+            },
+            "type": "Temporal"
+        }
+
+        return data
+
+
+    def get_BooleanField_test_data(self, field, alternative_data=False):
+        return True
+
+    def get_CharField_test_data(self, field, alternative_data=False):
+        data = 'CharField Content'
+
+        if alternative_data:
+            data = 'CharField alternative Content'
+
+        return data
+
+    def get_DecimalField_test_data(self, field, alternative_data=False):
+        return 1.12
+
+    def get_FloatField_test_data(self, field, alternative_data=False):
+        return 2.34
+
+    def get_IntegerField_test_data(self, field, alternative_data=False):
+        return 7
+
+    def get_ChoiceField_test_data(self, field, alternative_data=False):
+        return field['definition']['choices'][-1][0]
+
+    def get_MultipleChoiceField_test_data(self, field, alternative_data=False):
+        
+        choices = field['definition']['choices']
+
+        data = [choices[-1][0], choices[-2][0]]
+        return data
+
+    def get_PictureField_test_data(self, field, alternative_data=False):
+        return None
+
+'''
 TEST_DATASET_DATA_WITH_ALL_REFERENCE_FIELDS = {
     "type": "Dataset",
     "dataset": {
@@ -42,14 +186,10 @@ TEST_DATASET_DATA_WITH_ALL_REFERENCE_FIELDS = {
         "properties": {},
         "reported_values": {
             "client_id": TEST_CLIENT_ID,
-            "client_platform": "browser",
+            "platform": "browser",
             "0f444e85-e31d-443d-afd3-2fa35df08ce3": {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": TEST_UTC_TIMESTAMP, "timezone_offset": TEST_TIMESTAMP_OFFSET}, "type": "Temporal"},
             "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {
-                "taxon_nuid": "006002009001005007001",
-                "name_uuid": "1541aa08-7c23-4de0-9898-80d87e9227b3",
-                "taxon_source": "taxonomy.sources.col",
-                "taxon_latname": "Picea abies",
-                "taxon_author":"Linnaeus"
+                
             },
             "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0": None,
             "a4d53718-715f-4436-9b4c-09fce7978153": {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}}, "type": "Point", "coordinates": [TEST_LONGITUDE, TEST_LATITUDE]}, "properties": {"accuracy": 1}}
@@ -84,7 +224,7 @@ TEST_DATASET_FULL_GENERIC_FORM = {
         "properties" : {},
         "reported_values" : {
             "client_id": TEST_CLIENT_ID,
-            "client_platform": "browser",
+            "platform": "browser",
             "33cf1019-c8a1-4091-8c23-c95489c39094": {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": TEST_UTC_TIMESTAMP, "timezone_offset": TEST_TIMESTAMP_OFFSET}, "type": "Temporal"},
             "7dfd9ff4-456e-426d-9772-df5824dab18f": {"taxon_nuid": "006002009001005007001", "name_uuid": "1541aa08-7c23-4de0-9898-80d87e9227b3", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Picea abies", "taxon_author":"Linnaeus"},
             "98332a11-d56e-4a92-aeda-13e2f74453cb": {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}}, "type": "Point", "coordinates": [TEST_LONGITUDE, TEST_LATITUDE]}, "properties": {"accuracy": 1}},
@@ -120,6 +260,7 @@ TEST_DATASET_FULL_GENERIC_FORM = {
         }
     }
 }
+'''
 
 # create a set of all possible subdics
 def powersetdic(d):

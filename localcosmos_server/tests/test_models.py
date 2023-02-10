@@ -8,17 +8,16 @@ from django.conf import settings
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 
-from django.template import Template, TemplateDoesNotExist
 
-
-from localcosmos_server.models import (LocalcosmosUser, UserClients, App, AppUserRole, TaxonomicRestriction,
-                                       SecondaryAppLanguages)
+from localcosmos_server.models import (LocalcosmosUser, UserClients, App, AppUserRole, TaxonomicRestriction)
 
 from localcosmos_server.datasets.models import Dataset
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
-from localcosmos_server.tests.common import test_settings, test_settings_commercial
+from localcosmos_server.tests.common import (test_settings, test_settings_commercial, TESTAPP_NAO_RELATIVE_PATH,
+                                            TESTAPP_NAO_PREVIEW_RELATIVE_PATH, TESTAPP_NAO_ABSOLUTE_PATH)
+from localcosmos_server.tests.mixins import WithObservationForm, WithApp
 
 from .mixins import WithUser, WithApp
 
@@ -26,10 +25,9 @@ from django.utils import timezone
 import uuid, os, shutil
 
 
-
-@test_settings
-class TestLocalcosmosUser(WithUser, TestCase):
+class TestLocalcosmosUser(WithObservationForm, WithUser, WithApp, TestCase):
     
+    @test_settings
     def test_create_user(self):
         user = LocalcosmosUser.objects.create_user(self.test_username, self.test_email, self.test_password)
 
@@ -41,7 +39,7 @@ class TestLocalcosmosUser(WithUser, TestCase):
         self.assertFalse(user.is_superuser)
         self.assertFalse(user.is_staff)
 
-        
+    @test_settings
     def test_create_user_with_extra_fields(self):
         extra_fields = {
             'first_name' : self.test_first_name
@@ -52,6 +50,7 @@ class TestLocalcosmosUser(WithUser, TestCase):
 
         self.assertEqual(user.first_name, self.test_first_name)
 
+    @test_settings
     def test_create_superuser(self):
         superuser = LocalcosmosUser.objects.create_superuser(self.test_superuser_username, self.test_superuser_email,
                                                              self.test_password)
@@ -64,6 +63,7 @@ class TestLocalcosmosUser(WithUser, TestCase):
         self.assertTrue(superuser.is_superuser)
         self.assertTrue(superuser.is_staff)
 
+    @test_settings
     def test_create_superuser_with_extra_fields(self):
         extra_fields = {
             'first_name' : self.test_first_name
@@ -74,7 +74,7 @@ class TestLocalcosmosUser(WithUser, TestCase):
 
         self.assertEqual(superuser.first_name, self.test_first_name)
 
-    
+    @test_settings
     def test_delete(self):
 
         user = LocalcosmosUser.objects.create_user(self.test_username, self.test_email, self.test_password)
@@ -84,33 +84,15 @@ class TestLocalcosmosUser(WithUser, TestCase):
         exists = LocalcosmosUser.objects.filter(pk=user_pk).exists()
         self.assertFalse(exists)
 
-
+    @test_settings
     def test_delete_anonymize_datasets(self):
 
         user = LocalcosmosUser.objects.create_user(self.test_username, self.test_email, self.test_password)
 
-        test_data = {
-            'dataset' : {
-                'reported_values' : {
-                    'client_id' : 'test_client',
-                    'client_platform' : 'browser',
-                },
-                'observation_form' : {
-                    'taxonomic_reference' : 'test_taxonomic_reference',
-                    'geographic_reference' : 'test_geographic_reference',
-                    'temporal_reference' : 'test_temporal_reference',
-                }
-            }
-        }
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
 
-        dataset = Dataset(
-            data = test_data,
-            app_uuid = uuid.uuid4(),
-            user = user,
-            client_id = 'test_client',
-            created_at = timezone.now(),
-        )
-
+        dataset.user = user
         dataset.save()
 
         user.delete()
@@ -119,12 +101,13 @@ class TestLocalcosmosUser(WithUser, TestCase):
         self.assertEqual(dataset.user, None)
 
 
-@test_settings
+
 class TestUserClients(WithUser, TestCase):
 
     def setUp(self):
         self.user = self.create_user()
 
+    @test_settings
     def test_save(self):
 
         test_client_id = 'test_client_id'
@@ -145,9 +128,10 @@ class TestUserClients(WithUser, TestCase):
         self.assertEqual(client.platform, test_platform)
         
 
-@test_settings
+
 class TestAppManager(TestCase):
 
+    @test_settings
     def test_create(self):
 
         app_name = 'My app'
@@ -161,24 +145,25 @@ class TestAppManager(TestCase):
         self.assertEqual(app.primary_language, app_primary_language)
 
 
-@test_settings
+
 class TestApp(WithApp, TestCase):
 
     def setUp(self):
         super().setUp()
-        self.published_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path)
+        self.published_version_path = TESTAPP_NAO_ABSOLUTE_PATH
 
         self.review_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                self.testapp_relative_review_www_path)
+                                                TESTAPP_NAO_RELATIVE_PATH)
 
         self.preview_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                 self.testapp_relative_preview_www_path)
+                                                 TESTAPP_NAO_PREVIEW_RELATIVE_PATH)
 
         self.app.published_version_path = self.published_version_path
         self.app.preview_version_path = self.preview_version_path
 
         self.app.save()
 
+    @test_settings
     def test_get_url(self):
         test_url = 'https://myapp.app'
         self.app.url = test_url
@@ -187,10 +172,12 @@ class TestApp(WithApp, TestCase):
         url = self.app.get_url()
         self.assertEqual(url, test_url)
 
+    @test_settings
     def test_get_admin_url(self):
 
         admin_url = self.app.get_admin_url()
 
+    @test_settings
     def test_get_preview_url(self):
         test_url = 'https://myapp.app'
         self.app.url = test_url
@@ -199,10 +186,12 @@ class TestApp(WithApp, TestCase):
         preview_url = self.app.get_url()
         self.assertEqual(preview_url, test_url)
 
+    @test_settings
     def test_str(self):
         name = str(self.app)
         self.assertEqual(name, self.app.name)
 
+    @test_settings
     def test_languages(self):
         languages = self.app.languages()
 
@@ -210,6 +199,7 @@ class TestApp(WithApp, TestCase):
 
         self.assertEqual(set(languages), expected_languages)
 
+    @test_settings
     def test_secondary_languages(self):
 
         secondary_languages = self.app.secondary_languages()
@@ -221,6 +211,7 @@ class TestApp(WithApp, TestCase):
     ###########################################################
 
     # settings in app.published_version_path
+    @test_settings
     def test_get_settings(self):
         self.assertTrue(self.app.published_version_path is not None)
         print(self.app.published_version_path)
@@ -230,12 +221,14 @@ class TestApp(WithApp, TestCase):
         self.assertEqual(type(app_settings), dict)
 
     # features in app.published_version_path
+    @test_settings
     def test_get_features(self):
 
         app_features = self.app.get_features()
         self.assertEqual(type(app_features), dict)
 
 
+    @test_settings
     def test_get_installed_app_path(self):
         app_path = self.app.get_installed_app_path(app_state='published')
 
@@ -254,52 +247,8 @@ class TestApp(WithApp, TestCase):
         self.app.published_version_path = self.published_version_path
         self.app.save()
 
-    '''
-    def test_get_online_content_app_state(self):
 
-        app_state = self.app.get_online_content_app_state()
-        self.assertEqual(app_state, 'published')
-        
-
-    def test_get_online_content_templates_path(self):
-        oct_path = self.app.get_online_content_templates_path()
-
-        self.assertTrue(os.path.isdir(oct_path))
-
-    def test_get_online_content_settings(self):
-        oc_settings = self.app.get_online_content_settings()
-        self.assertEqual(type(oc_settings), dict)
-
-    def test_get_online_content_templates(self):
-
-        template_types = ['feature', 'page']
-
-
-        available_templates = {
-            'feature' : [('feature/news.html', 'News Eintrag')],
-            'page' : [
-                ('page/factsheet.html', 'Fact Sheet'),
-                ('page/free_page.html', 'Freie Seite'),
-                ('page/test.html', 'Test Seite'),
-            ],
-        }
-
-        for template_type in template_types:
-            templates = self.app.get_online_content_templates(template_type)
-            # check that the correct templates have been loaded
-            self.assertEqual(templates, available_templates[template_type])
-
-    def test_get_online_content_template(self):
-        template_names = ['feature/news.html', 'page/test.html', 'page/free_page.html',]
-
-        for template_name in template_names:
-            template = self.app.get_online_content_template(template_name)
-            self.assertTrue(isinstance(template, Template))
-
-        with self.assertRaises(TemplateDoesNotExist):
-            template = self.app.get_online_content_template('page/PREVIEW.html')
-    '''
-
+    @test_settings
     def test_get_locale(self):
         for language in self.app.languages():
             locale = self.app.get_locale('Home', language)
@@ -313,6 +262,7 @@ class TestApp(WithApp, TestCase):
         self.assertEqual(locale, None)
 
     # because delete() removes the app from disk, create a dummy app and do not use 'testapp'
+    @test_settings
     def test_delete(self):
         app_name = 'Test App 2'
         app_uid = 'test_app_2'
@@ -340,22 +290,21 @@ class TestApp(WithApp, TestCase):
         self.assertFalse(os.path.exists(app.published_version_path))
         
 
-
-@test_settings_commercial
 class TestCommercialApp(WithApp, TestCase):
 
     def setUp(self):
         super().setUp()
-        self.published_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.testapp_relative_www_path)
+        self.published_version_path = TESTAPP_NAO_ABSOLUTE_PATH
 
         self.review_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                self.testapp_relative_review_www_path)
+                                                TESTAPP_NAO_RELATIVE_PATH)
 
         self.preview_version_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                                                 self.testapp_relative_preview_www_path)
+                                                 TESTAPP_NAO_PREVIEW_RELATIVE_PATH)
 
+        self.app.published_version_path = self.published_version_path
         self.app.preview_version_path = self.preview_version_path
-        self.app.review_version_path = self.review_version_path
+
         self.app.save()
 
 
@@ -368,7 +317,7 @@ class TestCommercialApp(WithApp, TestCase):
         self.app.published_version_path = None
         self.app.save()
         
-
+    @test_settings_commercial
     def test_get_installed_app_path(self):
         self.publish_app()
         app_path = self.app.get_installed_app_path(app_state='published')
@@ -385,6 +334,7 @@ class TestCommercialApp(WithApp, TestCase):
         self.assertEqual(preview_app_path, self.app.preview_version_path)
 
 
+    @test_settings_commercial
     def test_get_settings(self):
 
         preview_settings = self.app.get_settings()
@@ -405,6 +355,7 @@ class TestCommercialApp(WithApp, TestCase):
         self.assertIn('REVIEW', published_settings)
         self.assertEqual(published_settings['PREVIEW'], False)
 
+    @test_settings_commercial
     def test_get_features(self):
 
         preview_features = self.app.get_features()
@@ -421,72 +372,13 @@ class TestCommercialApp(WithApp, TestCase):
         self.assertFalse('REVIEW' in published_features)
         self.assertFalse('PREVIEW' in published_features)
 
-    '''
-    def test_get_online_content_app_state(self):
-
-        app_state = self.app.get_online_content_app_state()
-        self.assertEqual(app_state, 'preview')
-        
-    def test_get_online_conent_templates_path(self):
-
-        expected_oct_path = os.path.join(settings.LOCALCOSMOS_APPS_ROOT,
-                            self.testapp_relative_preview_www_path, 'online_content/templates')
-
-
-
-        preview_oct_path = self.app.get_online_content_templates_path()
-        self.assertEqual(preview_oct_path, expected_oct_path)
-
-
-    def test_get_online_content_settings(self):
-        
-        preview_online_content_settings = self.app.get_online_content_settings()
-        self.assertEqual(preview_online_content_settings['PREVIEW'], True)
-
-        self.publish_app()
-        published_online_content_settings = self.app.get_online_content_settings()
-        self.assertEqual(preview_online_content_settings['PREVIEW'], True)
-        
-
-    def test_get_online_content_templates(self):
-
-        available_templates = {
-            'preview' : {
-                'page' : set([
-                    ('page/test.html', 'Test Seite'),
-                    ('page/PREVIEW.html', 'Preview marker'),
-                    ('page/free_page.html', 'Freie Seite'),
-                    ('page/factsheet.html', 'Fact Sheet'),
-                ]),
-            },
-            'release': {
-                'page' : set([
-                    ('page/test.html', 'Test Seite'),
-                    ('page/free_page.html', 'Freie Seite'),
-                    ('page/factsheet.html', 'Fact Sheet'),
-                ]),
-            }
-        }
-
-        preview_templates = set(self.app.get_online_content_templates('page'))
-
-        self.assertEqual(preview_templates, available_templates['preview']['page'])
-
-
-    def test_get_online_content_template(self):
-
-        template_names = ['feature/news.html', 'page/test.html', 'page/free_page.html', 'page/PREVIEW.html',]
-
-        for template_name in template_names:
-            template = self.app.get_online_content_template(template_name)
-            self.assertTrue(isinstance(template, Template))
-    '''
+    
         
 
 from localcosmos_server.models import APP_USER_ROLES
-@test_settings
 class TestAppUserRole(WithApp, WithUser, TestCase):
 
+    @test_settings
     def test_save(self):
 
         user = self.create_user()
@@ -509,7 +401,6 @@ class TestAppUserRole(WithApp, WithUser, TestCase):
 
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
-@test_settings
 class TestTaxonomicRestriction(WithUser, TestCase):
 
     test_taxon_kwargs = {
@@ -521,6 +412,7 @@ class TestTaxonomicRestriction(WithUser, TestCase):
         "gbif_nubKey": 2685484,
     }
 
+    @test_settings
     def test_save(self):
 
         user = self.create_user()
@@ -547,7 +439,6 @@ class TestTaxonomicRestriction(WithUser, TestCase):
         self.assertEqual(str(restriction.taxon.name_uuid), str(lazy_taxon.name_uuid))
         
 
-@test_settings
 class TestTaxonomicRestrictionManager(WithApp, TestCase):
     
     def setUp(self):
@@ -584,6 +475,7 @@ class TestTaxonomicRestrictionManager(WithApp, TestCase):
         self.synonym = LazyAppTaxon(**synonym_1)
 
 
+    @test_settings
     def test_get_for_taxon_simple(self):
         
         restriction = TaxonomicRestriction(
@@ -603,7 +495,7 @@ class TestTaxonomicRestrictionManager(WithApp, TestCase):
         links = TaxonomicRestriction.objects.get_for_taxon(App, self.lazy_taxon_0)
         self.assertEqual(list(links), [])
 
-
+    @test_settings
     def test_get_for_taxon_higher(self):
         
         restriction = TaxonomicRestriction(
@@ -623,7 +515,7 @@ class TestTaxonomicRestrictionManager(WithApp, TestCase):
         links = TaxonomicRestriction.objects.get_for_taxon(App, self.lazy_taxon_0)
         self.assertEqual(links[0], restriction)
 
-
+    @test_settings
     def test_get_for_taxon_branch_simple(self):
         
         restriction = TaxonomicRestriction(
@@ -643,7 +535,7 @@ class TestTaxonomicRestrictionManager(WithApp, TestCase):
         links = TaxonomicRestriction.objects.get_for_taxon_branch(App, self.lazy_taxon_0)
         self.assertEqual(list(links), [])
 
-
+    @test_settings
     def test_get_for_taxon_brnach_higher(self):
         
         restriction = TaxonomicRestriction(

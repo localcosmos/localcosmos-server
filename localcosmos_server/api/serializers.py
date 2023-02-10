@@ -15,9 +15,8 @@ class TokenObtainPairSerializerWithClientID(TokenObtainPairSerializer):
 
 '''
     private user serializer: only accessible for the account owner
-    - details JSONField is still missing
 '''
-class AccountSerializer(serializers.ModelSerializer):
+class LocalcosmosUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User

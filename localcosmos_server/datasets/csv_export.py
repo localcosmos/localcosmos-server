@@ -29,16 +29,16 @@ class DatasetCSVExport:
         if os.path.isfile(self.filepath):
             os.remove(self.filepath)
 
-        columns = ['client_id', 'client_platform']
+        columns = ['client_id', 'platform']
 
         uuid_to_label = {
             'client_id' : 'client_id',
-            'client_platform' : 'client_platform',
+            'platform' : 'platform',
         }
 
         field_classes = {
             'client_id' : 'CharField',
-            'client_platform' : 'CharField',
+            'platform' : 'CharField',
         }
 
         for dataset in self.get_queryset():

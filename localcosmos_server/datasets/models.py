@@ -15,6 +15,8 @@ from localcosmos_server.taxonomy.generic import ModelWithTaxon
 
 from localcosmos_server.utils import datetime_from_cron
 
+from djangorestframework_camel_case.util import underscoreize
+
 from datetime import datetime, timezone, timedelta
 
 from PIL import Image, ImageOps
@@ -60,26 +62,37 @@ COMPLETED_VALIDATION_STEP = 'completed'
 '''
     ObservationForm
 '''
-'''
+
 class ObservationForm(models.Model):
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    version = models.TextField()
+    version = models.IntegerField()
     definition = models.JSONField()
+
+    @property
+    def json_schema(self):
+        return {
+            'uuid' : {
+                'type' : 'uuid',
+            },
+            'version' : {
+                'type' : 'integer',
+            }
+        }
 
     class Meta:
         unique_together=('uuid', 'version')
 
-'''
+
 '''
     MetaData
 '''
-'''
+
 class MetaData(models.Model):
 
     observation_form = models.ForeignKey(ObservationForm, on_delete=models.PROTECT)
     data = models.JSONField()
-'''
+
 
 '''
     Dataset
@@ -91,13 +104,15 @@ class Dataset(ModelWithTaxon):
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
+    observation_form = models.ForeignKey(ObservationForm, on_delete=models.PROTECT)
+
     ### data
     # all data except the taxononmic inherited from ModelWithTaxon is stored in the json data column without schema
     # for quicker queries, some fields have their own (redundant) db columns below
     data = models.JSONField()
-    #observation_form = models.ForeignKey(ObservationForm, on_delete=models.PROTECT)
+    
 
-    #meta_data = models.ForeignKey(MetaData, null=True, on_delete=models.PROTECT)
+    meta_data = models.ForeignKey(MetaData, null=True, on_delete=models.PROTECT)
 
     ### redundant fields for quick DB queries
     # geographic reference, useful for anycluster and quick GIS queries
@@ -105,7 +120,6 @@ class Dataset(ModelWithTaxon):
     geographic_reference = models.GeometryField(srid=3857, null=True, blank=True) # for other geometries
 
     # app reference, for filtering datasets on maps, no FK to not lose data if the app is deleted
-    # app_uuid is transmitted by django_road, settings editable=False breaks django-rest-framework
     app_uuid = models.UUIDField()
 
     # temporal reference, if it is a timestamp
@@ -118,6 +132,7 @@ class Dataset(ModelWithTaxon):
     # client_id is redundant, also occurs in data
     # client_id can never be changed
     client_id = models.CharField(max_length=255, editable=False)
+    platform = models.CharField(max_length=255, editable=False)
 
 
     ### fields for validation
@@ -131,7 +146,7 @@ class Dataset(ModelWithTaxon):
 
     ### flags that should not reside inside the data json because they can differ between client and server
     # following timestamps can differ between server and offline device
-    # do not use auto_now_add or auto_now as these values are always set by django_road in the clients
+    # do not use auto_now_add or auto_now as these values are always set in the clients
     created_at = models.DateTimeField(editable=False) # timestamp when the dataset has been created on any of the clients
     last_modified = models.DateTimeField(null=True) # timestamp when the dataset has been alteres on any of the clients
 
@@ -211,7 +226,7 @@ class Dataset(ModelWithTaxon):
     '''
     def update_redundant_columns(self):
 
-        reported_values = self.data['dataset']['reported_values']
+        reported_values = self.data
 
         # never alter the user that is assigned
         # in rare cases the following can happen:
@@ -219,50 +234,36 @@ class Dataset(ModelWithTaxon):
         # - fetching the browser device uid failed
         # -> an unassigned device_uuid is used, the logged in user is linked to the sighting
         # fix this problem and alter self.data['client_id'] to match the users browser client
-        if not self.pk:
 
-            # fill self.client_id
-            client_id = reported_values['client_id']
-            self.client_id = client_id
 
         # assign a user to the observation - even if it the dataset is updated
         if not self.user and self.client_id:
             # try find a user in usermobiles
-            client_id = reported_values['client_id']
-            self.client_id = client_id
-            client = UserClients.objects.filter(client_id=client_id).first()
+            client = UserClients.objects.filter(client_id=self.client_id).first()
             if client:
                 self.user = client.user
 
         # AFTER assigning the user, use the browser client_id if platform is browser
         if not self.pk:
 
-            platform = reported_values['client_platform']
-
-            # use browser client_id if browser and self.user
-            # this is only possible if the dataset has been transmitted using django_road, which assigned a user
-            if platform == 'browser' and self.user:
+            if self.platform == 'browser' and self.user:
                     
                 client = UserClients.objects.filter(user=self.user, platform='browser').order_by('pk').first()
 
                 if client:
-
                     user_browser_client_id = client.client_id
                 
-                    if user_browser_client_id != reported_values['client_id']:
-                        self.data['dataset']['reported_values']['client_id'] = user_browser_client_id
+                    if user_browser_client_id != self.client_id:
                         self.client_id = user_browser_client_id
 
         
         # update taxon
         # use the provided observation form json
-
-        observation_form = self.data['dataset']['observation_form']
-        
-        taxon_field_uuid = observation_form['taxonomic_reference']
+        taxon_field_uuid = self.observation_form.definition['taxonomicReference']
 
         if taxon_field_uuid in reported_values and type(reported_values[taxon_field_uuid]) == dict:
-            taxon_json = reported_values[taxon_field_uuid]
+            taxon_json_camel = reported_values[taxon_field_uuid]
+            taxon_json = underscoreize(taxon_json_camel, no_underscore_before_number=True)
 
             lazy_taxon = self.LazyTaxonClass(**taxon_json)
             self.set_taxon(lazy_taxon) 
@@ -271,10 +272,11 @@ class Dataset(ModelWithTaxon):
         # {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}},
         # "type": "Point", "coordinates": [8.703575134277346, 55.84336786584161]}, "properties": {"accuracy": 1}}
         # if it is a point, use coordinates. Otherwise use geographic_reference
-        geographic_reference_field_uuid = self.data['dataset']['observation_form']['geographic_reference']
-        if geographic_reference_field_uuid in self.data['dataset']['reported_values']:
+        geographic_reference_field_uuid = self.observation_form.definition['geographicReference']
+        if geographic_reference_field_uuid in self.data:
 
-            reported_value = self.data['dataset']['reported_values'][geographic_reference_field_uuid]
+            reported_value = self.data[geographic_reference_field_uuid]
+
             if reported_value['geometry']['type'] == 'Point':
 
                 longitude = reported_value['geometry']['coordinates'][0]
@@ -286,11 +288,11 @@ class Dataset(ModelWithTaxon):
 
 
         # update temporal reference
-        temporal_reference_field_uuid = self.data['dataset']['observation_form']['temporal_reference']
+        temporal_reference_field_uuid = self.observation_form.definition['temporalReference']
         
-        if temporal_reference_field_uuid in self.data['dataset']['reported_values']:
+        if temporal_reference_field_uuid in self.data:
 
-            reported_value = self.data['dataset']['reported_values'][temporal_reference_field_uuid]
+            reported_value = self.data[temporal_reference_field_uuid]
 
             # {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1564566855177}, "type": "Temporal"}}
             if reported_value['cron']['type'] == 'timestamp' and reported_value['cron']['format'] == 'unixtime':
@@ -342,12 +344,6 @@ class Dataset(ModelWithTaxon):
     def validate_requirements(self):
         if self.data is None:
             raise ValueError('Dataset needs at least some data')
-
-        reported_values = self.data['dataset']['reported_values']
-
-        if 'client_id' not in reported_values or reported_values['client_id'] == None or len(reported_values['client_id']) == 0:
-            raise ValueError('no client_id found in dataset.reported_values')
-
 
     def save(self, *args, **kwargs):
 

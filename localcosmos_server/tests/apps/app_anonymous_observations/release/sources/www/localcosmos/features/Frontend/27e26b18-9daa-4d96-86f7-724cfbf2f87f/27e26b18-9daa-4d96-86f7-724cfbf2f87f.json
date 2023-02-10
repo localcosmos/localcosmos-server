@@ -1,0 +1,67 @@
+{
+    "uuid": "27e26b18-9daa-4d96-86f7-724cfbf2f87f",
+    "version": 1,
+    "options": {},
+    "globalOptions": {},
+    "name": "Frontend",
+    "slug": "8-frontend",
+    "userContent": {
+        "texts": {
+            "aboutApp": "",
+            "appSources": ""
+        },
+        "images": {
+            "appBackground": {
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/frontend/images/Flat:appBackground-271-250.webp",
+                    "2x": "/localcosmos/user_content/frontend/images/Flat:appBackground-271-500.webp",
+                    "4x": "/localcosmos/user_content/frontend/images/Flat:appBackground-271-1000.webp",
+                    "8x": "/localcosmos/user_content/frontend/images/Flat:appBackground-271-2000.webp"
+                }
+            },
+            "appLauncherIcon": {
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/frontend/images/Flat:appLauncherIcon-274.svg",
+                    "2x": "/localcosmos/user_content/frontend/images/Flat:appLauncherIcon-274.svg",
+                    "4x": "/localcosmos/user_content/frontend/images/Flat:appLauncherIcon-274.svg",
+                    "8x": "/localcosmos/user_content/frontend/images/Flat:appLauncherIcon-274.svg"
+                }
+            },
+            "appPcBackground": {
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/frontend/images/Flat:appPcBackground-272-250.webp",
+                    "2x": "/localcosmos/user_content/frontend/images/Flat:appPcBackground-272-500.webp",
+                    "4x": "/localcosmos/user_content/frontend/images/Flat:appPcBackground-272-1000.webp",
+                    "8x": "/localcosmos/user_content/frontend/images/Flat:appPcBackground-272-2000.webp"
+                }
+            },
+            "appSplashscreen": {
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/frontend/images/Flat:appSplashscreen-275.svg",
+                    "2x": "/localcosmos/user_content/frontend/images/Flat:appSplashscreen-275.svg",
+                    "4x": "/localcosmos/user_content/frontend/images/Flat:appSplashscreen-275.svg",
+                    "8x": "/localcosmos/user_content/frontend/images/Flat:appSplashscreen-275.svg"
+                }
+            },
+            "logo": {
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/frontend/images/Flat:logo-270.svg",
+                    "2x": "/localcosmos/user_content/frontend/images/Flat:logo-270.svg",
+                    "4x": "/localcosmos/user_content/frontend/images/Flat:logo-270.svg",
+                    "8x": "/localcosmos/user_content/frontend/images/Flat:logo-270.svg"
+                }
+            },
+            "fundingPartner1": {
+                "imageUrl": null
+            },
+            "fundingPartner2": {
+                "imageUrl": null
+            },
+            "fundingPartner3": {
+                "imageUrl": null
+            }
+        },
+        "configuration": {}
+    },
+    "isMulticontent": false
+}

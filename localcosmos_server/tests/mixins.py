@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.test import RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -6,12 +7,15 @@ from localcosmos_server.models import LocalcosmosUser, App, SecondaryAppLanguage
 
 from localcosmos_server.datasets.models import Dataset, DatasetImages
 
-from localcosmos_server.tests.common import (TEST_DATASET_DATA_WITH_ALL_REFERENCE_FIELDS, powersetdic,
-                                             TEST_DATASET_FULL_GENERIC_FORM, TEST_MEDIA_ROOT, TEST_IMAGE_PATH)
+from localcosmos_server.tests.common import (powersetdic, TEST_MEDIA_ROOT, TEST_IMAGE_PATH, TESTAPP_NAO_ABSOLUTE_PATH,
+    TESTAPP_AO_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID, TEST_OBSERVATION_FORM_JSON, DataCreator)
 
 from django.utils import timezone
 
-import os, shutil
+import os, shutil, json
+
+from localcosmos_server.datasets.models import ObservationForm, Dataset
+
 
 class WithUser:
 
@@ -29,6 +33,13 @@ class WithUser:
         user = LocalcosmosUser.objects.create_user(self.test_username, self.test_email, self.test_password)
         return user
 
+
+    def create_secondary_user(self):
+
+        user = LocalcosmosUser.objects.create_user('secondary', 'second@ry.org', 'dsgrsg5%<>')
+        return user
+
+
     def create_superuser(self):
         superuser = LocalcosmosUser.objects.create_superuser(self.test_superuser_username, self.test_superuser_email,
                                                         self.test_password)
@@ -38,23 +49,27 @@ class WithUser:
 
 class WithApp:
 
-    app_name = 'TestApp'
-    app_uid = 'app_for_tests'
+    nao_app_name = 'Test App 1'
+    nao_app_uid = TESTAPP_NAO_UID
+
+    ao_app_name = 'Test App 2'
+    ao_app_uid = TESTAPP_AO_UID
+
     app_primary_language = 'de'
     app_secondary_languages = ['en']
 
-    testapp_relative_www_path = 'app_for_tests/release/webapp/www/'
-
-    # the builder does not create a review folder. the review folder is only for this test suite
-    testapp_relative_review_www_path = 'app_for_tests/review/webapp/www/'
-    testapp_relative_preview_www_path = 'app_for_tests/preview/www/'
+    testapp_relative_www_path = 'app_for_tests/release/sources/www/'
     
 
     def setUp(self):
         super().setUp()
 
-        self.app = App.objects.create(name=self.app_name, primary_language=self.app_primary_language,
-                                      uid=self.app_uid)
+        nao_create_kwargs = {
+            'published_version_path' : TESTAPP_NAO_ABSOLUTE_PATH
+        }
+
+        self.app = App.objects.create(name=self.nao_app_name, primary_language=self.app_primary_language,
+                                      uid=self.nao_app_uid, **nao_create_kwargs)
 
         for language in self.app_secondary_languages:
             secondary_language = SecondaryAppLanguages(
@@ -63,6 +78,14 @@ class WithApp:
             )
 
             secondary_language.save()
+
+
+        ao_create_kwargs = {
+            'published_version_path' : TESTAPP_AO_ABSOLUTE_PATH
+        }
+
+        self.ao_app = App.objects.create(name=self.ao_app_name, primary_language=self.app_primary_language,
+                                        uid=self.ao_app_uid, **ao_create_kwargs)
 
 
 class WithMedia:
@@ -82,7 +105,57 @@ class WithMedia:
         self.clean_media()
 
 
+class WithObservationForm:
 
+    def setUp(self):
+        super().setUp()
+
+        with open(TEST_OBSERVATION_FORM_JSON, 'rb') as form_file:
+            self.observation_form_json = json.loads(form_file.read())
+
+
+    def create_observation_form(self, observation_form_json=None):
+
+        if not observation_form_json:
+            observation_form_json = self.observation_form_json
+
+
+        observation_form = ObservationForm(
+            uuid = observation_form_json['uuid'],
+            version = observation_form_json['version'],
+            definition = observation_form_json
+        )
+
+        observation_form.save()
+
+        return observation_form
+
+
+    def create_dataset(self, observation_form, user=None, app=None):
+
+        if app == None:
+            app = self.app
+
+        data_creator = DataCreator()
+
+        test_data = data_creator.get_dataset_data(self.observation_form_json)
+
+        dataset = Dataset(
+            app_uuid = app.uuid,
+            observation_form = observation_form,
+            data = test_data,
+            created_at = timezone.now(),
+            client_id = 'test client',
+            platform = 'browser',
+            user = user,
+        )
+
+        dataset.save()
+
+        return dataset
+
+
+'''
 class WithDataset:
 
     def create_dataset(self):
@@ -140,7 +213,7 @@ class WithDataset:
         dataset_image.save()
 
         return dataset_image
-        
+'''
     
 
 from PIL import Image
@@ -264,63 +337,6 @@ class WithTemplateContent:
 
             localized_template_content = LocalizedTemplateContent.objects.create(self.user, self.template_content,
                 language, draft_title, draft_navigation_link_name)
-
-    '''
-    def create_draft_image_microcontent(self, template_content, microcontent_type, language):
-
-        im = Image.new(mode='RGB', size=(200, 200)) # create a new image using PIL
-        im_io = BytesIO() # a BytesIO object for saving image
-        im.save(im_io, 'JPEG') # save the image to im_io
-        im_io.seek(0) # seek to the beginning
-
-        image = InMemoryUploadedFile(
-            im_io, None, 'draft_image.jpg', 'image/jpeg', len(im_io.getvalue()), None
-        )
-
-        draft_imc = DraftImageMicroContent(
-            template_content = template_content,
-            microcontent_type = microcontent_type,
-        )
-
-        draft_imc.save()
-        
-        draft_limc = LocalizedDraftImageMicroContent(
-            microcontent = draft_imc,
-            content = image,
-            language = language,
-        )
-
-        draft_limc.save()
-
-        return draft_limc
-
-
-    def create_draft_microcontent(self, template_content, microcontent_type, language):
-        
-        draft_mc = DraftTextMicroContent(
-            template_content = template_content,
-            microcontent_type = microcontent_type,
-        )
-
-        draft_mc.save()
-        
-        
-        draft_lmc = self.create_localized_draft_microcontent(draft_mc, language)
-
-        return draft_lmc
-
-    def create_localized_draft_microcontent(self, microcontent, language):
-
-        draft_lmc = LocalizedDraftTextMicroContent(
-            microcontent = microcontent,
-            content = 'test atomic content {0}'.format(language),
-            language = language,
-        )
-
-        draft_lmc.save()
-
-        return draft_lmc
-    '''
 
     def get_view(self, view_class, url_name):
         

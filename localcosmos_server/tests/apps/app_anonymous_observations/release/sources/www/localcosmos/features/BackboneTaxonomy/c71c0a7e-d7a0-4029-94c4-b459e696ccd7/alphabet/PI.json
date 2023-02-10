@@ -1,0 +1,20 @@
+[
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "imageUrl": null,
+        "gbifNubKey": 5284884
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "imageUrl": null,
+        "gbifNubKey": 5285637
+    }
+]

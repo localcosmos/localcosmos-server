@@ -1,0 +1,20 @@
+[
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Quercus",
+        "taxonAuthor": "",
+        "nameUuid": "a8fb9529-9794-46ea-9d42-6a67577f5bde",
+        "taxonNuid": "00600800600p003007",
+        "imageUrl": null,
+        "gbifNubKey": 2877951
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Quercus robur",
+        "taxonAuthor": "L.",
+        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "taxonNuid": "00600800600p0030070db",
+        "imageUrl": null,
+        "gbifNubKey": 2878688
+    }
+]

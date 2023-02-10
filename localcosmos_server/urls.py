@@ -17,8 +17,8 @@ urlpatterns = [
     path('app-admin/', include('localcosmos_server.datasets.urls', namespace='datasets')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.taxonomy.urls')), # cannot have the namespace appadmin
     # API
-    path('api/', include('django_road.urls')),
     path('api/', include('localcosmos_server.api.urls')),
+    path('api/', include('localcosmos_server.datasets.api.urls')),
     path('api/', include('localcosmos_server.template_content.api.urls')),
     path('api/anycluster/', include('localcosmos_server.anycluster_schema_urls')),
 

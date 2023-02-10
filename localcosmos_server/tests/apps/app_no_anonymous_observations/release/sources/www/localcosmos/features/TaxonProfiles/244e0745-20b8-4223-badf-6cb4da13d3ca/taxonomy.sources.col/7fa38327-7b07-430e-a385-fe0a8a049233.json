@@ -1,0 +1,334 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Fraxinus excelsior",
+    "taxonAuthor": "L.",
+    "nameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+    "taxonNuid": "00600800600w00c00a00j",
+    "vernacular": {
+        "de": "Esche"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Esche"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                "name": "Textfilter",
+                "type": "TextOnlyFilter",
+                "position": 1,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [
+                    "visual"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                        "encodedSpace": "<p>Text 2 1</p>"
+                    },
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                        "encodedSpace": "<p>Text 1</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                        "encodedSpace": "<p>Text/mit shcräg</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                "name": "Blattanordnung/TEst",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:84",
+                        "encodedSpace": "gegenständig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-246-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-246-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-246-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                "name": "Form des Blattes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:91",
+                        "encodedSpace": "gefiedert",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-253-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-253-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-253-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                "name": "Form des Blattendes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                        "encodedSpace": "mit Spitze",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                "name": "Form des Blattanfangs",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                        "encodedSpace": "ungebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-243-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-243-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-243-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                "name": "Form des Blattrandes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                        "encodedSpace": "gezackt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-248-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-248-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-248-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                        "encodedSpace": "gefurcht",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-245-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-245-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-245-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                "name": "Farbe des Stammes",
+                "type": "ColorFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                        "encodedSpace": [
+                            107,
+                            100,
+                            0,
+                            1.0
+                        ],
+                        "html": "rgba(107,100,0,1.0)",
+                        "gradient": false,
+                        "description": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Die Esche spielte vor allem bei den Nordgermanen eine große Rolle. Sie verehrten sie als Weltenbaum Yggdrasil, dessen drei Wurzeln die Götter, die Unterwelt und das Land der Riesen verbanden. An diesen Wurzeln saßen die drei Nornen, die Schicksalsgöttinnen, die das Los der Menschen bestimmten.\n\nBereits in der Antike war die Herstellung von Heilmitteln aus der Esche bekannt. Seit dem Mittelalter übertrugen sich durch die Verbreitung pflanzenkundlichen Wissens die naturheilkundlichen Erkenntnisse bis in die Neuzeit. Heute werden Extrakte aus der Eschenrinde, kombiniert mit anderen pflanzlichen Wirkstoffen, primär bei rheumatischen Erkrankungen und leichten chronischen Schmerzen angewandt. Die Eschenrinde hat eine entzündungshemmende, leicht fiebersenkende und schwach schmerzlindernde Wirkung.\n\nDie Esche ist eine klimatolerante und damit wichtige Baumart im klimabedingten Waldumbau. Sie ist aber durch das Eschentriebsterben in ihrem Bestand gefährdet und ein Anbau ist derzeit nicht ohne Risiko.",
+            "shortTextKey": "taxon_text_1_4",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "Als frostempfindliche Art ist die Esche anfällig für Spätfröste (April, Mai), sie heilt diese aber meist gut aus. Schäden durch Nassschneedruck können bis in die ältere Dickungsphase eine Rolle spielen. Bei überhöhtem Wildbestand führen Verbiss- und Fegeschäden mit Verlust der Leittriebe zu ungünstigen und wertmindernden Wuchsformen. Extrem überhöhte Wilddichten führen außerhalb von Wildschutzzäunen zum weitgehenden Ausfall der jungen Pflanzen. Insbesondere auf vergrasten Flächen kann es im unteren Stammbereich von Jungeschen zu Schäden durch Mäusefraß kommen.",
+            "shortTextKey": "taxon_text_2_5",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Die Esche ist ein Bestandteil der Hartholzauwälder, die zahlreichen Lebewesen einen Lebensraum bieten. Dort finden sich etwa 400 Falterarten, die überwiegend dämmerungs- und nachtaktiv sind, zahlreiche Libellenarten sowie etwa 1.000 Käferarten. Auch Amphibien, Reptilien, Vögel und einzelne Säugetiere fühlen sich in den Auwäldern wohl.",
+            "shortTextKey": "taxon_text_3_6",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-231-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-231-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-231-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Fraxinus excelsior communis",
+            "taxonAuthor": "Aiton, not validly publ."
+        }
+    ],
+    "gbifNubKey": 3172358,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

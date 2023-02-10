@@ -1,0 +1,54 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Lithobates catesbeianus",
+    "taxonAuthor": "(Shaw, 1802)",
+    "nameUuid": "90129dcc-f33e-43d4-88f7-6dfdc704f443",
+    "taxonNuid": "001008002001016008007",
+    "vernacular": {
+        "de": "Eintrag für Unmöglichen Wert"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Eintrag für Unmöglichen Wert"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "8cf28702-d7d5-443f-b3a0-1373b27012e3",
+                "name": "Unmöglich",
+                "type": "TextOnlyFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "8cf28702-d7d5-443f-b3a0-1373b27012e3:108",
+                        "encodedSpace": "<p>text 2</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Lithobates catesbeiana",
+            "taxonAuthor": "Shaw, 1802"
+        }
+    ],
+    "gbifNubKey": 2427091,
+    "templateContents": [],
+    "genericForms": [],
+    "tags": []
+}

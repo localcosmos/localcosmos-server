@@ -12,26 +12,27 @@ from localcosmos_server.view_mixins import TaxonomicRestrictionMixin
 from localcosmos_server.models import TaxonomicRestriction
 
 
-@test_settings
+
 class TestLogIn(WithUser, TestCase):
 
     def setUp(self):
         super().setUp()
         self.create_superuser()
 
+    @test_settings
     def test_get(self):
 
         response = self.client.get(reverse('log_in'))
         self.assertEqual(response.status_code, 200)
 
 
-@test_settings
 class TestLoggedOut(WithUser, TestCase):
 
     def setUp(self):
         super().setUp()
         self.create_superuser()
 
+    @test_settings
     def test_get(self):
 
         response = self.client.get(reverse('loggedout'))
@@ -43,9 +44,10 @@ class FormForTest(forms.Form):
     taxon = TaxonField(taxon_search_url='test', required=False)
     restriction_type = forms.CharField(required=False)
     
-@test_settings
+
 class TestTaxonomicRestrictionMixin(WithUser, TestCase):
 
+    @test_settings
     def test_save_taxonomic_restriction(self):
 
         user = self.create_user()
@@ -75,6 +77,7 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         self.assertEqual(created_restriction.taxon_author, post_data['taxon_2'])
 
 
+    @test_settings
     def test_save_taxonomic_restriction_with_type(self):
 
         user = self.create_user()
@@ -105,6 +108,7 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         self.assertEqual(created_restriction.taxon_author, post_data['taxon_2'])
         
 
+    @test_settings
     def test_save_taxonomic_restriction_no_taxon(self):
 
         user = self.create_user()

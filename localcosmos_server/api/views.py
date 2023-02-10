@@ -12,25 +12,29 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
-from drf_spectacular.utils import inline_serializer, extend_schema
+from rest_framework.renderers import JSONRenderer
+from rest_framework.permissions import IsAuthenticated
+
+#from drf_spectacular.utils import inline_serializer, extend_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from rest_framework import status
 
 from localcosmos_server.models import App
-from django_road.permissions import IsAuthenticatedOnly, OwnerOnly
 
-from .serializers import (AccountSerializer, RegistrationSerializer, PasswordResetSerializer,
+
+from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
                             TokenObtainPairSerializerWithClientID)
+
+from .permissions import OwnerOnly
 
 from localcosmos_server.mails import send_registration_confirmation_email
 
 from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients
 
-import uuid
+from drf_spectacular.utils import extend_schema, inline_serializer
 
 
 ##################################################################################################################
@@ -152,10 +156,10 @@ class ManageAccount(APIView):
         - [POST] validates and saves - and returns json
     '''
 
-    permission_classes = (IsAuthenticatedOnly, OwnerOnly)
+    permission_classes = (IsAuthenticated, OwnerOnly)
     authentication_classes = (JWTAuthentication,)
     renderer_classes = (JSONRenderer,)
-    serializer_class = AccountSerializer
+    serializer_class = LocalcosmosUserSerializer
 
     def get_object(self):
         obj = self.request.user
@@ -197,10 +201,10 @@ class DeleteAccount(APIView):
         - [DELETE] deletes the account
     '''
 
-    permission_classes = (IsAuthenticatedOnly, OwnerOnly)
+    permission_classes = (IsAuthenticated, OwnerOnly)
     authentication_classes = (JWTAuthentication,)
     renderer_classes = (JSONRenderer,)
-    serializer_class = AccountSerializer
+    serializer_class = LocalcosmosUserSerializer
 
     def delete(self, request, *args, **kwargs):
 

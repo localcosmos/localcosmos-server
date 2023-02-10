@@ -1,0 +1,186 @@
+[
+    {
+        "taxonSource": "taxonomy.sources.custom",
+        "taxonLatname": "Rana alina",
+        "taxonAuthor": "Thomas Uher",
+        "nameUuid": "6044a584-83c0-4227-b88f-d0ffe6cc44f1",
+        "taxonNuid": "001001",
+        "imageUrl": null,
+        "gbifNubKey": null,
+        "name": "Alinafrosch"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Acer pseudoplatanus",
+        "taxonAuthor": "L.",
+        "nameUuid": "7b5d2554-7db4-46b1-b1c5-8908126a14d0",
+        "taxonNuid": "00600800601d00800102r",
+        "imageUrl": null,
+        "gbifNubKey": 3189870,
+        "name": "Bergahorn"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Betula pendula",
+        "taxonAuthor": "Roth",
+        "nameUuid": "a748aec5-9656-4451-831c-b55325ae38a9",
+        "taxonNuid": "00600800600p00100201n",
+        "imageUrl": null,
+        "gbifNubKey": 5331916,
+        "name": "Birke"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Pseudotsuga menziesii",
+        "taxonAuthor": "(Mirb.) Franco",
+        "nameUuid": "9f1efd3c-6d3e-4241-adba-62489fccc247",
+        "taxonNuid": "00600800700100500a003",
+        "imageUrl": null,
+        "gbifNubKey": 2685796,
+        "name": "Douglasfichte"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Sorbus aucuparia",
+        "taxonAuthor": "L.",
+        "nameUuid": "2f40a63f-aade-4003-9430-447270fe6abf",
+        "taxonNuid": "00600800601b00702u00a",
+        "imageUrl": null,
+        "gbifNubKey": 3012167,
+        "name": "Eberesche"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Quercus robur",
+        "taxonAuthor": "L.",
+        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "taxonNuid": "00600800600p0030070db",
+        "imageUrl": null,
+        "gbifNubKey": 2878688,
+        "name": "Eiche"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Lithobates catesbeianus",
+        "taxonAuthor": "(Shaw, 1802)",
+        "nameUuid": "90129dcc-f33e-43d4-88f7-6dfdc704f443",
+        "taxonNuid": "001008002001016008007",
+        "imageUrl": null,
+        "gbifNubKey": 2427091,
+        "name": "Eintrag für Unmöglichen Wert"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Fraxinus excelsior",
+        "taxonAuthor": "L.",
+        "nameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+        "taxonNuid": "00600800600w00c00a00j",
+        "imageUrl": null,
+        "gbifNubKey": 3172358,
+        "name": "Esche"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonNuid": "006008007001005005002",
+        "imageUrl": null,
+        "gbifNubKey": 2686212,
+        "name": "Europäische Lärche"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Acer campestre",
+        "taxonAuthor": "L.",
+        "nameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "taxonNuid": "00600800601d00800100d",
+        "imageUrl": null,
+        "gbifNubKey": 3189863,
+        "name": "Feldahorn"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "imageUrl": null,
+        "gbifNubKey": 5285637,
+        "name": "Föhre"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Fagus sylvatica",
+        "taxonAuthor": "L.",
+        "nameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+        "taxonNuid": "00600800600p00300400b",
+        "imageUrl": null,
+        "gbifNubKey": 2882316,
+        "name": "Rotbuche"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "imageUrl": null,
+        "gbifNubKey": 5284884,
+        "name": "Rotfichte"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Alnus glutinosa",
+        "taxonAuthor": "(L.) Gaertn.",
+        "nameUuid": "e3a76a3d-44bc-47b9-bb7f-4b0b544c2f6f",
+        "taxonNuid": "00600800600p00100100e",
+        "imageUrl": null,
+        "gbifNubKey": 2876213,
+        "name": "Schwarzerle"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Populus nigra",
+        "taxonAuthor": "L.",
+        "nameUuid": "bc4aa5c6-4384-413e-ae08-97fafe6d2b00",
+        "taxonNuid": "00600800600z01101901q",
+        "imageUrl": null,
+        "gbifNubKey": 3040227,
+        "name": "Schwarzpappel"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Juglans regia",
+        "taxonAuthor": "L.",
+        "nameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+        "taxonNuid": "00600800600p00400600p",
+        "imageUrl": null,
+        "gbifNubKey": 3054368,
+        "name": "Walnuss"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonNuid": "006008007001005001001",
+        "imageUrl": {
+            "1x": "/localcosmos/user_content/content_images/image-299-250.webp",
+            "2x": "/localcosmos/user_content/content_images/image-299-500.webp",
+            "4x": "/localcosmos/user_content/content_images/image-299-1000.webp"
+        },
+        "gbifNubKey": 2685484,
+        "name": "Weisstanne"
+    },
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Prunus avium",
+        "taxonAuthor": "(L.) L.",
+        "nameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+        "taxonNuid": "00600800601b00702c00l",
+        "imageUrl": null,
+        "gbifNubKey": 3020791,
+        "name": "Wildkirsche"
+    }
+]

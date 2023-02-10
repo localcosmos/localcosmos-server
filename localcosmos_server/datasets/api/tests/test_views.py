@@ -1,0 +1,457 @@
+from django.test import TestCase
+from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework import status
+
+from django.urls import reverse
+
+from localcosmos_server.tests.common import test_settings, DataCreator
+from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm
+
+from localcosmos_server.datasets.models import ObservationForm, Dataset
+
+from django.utils import timezone
+
+from djangorestframework_camel_case.util import underscoreize
+
+
+class CreatedUsersMixin:
+
+    def setUp(self):
+        super().setUp()
+
+        self.superuser = self.create_superuser()
+        self.user = self.create_user()
+
+class TestCreateObservationForm(WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+    @test_settings
+    def test_post(self):
+
+        uuid = self.observation_form_json['uuid']
+        version = self.observation_form_json['version']
+        qry = ObservationForm.objects.filter(uuid=uuid, version=version)
+
+        self.assertFalse(qry.exists())
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_create_observation_form', kwargs=url_kwargs)
+
+        post_data = {
+            'definition' : self.observation_form_json
+        }
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # log in
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+
+    @test_settings
+    def test_post_anonymous_observations(self):
+
+        uuid = self.observation_form_json['uuid']
+        version = self.observation_form_json['version']
+        qry = ObservationForm.objects.filter(uuid=uuid, version=version)
+
+        self.assertFalse(qry.exists())
+    
+
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+        }
+
+        url = reverse('api_create_observation_form', kwargs=url_kwargs)
+
+        post_data = {
+            'definition' : self.observation_form_json
+        }
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+
+
+
+class TestRetrieveObservationForm(WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+    @test_settings
+    def test_get(self):
+        
+        observation_form = self.create_observation_form()
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'observation_form_uuid' : self.observation_form_json['uuid'],
+            'version' : self.observation_form_json['version']
+        }
+
+        url = reverse('api_retrieve_observation_form', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # log in
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.assertEqual(response.data, self.observation_form_json)
+
+    @test_settings
+    def test_get_anonymous_observations(self):
+        
+        observation_form = self.create_observation_form()
+
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'observation_form_uuid' : self.observation_form_json['uuid'],
+            'version' : self.observation_form_json['version']
+        }
+
+        url = reverse('api_retrieve_observation_form', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, self.observation_form_json)
+
+
+    @test_settings
+    def test_get_fail(self):
+        
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'observation_form_uuid' : self.observation_form_json['uuid'],
+            'version' : self.observation_form_json['version']
+        }
+
+        url = reverse('api_retrieve_observation_form', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+
+class WithDatasetPostData:
+
+    def get_post_data(self, alternative_data=False):
+
+        data_creator = DataCreator()
+
+        dataset_data = data_creator.get_dataset_data(self.observation_form_json, alternative_data=alternative_data)
+
+        now = timezone.now()
+        now_str = now.strftime('%Y-%m-%d %H:%M:%S %z')
+
+        post_data = {
+            'observationFormUuid' : self.observation_form_json['uuid'],
+            'observationFormVersion' : self.observation_form_json['version'],
+            'data' : dataset_data,
+            'clientId' : 'test client',
+            'platform' : 'browser',
+            'createdAt' : now_str,
+        }
+
+        return post_data
+
+
+
+class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+
+    @test_settings
+    def test_post(self):
+        
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_create_dataset', kwargs=url_kwargs)
+
+        post_data = self.get_post_data()
+
+        qry = Dataset.objects.all()
+
+        self.assertFalse(qry.exists())
+
+        factory = APIRequestFactory()
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # log in
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        self.create_observation_form()
+
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+        dataset = qry.first()
+        self.assertEqual(dataset.user, self.user)
+
+
+    @test_settings
+    def test_post_ao(self):
+        
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+        }
+
+        url = reverse('api_create_dataset', kwargs=url_kwargs)
+
+        post_data = self.get_post_data()
+
+        qry = Dataset.objects.all()
+
+        self.assertFalse(qry.exists())
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        
+        self.create_observation_form()
+
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+        dataset = qry.first()
+        self.assertIsNone(dataset.user)
+
+
+
+class TestRetrieveDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+    
+    @test_settings
+    def test_get(self):
+        
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
+
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.assertEqual(response.data['uuid'], str(dataset.uuid))
+
+
+
+class TestUpdateDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+    
+    @test_settings
+    def test_update(self):
+        
+        observation_form = self.create_observation_form()
+
+        dataset = self.create_dataset(observation_form)
+        dataset.user = self.user
+        dataset.save()
+
+        secondary_user = self.create_secondary_user()
+
+        self.assertEqual(dataset.user, self.user)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+        post_data = self.get_post_data(alternative_data=True)
+        response = self.client.put(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # log in with wrong user
+        self.client.force_authenticate(user=secondary_user)
+
+        response = self.client.put(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        # log in correct user, client_id is irellevant
+        self.client.force_authenticate(user=self.user)
+
+        post_data['clientId'] = 'id differs from dataset'
+        response = self.client.put(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dataset.refresh_from_db()
+
+        self.assertEqual(dataset.data, underscoreize(post_data['data'], no_underscore_before_number=True))
+
+
+    @test_settings
+    def test_update_wrong_app(self):
+
+        observation_form = self.create_observation_form()
+
+        dataset = self.create_dataset(observation_form)
+        dataset.user = self.user
+        dataset.save()
+
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+        post_data = self.get_post_data(alternative_data=True)
+
+        # log in correct user
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.put(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+
+    @test_settings
+    def test_update_ao(self):
+        
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
+        dataset.app_uuid = self.ao_app.uuid
+        dataset.save()
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+
+        post_data = self.get_post_data(alternative_data=True)
+
+        response = self.client.put(url, post_data, format='json')
+
+        # wrong app assigned to dataset, 401 instead of 403 because user is not ligged in
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        # assign correct app
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+        post_data = self.get_post_data(alternative_data=True)
+
+        response = self.client.put(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        dataset.refresh_from_db()
+
+        self.assertEqual(dataset.data, underscoreize(post_data['data'], no_underscore_before_number=True))
+
+
+class TestDeleteDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+    
+    @test_settings
+    def test_destroy(self):
+        
+        observation_form = self.create_observation_form()
+
+        secondary_user = self.create_secondary_user()
+
+        dataset = self.create_dataset(observation_form)
+        dataset.user = self.user
+        dataset.save()
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+        # log in with wrong user
+        self.client.force_authenticate(user=secondary_user)
+
+        response = self.client.delete(url, {}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete(url, {}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+
+    @test_settings
+    def test_destroy_ao(self):
+        
+        observation_form = self.create_observation_form()
+
+        dataset = self.create_dataset(observation_form)
+        dataset.app_uuid = self.ao_app.uuid
+        dataset.save()
+
+
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'uuid' : str(dataset.uuid),
+        }
+
+        url = reverse('api_manage_dataset', kwargs=url_kwargs)
+
+
+        response = self.client.delete(url, {}, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        post_data = {
+            'clientId' : 'different client id'
+        }
+
+        response = self.client.delete(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        post_data = {
+            'clientId' : dataset.client_id
+        }
+
+        response = self.client.delete(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

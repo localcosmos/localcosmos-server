@@ -1,6 +1,5 @@
 from django.urls import include, path
 from rest_framework.urlpatterns import format_suffix_patterns
-
 from rest_framework_simplejwt.views import TokenRefreshView, TokenBlacklistView
 
 from . import views
@@ -20,4 +19,4 @@ urlpatterns = [
     path('app/<uuid:app_uuid>/', views.AppAPIHome.as_view(), name='app_api_home'),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])
+urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])

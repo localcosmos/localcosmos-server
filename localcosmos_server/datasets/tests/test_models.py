@@ -57,7 +57,7 @@ TEST_DATA_2 = {
         "properties": {},
         "reported_values": {
             "client_id": "f6a7f83a-7b2e-4fbc-8f1a-168904231aaf",
-            "client_platform": "browser",
+            "platform": "browser",
             "0f444e85-e31d-443d-afd3-2fa35df08ce3": {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1576236681011, "timezone_offset": -60}, "type": "Temporal"},
             "7e5c9390-61cf-4cb5-8b0f-9086b2f387ce": {"taxon_nuid": "006002009001005005002", "name_uuid": "77380de8-8087-41b4-9577-67b929593b0b", "taxon_source": "taxonomy.sources.col", "taxon_latname": "Larix decidua", "taxon_author":"Linnaeus"},
             "96e8ff3b-ffcc-4ccd-b81c-542f37ce53d0": None,
@@ -229,7 +229,6 @@ class TestDataset(WithValidationRoutine, WithDataset, WithApp, WithUser, TestCas
 
     def test_use_existing_client_id(self):
 
-        # emulate django_road and assign a user during the first dataset save(),
         # but the dataset contains an unknown client_id AND the platform is the browser
 
         user = self.create_user()
@@ -287,7 +286,7 @@ class TestDataset(WithValidationRoutine, WithDataset, WithApp, WithUser, TestCas
         alterations = {
             "reported_values": {
                 "client_id": TEST_CLIENT_ID,
-                "client_platform": "browser",
+                "platform": "browser",
                 "0f444e85-e31d-443d-afd3-2fa35df08ce3": {
                     "cron": {
                         "type": "timestamp",
