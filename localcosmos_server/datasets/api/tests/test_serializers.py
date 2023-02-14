@@ -1,11 +1,10 @@
 from django.test import TestCase
 
 from localcosmos_server.tests.common import test_settings, DataCreator
-from localcosmos_server.tests.mixins import WithApp
+from localcosmos_server.tests.mixins import WithApp, WithObservationForm
 
 from localcosmos_server.datasets.api.serializers import ObservationFormSerializer, DatasetSerializer
 
-from .mixins import WithObservationForm
 
 from localcosmos_server.datasets.models import ObservationForm
 
@@ -13,7 +12,7 @@ from rest_framework import serializers
 
 from django.utils import timezone
 
-import uuid
+import uuid, jsonschema
 
 
 class TestObservationformSerializer(WithObservationForm, TestCase):
@@ -176,5 +175,12 @@ class TestDatasetSerializer(WithObservationForm, WithApp, TestCase):
         self.assertEqual(dataset.platform, 'browser')
 
 
+class TestDatasetImagesSerializer(WithObservationForm, WithApp, TestCase):
 
+    @test_settings
+    def test_serialize(self):
+        pass
 
+    @test_settings
+    def test_deserialize(self):
+        pass

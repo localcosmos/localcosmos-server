@@ -9,7 +9,7 @@ urlpatterns = [
     path('', views.APIHome.as_view(), name='api_home'),
     path('user/manage/', views.ManageAccount.as_view()),
     path('user/delete/', views.DeleteAccount.as_view()),
-    path('user/register/', views.RegisterAccount.as_view()),
+    path('<uuid:app_uuid>/user/register/', views.RegisterAccount.as_view()),
     path('password/reset/', views.PasswordResetRequest.as_view()),
     # JSON WebToken
     path('token/', views.TokenObtainPairViewWithClientID.as_view(), name='token_obtain_pair'),

@@ -25,17 +25,15 @@ class LocalcosmosUserSerializer(serializers.ModelSerializer):
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
-    password2 = serializers.CharField(label=_('Password (again)'), write_only=True,
-                                      style={'input_type': 'password', 'placeholder':_('Password (again)')})
+    password2 = serializers.CharField()
 
-    first_name = serializers.CharField(label=_('First name (optional)'), required=False)
-    last_name = serializers.CharField(label=_('Surname (optional)'), required=False)
-    email = serializers.EmailField(label=_('Email address'), style={'placeholder':'you@example.com'})
-    email2 = serializers.EmailField(label=_('Email address (again)'), style={'placeholder':'you@example.com'})
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    email = serializers.EmailField()
+    email2 = serializers.EmailField()
 
-    client_id = serializers.CharField(label='', style={'input_type': 'hidden',})
-    platform = serializers.CharField(label='', style={'input_type': 'hidden',})
-    app_uuid = serializers.CharField(label='', style={'input_type': 'hidden',})
+    client_id = serializers.CharField()
+    platform = serializers.CharField()
 
     def validate_email(self, value):
         email_exists = User.objects.filter(email__iexact=value).exists()
@@ -83,7 +81,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password', 'password2', 'first_name', 'last_name', 'email', 'email2', 'client_id',
-                  'platform', 'app_uuid')
+                  'platform')
 
         extra_kwargs = {
             'password': {

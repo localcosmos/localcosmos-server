@@ -10,6 +10,8 @@ from localcosmos_server.api.serializer_fields import FlexImageField
 
 from django.utils.translation import gettext_lazy as _
 
+import jsonschema
+
 
 User = get_user_model()
 
@@ -22,8 +24,12 @@ class ObservationFormSerializer(serializers.Serializer):
     definition = serializers.JSONField()
 
     # validate the observation form according to the jsonschema
-    def validate_observation_form(self, value):
-        # validate the json
+    def validate_definition(self, value):
+
+        try:
+            is_valid = jsonschema.validate(value, ObservationForm.get_json_schema())
+        except jsonschema.exceptions.ValidationError as e:
+            raise serializers.ValidationError(e.message)
         return value
 
 
@@ -158,8 +164,6 @@ class DatasetField(serializers.PrimaryKeyRelatedField):
         
 
 class DatasetImagesSerializer(serializers.ModelSerializer):
-
-    app_uuid = serializers.UUIDField()
 
     # there is only 1 FK
     serializer_related_field = DatasetField

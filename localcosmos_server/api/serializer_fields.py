@@ -4,20 +4,6 @@ from rest_framework import serializers
     DatasetImagesSerializer
     - keep thumbnails in sync with [App][models.js].DatasetImages.fields.image.thumbnails
 '''
-APP_THUMBNAILS = {
-    "small" : {
-        "size" : [100, 100],
-        "type" : "cover"
-    }, 
-    "medium" : {
-        "size" : [400, 400],
-        "type" : "cover"
-    },
-    "full_hd" : {
-        "size" : [1920, 1080],
-        "type" : "contain"
-    }
-}
 
 class FlexImageField(serializers.ImageField):
 
@@ -27,6 +13,16 @@ class FlexImageField(serializers.ImageField):
 
         host = '{0}://{1}'.format(self.parent.request.scheme, self.parent.request.get_host())
 
+        image_urls = {
+            'imageUrl': {}
+        }
+
+        for size_name, relative_url in dataset_image.image_urls.items():
+
+            url = '{0}{1}'.format(host, relative_url)
+            image_urls['imageUrl'][size_name] = url
+
+        '''
         relative_url = image.url
         url = '{0}{1}'.format(host,relative_url)
         
@@ -44,5 +40,6 @@ class FlexImageField(serializers.ImageField):
 
             thumb_url = '{0}{1}'.format(host, relative_thumb_url)
             fleximage[name] = thumb_url
+        '''
 
-        return fleximage
+        return image_urls

@@ -27,7 +27,7 @@ from localcosmos_server.models import App
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
                             TokenObtainPairSerializerWithClientID)
 
-from .permissions import OwnerOnly
+from .permissions import OwnerOnly, AppMustExist
 
 from localcosmos_server.mails import send_registration_confirmation_email
 
@@ -52,6 +52,7 @@ class APIHome(APIView):
 
     def get(self, request, *args, **kwargs):
         return Response({'success':True})
+
 
 
 class APIDocumentation(APIView):
@@ -102,7 +103,7 @@ class RegisterAccount(ManageUserClient, APIView):
     User Account Registration, App specific
     """
 
-    permission_classes = ()
+    permission_classes = (AppMustExist,)
     renderer_classes = (JSONRenderer,)
     serializer_class = RegistrationSerializer
 
@@ -116,7 +117,7 @@ class RegisterAccount(ManageUserClient, APIView):
         }
 
         if serializer.is_valid():
-            app_uuid = serializer.validated_data['app_uuid']
+            app_uuid = kwargs['app_uuid']
             
             user = serializer.save()
 

@@ -33,7 +33,7 @@
             "role": "geographicReference",
             "definition": {
                 "widget": "PointOrAreaInput",
-                "required": true,
+                "required": false,
                 "isSticky": false,
                 "label": "Ort",
                 "helpText": "",
@@ -51,10 +51,10 @@
             "role": "temporalReference",
             "definition": {
                 "widget": "SelectDateTimeWidget",
-                "required": true,
+                "required": false,
                 "isSticky": false,
                 "label": "Zeitpunkt",
-                "helpText": null,
+                "helpText": "",
                 "initial": null,
                 "unit": null
             },
@@ -107,7 +107,7 @@
             "widgetAttrs": {
                 "min": 0.0,
                 "max": 10.0,
-                "step": "0.1"
+                "step": 0.1
             },
             "taxonomicRestrictions": []
         },
@@ -193,7 +193,7 @@
             "widgetAttrs": {
                 "min": 0.0,
                 "max": 10.0,
-                "step": "1"
+                "step": 1
             },
             "taxonomicRestrictions": []
         },
@@ -213,7 +213,7 @@
             },
             "position": 10,
             "widgetAttrs": {
-                "step": "0.01"
+                "step": 0.01
             },
             "taxonomicRestrictions": []
         },
@@ -284,6 +284,24 @@
             "position": 13,
             "widgetAttrs": {},
             "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "e28660e7-4895-44ff-bfd9-afd9b77ae772",
+            "fieldClass": "PictureField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "CameraAndAlbumWidget",
+                "required": false,
+                "isSticky": false,
+                "label": "Bilder",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": 14,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
         }
     ],
     "taxonomicRestrictions": [
@@ -298,6 +316,5 @@
     ],
     "taxonomicReference": "e615177e-b1ec-4a72-9a36-b895534e2c76",
     "geographicReference": "8570106e-4aca-4945-8288-1da449dc4e30",
-    "temporalReference": "77bc6cb8-ac35-4dc9-812c-a769c186b82f",
-    "isMulticontent": true
+    "temporalReference": "77bc6cb8-ac35-4dc9-812c-a769c186b82f"
 }

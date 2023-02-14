@@ -23,6 +23,8 @@ from PIL import Image, ImageOps
 
 import uuid, json, os
 
+from .json_schemas import OBSERVATION_FORM_SCHEMA
+
 
 # a list of usable dataset validation classes
 DATASET_VALIDATION_CLASSPATHS = getattr(settings, 'DATASET_VALIDATION_CLASSES', ())
@@ -69,16 +71,9 @@ class ObservationForm(models.Model):
     version = models.IntegerField()
     definition = models.JSONField()
 
-    @property
-    def json_schema(self):
-        return {
-            'uuid' : {
-                'type' : 'uuid',
-            },
-            'version' : {
-                'type' : 'integer',
-            }
-        }
+    @classmethod
+    def get_json_schema(cls):
+        return OBSERVATION_FORM_SCHEMA
 
     class Meta:
         unique_together=('uuid', 'version')
@@ -363,12 +358,12 @@ class Dataset(ModelWithTaxon):
         if created == True:
             self.validate()
      
-    '''
+
     def __str__(self):
         if self.taxon_latname:
             return '{}'.format(self.taxon_latname)
         return str(_('Unidentified'))
-    '''
+    
     
 
     class Meta:
@@ -410,12 +405,33 @@ class DatasetValidationRoutine(ModelWithTaxon):
 
 
 
-def dataset_image_path(instance, filename):
-    return 'datasets/{0}/images/{1}/{2}'.format(str(instance.dataset.uuid), instance.field_uuid, filename)
 
 # Dataset Images have to be compatible with GenericForms
 # - reference the field uuid
-# - supply a thumbnail
+# - supply 1x 2x 4x image sizes
+# - the numbers represent the width of the large side
+IMAGE_SIZES = {
+    'regular' : {
+        '1x' : 250,
+        '2x' : 500,
+        '4x' : 1000,
+    },
+    'large' : {
+        '4x' : 1000,
+        '8x' : 2000,
+    },
+    'all' : {
+        '1x' : 250,
+        '2x' : 500,
+        '4x' : 1000,
+        '8x' : 2000,
+    }
+}
+
+def dataset_image_path(instance, filename):
+    return 'datasets/{0}/images/{1}/{2}'.format(str(instance.dataset.uuid), instance.field_uuid, filename)
+
+
 class DatasetImages(models.Model):
 
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
@@ -425,6 +441,46 @@ class DatasetImages(models.Model):
     @property
     def user(self):
         return self.dataset.user
+
+    @property
+    def thumbnails_folder(self):
+
+        folder_path = os.path.dirname(self.image.path)
+        
+        thumbfolder = os.path.join(folder_path, 'thumbnails')
+        if not os.path.isdir(thumbfolder):
+            os.makedirs(thumbfolder)
+
+        return thumbfolder
+
+
+
+    def get_image_url(self, size):
+        
+        size = (size, size)
+
+
+        image = Image.open(self.image.path)
+
+        image.thumbnail(size)
+
+        thumbnail_path = os.path.join(self.thumbnails_folder, filename)
+
+
+    @property
+    def image_urls(self):
+
+        image_urls = {}
+        
+        for size_name, image_size in IMAGE_SIZES['all']:
+            # create the resized image, respecting which side is the longer one
+            image_url = self.get_image_url(image_size)
+            image_urls[size_name] = image_url
+
+        return image_urls
+
+
+    '''
 
     def get_thumb_filename(self, size=100):
 
@@ -523,6 +579,7 @@ class DatasetImages(models.Model):
     # full hd image, 1920x1080 or 1080x1920
     def full_hd(self):
         return self.resized('fullhd', max_size=[1920,1080])
+    '''
 
 
     def __str__(self):
