@@ -87,19 +87,6 @@ class DatasetSerializer(serializers.Serializer):
         self.app_uuid = app_uuid
         super().__init__(*args, **kwargs)
 
-    '''
-    def get_thumbnail(self, obj):
-
-        image = DatasetImages.objects.filter(dataset=obj).first()
-        
-        if image:
-            # App clients need the full url
-            relative_url = image.thumbnail(size=200)
-            url = '{0}://{1}{2}'.format(self.request.scheme, self.request.get_host(), relative_url)
-            return url
-        
-        return None
-    '''
 
     def validate(self, data):
         
@@ -113,6 +100,47 @@ class DatasetSerializer(serializers.Serializer):
             raise serializers.ValidationError(_('Observation Form does not exist'))
 
         return data
+
+
+    '''
+        validate data according to the observation form
+    '''
+    def validate_data(self, value):
+        return True
+
+
+    def validate_PointJSONField(self, field, value):
+        pass
+
+    def validate_GeoJSONField(self, field, value):
+        pass
+
+    def validate_TemporalJSONField(self, field, value):
+        pass
+
+
+    def validate_TaxonField(self, field, value):
+        pass
+
+    
+    def validate_CharField(self, field, value):
+        return True
+
+    def validate_DecimalField(self, field, value):
+        pass
+
+    def validate_FloatField(self, field, value):
+        pass
+
+    def validate_IntegerField(self, field, name):
+        pass
+
+
+    def validate_ChoiceField(self, field, name):
+        pass
+
+    def validate_MultipleChoiceField(self, field, value):
+        pass
 
 
     def create(self, validated_data):

@@ -97,3 +97,8 @@ SIMPLE_JWT = {
 LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API = False
 
 LOGIN_REDIRECT_URL = '/server/control-panel/'
+
+# temporary el_pagination fix
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
