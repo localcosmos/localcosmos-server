@@ -106,41 +106,41 @@ class DatasetSerializer(serializers.Serializer):
         validate data according to the observation form
     '''
     def validate_data(self, value):
-        return True
+        return value
 
 
     def validate_PointJSONField(self, field, value):
-        pass
+        return value
 
     def validate_GeoJSONField(self, field, value):
-        pass
+        return value
 
     def validate_TemporalJSONField(self, field, value):
-        pass
+        return value
 
 
     def validate_TaxonField(self, field, value):
-        pass
+        return value
 
     
     def validate_CharField(self, field, value):
-        return True
+        return value
 
     def validate_DecimalField(self, field, value):
-        pass
+        return value
 
     def validate_FloatField(self, field, value):
-        pass
+        return value
 
-    def validate_IntegerField(self, field, name):
-        pass
+    def validate_IntegerField(self, field, value):
+        return value
 
 
-    def validate_ChoiceField(self, field, name):
-        pass
+    def validate_ChoiceField(self, field, value):
+        return value
 
     def validate_MultipleChoiceField(self, field, value):
-        pass
+        return value
 
 
     def create(self, validated_data):
