@@ -170,7 +170,7 @@ class DatasetSerializer(serializers.Serializer):
                     break
             
             if not field:
-                raise serializers.ValidationError('Invalid field uuid: %(field_uuid)s') % {'field_uuid': field_uuid}
+                raise serializers.ValidationError(_('Invalid field uuid: %(field_uuid)s') % {'field_uuid': field_uuid})
 
             required = field['definition']['required']
             if required == True and value is None:
