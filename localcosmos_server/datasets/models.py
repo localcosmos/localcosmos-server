@@ -1,9 +1,12 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import connection
+
+from django.contrib.gis.db.models.functions import Centroid
 
 User = get_user_model()
 
@@ -16,8 +19,6 @@ from localcosmos_server.taxonomy.generic import ModelWithTaxon
 from localcosmos_server.utils import datetime_from_cron
 
 from djangorestframework_camel_case.util import underscoreize
-
-from datetime import datetime, timezone, timedelta
 
 from PIL import Image, ImageOps
 
@@ -137,6 +138,10 @@ class Dataset(ModelWithTaxon):
     # a list of errors
     validation_errors = models.JSONField(null=True)
     is_valid = models.BooleanField(default=False)
+
+
+    # fields for publication
+    is_published = models.BooleanField(default=True)
     
 
     ### flags that should not reside inside the data json because they can differ between client and server
@@ -189,6 +194,7 @@ class Dataset(ModelWithTaxon):
                 
             else:
                 self.is_valid = True
+                self.is_published = True
                 self.validation_step = COMPLETED_VALIDATION_STEP
 
                 self.save()
@@ -272,15 +278,25 @@ class Dataset(ModelWithTaxon):
 
             reported_value = self.data[geographic_reference_field_uuid]
 
+            srid_str = reported_value['geometry']['crs']['properties']['name']
+            srid = int(srid_str.split(':')[-1])
+
+            geojson = json.dumps(reported_value['geometry'])
+            geos_geometry = GEOSGeometry(geojson, srid=srid)
+
             if reported_value['geometry']['type'] == 'Point':
 
-                longitude = reported_value['geometry']['coordinates'][0]
-                latitude = reported_value['geometry']['coordinates'][1]
-                coords = GEOSGeometry('POINT({0} {1})'.format(longitude, latitude), srid=4326)
+                #longitude = reported_value['geometry']['coordinates'][0]
+                #latitude = reported_value['geometry']['coordinates'][1]
+                #coords = GEOSGeometry('POINT({0} {1})'.format(longitude, latitude), srid=srid)
                 
-                self.coordinates = coords
-                self.geographic_reference = coords
+                self.coordinates = geos_geometry
+                self.geographic_reference = geos_geometry
 
+            elif reported_value['geometry']['type'] == 'Polygon':
+                
+                self.geographic_reference = geos_geometry
+                self.coordinates = self.geographic_reference.centroid
 
         # update temporal reference
         temporal_reference_field_uuid = self.observation_form.definition['temporalReference']
@@ -289,7 +305,6 @@ class Dataset(ModelWithTaxon):
 
             reported_value = self.data[temporal_reference_field_uuid]
 
-            # {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1564566855177}, "type": "Temporal"}}
             if reported_value['cron']['type'] == 'timestamp' and reported_value['cron']['format'] == 'unixtime':
                 self.timestamp = datetime_from_cron(reported_value)
 
@@ -331,19 +346,22 @@ class Dataset(ModelWithTaxon):
         image = DatasetImages.objects.filter(dataset=self).first()
 
         if image:
-            return image.thumbnail()
+            url = image.get_image_url(250, square=True)
+            return url
         
         return None
 
     # this is not the validation routine, but the check for general localcosmos requirements
     def validate_requirements(self):
-        if self.data is None:
+        if not self.data:
             raise ValueError('Dataset needs at least some data')
 
     def save(self, *args, **kwargs):
 
         created = False
         if not self.pk:
+            if not self.created_at:
+                self.created_at = timezone.now()
             created = True
 
         # validate the JSON
@@ -351,6 +369,9 @@ class Dataset(ModelWithTaxon):
         
         # update columns
         self.update_redundant_columns()
+
+        if settings.LOCALCOSMOS_SERVER_PUBLISH_INVALID_DATA == False:
+            self.is_published = False
 
         # this will run the validator
         super().save(*args, **kwargs)
@@ -363,7 +384,6 @@ class Dataset(ModelWithTaxon):
         if self.taxon_latname:
             return '{}'.format(self.taxon_latname)
         return str(_('Unidentified'))
-    
     
 
     class Meta:
@@ -434,37 +454,72 @@ def dataset_image_path(instance, filename):
 
 class DatasetImages(models.Model):
 
+    resized_folder_name = 'resized'
+
     dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
     field_uuid = models.UUIDField()
     image = models.ImageField(max_length=255, upload_to=dataset_image_path)
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     @property
     def user(self):
         return self.dataset.user
 
     @property
-    def thumbnails_folder(self):
+    def client_id(self):
+        return self.dataset.client_id
+
+    @property
+    def app_uuid(self):
+        return self.dataset.app_uuid
+
+    @property
+    def resized_folder(self):
 
         folder_path = os.path.dirname(self.image.path)
         
-        thumbfolder = os.path.join(folder_path, 'thumbnails')
-        if not os.path.isdir(thumbfolder):
-            os.makedirs(thumbfolder)
+        resized_folder = os.path.join(folder_path, self.resized_folder_name)
+        if not os.path.isdir(resized_folder):
+            os.makedirs(resized_folder)
 
-        return thumbfolder
-
-
-
-    def get_image_url(self, size):
-        
-        size = (size, size)
+        return resized_folder
 
 
-        image = Image.open(self.image.path)
+    def get_resized_filename(self, size, square=False):
 
-        image.thumbnail(size)
+        filename = os.path.basename(self.image.path)
+        blankname, ext = os.path.splitext(filename)
 
-        thumbnail_path = os.path.join(self.thumbnails_folder, filename)
+        if square:
+            filename = '{0}-{1}-square{2}'.format(blankname, size, ext)
+        else:
+            filename = '{0}-{1}{2}'.format(blankname, size, ext)
+        return filename
+
+
+    def get_image_url(self, size, square=False):
+
+        filename = self.get_resized_filename(size, square=square)
+
+        resized_path = os.path.join(self.resized_folder, filename)
+
+        if not os.path.isfile(resized_path):
+
+            max_size = (size, size)
+
+            image = Image.open(self.image.path)
+
+            if square:
+                image = ImageOps.fit(image, max_size, Image.BICUBIC)
+            else:
+                image.thumbnail(max_size)
+
+            image.save(resized_path, image.format)
+
+        image_url = os.path.join(os.path.dirname(self.image.url), self.resized_folder_name, filename)
+
+        return image_url
 
 
     @property
@@ -472,114 +527,12 @@ class DatasetImages(models.Model):
 
         image_urls = {}
         
-        for size_name, image_size in IMAGE_SIZES['all']:
+        for size_name, image_size in IMAGE_SIZES['all'].items():
             # create the resized image, respecting which side is the longer one
             image_url = self.get_image_url(image_size)
             image_urls[size_name] = image_url
 
         return image_urls
-
-
-    '''
-
-    def get_thumb_filename(self, size=100):
-
-        filename = os.path.basename(self.image.path)
-        blankname, ext = os.path.splitext(filename)
-
-        thumbname = '{0}-{1}{2}'.format(blankname, size, ext)
-        return thumbname
-
-
-    def get_thumbfolder(self):
-
-        folder_path = os.path.dirname(self.image.path)
-        
-        thumbfolder = os.path.join(folder_path, 'thumbnails')
-        if not os.path.isdir(thumbfolder):
-            os.makedirs(thumbfolder)
-
-        return thumbfolder
-    
-
-    def get_image_format(self, image):
-
-        if image.format:
-            image_format = image.format
-        else:
-            image_format = 'JPEG'
-
-        return image_format
-    
-
-    # thumbnails are always square
-    def thumbnail(self, size=100):
-
-        thumb_size = (size, size)
-
-        image_path = self.image.path
-        
-        thumbfolder = self.get_thumbfolder()
-
-        thumbname = self.get_thumb_filename(size)
-        thumbpath = os.path.join(thumbfolder, thumbname)
-
-        if not os.path.isfile(thumbpath):
-
-            imageFile = Image.open(image_path)
-
-            thumb_format = self.get_image_format(imageFile)
-
-            thumb = ImageOps.fit(imageFile, thumb_size, Image.BICUBIC)
-
-            thumb.save(thumbpath, thumb_format)
-        
-        thumburl = os.path.join(os.path.dirname(self.image.url), 'thumbnails', thumbname)
-        return thumburl
-
-
-    def resized(self, name, max_size=[1920, 1080]):
-
-        thumbfolder = self.get_thumbfolder()
-
-        filename = os.path.basename(self.image.path)
-        blankname, ext = os.path.splitext(filename)
-        thumbname = '{0}-{1}{2}'.format(filename, name, ext)
-
-        thumbpath = os.path.join(thumbfolder, thumbname)
-
-        if max_size[0] <= max_size[1]:
-            short_edge = max_size[0]
-            long_edge = max_size[1]
-        else:
-            short_edge = max_size[1]
-            long_edge = max_size[0]
-
-        if not os.path.isfile(thumbpath):
-
-            image_path = self.image.path
-            imageFile = Image.open(image_path)
-
-            if imageFile.width >= imageFile.height:
-                size = (long_edge, short_edge)
-            else:
-                size = (short_edge, long_edge)
-
-            if imageFile.width > size[0] or imageFile.height > size[1]:
-                imageFile.thumbnail(size, Image.BICUBIC)
-
-            image_format = self.get_image_format(imageFile)
-                
-            imageFile.save(thumbpath, image_format)
-
-        thumburl = os.path.join(os.path.dirname(self.image.url), 'thumbnails', thumbname)
-        return thumburl
-
-        
-    # full hd image, 1920x1080 or 1080x1920
-    def full_hd(self):
-        return self.resized('fullhd', max_size=[1920,1080])
-    '''
 
 
     def __str__(self):

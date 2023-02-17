@@ -1,28 +1,37 @@
 from django.conf import settings
 from django.urls import reverse
 
-import re
+from datetime import datetime, timezone, timedelta
 
 
 def get_domain_name(request):
     setup_domain_name = request.get_host().split(request.get_port())[0].split(':')[0]
     return setup_domain_name
 
-from datetime import datetime, timezone, timedelta
-def datetime_from_cron(cron):
-    # fromtimestamp takes seconds
 
-    delta_minutes = 0 - cron['cron'].get('timezone_offset', 0)
-    
+def timestamp_from_utc_with_offset(utc_milliseconds, offset):
+
+    delta_minutes = 0-offset
+
     tz = timezone(
         timedelta(minutes=delta_minutes)
     )
 
-    utc = cron['cron']['timestamp']/1000
-
-    local = utc + (delta_minutes * 60)
+    # fromtimestamp takes seconds
+    local = (utc_milliseconds / 1000) + (delta_minutes * 60)
 
     timestamp = datetime.fromtimestamp(local, tz=tz)
+
+    return timestamp
+
+
+def datetime_from_cron(cron):
+
+    offset = cron['cron'].get('timezoneOffset', 0)
+
+    utc = cron['cron']['timestamp']
+
+    timestamp = timestamp_from_utc_with_offset(utc, offset)
 
     return timestamp
 

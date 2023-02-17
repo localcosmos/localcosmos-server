@@ -1,14 +1,29 @@
 from rest_framework import generics
 
-from .serializers import DatasetSerializer, ObservationFormSerializer
+from .serializers import DatasetSerializer, ObservationFormSerializer, DatasetListSerializer, DatasetImagesSerializer
 from .permissions import AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly
 from localcosmos_server.api.permissions import AppMustExist
 
-from localcosmos_server.datasets.models import Dataset, ObservationForm
+from localcosmos_server.datasets.models import Dataset, ObservationForm, DatasetImages
 
-from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.parser import CamelCaseJSONParser, CamelCaseMultiPartParser
+
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiExample, OpenApiParameter
+
+from .examples import get_observation_form_example
 
 
+@extend_schema_view(
+    post=extend_schema(
+        examples=[
+          OpenApiExample(
+                'Observation Form',
+                description='observation form with all possible fields',
+                value={'definition': get_observation_form_example()}
+            ),
+        ],
+    )
+)
 class CreateObservationForm(generics.CreateAPIView):
 
     serializer_class = ObservationFormSerializer
@@ -16,6 +31,17 @@ class CreateObservationForm(generics.CreateAPIView):
     parser_classes = (CamelCaseJSONParser,)
 
 
+@extend_schema_view(
+    get=extend_schema(
+        examples=[
+          OpenApiExample(
+                'Observation Form',
+                description='observation form with all possible fields',
+                value={'definition': get_observation_form_example()}
+            ),
+        ]
+    )
+)
 class RetrieveObservationForm(generics.RetrieveAPIView):
 
     serializer_class = ObservationFormSerializer
@@ -56,6 +82,7 @@ class AppUUIDSerializerMixin:
         return serializer_class(self.kwargs['app_uuid'], *args, **kwargs)
 
 
+
 class CreateDataset(AppUUIDSerializerMixin, generics.CreateAPIView):
     
     serializer_class = DatasetSerializer
@@ -70,12 +97,12 @@ class CreateDataset(AppUUIDSerializerMixin, generics.CreateAPIView):
             serializer.save()
 
 
-class ManageDataset(AppUUIDSerializerMixin,generics.RetrieveUpdateDestroyAPIView):
+class ManageDataset(AppUUIDSerializerMixin, generics.RetrieveUpdateDestroyAPIView):
 
     lookup_field = 'uuid'
     
     serializer_class = DatasetSerializer
-    permission_classes = (AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
+    permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
     parser_classes = (CamelCaseJSONParser,)
 
     queryset = Dataset.objects.all()
@@ -86,12 +113,34 @@ class ManageDataset(AppUUIDSerializerMixin,generics.RetrieveUpdateDestroyAPIView
         return [permission() for permission in self.permission_classes]
 
 
-'''
-class DatasetList(AppUUIDSerializerMixin,generics.ListAPIView):
 
+class CreateDatasetImage(generics.CreateAPIView):
+
+    serializer_class = DatasetImagesSerializer
+    permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly)
+    parser_classes = (CamelCaseMultiPartParser,)
+
+
+class DestroyDatasetImage(AppUUIDSerializerMixin, generics.DestroyAPIView):
+    
     serializer_class = DatasetSerializer
+    permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
+    parser_classes = (CamelCaseJSONParser,)
+
+    queryset = DatasetImages.objects.all()
+
+
+
+class DatasetList(generics.ListAPIView):
+
+    serializer_class = DatasetListSerializer
     parser_classes = (CamelCaseJSONParser,)
     permission_classes = []
 
-    queryset = Dataset.objects.all()
-'''
+    def get_queryset(self):
+        queryset = Dataset.objects.filter(app_uuid=self.kwargs['app_uuid'])
+        return queryset
+
+
+
+

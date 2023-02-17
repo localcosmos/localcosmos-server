@@ -70,6 +70,7 @@ REST_FRAMEWORK = {
     ),
     'JSON_UNDERSCOREIZE': {
         'no_underscore_before_number': True,
+        'ignore_fields': ('data', 'definition', 'image'),
     },
 }
 
@@ -97,6 +98,9 @@ SIMPLE_JWT = {
 LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API = False
 
 LOGIN_REDIRECT_URL = '/server/control-panel/'
+
+
+LOCALCOSMOS_SERVER_PUBLISH_INVALID_DATA = True
 
 # temporary el_pagination fix
 import django

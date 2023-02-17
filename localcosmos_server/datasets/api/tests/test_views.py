@@ -1,13 +1,14 @@
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework import status
 
 from django.urls import reverse
 
-from localcosmos_server.tests.common import test_settings, DataCreator
-from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm
+from localcosmos_server.tests.common import test_settings, DataCreator, TEST_IMAGE_PATH, TEST_CLIENT_ID, TEST_PLATFORM
+from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia
 
-from localcosmos_server.datasets.models import ObservationForm, Dataset
+from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages
 
 from django.utils import timezone
 
@@ -111,7 +112,8 @@ class TestRetrieveObservationForm(WithObservationForm, WithUser, WithApp, Create
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        self.assertEqual(response.data, self.observation_form_json)
+        self.assertEqual(response.data['definition'], self.observation_form_json)
+
 
     @test_settings
     def test_get_anonymous_observations(self):
@@ -129,7 +131,7 @@ class TestRetrieveObservationForm(WithObservationForm, WithUser, WithApp, Create
         response = self.client.get(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, self.observation_form_json)
+        self.assertEqual(response.data['definition'], self.observation_form_json)
 
 
     @test_settings
@@ -161,11 +163,13 @@ class WithDatasetPostData:
         now_str = now.strftime('%Y-%m-%d %H:%M:%S %z')
 
         post_data = {
-            'observationFormUuid' : self.observation_form_json['uuid'],
-            'observationFormVersion' : self.observation_form_json['version'],
+            'observation_form' : {
+                'uuid': self.observation_form_json['uuid'],
+                'version': self.observation_form_json['version'],
+            },  
             'data' : dataset_data,
-            'clientId' : 'test client',
-            'platform' : 'browser',
+            'clientId' : TEST_CLIENT_ID,
+            'platform' : TEST_PLATFORM,
             'createdAt' : now_str,
         }
 
@@ -207,6 +211,7 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
         self.create_observation_form()
 
         response = self.client.post(url, post_data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertTrue(qry.exists())
@@ -243,6 +248,34 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
 
         dataset = qry.first()
         self.assertIsNone(dataset.user)
+
+
+    @test_settings
+    def test_post_ao_no_created_at(self):
+
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+        }
+
+        url = reverse('api_create_dataset', kwargs=url_kwargs)
+
+        post_data = self.get_post_data()
+        del post_data['createdAt']
+
+        qry = Dataset.objects.all()
+
+        self.assertFalse(qry.exists())
+        
+        self.create_observation_form()
+
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+        dataset = qry.first()
+        self.assertIsNone(dataset.user)
+
 
 
 
@@ -312,7 +345,7 @@ class TestUpdateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
 
         dataset.refresh_from_db()
 
-        self.assertEqual(dataset.data, underscoreize(post_data['data'], no_underscore_before_number=True))
+        self.assertEqual(dataset.data, post_data['data'])
 
 
     @test_settings
@@ -380,7 +413,7 @@ class TestUpdateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
 
         dataset.refresh_from_db()
 
-        self.assertEqual(dataset.data, underscoreize(post_data['data'], no_underscore_before_number=True))
+        self.assertEqual(dataset.data, post_data['data'])
 
 
 class TestDeleteDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
@@ -455,3 +488,187 @@ class TestDeleteDataset(WithDatasetPostData, WithObservationForm, WithUser, With
         response = self.client.delete(url, post_data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class TestCreateDatasetImage(WithMedia, WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin,
+    APITestCase):
+
+
+    def get_post_data(self, dataset):
+
+        field_uuid = self.get_image_field_uuid(dataset.observation_form)
+
+        image = SimpleUploadedFile(name='test_image.jpg', content=open(TEST_IMAGE_PATH, 'rb').read(),
+                                   content_type='image/jpeg')
+
+        post_data = {
+            'dataset': dataset.pk,
+            'fieldUuid': field_uuid,
+            'clientId': dataset.client_id,
+            'image': image,
+        }
+
+        return post_data
+
+    @test_settings
+    def test_post(self):
+
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset.user = self.user
+        dataset.save()
+        
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_create_dataset_image', kwargs=url_kwargs)
+
+        post_data = self.get_post_data(dataset)
+
+        qry = DatasetImages.objects.all()
+
+        self.assertFalse(qry.exists())
+
+        response = self.client.post(url, post_data, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.force_authenticate(user=self.user)
+
+        post_data = self.get_post_data(dataset)
+        response = self.client.post(url, post_data, format='multipart')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+        dataset_image = qry.first()
+        self.assertEqual(dataset_image.dataset, dataset)
+        self.assertEqual(str(dataset_image.field_uuid), post_data['fieldUuid'])
+
+
+    @test_settings
+    def test_post_ao(self):
+        
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+        }
+
+        url = reverse('api_create_dataset_image', kwargs=url_kwargs)
+
+        post_data = self.get_post_data(dataset)
+
+        qry = DatasetImages.objects.all()
+
+        self.assertFalse(qry.exists())
+
+        response = self.client.post(url, post_data, format='multipart')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertTrue(qry.exists())
+
+        dataset_image = qry.first()
+        self.assertEqual(dataset_image.dataset, dataset)
+        self.assertEqual(str(dataset_image.field_uuid), post_data['fieldUuid'])
+
+
+
+class TestDestroyDatasetImage(WithMedia, WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin,
+    APITestCase):
+
+    @test_settings
+    def test_post(self):
+
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset.user = self.user
+        dataset.save()
+        dataset_image = self.create_dataset_image(dataset)
+
+        qry = DatasetImages.objects.filter(dataset=dataset)
+
+        self.assertTrue(qry.exists())
+        
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'pk': dataset_image.pk,
+        }
+
+        url = reverse('api_destroy_dataset_image', kwargs=url_kwargs)
+
+        response = self.client.delete(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        self.assertFalse(qry.exists())
+
+
+    @test_settings
+    def test_post_ao(self):
+        
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset.app_uuid = self.ao_app.uuid
+        dataset.save()
+
+        dataset_image = self.create_dataset_image(dataset)
+
+        qry = DatasetImages.objects.filter(dataset=dataset)
+        self.assertTrue(qry.exists())
+        
+        url_kwargs = {
+            'app_uuid' : self.ao_app.uuid,
+            'pk': dataset_image.pk,
+        }
+
+        url = reverse('api_destroy_dataset_image', kwargs=url_kwargs)
+
+        response = self.client.delete(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        post_data = {
+            'clientId': 'wrong client id',
+        }
+
+        response = self.client.delete(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        post_data = {
+            'clientId': dataset.client_id,
+        }
+
+        response = self.client.delete(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class TestDatasetList(WithMedia, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+    @test_settings
+    def test_get(self):
+
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset_image = self.create_dataset_image(dataset)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_dataset_list', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        #print(response.data)
+        dataset = response.data['results'][0]

@@ -27,9 +27,9 @@ class AnonymousObservationsPermission(permissions.BasePermission):
             app_state = 'review'
         
         app_settings = app.get_settings(app_state=app_state)
-        
-        allow_anonymous_observations = app_settings['OPTIONS'].get('allowAnonymousObservations', False)
 
+        allow_anonymous_observations = app_settings['OPTIONS'].get('allowAnonymousObservations', False)
+        
         if allow_anonymous_observations == False and request.user.is_authenticated == False:
             return False
 

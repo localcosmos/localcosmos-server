@@ -1,0 +1,320 @@
+{
+    "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+    "version": 1,
+    "options": {
+        "isDefault": true
+    },
+    "globalOptions": {},
+    "name": "Baummeldung",
+    "slug": "47-baummeldung",
+    "fields": [
+        {
+            "uuid": "e615177e-b1ec-4a72-9a36-b895534e2c76",
+            "fieldClass": "TaxonField",
+            "version": 1,
+            "role": "taxonomicReference",
+            "definition": {
+                "widget": "BackboneTaxonAutocompleteWidget",
+                "required": true,
+                "isSticky": false,
+                "label": "Baumart",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": -3,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "8570106e-4aca-4945-8288-1da449dc4e30",
+            "fieldClass": "GeoJSONField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "PointOrAreaInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Ort",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": -2,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "77bc6cb8-ac35-4dc9-812c-a769c186b82f",
+            "fieldClass": "DateTimeJSONField",
+            "version": 1,
+            "role": "temporalReference",
+            "definition": {
+                "widget": "SelectDateTimeWidget",
+                "required": false,
+                "isSticky": false,
+                "label": "Zeitpunkt",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": -1,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "ac4b0a7a-8fd0-439f-8874-0f146409d478",
+            "fieldClass": "CharField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "TextInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Textfeld",
+                "helpText": null,
+                "initial": null,
+                "unit": null
+            },
+            "position": 4,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Quercus",
+                    "taxonAuthor": "",
+                    "nameUuid": "a8fb9529-9794-46ea-9d42-6a67577f5bde",
+                    "taxonNuid": "00600800600p003007",
+                    "restrictionType": "exists"
+                }
+            ]
+        },
+        {
+            "uuid": "a3217a33-4c76-4d34-befd-d2f5195d1d66",
+            "fieldClass": "DecimalField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "MobileNumberInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Dezifest",
+                "helpText": "Hilfetext",
+                "initial": null,
+                "unit": "m"
+            },
+            "position": 5,
+            "widgetAttrs": {
+                "min": 0.0,
+                "max": 10.0,
+                "step": 0.1
+            },
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "d451ca95-2324-413e-861d-71dd8aaa6e15",
+            "fieldClass": "MultipleChoiceField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "CheckboxSelectMultiple",
+                "required": false,
+                "isSticky": false,
+                "label": "Multi Choice",
+                "helpText": "",
+                "initial": null,
+                "unit": null,
+                "choices": [
+                    [
+                        "wahl 1",
+                        "wahl 1"
+                    ],
+                    [
+                        "wahl 2",
+                        "wahl 2"
+                    ]
+                ]
+            },
+            "position": 6,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "35ed00ea-c364-455c-8765-c13ab9665307",
+            "fieldClass": "PointJSONField",
+            "version": 1,
+            "role": "geographicReference",
+            "definition": {
+                "widget": "MobilePositionInput",
+                "required": true,
+                "isSticky": false,
+                "label": "Punkt",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": 7,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "95663afc-2f14-4087-9722-248cee51ba11",
+            "fieldClass": "BooleanField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "CheckboxInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Checkbox",
+                "helpText": "help text",
+                "initial": null,
+                "unit": null
+            },
+            "position": 8,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "1b35044c-2f26-4d92-85ff-b56a667a1741",
+            "fieldClass": "IntegerField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "MobileNumberInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Integer",
+                "helpText": "",
+                "initial": null,
+                "unit": "cm"
+            },
+            "position": 9,
+            "widgetAttrs": {
+                "min": 0.0,
+                "max": 10.0,
+                "step": 1
+            },
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "a4af5d5f-17c8-45b7-9a31-9065aa9b183c",
+            "fieldClass": "FloatField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "MobileNumberInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Float",
+                "helpText": "",
+                "initial": null,
+                "unit": ""
+            },
+            "position": 10,
+            "widgetAttrs": {
+                "step": 0.01
+            },
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "42fbbaf9-6d6b-4632-b9e4-32012f3dfb38",
+            "fieldClass": "CharField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "TextInput",
+                "required": false,
+                "isSticky": false,
+                "label": "Textfeld",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": 11,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "de59b22f-6cd2-45fc-980b-2e25349fd481",
+            "fieldClass": "CharField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "Textarea",
+                "required": false,
+                "isSticky": false,
+                "label": "Kommentar",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": 12,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "2187e7d8-be9f-449b-b07d-aac768e8a64a",
+            "fieldClass": "ChoiceField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "Select",
+                "required": false,
+                "isSticky": false,
+                "label": "Auswahlfeld",
+                "helpText": "",
+                "initial": "wahl 1",
+                "unit": null,
+                "choices": [
+                    [
+                        "",
+                        "-----"
+                    ],
+                    [
+                        "wahl 1",
+                        "wahl 1"
+                    ],
+                    [
+                        "wahl 2",
+                        "wahl 2"
+                    ]
+                ]
+            },
+            "position": 13,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        },
+        {
+            "uuid": "e28660e7-4895-44ff-bfd9-afd9b77ae772",
+            "fieldClass": "PictureField",
+            "version": 1,
+            "role": "regular",
+            "definition": {
+                "widget": "CameraAndAlbumWidget",
+                "required": false,
+                "isSticky": false,
+                "label": "Bilder",
+                "helpText": "",
+                "initial": null,
+                "unit": null
+            },
+            "position": 14,
+            "widgetAttrs": {},
+            "taxonomicRestrictions": []
+        }
+    ],
+    "taxonomicRestrictions": [
+        {
+            "taxonSource": "taxonomy.sources.col",
+            "taxonLatname": "Plantae",
+            "taxonAuthor": "",
+            "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+            "taxonNuid": "006",
+            "restrictionType": "exists"
+        }
+    ],
+    "taxonomicReference": "e615177e-b1ec-4a72-9a36-b895534e2c76",
+    "geographicReference": "35ed00ea-c364-455c-8765-c13ab9665307",
+    "temporalReference": "77bc6cb8-ac35-4dc9-812c-a769c186b82f"
+}

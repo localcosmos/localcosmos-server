@@ -8,7 +8,8 @@ from localcosmos_server.models import LocalcosmosUser, App, SecondaryAppLanguage
 from localcosmos_server.datasets.models import Dataset, DatasetImages
 
 from localcosmos_server.tests.common import (powersetdic, TEST_MEDIA_ROOT, TEST_IMAGE_PATH, TESTAPP_NAO_ABSOLUTE_PATH,
-    TESTAPP_AO_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID, TEST_OBSERVATION_FORM_JSON, DataCreator)
+    TESTAPP_AO_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID, TEST_OBSERVATION_FORM_JSON, DataCreator,
+    TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID, TEST_TIMESTAMP)
 
 from django.utils import timezone
 
@@ -113,6 +114,9 @@ class WithObservationForm:
         with open(TEST_OBSERVATION_FORM_JSON, 'rb') as form_file:
             self.observation_form_json = json.loads(form_file.read())
 
+        with open(TEST_OBSERVATION_FORM_POINT_JSON, 'rb') as point_form_file:
+            self.observation_form_point_json = json.loads(point_form_file.read())
+
 
     def create_observation_form(self, observation_form_json=None):
 
@@ -145,7 +149,7 @@ class WithObservationForm:
             observation_form = observation_form,
             data = test_data,
             created_at = timezone.now(),
-            client_id = 'test client',
+            client_id = TEST_CLIENT_ID,
             platform = 'browser',
             user = user,
         )
@@ -153,6 +157,38 @@ class WithObservationForm:
         dataset.save()
 
         return dataset
+
+
+    def get_image_field_uuid(self, observation_form):
+
+        field_uuid = None
+
+        for field in observation_form.definition['fields']:
+            if field['fieldClass'] == 'PictureField':
+                field_uuid = field['uuid']
+                break
+        
+        return field_uuid
+
+
+    def create_dataset_image(self, dataset, image_path=TEST_IMAGE_PATH):
+
+        image_field_uuid = self.get_image_field_uuid(dataset.observation_form)
+
+        image = SimpleUploadedFile(name='test_image.jpg', content=open(image_path, 'rb').read(),
+                                   content_type='image/jpeg')
+
+        dataset_image = DatasetImages(
+            dataset = dataset,
+            field_uuid = image_field_uuid,
+            image = image,
+        )
+
+        dataset_image.save()
+
+        return dataset_image
+
+
 
 
 '''
@@ -355,8 +391,6 @@ class WithTemplateContent:
 
         return view, request
         
-        
-    
 
 class CommonSetUp:
     

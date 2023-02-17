@@ -1,6 +1,6 @@
 OBSERVATION_FORM_SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://localcosmos.rg/observation-form.schema.json",
+    "$id": "https://localcosmos.org/observation-form.schema.json",
     "title": "Observation form",
     "description": "A Local Cosmos Observation Form",
     "type": "object",
@@ -67,6 +67,8 @@ OBSERVATION_FORM_SCHEMA = {
     "required": [ "uuid", "version", "name", "slug", "fields", "taxonomicReference", "geographicReference",
                 "temporalReference" ],
 
+    "additionalProperties": False,
+
     "$defs": {
         "taxonomicRestriction": {
             "type": "object",
@@ -91,7 +93,8 @@ OBSERVATION_FORM_SCHEMA = {
                     "type": "string",
                     "enum": ["exists", "required", "optional"]
                 }
-            }
+            },
+            "additionalProperties": False,
         },
         "FieldBase": {
             "type": "object",
@@ -572,4 +575,178 @@ OBSERVATION_FORM_SCHEMA = {
             }
         }
     }
+}
+
+CRS_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["name"]
+        },
+        "properties": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "enum": ["EPSG:4326"]
+                }
+            },
+            "required": ["name"]
+        }
+    },
+    "required": ["type", "properties"]
+}
+
+
+POINT_GEOMETRY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "crs": CRS_SCHEMA,
+        "type": {
+            "type": "string",
+            "enum": ["Point"],
+        },
+        "coordinates": {
+            "type": "array",
+            "items": {
+                "type": "number"
+            },
+            "minContains": 2,
+            "maxContains": 2
+        }
+    },
+    "required": ["crs", "type", "coordinates"]
+}
+
+POLYGON_GEOMETRY_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "crs": CRS_SCHEMA,
+        "type": {
+            "type": "string",
+            "enum": ["Polygon"],
+        },
+        "coordinates": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "minContains": 2,
+                        "maxContains": 2
+                    }
+                }
+            }
+        }
+    },
+    "required": ["crs", "type", "coordinates"]
+}
+
+
+POINT_JSON_FIELD_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://localcosmos.org/point.schema.json",
+    "title": "Point JSON Field",
+    "description": "A geojson field for a point",
+    "type": "object",
+    "properties": {
+        "type" : {
+            "type": "string",
+            "enum": ["Feature"]
+        },
+        "geometry": POINT_GEOMETRY_SCHEMA,
+        "properties": {
+            "type": "object",
+            "properties": {
+                "accuracy": {
+                    "type": "number"
+                }
+            }
+        }
+    },
+    "required": ["type", "geometry"]
+}
+
+GEOJSON_FIELD_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://localcosmos.org/geojson.schema.json",
+    "title": "GeoJSON Field",
+    "description": "A geojson field for a point or a polygon",
+    "type": "object",
+    "properties": {
+        "type" : {
+            "type": "string",
+            "enum": ["Feature"]
+        },
+        "geometry": {
+            "anyOf": [POINT_GEOMETRY_SCHEMA, POLYGON_GEOMETRY_SCHEMA]
+        }
+    },
+    "required": ["type", "geometry"]
+}
+
+
+TEMPORAL_JSON_FIELD_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://localcosmos.org/temporal.schema.json",
+    "title": "Temporal JSON Field",
+    "description": "A json field representing data and or time",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": ["Temporal"]
+        },
+        "cron": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["timestamp"]
+                },
+                "format": {
+                    "type": "string",
+                    "enum": ["unixtime"]
+                },
+                "timestamp": {
+                    "type": "integer"
+                },
+                "timezoneOffset": {
+                    "type": "integer"
+                }
+            },
+            "required": ["type", "format", "timestamp", "timezoneOffset"]
+        }
+    },
+    "required": ["type", "cron"]
+}
+
+TAXON_JSON_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://localcosmos.org/taxon.schema.json",
+    "title": "Taxon Field",
+    "description": "A json field representing a Taxon",
+    "type": "object",
+    "properties": {
+        "taxonSource": {
+            "type": "string"
+        },
+        "taxonLatname": {
+            "type": "string"
+        },
+        "taxonAuthor": {
+            "type": "string"
+        },
+        "taxonNuid": {
+            "type": "string"
+        },
+        "nameUuid": {
+            "type": "string"
+        }
+    },
+    "required": ["taxonSource", "taxonLatname", "taxonNuid", "nameUuid"],
+    "additionalProperties": False
 }

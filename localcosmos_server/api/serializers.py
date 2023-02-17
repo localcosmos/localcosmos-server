@@ -20,7 +20,7 @@ class LocalcosmosUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'uuid', 'username', 'first_name', 'last_name', 'email')
+        fields = ('uuid', 'username', 'first_name', 'last_name', 'email')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
