@@ -1,6 +1,7 @@
 recursive-include localcosmos_server/app_admin/static *
 recursive-include localcosmos_server/app_admin/templates *
 recursive-include localcosmos_server/datasets/templates *
+recursive-include localcosmos_server/datasets/api/example_files *
 recursive-include localcosmos_server/template_content/static *
 recursive-include localcosmos_server/template_content/templates *
 recursive-include localcosmos_server/server_control_panel/templates *
