@@ -1,7 +1,9 @@
-from rest_framework import generics
+from rest_framework import generics, mixins
 
 from .serializers import DatasetSerializer, ObservationFormSerializer, DatasetListSerializer, DatasetImagesSerializer
-from .permissions import AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly
+from .permissions import (AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly,
+                            AnonymousObservationsPermissionOrGet)
+
 from localcosmos_server.api.permissions import AppMustExist
 
 from localcosmos_server.datasets.models import Dataset, ObservationForm, DatasetImages
@@ -11,6 +13,8 @@ from djangorestframework_camel_case.parser import CamelCaseJSONParser, CamelCase
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiExample, OpenApiParameter
 
 from .examples import get_observation_form_example
+
+import uuid
 
 
 @extend_schema_view(
@@ -83,10 +87,9 @@ class AppUUIDSerializerMixin:
 
 
 
-class CreateDataset(AppUUIDSerializerMixin, generics.CreateAPIView):
+class ListCreateDataset(generics.ListCreateAPIView):
     
-    serializer_class = DatasetSerializer
-    permission_classes = (AppMustExist, AnonymousObservationsPermission,)
+    permission_classes = (AppMustExist, AnonymousObservationsPermissionOrGet,)
     parser_classes = (CamelCaseJSONParser,)
 
     def perform_create(self, serializer):
@@ -95,6 +98,24 @@ class CreateDataset(AppUUIDSerializerMixin, generics.CreateAPIView):
             serializer.save(user=self.request.user)
         else:
             serializer.save()
+
+    def get_queryset(self):
+        queryset = Dataset.objects.filter(app_uuid=self.kwargs['app_uuid'])
+        return queryset
+
+    def get_serializer(self, *args, **kwargs):
+
+        kwargs.setdefault('context', self.get_serializer_context())
+
+        if getattr(self, 'swagger_fake_view', False):  # drf-yasg comp
+            app_uuid = str(uuid.uuid4())
+            self.kwargs['app_uuid'] = app_uuid
+
+        if self.request.method == 'GET':
+            return DatasetListSerializer(*args, **kwargs)
+        
+        return DatasetSerializer(self.kwargs['app_uuid'], *args, **kwargs)
+
 
 
 class ManageDataset(AppUUIDSerializerMixin, generics.RetrieveUpdateDestroyAPIView):
@@ -120,6 +141,14 @@ class CreateDatasetImage(generics.CreateAPIView):
     permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly)
     parser_classes = (CamelCaseMultiPartParser,)
 
+    def create(self, request, *args, **kwargs):
+
+        dataset = Dataset.objects.get(uuid=kwargs['uuid'])
+
+        request.data['dataset'] = str(dataset.uuid)
+        
+        return super().create(request, *args, **kwargs)
+
 
 class DestroyDatasetImage(AppUUIDSerializerMixin, generics.DestroyAPIView):
     
@@ -128,19 +157,3 @@ class DestroyDatasetImage(AppUUIDSerializerMixin, generics.DestroyAPIView):
     parser_classes = (CamelCaseJSONParser,)
 
     queryset = DatasetImages.objects.all()
-
-
-
-class DatasetList(generics.ListAPIView):
-
-    serializer_class = DatasetListSerializer
-    parser_classes = (CamelCaseJSONParser,)
-    permission_classes = []
-
-    def get_queryset(self):
-        queryset = Dataset.objects.filter(app_uuid=self.kwargs['app_uuid'])
-        return queryset
-
-
-
-

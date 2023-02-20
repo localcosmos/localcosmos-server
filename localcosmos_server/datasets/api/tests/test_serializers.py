@@ -204,7 +204,7 @@ class TestDatasetImagesSerializer(WithObservationForm, WithMedia, WithApp, TestC
                                         content_type='image/jpeg')
 
         data = {
-            'dataset': dataset.pk,
+            'dataset': str(dataset.uuid),
             'field_uuid': image_field_uuid,
             'client_id': dataset.client_id,
             'image': image,
@@ -239,7 +239,7 @@ class TestDatasetImagesSerializer(WithObservationForm, WithMedia, WithApp, TestC
         #print(serializer.data)
 
         self.assertEqual(serializer.data['id'], dataset_image.id)
-        self.assertEqual(serializer.data['dataset']['id'], dataset_image.dataset.id)
+        self.assertEqual(serializer.data['dataset'], str(dataset_image.dataset.uuid))
 
         for size in ['1x', '2x', '4x']:
             self.assertIn(size, serializer.data['image_url'])

@@ -187,7 +187,7 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
             'app_uuid' : self.app.uuid,
         }
 
-        url = reverse('api_create_dataset', kwargs=url_kwargs)
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
 
         post_data = self.get_post_data()
 
@@ -227,7 +227,7 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
             'app_uuid' : self.ao_app.uuid,
         }
 
-        url = reverse('api_create_dataset', kwargs=url_kwargs)
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
 
         post_data = self.get_post_data()
 
@@ -257,7 +257,7 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
             'app_uuid' : self.ao_app.uuid,
         }
 
-        url = reverse('api_create_dataset', kwargs=url_kwargs)
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
 
         post_data = self.get_post_data()
         del post_data['createdAt']
@@ -520,6 +520,7 @@ class TestCreateDatasetImage(WithMedia, WithDatasetPostData, WithObservationForm
         
         url_kwargs = {
             'app_uuid' : self.app.uuid,
+            'uuid' : str(dataset.uuid),
         }
 
         url = reverse('api_create_dataset_image', kwargs=url_kwargs)
@@ -555,6 +556,7 @@ class TestCreateDatasetImage(WithMedia, WithDatasetPostData, WithObservationForm
         
         url_kwargs = {
             'app_uuid' : self.ao_app.uuid,
+            'uuid' : str(dataset.uuid),
         }
 
         url = reverse('api_create_dataset_image', kwargs=url_kwargs)
@@ -595,6 +597,7 @@ class TestDestroyDatasetImage(WithMedia, WithDatasetPostData, WithObservationFor
         
         url_kwargs = {
             'app_uuid' : self.app.uuid,
+            'uuid' : str(dataset.uuid),
             'pk': dataset_image.pk,
         }
 
@@ -629,6 +632,7 @@ class TestDestroyDatasetImage(WithMedia, WithDatasetPostData, WithObservationFor
         
         url_kwargs = {
             'app_uuid' : self.ao_app.uuid,
+            'uuid' : str(dataset.uuid),
             'pk': dataset_image.pk,
         }
 
@@ -665,7 +669,7 @@ class TestDatasetList(WithMedia, WithObservationForm, WithUser, WithApp, Created
             'app_uuid' : self.app.uuid,
         }
 
-        url = reverse('api_dataset_list', kwargs=url_kwargs)
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
 
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

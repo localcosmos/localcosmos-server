@@ -34,6 +34,16 @@ class AnonymousObservationsPermission(permissions.BasePermission):
             return False
 
         return True
+
+class AnonymousObservationsPermissionOrGet(AnonymousObservationsPermission):
+
+    def has_permission(self, request, view):
+
+        if request.method == 'GET':
+            return True
+            
+        return super().has_permission(request, view)
+
         
 
 

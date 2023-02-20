@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 
 from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages, IMAGE_SIZES
@@ -60,19 +60,6 @@ class ObservationFormSerializer(serializers.Serializer):
 
 
 
-'''
-    return the DatasetImages.Dataset as a serialized Dataset
-'''
-class DatasetField(serializers.PrimaryKeyRelatedField):
-
-    def to_representation(self, value):
-        data = {
-            'id' : value.pk
-        }
-
-        return data
-
-
 @extend_schema_field(OpenApiTypes.OBJECT)
 class ObservationFormField(serializers.Field):
 
@@ -96,10 +83,33 @@ class ObservationFormField(serializers.Field):
         return data
         
 
+
+class UUIDRelatedField(serializers.RelatedField):
+
+    default_error_messages = {
+        'does_not_exist': _('Object with uuid={value} does not exist.'),
+        'invalid': _('Invalid value.'),
+    }
+
+    def to_internal_value(self, data):
+        queryset = self.get_queryset()
+        try:
+            return queryset.get(**{'uuid': data})
+        except ObjectDoesNotExist:
+            self.fail('does_not_exist', value=str(data))
+        except (TypeError, ValueError):
+            self.fail('invalid')
+
+    def to_representation(self, obj):
+        return str(getattr(obj, 'uuid'))
+
+
 class DatasetImagesSerializer(serializers.ModelSerializer):
 
-    # there is only 1 FK
-    serializer_related_field = DatasetField
+    dataset = UUIDRelatedField(
+        many=False,
+        queryset=Dataset.objects.all()
+     )
 
     image_url = serializers.SerializerMethodField()
 
@@ -113,7 +123,7 @@ class DatasetImagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DatasetImages
-        fields = '__all__'#['id', 'field_uuid', 'dataset', 'image', 'image_url', 'client_id']
+        fields = ['id', 'dataset', 'field_uuid', 'image', 'image_url', 'client_id']
 
 
 '''
@@ -366,6 +376,10 @@ class TaxonSerializer(serializers.Serializer):
 class DatasetListSerializer(serializers.ModelSerializer):
 
     taxon = serializers.SerializerMethodField()
+
+    def __init__(self, app_uuid, *args, **kwargs):
+        self.app_uuid = app_uuid
+        super().__init__(*args, **kwargs)
 
     def get_taxon(self, instance):
 
