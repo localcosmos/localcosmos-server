@@ -29,6 +29,7 @@ class WithUser:
     test_superuser_email = 'testsuperuser@localcosmos.org'
 
     test_first_name = 'First Name'
+    test_last_name = 'Last Name'
 
     def create_user(self):
         user = LocalcosmosUser.objects.create_user(self.test_username, self.test_email, self.test_password)

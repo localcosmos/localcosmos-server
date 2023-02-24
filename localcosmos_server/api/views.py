@@ -10,6 +10,7 @@
 from django.contrib.auth import logout
 from django.utils.translation import gettext_lazy as _
 
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
@@ -34,6 +35,8 @@ from localcosmos_server.mails import send_registration_confirmation_email
 from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients
 
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
+
 from drf_spectacular.utils import extend_schema, inline_serializer
 
 
@@ -53,13 +56,6 @@ class APIHome(APIView):
     def get(self, request, *args, **kwargs):
         return Response({'success':True})
 
-
-
-class APIDocumentation(APIView):
-    """
-    - displays endpoints
-    """
-    pass
 
 
 class ManageUserClient:
@@ -104,6 +100,7 @@ class RegisterAccount(ManageUserClient, APIView):
     """
 
     permission_classes = (AppMustExist,)
+    parser_classes = (CamelCaseJSONParser,)
     renderer_classes = (JSONRenderer,)
     serializer_class = RegistrationSerializer
 
@@ -119,7 +116,7 @@ class RegisterAccount(ManageUserClient, APIView):
         if serializer.is_valid():
             app_uuid = kwargs['app_uuid']
             
-            user = serializer.save()
+            user = serializer.create(serializer.validated_data)
 
             # create the client
             platform = serializer.validated_data['platform']
@@ -129,7 +126,7 @@ class RegisterAccount(ManageUserClient, APIView):
             self.update_datasets(user, client)
 
             request.user = user
-            context['user'] = self.serializer_class(user).data
+            context['user'] = LocalcosmosUserSerializer(user).data
             context['success'] = True
 
             # send registration email
@@ -148,7 +145,7 @@ class RegisterAccount(ManageUserClient, APIView):
         return Response(context)
 
 
-class ManageAccount(APIView):
+class ManageAccount(generics.RetrieveUpdateDestroyAPIView):
     '''
         Manage Account
         - authenticated users only
@@ -159,6 +156,7 @@ class ManageAccount(APIView):
 
     permission_classes = (IsAuthenticated, OwnerOnly)
     authentication_classes = (JWTAuthentication,)
+    parser_classes = (CamelCaseJSONParser,)
     renderer_classes = (JSONRenderer,)
     serializer_class = LocalcosmosUserSerializer
 
@@ -167,53 +165,11 @@ class ManageAccount(APIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def get(self, request, *args, **kwargs):
-        serializer = self.serializer_class(request.user)
-        return Response({
-            'user': serializer.data
-        })
 
-    # this is for updating only
-    def put(self, request, *args, **kwargs):
-        
-        serializer_context = { 'request': request }        
-        serializer = self.serializer_class(data=request.data, instance=request.user, context=serializer_context)
-
-        context = { 
-            'success' : False,
-        }
-        
-        if serializer.is_valid():
-            serializer.save()
-            context['success'] = True
-            context['user'] = serializer.data
-        else:
-            context['errors'] = serializer.errors
-            return Response(context, status=status.HTTP_400_BAD_REQUEST)
-            
-        return Response(context)    
-
-
-class DeleteAccount(APIView):
-    '''
-        Delete Account
-        - authenticated users only
-        - owner only
-        - [DELETE] deletes the account
-    '''
-
-    permission_classes = (IsAuthenticated, OwnerOnly)
-    authentication_classes = (JWTAuthentication,)
-    renderer_classes = (JSONRenderer,)
-    serializer_class = LocalcosmosUserSerializer
-
-    def delete(self, request, *args, **kwargs):
-
-        request.user.delete()
+    def delete(self, request, *args, **kwargs):        
+        response = super().delete(request, *args, **kwargs)
         logout(request)
-
-        context = { 'success': True }
-        return Response(context)
+        return response
     
 
 # a user enters his email address or username and gets an email
@@ -224,9 +180,8 @@ class PasswordResetRequest(APIView):
     permission_classes = ()
 
     def post(self, request, *args, **kwargs):
-
-        serializer_context = { 'request': request }        
-        serializer = self.serializer_class(data=request.data, context=serializer_context)
+       
+        serializer = self.serializer_class(data=request.data)
 
         context = {'success': False}
         

@@ -1,4 +1,3 @@
-from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework import status
@@ -11,8 +10,6 @@ from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationFo
 from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages
 
 from django.utils import timezone
-
-from djangorestframework_camel_case.util import underscoreize
 
 
 class CreatedUsersMixin:
