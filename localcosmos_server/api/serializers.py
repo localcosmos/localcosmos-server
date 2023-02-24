@@ -51,15 +51,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return data
 
 
-    def get_initial(self):
-        initial = super().get_initial()
-
-        lc_initial = getattr(self, 'lc_initial', {})
-
-        initial.update(lc_initial)
-
-        return initial
-
     def create(self, validated_data):
         extra_fields = {}
 
@@ -83,17 +74,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ('username', 'password', 'password2', 'first_name', 'last_name', 'email', 'email2', 'client_id',
                   'platform')
 
-        extra_kwargs = {
-            'password': {
-                'write_only': True,
-                'style' : {
-                    'input_type': 'password',
-                    'placeholder': 'Password'
-                },
-            },
-        }
-
-
 
 class PasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(label=_('Email address'), style={'placeholder':'you@example.com'})
+    email = serializers.EmailField()
