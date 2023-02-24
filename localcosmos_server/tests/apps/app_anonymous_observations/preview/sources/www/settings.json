@@ -120,6 +120,24 @@
             }
         }
     },
+    "templateContent": {
+		"navgations": {
+			"main": {
+				"name": "Main navigation",
+				"offline": false
+			},
+			"footer": {
+				"name": "Footer navigation",
+				"offline": true
+			}
+		},
+		"requiredSites": {
+			"home": {
+				"allowedTemplates": ["home"],
+				"offline": true
+			}
+		}
+	},
     "cordova": {
         "platforms": {
             "android": "android@10.1.2",

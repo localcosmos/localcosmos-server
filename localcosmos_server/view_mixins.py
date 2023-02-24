@@ -12,12 +12,31 @@ class AppMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
+    def set_primary_language(self):
+        self.primary_language = self.app.primary_language
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
             'app' : self.app,
         })
         return context
+
+
+class FormLanguageMixin:
+
+    def dispatch(self, request, *args, **kwargs):
+        self.set_primary_language()
+        return super().dispatch(request, *args, **kwargs)
+
+    def set_primary_language(self):
+        raise NotImplementedError('FormLanguageMixin needs set_primary_language')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['language'] = self.primary_language
+        return kwargs
 
     
 '''
@@ -227,4 +246,3 @@ class ContentImageViewMixin(LicencingFormViewMixin):
 
     def set_taxon(self, request):
         self.taxon = None
-

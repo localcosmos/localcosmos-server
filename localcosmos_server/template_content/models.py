@@ -16,10 +16,11 @@ from.Templates import Template
 PUBLISHED_IMAGE_TYPE_PREFIX = 'published-'
 
 TEMPLATE_TYPES = (
-    ('page', _('Page')), 
+    ('page', _('Page')),
+    ('feature', _('Feature')),
 )
 
-NAVIGATION_LINK_NAME_MAX_LENGTH = 30
+NAVIGATION_LINK_NAME_MAX_LENGTH = 20
 TITLE_MAX_LENGTH = 255
 
 def get_template_content_root(template_content):
@@ -52,20 +53,20 @@ def get_published_template_definition_path(template_content, filename):
 '''
 class TemplateContentManager(models.Manager):
 
-    def create(self, creator, app, language, draft_title, draft_navigation_link_name, template_name,
-               template_type):
+    def create(self, creator, app, language, draft_title, template_name,
+               template_type, assignment=None):
         
         template_content = self.model(
             app = app,
             draft_template_name = template_name,
             template_type = template_type,
-            tag = slugify(draft_title),
+            assignment=assignment,
         )
         template_content.save()
 
         # create the localized template content
         localized_template_content = LocalizedTemplateContent.objects.create(creator, template_content, language,
-                                            draft_title, draft_navigation_link_name)
+                                            draft_title)
 
         return template_content
 
@@ -97,7 +98,7 @@ class TemplateContentManager(models.Manager):
 
 '''
     TemplateContent
-    - a "hybrid" component: during build, all template contens are built for offline use
+    - a "hybrid" component: during build, all template contents are built for offline use
     - template content which is not available offline can be fetched using the API
     - this can only work if some sort of menu is being fetched from the server
     - template content does not have to be part of a menu
@@ -121,8 +122,8 @@ class TemplateContent(models.Model):
 
     template_type = models.CharField(max_length=20, choices=TEMPLATE_TYPES)
 
-    # if a taxon is added to this content, it receives this tag during build
-    tag = models.CharField(max_length=100, editable=False)
+    # frontend specific assignment, e.g. home page or footer
+    assignment = models.CharField(max_length=255, null=True)
 
     draft_template_name = models.CharField(max_length=355) # stores the actual template (e.g. .html)
 
@@ -244,13 +245,21 @@ class TemplateContent(models.Model):
 
 
     def __str__(self):
+
+        primary_locale = self.get_locale(self.app.primary_language)
+        if primary_locale:
+            return primary_locale.draft_title
         return self.name
+
+
+    class Meta:
+        unique_together=('app', 'assignment')
 
 
 MAX_SLUG_LENGTH = 100
 class LocalizedTemplateContentManager(models.Manager):
 
-    def create(self, creator, template_content, language, draft_title, draft_navigation_link_name):
+    def create(self, creator, template_content, language, draft_title):
         
         slug = self.generate_slug(draft_title)
 
@@ -259,7 +268,6 @@ class LocalizedTemplateContentManager(models.Manager):
             template_content = template_content,
             language = language,
             draft_title = draft_title,
-            draft_navigation_link_name = draft_navigation_link_name,
             slug = slug,
         )
         
@@ -302,9 +310,6 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
     draft_title = models.CharField(max_length=TITLE_MAX_LENGTH)
     published_title = models.CharField(max_length=TITLE_MAX_LENGTH, null=True)
-
-    draft_navigation_link_name = models.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH)
-    published_navigation_link_name = models.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH, null=True)
 
     slug = models.SlugField(unique=True)# localized slug
 
@@ -412,7 +417,6 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
     def publish(self):
         # set title
         self.published_title = self.draft_title
-        self.published_navigation_link_name = self.draft_navigation_link_name
         self.published_contents = self.draft_contents
 
         # currently, images are not translatable. This can change in the future
@@ -454,16 +458,78 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         unique_together=('template_content', 'language')
 
 
+
+'''
+    Navigations
+    - TemplateContent navigation has to be fetched using the API
+    - there is no offline TemplateContent navigation
+    - there can be offline template content pages (e.g. landing page)
 '''
 class Navigation(models.Model):
 
     app = models.ForeignKey(App, on_delete=models.CASCADE)
     name = models.CharField(max_length=355)
+    navigation_type = models.CharField(max_length=355)
+    options = models.JSONField(null=True)
 
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        unique_together = ('app', 'navigation_type')
+
+'''
+    The frontend can provide urls, e.g. to identification keys or other contents
+'''
 class NavigationEntry(models.Model):
 
     navigation = models.ForeignKey(Navigation, on_delete=models.CASCADE)
-    template_content = models.ForeignKey(TemplateContent, on_delete=models.CASCADE)
-    parent_entry = models.ForeignKey('self', on_delete=models.CASCADE)
-'''
+    template_content = models.ForeignKey(TemplateContent, on_delete=models.CASCADE, null=True)
+
+    position = models.IntegerField(default=1)
+
+    url = models.CharField(max_length=355, null=True)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+    options = models.JSONField(null=True)
+
+    @property
+    def children(self):
+        return NavigationEntry.objects.filter(parent=self)
+
+    @property
+    def descendants(self):
+
+        descendants = []
+
+        stack = [list(self.children)]
+        while stack: 
+            for entry in stack.pop():
+                descendants.append(entry)
+                if entry.children:
+                    stack.append(list(entry.children))
+
+        return descendants
+
+
+    def get_locale(self, language):
+        return LocalizedNavigationEntry.objects.filter(navigation_entry=self, language=language).first()
+
+    def __str__(self):
+        primary_language = self.navigation.app.primary_language
+        primary_locale = self.get_locale(primary_language)
+        return primary_locale.link_name
+
+
+    class Meta:
+        ordering=['position', 'pk'] 
+
+
+class LocalizedNavigationEntry(models.Model):
+    
+    navigation_entry = models.ForeignKey(NavigationEntry, on_delete=models.CASCADE)
+    language = models.CharField(max_length=15)
+    link_name = models.CharField(max_length=355)
+
+    class Meta:
+        unique_together = ('navigation_entry', 'language')

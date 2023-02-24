@@ -7,7 +7,6 @@ from content_licencing.models import ContentLicenceRegistry
 class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField()
-    navigationLinkName = serializers.SerializerMethodField()
     templateName = serializers.SerializerMethodField()
     version = serializers.SerializerMethodField()
     templateUrl = serializers.SerializerMethodField()
@@ -34,13 +33,6 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
         if preview == True:
             return localized_template_content.draft_title
         return localized_template_content.published_title
-
-    def get_navigationLinkName(self, localized_template_content):
-        preview = self.context.get('preview', True)
-        if preview == True:
-            return localized_template_content.draft_navigation_link_name
-
-        return localized_template_content.published_navigation_link_name
 
     def get_templateName(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'templateName')
@@ -102,7 +94,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalizedTemplateContent
-        fields = ['title', 'navigationLinkName', 'templateName', 'version', 'templateUrl', 'contents']
+        fields = ['title', 'templateName', 'version', 'templateUrl', 'contents']
 
 
 class ContentLicenceSerializer(serializers.ModelSerializer):

@@ -1,0 +1,32 @@
+{% extends 'localcosmos_server/modals/modal_form.html' %}
+{% load i18n localcosmos_tags %}
+
+{% block title %}{% if navigation_entry %}{% blocktrans %}Manage {{ navigation_entry }}{% endblocktrans %}{% else %}{% trans 'Create navigation entry' %}{% endif %}{% endblock %}
+
+{% block action %}{% if navigation_entry %}{% url 'manage_template_content_navigation_entry' app.uid navigation.pk navigation_entry.pk %}{% else %}{% url 'create_template_content_navigation_entry' app.uid navigation.id %}{% endif %}{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/save.html' %}
+{% endblock %}
+
+{% block body %}
+    {% if success is True %}
+
+    {% else %}
+    	{% render_bootstrap_form form %}
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+	{% if success %}
+		<script>
+			$("#Modal").modal("hide");
+			$.get("{% url 'get_template_content_navigation_entries' app.uid navigation.pk %}", function(html){
+                var container_id = "navigation-entries";
+                $("#" + container_id).html(html);
+                ajaxify(container_id);
+				{% include 'template_content/snippets/navigation_entry_ordering.html' %}
+            });
+		</script>
+	{% endif %}
+{% endblock %}

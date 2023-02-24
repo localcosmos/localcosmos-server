@@ -1,0 +1,33 @@
+{% load localcosmos_tags i18n %}
+<div id="entries-{{ navigation_entries.0.id }}" data-store-positions-url="{% url 'store_object_order' navigation_entries.0|ctype_id %}">
+    {% for entry in navigation_entries %}
+        <div id="ctype-{{ entry|ctype_id }}-{{ entry.id }}" class="row" data-object-id="{{ entry.id }}">
+            <div class="col-12 {% if entry.parent %}pl-5{% endif %}">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        {{ entry }}
+
+                        <div class="btn-group dropup">
+                            <button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'Manage' %}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item xhr" data-url="{% url 'manage_template_content_navigation_entry' app.uid navigation.pk entry.pk %}" ajax-target="ModalContent">{% trans 'Edit' %}</a>
+                                <a class="dropdown-item xhr" href="{% url 'delete_template_content_navigation_entry' entry.pk %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-center move-naventry-up-button" data-targetid="ctype-{{ entry|ctype_id }}-{{ entry.id }}">&#x25B2; {% trans 'Move up' %}</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-center move-naventry-down-button" data-targetid="ctype-{{ entry|ctype_id }}-{{ entry.id }}">&#x25BC; {% trans 'Move down' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if entry.children %}
+                    {% with navigation_entries=entry.children %}
+                        {% include 'template_content/ajax/navigation_entries_tree.html' %}
+                    {% endwith %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

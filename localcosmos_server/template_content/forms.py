@@ -1,9 +1,10 @@
+from django.conf import settings
 from django import forms
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
-from .models import NAVIGATION_LINK_NAME_MAX_LENGTH
+from .models import NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigation, NavigationEntry
 
 from .Templates import Template, Templates
 
@@ -18,11 +19,8 @@ User = get_user_model()
 
 class TemplateContentFormCommon(LocalizeableForm):
     draft_title = forms.CharField(label=_('Title'))
-    draft_navigation_link_name = forms.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH,
-            label=_('Name for links in navigation menus'),
-            help_text=_('Max %(characters)s characters. If this content shows up in a navigation menu, this name will be shown as the link.') % {'characters' : NAVIGATION_LINK_NAME_MAX_LENGTH})
 
-    localizeable_fields = ['draft_title', 'draft_navigation_link_name']
+    localizeable_fields = ['draft_title']
 
 
 class CreateTemplateContentForm(TemplateContentFormCommon):
@@ -33,6 +31,7 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
 
         self.app = app
         self.template_type = template_type
+        self.assignment = kwargs.pop('assginment', None)
         
         super().__init__(*args, **kwargs)
 
@@ -47,6 +46,10 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
                 choice = (template_name, template.definition['templateName'])
                 choices.append(choice)
         self.fields['template_name'].choices = choices
+
+    def clean(self):
+        # chekc assignment
+        pass
 
 
 # translations initially do not supply a localized_template_content
@@ -295,7 +298,85 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
                     self.layoutable_full_fields.add(field['name'])
 
 
-
 class TranslateTemplateContentForm(ManageLocalizedTemplateContentForm):
-
     pass
+
+
+class ManageNavigationForm(LocalizeableForm):
+
+    name = forms.CharField(max_length=355)
+    navigation_type = forms.ChoiceField()
+
+    localizeable_fields = ['name']
+
+    def __init__(self, app, *args, **kwargs):
+        self.app = app
+        self.navigation = kwargs.pop('navigation', None)
+        super().__init__(*args, **kwargs)
+        # read navigation_type choices from frontend
+        frontend_settings = app.get_settings()
+        navigations = frontend_settings['templateContent']['navigations']
+
+        choices = []
+
+        for navigation_type, definition in navigations.items():
+
+            if settings.LOCALCOSMOS_PRIVATE == True and definition['offline'] == True:
+                continue
+
+            choice = (navigation_type, definition['name'])
+            choices.append(choice)
+
+        self.fields['navigation_type'].choices = choices
+
+
+    def clean_navigation_type(self):
+        
+        navigation_type = self.cleaned_data['navigation_type']
+
+        exists = Navigation.objects.filter(app=self.app, navigation_type=navigation_type).first()
+        if exists and exists != self.navigation:
+            raise forms.ValidationError(_('A navigation of type %(navigation_type)s already exists') % {
+                'navigation_type': navigation_type
+            })
+
+        return navigation_type
+
+
+
+# a form for selecting a template content as a navigation entry
+class ManageNavigationEntryForm(LocalizeableForm):
+
+    link_name = forms.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH)
+    template_content = forms.ModelChoiceField(label=_('Page'), queryset=TemplateContent.objects.all())
+    parent = forms.ModelChoiceField(queryset=NavigationEntry.objects.all(), required=False)
+    
+    localizeable_fields = ['link_name']
+
+    def __init__(self, navigation, *args, **kwargs):
+
+        self.navigation_entry = kwargs.pop('navigation_entry', None)
+
+        super().__init__(*args, **kwargs)
+        self.fields['template_content'].queryset = TemplateContent.objects.filter(app=navigation.app)
+        
+        parent_queryset = NavigationEntry.objects.filter(navigation=navigation)
+        if self.navigation_entry:
+            exclude_pks = [self.navigation_entry.pk]
+            #parent = self.navigation_entry.parent
+            #if parent:
+            #    exclude_pks.append(parent.pk)
+
+            for entry in self.navigation_entry.descendants:
+                exclude_pks.append(entry.pk)
+                
+                    
+            parent_queryset = parent_queryset.exclude(pk__in=exclude_pks)
+
+        self.fields['parent'].queryset = parent_queryset
+
+
+
+
+
+

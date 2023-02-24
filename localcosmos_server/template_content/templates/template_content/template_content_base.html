@@ -23,26 +23,104 @@
 			<hr>
 			
 			{% block subcontent %}
-				<h4>{% trans 'Pages' %}</h4>
-				{% if localized_template_contents %}
-					<div class="row">
-						{% for localized_template_content in localized_template_contents %}
-							{% with template_content=localized_template_content.template_content %}
-								<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
-									{% include 'template_content/template_content_list_entry.html' %}
-								</div>
-							{% endwith %}
-						{% endfor %}
-					</div>
-				{% else %}
-					{% trans 'You do not have any online pages for this app yet.' %}
-				{% endif %}
-				<br>
-				<div class="row mt-3">
+				<div class="row">
 					<div class="col-12">
-						<a href="{% url 'create_template_content' app.uid 'page' %}" class="btn btn-outline-primary">{% trans 'Add new page' %}</a>
+						<h4>{% trans 'Navigations' %}</h4>
+						{% if navigations %}
+							<div class="row">
+								{% for navigation in navigations %}
+									
+									<div id="navigation-{{ navigation.id }}" class="col-12 col-md-4">
+										{% include 'template_content/ajax/navigation_list_entry.html' %}
+									</div>
+									
+								{% endfor %}
+							</div>
+						{% else %}
+							{% trans 'You do not have any navigations for this app yet.' %}
+						{% endif %}
+						<div class="row mt-3">
+							<div class="col-12">
+								<a href="#" data-url="{% url 'create_template_content_navigation' app.uid %}" class="xhr btn btn-outline-primary" ajax-target="ModalContent">{% trans 'Add new navigation' %}</a>
+							</div>
+						</div>
 					</div>
 				</div>
+
+				<div class="row mt-5">
+					<div class="col-12">
+						<h4>{% trans 'Pages' %}</h4>
+						{% if localized_template_contents %}
+							<div class="row">
+								{% for localized_template_content in localized_template_contents %}
+									{% with template_content=localized_template_content.template_content %}
+										<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
+											{% include 'template_content/template_content_list_entry.html' %}
+										</div>
+									{% endwith %}
+								{% endfor %}
+							</div>
+						{% else %}
+							{% trans 'You do not have any online pages for this app yet.' %}
+						{% endif %}
+						<br>
+						<div class="row mt-3">
+							<div class="col-12">
+								<a href="{% url 'create_template_content' app.uid 'page' %}" class="btn btn-outline-primary">{% trans 'Add new page' %}</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{% if required_offline_contents %}
+					<div class="row mt-5">
+						<div class="col-12">
+							<h4>{% trans 'Frontend requirements' %}</h4>
+							<div class="row">
+								{% for content in required_offline_contents %}
+									{% if content.template_content %}
+										{% with template_content=localized_template_content.template_content %}
+											<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
+												{% include 'template_content/template_content_list_entry.html' %}
+											</div>
+										{% endwith %}
+									{% else %}
+										<div class="col-12 col-md-4">
+											<div class="card" style="width: 100%;">
+												<div class="card-header">
+													{{ content.assignment }}
+												</div>
+												<div class="card-body">
+													<h5 class="card-title">
+														{{ content.assignment|title }}
+													</h5>
+													<div class="row">
+														<div class="col">
+															<span class="badge badge-danger">{% trans 'missing' %}</span>
+														</div>
+													</div>
+
+													<hr>
+													<div class="btn-group dropup">
+														<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															{% trans 'Manage' %}
+														</button>
+														<div class="dropdown-menu">
+															<a class="dropdown-item" href="{% url 'create_template_content' app.uid content.template_type content.assignment  %}">{% trans 'create' %}</a>
+														</div>
+													</div>
+										
+												</div>
+											</div>
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+							
+						</div>
+					</div>
+				{% endif %}	
+					
 			{% endblock %}
 		</div>
 	</div>

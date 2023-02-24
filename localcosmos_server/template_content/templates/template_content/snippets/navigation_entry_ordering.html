@@ -1,0 +1,6 @@
+(function(){
+    const container_id = "navigation-entries";
+
+    $("#" + container_id + " .move-naventry-up-button").on("click", positionmanager.onMoveForward);
+    $("#" + container_id + " .move-naventry-down-button").on("click", positionmanager.onMoveBack);
+})();

@@ -1,0 +1,26 @@
+{% load i18n static localcosmos_tags template_content_tags %}
+
+	<div id="ctype-{{ navigation|ctype_id }}-{{ navigation.id }}" class="card" style="width: 100%;">
+		<div class="card-header">
+			{{ navigation.navigation_type }}
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">
+                {{ navigation.name }}
+			</h5>
+			
+			<hr>
+			<div class="btn-group dropup">
+				<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{% trans 'Manage' %}
+				</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="{% url 'manage_template_content_navigation_entries' app.uid navigation.pk %}">{% trans 'Edit' %}</a>
+					<a class="xhr dropdown-item" data-url="{% url 'manage_template_content_navigation' app.uid navigation.pk %}" ajax-target="ModalContent">{% trans 'Edit navigation type' %}</a>
+					<a class="dropdown-item xhr" href="{% url 'delete_template_content_navigation' navigation.pk %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+

@@ -1,0 +1,19 @@
+{% extends 'localcosmos_server/modals/modal_form.html' %}
+{% load i18n %}
+
+{% block title %}{% if navigation %}{% blocktrans %}Manage {{ navigation }}{% endblocktrans %}{% else %}{% trans 'Create navigation' %}{% endif %}{% endblock %}
+
+{% block action %}{% if navigation %}{% url 'manage_template_content_navigation' app.uid navigation.pk %}{% else %}{% url 'create_template_content_navigation' app.uid %}{% endif %}{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/save.html' %}
+{% endblock %}
+
+{% block script %}
+	{% if success %}
+		<script>
+			$("#Modal").modal("hide");
+			window.location.reload();
+		</script>
+	{% endif %}
+{% endblock %}

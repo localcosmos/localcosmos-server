@@ -18,8 +18,6 @@ def get_content(template_content, content_key, language_code):
 
         if content_key == 'draft_title':
             return localized_template_content.draft_title
-        elif content_key == 'draft_navigation_link_name':
-            return localized_template_content.draft_navigation_link_name
         else:
             content = localized_template_content.draft_contents.get(content_key, None)
             if content:

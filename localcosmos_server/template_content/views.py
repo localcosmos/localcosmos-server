@@ -1,17 +1,19 @@
 from django.shortcuts import redirect
+from django.conf import settings
 from django.views.generic import TemplateView, FormView
 from django import forms
 
 from localcosmos_server.models import App
 from localcosmos_server.generic_views import AjaxDeleteView
 from localcosmos_server.views import ManageServerContentImage, DeleteServerContentImage
-from localcosmos_server.view_mixins import AppMixin
+from localcosmos_server.view_mixins import AppMixin, FormLanguageMixin
 
 from localcosmos_server.decorators import ajax_required
 from django.utils.decorators import method_decorator
 
-from .models import TemplateContent, LocalizedTemplateContent
-from .forms import CreateTemplateContentForm, ManageLocalizedTemplateContentForm, TranslateTemplateContentForm
+from .models import TemplateContent, LocalizedTemplateContent, Navigation, NavigationEntry, LocalizedNavigationEntry
+from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentForm, TranslateTemplateContentForm,
+                    ManageNavigationForm, ManageNavigationEntryForm)
 
 from urllib.parse import urljoin
 
@@ -27,6 +29,31 @@ class TemplateContentList(AppMixin, TemplateView):
             template_content__template_type='page', language=self.app.primary_language).order_by('pk')
         context['localized_template_contents'] = localized_template_contents
 
+        navigations = Navigation.objects.filter(app=self.app)
+        context['navigations'] = navigations
+
+        required_offline_contents = []
+        if settings.LOCALCOSMOS_PRIVATE == False:
+            app_settings = self.app.get_settings()
+
+            pages = app_settings['templateContent'].get('requiredOfflineContents', {})
+            for assignment, definition in pages.items():
+
+                template_type = definition['templateType']
+
+                template_content = TemplateContent.objects.filter(app=self.app, template_type=template_type,
+                    assignment=assignment).first()
+
+                content = {
+                    'assignment': assignment,
+                    'template_content': template_content,
+                    "template_type": template_type,
+                }
+
+                required_offline_contents.append(content)
+
+        context['required_offline_contents'] = required_offline_contents
+
         return context
 
 
@@ -41,9 +68,11 @@ class CreateTemplateContent(AppMixin, FormView):
     template_name = 'template_content/create_template_content.html'
     form_class = CreateTemplateContentForm
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['template_type'] = self.kwargs['template_type']
+        context['assigment'] = self.kwargs['assignment']
         return context
 
 
@@ -68,9 +97,9 @@ class CreateTemplateContent(AppMixin, FormView):
             self.app,
             self.app.primary_language,
             form.cleaned_data['draft_title'],
-            form.cleaned_data['draft_navigation_link_name'],
             form.cleaned_data['template_name'],
             self.kwargs['template_type'],
+            self.kwargs.get('assignment', None),
         )
 
         template_content.save()
@@ -136,7 +165,6 @@ class ManageTemplateContentCommon:
         if self.save_localized_template_content:
             initial = {
                 'draft_title' : self.localized_template_content.draft_title,
-                'draft_navigation_link_name' : self.localized_template_content.draft_navigation_link_name,
                 'input_language' : self.localized_template_content.language,
             }
 
@@ -149,7 +177,6 @@ class ManageTemplateContentCommon:
     
     def save_localized_template_content(self, form):
         self.localized_template_content.draft_title = form.cleaned_data['draft_title']
-        self.localized_template_content.draft_navigation_link_name = form.cleaned_data['draft_navigation_link_name']
 
         if not self.localized_template_content.draft_contents:
             self.localized_template_content.draft_contents = {}
@@ -221,7 +248,7 @@ class TranslateTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
 
         if not self.localized_template_content:
             self.localized_template_content = LocalizedTemplateContent.objects.create(self.request.user, self.template_content,
-                self.language, form.cleaned_data['draft_title'], form.cleaned_data['draft_navigation_link_name'])
+                self.language, form.cleaned_data['draft_title'])
 
         self.save_localized_template_content(form)
 
@@ -352,3 +379,182 @@ class UnpublishTemplateContent(AppMixin, TemplateView):
 class DeleteTemplateContent(AjaxDeleteView):
     model = TemplateContent
     
+
+class ManageNavigation(AppMixin, FormLanguageMixin, FormView):
+
+    template_name = 'template_content/ajax/manage_navigation.html'
+    form_class = ManageNavigationForm
+
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_navigation(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def set_navigation(self, **kwargs):
+        self.navigation = None
+        if 'pk' in kwargs:
+            self.navigation = Navigation.objects.get(pk=kwargs['pk'])
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navigation'] = self.navigation
+        context['success'] = False
+        return context
+
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.navigation:
+            initial['name'] = self.navigation.name
+            initial['navigation_type'] = self.navigation.navigation_type
+        return initial
+
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['navigation'] = self.navigation
+        return form_kwargs
+
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(self.app, **self.get_form_kwargs())
+
+
+    def form_valid(self, form):
+
+        if not self.navigation:
+            self.navigation = Navigation(
+                app=self.app,
+            )
+
+        self.navigation.name = form.cleaned_data['name']
+        self.navigation.navigation_type = form.cleaned_data['navigation_type']
+        self.navigation.save()
+        
+        context = self.get_context_data(**self.kwargs)
+
+        context['success'] = True
+        return self.render_to_response(context)
+
+
+
+class DeleteNavigation(AjaxDeleteView):
+    model = Navigation
+
+
+
+class NavigationEntriesMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        navigation = Navigation.objects.get(pk=self.kwargs['pk'])
+        context['navigation'] = navigation
+
+        toplevel_entries = NavigationEntry.objects.filter(navigation=navigation, parent=None)
+        context['navigation_entries'] = toplevel_entries
+        return context
+
+
+class ManageNavigationEntries(NavigationEntriesMixin, AppMixin, TemplateView):
+    
+    template_name = 'template_content/manage_navigation_entries.html'
+
+
+class GetNavigationEntriesTree(NavigationEntriesMixin, AppMixin, TemplateView):
+
+    template_name = 'template_content/ajax/navigation_entries_tree.html'
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+
+class ManageNavigationEntry(AppMixin, FormLanguageMixin, FormView):
+    
+    template_name = 'template_content/ajax/manage_navigation_entry.html'
+    form_class = ManageNavigationEntryForm
+
+    
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_navigation(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def set_navigation(self, **kwargs):
+        self.navigation = Navigation.objects.get(pk=kwargs['navigation_id'])
+        self.navigation_entry = None
+        if 'pk' in kwargs:
+            self.navigation_entry = NavigationEntry.objects.get(pk=kwargs['pk'])
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['navigation'] = self.navigation
+        context['navigation_entry'] = self.navigation_entry
+        context['success'] = False
+        return context
+
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.navigation_entry:
+            primary_locale_navigation_entry = LocalizedNavigationEntry.objects.filter(
+                navigation_entry=self.navigation_entry, language=self.app.primary_language
+            ).first()
+            if primary_locale_navigation_entry:
+                initial['link_name'] = primary_locale_navigation_entry.link_name
+            initial['template_content'] = self.navigation_entry.template_content
+            initial['parent'] = self.navigation_entry.parent
+        return initial
+
+
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['navigation_entry'] = self.navigation_entry
+        return form_kwargs
+
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(self.navigation, **self.get_form_kwargs())
+
+
+    def form_valid(self, form):
+        
+        if not self.navigation_entry:
+            self.navigation_entry = NavigationEntry(
+                navigation=self.navigation,
+            )
+
+        self.navigation_entry.template_content = form.cleaned_data['template_content']
+        self.navigation_entry.parent = form.cleaned_data.get('parent', None)
+
+        # somehow set url
+
+        self.navigation_entry.save()
+
+        primary_locale_navigation_entry = self.navigation_entry.get_locale(self.app.primary_language)
+        if not primary_locale_navigation_entry:
+            primary_locale_navigation_entry = LocalizedNavigationEntry(
+                navigation_entry=self.navigation_entry,
+                language=self.app.primary_language,
+            )
+        
+        primary_locale_navigation_entry.link_name = form.cleaned_data['link_name']
+        primary_locale_navigation_entry.save()        
+
+        context = self.get_context_data(**self.kwargs)
+        context['success'] = True
+        
+        return self.render_to_response(context)
+
+
+class DeleteNavigationEntry(AjaxDeleteView):
+    model = NavigationEntry
