@@ -40,6 +40,8 @@ urlpatterns = [
       views.ManageNavigation.as_view(), name='create_template_content_navigation'),
    path('<str:app_uid>/manage-template-content-navigation/<int:pk>/',
       views.ManageNavigation.as_view(), name='manage_template_content_navigation'),
+   path('<str:app_uid>/publish-template-content-navigation/<int:navigation_id>/',
+      views.PublishNavigation.as_view(), name='publish_template_content_navigation'),
    path('delete-template-content-navigation/<int:pk>/',
       views.DeleteNavigation.as_view(), name='delete_template_content_navigation'),
    path('<str:app_uid>/manage-template-content-navigation-entries/<int:pk>/',

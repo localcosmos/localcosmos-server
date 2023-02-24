@@ -8,66 +8,11 @@
 			<h5 class="card-title">
 				<a href="{% url 'manage_localized_template_content' app.uid localized_template_content.id %}">{{ localized_template_content.draft_title }}</a>
 			</h5>
-			{% for language in app.languages %}
-				<div class="row {% if not forloop.last %}mb-3{% endif %}">
-					<div class="col-auto">
-						<img src="{% static 'localcosmos_server/images/countries_big/' %}{{ language }}.png" />
-					</div>
-					<div class="col">
-						{% get_template_content_locale template_content language as locale %}
-
-						{% if locale %}
-
-							{% if locale.published_version %}
-								<span class="badge badge-success">{% blocktrans with version=locale.published_version %}published version: {{ version }}{% endblocktrans %}</span>
-							{% else %}
-								<span class="badge badge-warning">{% trans 'not published' %}</span>
-							{% endif %}
-
-							<span class="badge badge-info">{% blocktrans with version=locale.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
-
-							{% if locale.language in app.secondary_languages %}
-								{% if locale.translation_is_complete %}
-									{% if locale.draft_version != localized_template_content.draft_version %}
-										<span class="badge badge-warning">{% trans 'old version' %}</span>
-									{% else %}
-										<span class="badge badge-success">{% trans 'translation complete' %}</span>
-									{% endif %}
-								{% else %}
-									<span class="badge badge-warning">{% trans 'translation incomplete' %}</span>
-								{% endif %}
-							{% endif %}
-						{% else %}
-							<span class="badge badge-danger">{% trans 'missing' %}</span>
-						{% endif %}
-					</div>
-				</div>
-			{% endfor %}
+			{% with localizeable_instance=template_content %}
+				{% include 'template_content/ajax/translation_status_matrix.html' %}
+			{% endwith %}
 			<hr>
-			{% if publication %}
-
-				{% if publication_errors %}
-					<div class="row">
-						<div class="col-12">
-							<div class="alert alert-danger">
-								{% trans 'Publication failed:' %}<br>
-								{% for error in publication_errors %}
-									{{ error }} <br>
-								{% endfor %}
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<div class="row">
-						<div class="col-12">
-							<div class="alert alert-success">
-								{% trans 'Publication successful.' %}
-							</div>
-						</div>
-					</div>
-				{% endif %}
-				
-			{% endif %}
+			{% include 'template_content/ajax/publication_feedback.html' %}
 			<div class="btn-group dropup">
 				<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					{% trans 'Manage' %}

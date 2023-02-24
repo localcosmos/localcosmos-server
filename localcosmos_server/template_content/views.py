@@ -72,7 +72,7 @@ class CreateTemplateContent(AppMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['template_type'] = self.kwargs['template_type']
-        context['assigment'] = self.kwargs['assignment']
+        context['assigment'] = self.kwargs.get('assignment', None)
         return context
 
 
@@ -408,7 +408,7 @@ class ManageNavigation(AppMixin, FormLanguageMixin, FormView):
     def get_initial(self):
         initial = super().get_initial()
         if self.navigation:
-            initial['name'] = self.navigation.name
+            initial['name'] = str(self.navigation)
             initial['navigation_type'] = self.navigation.navigation_type
         return initial
 
@@ -428,13 +428,15 @@ class ManageNavigation(AppMixin, FormLanguageMixin, FormView):
     def form_valid(self, form):
 
         if not self.navigation:
-            self.navigation = Navigation(
-                app=self.app,
-            )
+            self.navigation = Navigation.objects.create(self.app, form.cleaned_data['navigation_type'],
+                self.app.primary_language, form.cleaned_data['name'])
 
-        self.navigation.name = form.cleaned_data['name']
         self.navigation.navigation_type = form.cleaned_data['navigation_type']
         self.navigation.save()
+
+        localized_navigation = self.navigation.get_locale(self.app.primary_language)
+        localized_navigation.name = form.cleaned_data['name']
+        localized_navigation.save()
         
         context = self.get_context_data(**self.kwargs)
 
@@ -443,9 +445,34 @@ class ManageNavigation(AppMixin, FormLanguageMixin, FormView):
 
 
 
+class PublishNavigation(AppMixin, TemplateView):
+
+    template_name = 'template_content/ajax/navigation_list_entry.html'
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_navigation(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+    def set_navigation(self, **kwargs):
+        self.navigation = Navigation.objects.get(pk=kwargs['navigation_id'])
+        self.localized_navigation = self.navigation.get_locale(
+            self.navigation.app.primary_language)
+        self.language = kwargs.get('language', 'all')
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['localized_navigation'] = self.localized_navigation
+        context['navigation'] = self.navigation
+        context['publication'] = True
+        context['publication_errors'] = self.navigation.publish(language=self.language)    
+
+        return context
+
+
 class DeleteNavigation(AjaxDeleteView):
     model = Navigation
-
 
 
 class NavigationEntriesMixin:

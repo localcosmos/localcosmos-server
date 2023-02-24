@@ -48,6 +48,76 @@ def get_published_template_definition_path(template_content, filename):
 
     return path
 
+
+class PublicationMixin:
+
+    def translation_complete(self, language_code):
+
+        translation_errors = []
+
+        localized_instance = self.get_locale(language_code)
+
+        if not localized_instance:
+            translation_errors.append(_('Translation for the language %(language)s is missing') %{
+                'language':language_code})
+
+        else:
+            #if ltc.language != self.app.primary_language and ltc.translation_ready == False:
+            #    translation_errors.append(_('The translator for the language %(language)s is still working') %{
+            #    'language':language_code})
+                
+            translation_errors += localized_instance.translation_complete()
+
+
+        return translation_errors
+
+
+    def publish(self, language='all'):
+        
+        publication_errors = []
+
+        primary_language = self.app.primary_language
+        secondary_languages = self.app.secondary_languages()
+        
+        if language == 'all':
+            languages = self.app.languages()
+        else:
+            languages = [language]
+
+
+        # translation_ready is currently not in use
+        # ltc.translation_ready is not set to True by the user if there is only one language
+        # skip the check if the "translation" exists and also skip the check if the user has set
+        # translation_ready to True, which is not the case because there is only a "publish" button
+        # in this case (only 1 language) and no "ready for translation" button
+        if not secondary_languages:
+            localized_instance = self.get_locale(primary_language)
+            publication_errors += localized_instance.translation_complete()
+
+        # secondary languages exist. these languages need translators and the translation_ready flags are
+        # set by the user when he has finished translating
+        else:
+
+            for language_code in languages:
+
+                # translation_complete checks two things:
+                # a) if the primary language has filled all required fields
+                # b) if all secondary languages are translated completely
+                publication_errors += self.translation_complete(language_code)
+
+
+        # below this, no error checks are allowed because published_versions are being set
+        if not publication_errors:
+            for language_code in languages:
+            
+                localized_instance = self.get_locale(language_code)
+                if localized_instance:
+                    localized_instance.publish()
+            
+            self.publish_assets()
+
+        return publication_errors
+
 '''
     Templates and their definitions can rely in two different paths
 '''
@@ -114,7 +184,7 @@ class TemplateContentManager(models.Manager):
         only the name is saved. the Template class looks up actual files. The draf always uses the template
         which is currently available as a file (with its definition as a file)
 '''
-class TemplateContent(models.Model):
+class TemplateContent(PublicationMixin, models.Model):
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
@@ -149,84 +219,22 @@ class TemplateContent(models.Model):
     def get_locale(self, language_code):
         return LocalizedTemplateContent.objects.filter(template_content=self, language=language_code).first()
 
-    def translation_complete(self, language_code):
 
-        translation_errors = []
+    def publish_assets(self):
+        # store TemplateContent.published_template and TemplateContent.published_template_definition
+        filepaths = [self.draft_template.template_filepath, self.draft_template.template_definition_filepath]
 
-        ltc = LocalizedTemplateContent.objects.filter(template_content=self, language=language_code).first()
+        for filepath in filepaths:
 
-        if not ltc:
-            translation_errors.append(_('Translation for the language %(language)s is missing') %{
-                'language':language_code})
+            with open(filepath, 'r') as template_file:
+                filename = os.path.basename(filepath)
+                djangofile = File(template_file)
 
-        else:
-            #if ltc.language != self.app.primary_language and ltc.translation_ready == False:
-            #    translation_errors.append(_('The translator for the language %(language)s is still working') %{
-            #    'language':language_code})
-                
-            translation_errors += ltc.translation_complete()
+                if filepath == self.draft_template.template_filepath:
+                    self.published_template.save(filename, djangofile)
 
-
-        return translation_errors
-
-    def publish(self, language='all'):
-        
-        publication_errors = []
-
-        primary_language = self.app.primary_language
-        secondary_languages = self.app.secondary_languages()
-        
-        if language == 'all':
-            languages = self.app.languages()
-        else:
-            languages = [language]
-
-        # translation_ready is currently not in use
-        # ltc.translation_ready is not set to True by the user if there is only one language
-        # skip the check if the "translation" exists and also skip the check if the user has set
-        # translation_ready to True, which is not the case because there is only a "publish" button
-        # in this case (only 1 language) and no "ready for translation" button
-        if not secondary_languages:
-            ltc = LocalizedTemplateContent.objects.filter(template_content=self, language=primary_language).first()
-            publication_errors += ltc.translation_complete()
-
-        # secondary languages exist. these languages need translators and the translation_ready flags are
-        # set by the user when he has finished translating
-        else:
-
-            for language_code in languages:
-
-                # translation_complete checks two things:
-                # a) if the primary language has filled all required fields
-                # b) if all secondary languages are translated completely
-                publication_errors += self.translation_complete(language_code)
-
-
-        # below this, no error checks are allowed because published_versions are being set
-        if not publication_errors:
-
-            for language_code in languages:
-            
-                ltc = LocalizedTemplateContent.objects.filter(template_content=self, language=language_code).first()
-                if ltc:
-                    ltc.publish()
-
-            # store TemplateContent.published_template and TemplateContent.published_template_definition
-            filepaths = [self.draft_template.template_filepath, self.draft_template.template_definition_filepath]
-
-            for filepath in filepaths:
-
-                with open(filepath, 'r') as template_file:
-                    filename = os.path.basename(filepath)
-                    djangofile = File(template_file)
-
-                    if filepath == self.draft_template.template_filepath:
-                        self.published_template.save(filename, djangofile)
-
-                    if filepath == self.draft_template.template_definition_filepath:
-                        self.published_template_definition.save(filename, djangofile)
-
-        return publication_errors
+                if filepath == self.draft_template.template_definition_filepath:
+                    self.published_template_definition.save(filename, djangofile)
 
 
     def unpublish(self):
@@ -454,6 +462,14 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         super().save(*args, **kwargs)
 
 
+    def get_frontend_specific_url(self):
+        app_settings = self.template_content.app.get_settings()
+        urlPattern = app_settings['templateContent']['urlPattern']
+
+        url = urlPattern.replace('{slug}', self.slug)
+        return url
+
+
     class Meta:
         unique_together=('template_content', 'language')
 
@@ -465,19 +481,198 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
     - there is no offline TemplateContent navigation
     - there can be offline template content pages (e.g. landing page)
 '''
-class Navigation(models.Model):
+class NavigationManager(models.Manager):
+
+    def create(self, app, navigation_type, language, name):
+        
+        navigation = self.model(
+            app = app,
+            navigation_type = navigation_type,
+        )
+        navigation.save()
+
+        # create the localized navigation
+        localized_navigation = LocalizedNavigation.objects.create(navigation, language, name)
+
+        return navigation
+
+
+class Navigation(PublicationMixin, models.Model):
 
     app = models.ForeignKey(App, on_delete=models.CASCADE)
-    name = models.CharField(max_length=355)
     navigation_type = models.CharField(max_length=355)
     options = models.JSONField(null=True)
 
+    objects = NavigationManager()
+
+    @property
+    def toplevel_entries(self):
+        return NavigationEntry.objects.filter(navigation=self, parent=None)
+
+    def get_locale(self, language_code):
+        return LocalizedNavigation.objects.filter(navigation=self, language=language_code).first()
+
+
+    def publish_assets(self):
+        pass
+
+
+    def check_version(self):
+        locales = LocalizedNavigation.objects.filter(navigation=self)
+        for locale in locales:
+            if locale.draft_version == locale.published_version:
+                locale.save()
+
 
     def __str__(self):
-        return self.name
+        primary_locale = self.get_locale(self.app.primary_language)
+        if primary_locale:
+            return primary_locale.name
+        else:
+            return self.navigation_type
 
     class Meta:
         unique_together = ('app', 'navigation_type')
+
+
+'''
+    Localized Navigations
+    - hold the published navigation
+'''
+class LocalizedNavigationManager(models.Manager):
+
+    def create(self, navigation, language, name):
+        
+        localized_navigation = self.model(
+            navigation = navigation,
+            language = language,
+            name = name,
+        )
+        localized_navigation.save()
+
+        return localized_navigation
+
+
+def travel_tree(children, path=[]):
+
+    path_to_parent = path
+    
+    for counter, child in enumerate(children, 0):
+
+        path = path_to_parent.copy()
+        path.append(counter)
+
+        navigation_entry = {
+            'child': child,
+            'path': path
+        }
+
+        yield navigation_entry
+
+        if child.children:
+            yield from travel_tree(child.children, path=path)
+
+
+class LocalizedNavigation(models.Model):
+
+    navigation = models.ForeignKey(Navigation, on_delete=models.CASCADE)
+    language = models.CharField(max_length=15)
+    name = models.CharField(max_length=355)
+
+    draft_version = models.IntegerField(default=1)
+    published_version = models.IntegerField(null=True)
+
+    published_navigation = models.JSONField(null=True)
+
+    objects = LocalizedNavigationManager()
+
+
+    '''
+    [
+        {
+            'linkName': 'Link Name',
+            'children': [
+                {
+                    'linkName': 'Link Name'
+                }
+            ]
+        }
+        
+    ]
+    '''
+    def serialize(self):
+
+        navigation = []
+
+        for entry in travel_tree(self.navigation.toplevel_entries):
+
+            path = entry['path']
+            localized_entry = entry['child'].get_locale(self.language)
+
+            target_list = navigation
+
+            for counter, index in enumerate(path, 0):
+
+                if counter == len(path) -1:
+                    serialized_entry = localized_entry.serialize()
+                    target_list.insert(index, serialized_entry)
+                    
+                else:
+                    target_list = target_list[index]['children']
+            
+
+        return navigation
+
+
+    def translation_complete(self):
+        
+        primary_language = self.navigation.app.primary_language
+
+        if self.language == primary_language:
+            return []
+
+        raise NotImplementedError('multilanguage navigations are not implemented yet')
+
+
+    def publish(self):
+
+        self.published_navigation = self.serialize()
+
+        if self.published_version != self.draft_version:
+            self.published_version = self.draft_version
+            self.published_at = timezone.now()
+
+        self.save(published=True)
+
+
+    def save(self, *args, **kwargs):
+
+        # indicates, if the save() command came from self.publish
+        published = kwargs.pop('published', False)
+
+        if not self.pk:
+
+            primary_language = self.navigation.app.primary_language
+
+            if self.language != primary_language:
+                master_nav = self.navigation.get_locale(primary_language)
+                self.draft_version = master_nav.draft_version
+
+        else:
+
+            if published == False:
+
+                # the localized_template_content has already been published. start new version
+                if self.published_version == self.draft_version:
+                    self.draft_version += 1
+
+
+        super().save(*args, **kwargs)
+
+
+    class Meta:
+        unique_together = ('navigation', 'language')
+
 
 '''
     The frontend can provide urls, e.g. to identification keys or other contents
@@ -489,7 +684,6 @@ class NavigationEntry(models.Model):
 
     position = models.IntegerField(default=1)
 
-    url = models.CharField(max_length=355, null=True)
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
     options = models.JSONField(null=True)
 
@@ -521,6 +715,11 @@ class NavigationEntry(models.Model):
         return primary_locale.link_name
 
 
+    def save(self, *args, **kwargs):
+        self.navigation.check_version()
+        super().save(*args, **kwargs)
+
+
     class Meta:
         ordering=['position', 'pk'] 
 
@@ -528,8 +727,28 @@ class NavigationEntry(models.Model):
 class LocalizedNavigationEntry(models.Model):
     
     navigation_entry = models.ForeignKey(NavigationEntry, on_delete=models.CASCADE)
+    url = models.CharField(max_length=355, null=True)
     language = models.CharField(max_length=15)
     link_name = models.CharField(max_length=355)
+
+    def get_template_content_url(self):
+        localized_template_content = self.navigation_entry.template_content.get_locale(self.language)
+        return localized_template_content.get_frontend_specific_url()
+
+    def serialize(self):
+
+        if self.navigation_entry.template_content:
+            url = self.get_template_content_url()
+        else:
+            url = self.url
+
+        serialized_entry = {
+            'link_name': self.link_name,
+            'url': url,
+            'children': [],
+        }
+
+        return serialized_entry
 
     class Meta:
         unique_together = ('navigation_entry', 'language')

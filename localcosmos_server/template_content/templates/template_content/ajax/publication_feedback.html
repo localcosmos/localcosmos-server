@@ -1,0 +1,25 @@
+{% load i18n %}
+{% if publication %}
+
+    {% if publication_errors %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    {% trans 'Publication failed:' %}<br>
+                    {% for error in publication_errors %}
+                        {{ error }} <br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-success">
+                    {% trans 'Publication successful.' %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+{% endif %}

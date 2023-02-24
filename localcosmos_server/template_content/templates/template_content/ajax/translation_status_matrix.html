@@ -1,0 +1,39 @@
+{% load i18n static template_content_tags %}
+{% for language in app.languages %}
+    <div class="row {% if not forloop.last %}mb-3{% endif %}">
+        <div class="col-auto">
+            <img src="{% static 'localcosmos_server/images/countries_big/' %}{{ language }}.png" />
+        </div>
+        <div class="col">
+            {% get_locale localizeable_instance language as locale %}
+
+            {% if locale %}
+
+                <div>
+                    {% if locale.published_version %}
+                    <span class="badge badge-success">{% blocktrans with version=locale.published_version %}published version: {{ version }}{% endblocktrans %}</span>
+                    {% else %}
+                        <span class="badge badge-warning">{% trans 'not published' %}</span>
+                    {% endif %}
+                </div>
+                <div>
+                    <span class="badge badge-info">{% blocktrans with version=locale.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
+                </div>
+
+                {% if locale.language in app.secondary_languages %}
+                    {% if locale.translation_is_complete %}
+                        {% if locale.draft_version != localizeable_instance.draft_version %}
+                            <span class="badge badge-warning">{% trans 'old version' %}</span>
+                        {% else %}
+                            <span class="badge badge-success">{% trans 'translation complete' %}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="badge badge-warning">{% trans 'translation incomplete' %}</span>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <span class="badge badge-danger">{% trans 'missing' %}</span>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

@@ -2,11 +2,11 @@ from django.utils.html import format_html
 from django import template
 register = template.Library()
 
-from localcosmos_server.template_content.models import LocalizedTemplateContent
+from localcosmos_server.template_content.models import LocalizedTemplateContent, LocalizedNavigation
 
 @register.simple_tag
-def get_template_content_locale(template_content, language):
-    return LocalizedTemplateContent.objects.filter(template_content=template_content, language=language).first()
+def get_locale(localizeable_instance, language_code):
+    return localizeable_instance.get_locale(language_code)
 
 
 @register.simple_tag

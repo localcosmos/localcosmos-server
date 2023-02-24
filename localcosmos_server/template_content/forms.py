@@ -348,7 +348,8 @@ class ManageNavigationForm(LocalizeableForm):
 class ManageNavigationEntryForm(LocalizeableForm):
 
     link_name = forms.CharField(max_length=NAVIGATION_LINK_NAME_MAX_LENGTH)
-    template_content = forms.ModelChoiceField(label=_('Page'), queryset=TemplateContent.objects.all())
+    template_content = forms.ModelChoiceField(label=_('Page'), queryset=TemplateContent.objects.all(),
+        required=False)
     parent = forms.ModelChoiceField(queryset=NavigationEntry.objects.all(), required=False)
     
     localizeable_fields = ['link_name']
