@@ -1,0 +1,7 @@
+{% extends 'localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html' %}
+
+{% block input %}
+    <input id="{{ widget.attrs.id }}_verbose" type="text" disabled placeholder="Fixed Taxon" data-base-id="{{ widget.attrs.id }}" class="form-control {% if widget.subwidgets.1.value %}is-valid{% endif %}" {% if widget.subwidgets.1.value %}value="{{ widget.subwidgets.1.value }}"{% endif %} />
+{% endblock %}
+
+{% block js %}{% endblock %}

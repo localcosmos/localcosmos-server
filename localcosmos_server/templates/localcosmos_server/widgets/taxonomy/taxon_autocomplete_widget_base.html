@@ -33,7 +33,9 @@
 			</div>
 		{% endif %}
 		<div class="col-auto">
-			<input id="{{ widget.attrs.id }}_verbose" type="text" autocomplete="off" placeholder="{% trans 'search and select taxon' %}" data-base-id="{{ widget.attrs.id }}" class="typeahead form-control {% if widget.subwidgets.1.value %}is-valid{% endif %}" data-provide="typeahead" {% if widget.subwidgets.1.value %}value="{{ widget.subwidgets.1.value }}"{% endif %} />
+			{% block input %}
+				<input id="{{ widget.attrs.id }}_verbose" type="text" autocomplete="off" placeholder="{% trans 'search and select taxon' %}" data-base-id="{{ widget.attrs.id }}" class="typeahead form-control {% if widget.subwidgets.1.value %}is-valid{% endif %}" data-provide="typeahead" {% if widget.subwidgets.1.value %}value="{{ widget.subwidgets.1.value }}"{% endif %} />
+			{% endblock %}
 		</div>
 	</div>
 {% endblock %}

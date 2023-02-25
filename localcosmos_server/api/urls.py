@@ -13,10 +13,10 @@ urlpatterns = [
     path('<uuid:app_uuid>/password/reset/', views.PasswordResetRequest.as_view(), name='api_password_reset'),
     # JSON WebToken
     path('<uuid:app_uuid>/token/', views.TokenObtainPairViewWithClientID.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
+    path('<uuid:app_uuid>/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('<uuid:app_uuid>/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     # app specific
-    path('app/<uuid:app_uuid>/', views.AppAPIHome.as_view(), name='app_api_home'),
+    path('<uuid:app_uuid>/', views.AppAPIHome.as_view(), name='app_api_home'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])

@@ -75,3 +75,7 @@ class TaxonAutocompleteWidget(MultiWidget):
             return data_list
 
         return []
+
+
+class FixedTaxonWidget(TaxonAutocompleteWidget):
+    template_name = 'localcosmos_server/widgets/taxonomy/fixed_taxon_widget.html'
