@@ -73,7 +73,7 @@ class TestObservationformSerializer(WithObservationForm, TestCase):
         self.assertEqual(observation_form.definition, self.observation_form_json)
 
 
-class TestDatasetSerializer(WithObservationForm, WithApp, TestCase):
+class TestDatasetSerializer(WithObservationForm,  WithMedia, WithApp, TestCase):
 
     @test_settings
     def test_deserialize(self):

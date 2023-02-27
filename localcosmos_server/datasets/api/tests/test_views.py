@@ -177,7 +177,8 @@ class WithDatasetPostData:
 
 
 
-class TestListCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+class TestListCreateDataset(WithDatasetPostData, WithObservationForm, WithMedia, WithUser, WithApp, CreatedUsersMixin,
+    APITestCase):
 
 
     @test_settings
