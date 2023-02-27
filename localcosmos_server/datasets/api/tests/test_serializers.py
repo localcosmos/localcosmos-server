@@ -1,14 +1,16 @@
 from django.test import TestCase
+from django.urls import reverse
+from rest_framework.test import APIRequestFactory
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from localcosmos_server.tests.common import test_settings, DataCreator, TEST_IMAGE_PATH
-from localcosmos_server.tests.mixins import WithApp, WithObservationForm, WithMedia
-
+from localcosmos_server.tests.common import (test_settings, DataCreator, TEST_IMAGE_PATH, GEOJSON_POLYGON,
+    TEST_USER_GEOMETRY_NAME)
+from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia, WithUserGeometry
 from localcosmos_server.datasets.api.serializers import (ObservationFormSerializer, DatasetSerializer,
-    DatasetImagesSerializer, DatasetListSerializer)
+    DatasetImagesSerializer, DatasetListSerializer, UserGeometrySerializer)
 
-from localcosmos_server.datasets.models import ObservationForm, DatasetImages, Dataset
+from localcosmos_server.datasets.models import ObservationForm, DatasetImages, Dataset, UserGeometry
 
 from rest_framework import serializers
 
@@ -262,3 +264,59 @@ class TestDatasetListSerializer(WithObservationForm, WithMedia, WithApp, TestCas
         #print(serializer.data)
 
         self.assertEqual(len(serializer.data), 1)
+
+
+
+class TestUserGeometrySerializer(WithUserGeometry, WithUser, WithApp, TestCase):
+
+    def setUp(self, *args, **kwargs):
+        super().setUp(*args, **kwargs)
+        self.user = self.create_user()
+
+    @test_settings
+    def test_serialize(self):
+        
+        user_geometry = self.create_user_geometry(self.user)
+
+        serializer = UserGeometrySerializer(user_geometry)
+
+        self.assertEqual(serializer.data['id'], user_geometry.pk)
+        #self.assertEqual(serializer.data['user'], user_geometry.user.uuid)
+        self.assertEqual(serializer.data['geometry'], GEOJSON_POLYGON)
+        self.assertEqual(serializer.data['name'], user_geometry.name)
+
+
+    @test_settings
+    def test_deserialize(self):
+
+        data = {
+            'geometry': GEOJSON_POLYGON,
+            'name': TEST_USER_GEOMETRY_NAME
+        }
+
+        qry = UserGeometry.objects.filter(user=self.user)
+
+        self.assertFalse(qry.exists())
+
+        url_kwargs = {
+            'app_uuid' : str(self.app.uuid)
+        }
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
+        factory = APIRequestFactory()
+        request = factory.post(url, data, format='json')
+        request.user = self.user
+
+        context = {
+            'request' : request
+        }
+
+        serializer = UserGeometrySerializer(data=data, context=context)
+
+        is_valid = serializer.is_valid()
+
+        self.assertEqual(serializer.errors, {})
+
+        user_geometry = serializer.save()
+
+        self.assertTrue(qry.exists())
+        self.assertEqual(user_geometry, qry.first())

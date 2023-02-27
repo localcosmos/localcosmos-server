@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path
 
 from django.contrib.auth.decorators import login_required
 
@@ -22,14 +22,14 @@ urlpatterns = [
       login_required(views.TranslateTemplateContent.as_view()), name='translate_template_content'),
    # images
    path('manage-template-content-image/<int:content_image_id>/',
-      views.ManageTemplateContentImage.as_view(), name='manage_template_content_image'),
+      login_required(views.ManageTemplateContentImage.as_view()), name='manage_template_content_image'),
    path('manage-template-content-image/<int:content_type_id>/<int:object_id>/<str:image_type>/',
-      views.ManageTemplateContentImage.as_view(),
+      login_required(views.ManageTemplateContentImage.as_view()),
       name='manage_template_content_image'),
    path('delete-template-content-image/<int:pk>/',
-      views.DeleteTemplateContentImage.as_view(), name='delete_template_content_image'),
+      login_required(views.DeleteTemplateContentImage.as_view()), name='delete_template_content_image'),
    path('get-template-content-formfields/<int:localized_template_content_id>/<str:content_key>/',
-      views.GetTemplateContentFormFileFields.as_view(), name='get_template_content_form_fields'),
+      login_required(views.GetTemplateContentFormFileFields.as_view()), name='get_template_content_form_fields'),
    # publishing and unpublishing template content
    path('<str:app_uid>/publish-template-content/<int:template_content_id>/',
       login_required(views.PublishTemplateContent.as_view()), name='publish_template_content'),
@@ -37,21 +37,21 @@ urlpatterns = [
       login_required(views.UnpublishTemplateContent.as_view()), name='unpublish_template_content'),
    # navigations
    path('<str:app_uid>/create-template-content-navigation/',
-      views.ManageNavigation.as_view(), name='create_template_content_navigation'),
+      login_required(views.ManageNavigation.as_view()), name='create_template_content_navigation'),
    path('<str:app_uid>/manage-template-content-navigation/<int:pk>/',
-      views.ManageNavigation.as_view(), name='manage_template_content_navigation'),
+      login_required(views.ManageNavigation.as_view()), name='manage_template_content_navigation'),
    path('<str:app_uid>/publish-template-content-navigation/<int:navigation_id>/',
-      views.PublishNavigation.as_view(), name='publish_template_content_navigation'),
+      login_required(views.PublishNavigation.as_view()), name='publish_template_content_navigation'),
    path('delete-template-content-navigation/<int:pk>/',
-      views.DeleteNavigation.as_view(), name='delete_template_content_navigation'),
+      login_required(views.DeleteNavigation.as_view()), name='delete_template_content_navigation'),
    path('<str:app_uid>/manage-template-content-navigation-entries/<int:pk>/',
-      views.ManageNavigationEntries.as_view(), name='manage_template_content_navigation_entries'),
+      login_required(views.ManageNavigationEntries.as_view()), name='manage_template_content_navigation_entries'),
    path('<str:app_uid>/get-template-content-navigation-entries/<int:pk>/',
-      views.GetNavigationEntriesTree.as_view(), name='get_template_content_navigation_entries'),
+      login_required(views.GetNavigationEntriesTree.as_view()), name='get_template_content_navigation_entries'),
    path('<str:app_uid>/manage-template-content-navigation-entry/<int:navigation_id>/',
-      views.ManageNavigationEntry.as_view(), name='create_template_content_navigation_entry'),
+      login_required(views.ManageNavigationEntry.as_view()), name='create_template_content_navigation_entry'),
    path('<str:app_uid>/manage-template-content-navigation-entry/<int:navigation_id>/<int:pk>/',
-      views.ManageNavigationEntry.as_view(), name='manage_template_content_navigation_entry'),
+      login_required(views.ManageNavigationEntry.as_view()), name='manage_template_content_navigation_entry'),
    path('delete-template-content-navigation-entry/<int:pk>/',
-      views.DeleteNavigationEntry.as_view(), name='delete_template_content_navigation_entry'),
+      login_required(views.DeleteNavigationEntry.as_view()), name='delete_template_content_navigation_entry'),
 ]

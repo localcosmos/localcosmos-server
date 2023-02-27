@@ -5,11 +5,11 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from localcosmos_server.models import LocalcosmosUser, App, SecondaryAppLanguages, AppUserRole
 
-from localcosmos_server.datasets.models import Dataset, DatasetImages
+from localcosmos_server.datasets.models import Dataset, DatasetImages, UserGeometry
 
 from localcosmos_server.tests.common import (powersetdic, TEST_MEDIA_ROOT, TEST_IMAGE_PATH, TESTAPP_NAO_ABSOLUTE_PATH,
     TESTAPP_AO_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID, TEST_OBSERVATION_FORM_JSON, DataCreator,
-    TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID, TEST_TIMESTAMP)
+    TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID, TEST_TIMESTAMP, GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME)
 
 from django.utils import timezone
 
@@ -412,3 +412,20 @@ class CommonSetUp:
         self.role.save()
 
         self.client.login(username=self.test_superuser_username, password=self.test_password)
+
+
+class WithUserGeometry:
+
+    def create_user_geometry(self, user, geometry=GEOJSON_POLYGON, name=TEST_USER_GEOMETRY_NAME):
+
+        geojson = json.dumps(GEOJSON_POLYGON['geometry'])
+
+        user_geometry = UserGeometry(
+            user=user,
+            geometry=geojson,
+            name=name,
+        )
+
+        user_geometry.save()
+
+        return user_geometry

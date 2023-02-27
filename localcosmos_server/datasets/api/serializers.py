@@ -2,10 +2,12 @@ from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 
-from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages, IMAGE_SIZES
+from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages, UserGeometry
 
 from localcosmos_server.datasets.json_schemas import (POINT_JSON_FIELD_SCHEMA, GEOJSON_FIELD_SCHEMA,
     TEMPORAL_JSON_FIELD_SCHEMA, TAXON_JSON_SCHEMA)
+
+from localcosmos_server.datasets.api.serializer_fields import GeoJSONField
 
 from localcosmos_server.api.serializers import LocalcosmosUserSerializer
 
@@ -373,13 +375,10 @@ class TaxonSerializer(serializers.Serializer):
     name_uuid = serializers.CharField()
 
 
+# this serializer is only for "my observations"
 class DatasetListSerializer(serializers.ModelSerializer):
 
     taxon = serializers.SerializerMethodField()
-
-    def __init__(self, app_uuid, *args, **kwargs):
-        self.app_uuid = app_uuid
-        super().__init__(*args, **kwargs)
 
     def get_taxon(self, instance):
 
@@ -395,3 +394,20 @@ class DatasetListSerializer(serializers.ModelSerializer):
         model = Dataset
         fields = ('uuid', 'taxon', 'coordinates', 'geographic_reference', 'timestamp', 'user', 'validation_step',
             'is_valid', 'is_published')
+
+
+
+class UserGeometrySerializer(serializers.ModelSerializer):
+
+    geometry = GeoJSONField()
+
+    def create(self, validated_data):
+        user_geometry = UserGeometry.objects.create(
+            user=self.context['request'].user,
+            **validated_data
+        )
+        return user_geometry
+
+    class Meta:
+        model = UserGeometry
+        fields = ('id', 'geometry', 'name')

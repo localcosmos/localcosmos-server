@@ -134,16 +134,6 @@ class UserClients(models.Model):
     class Meta:
         unique_together = ('user', 'client_id')
 
-'''
-    USER Geometry
-    CRUD -> api
-    3 per user
-
-class UserGeometry(models.Model):
-    user
-    geometry(srid=3857)
-    name
-'''
 
 '''
     App

@@ -542,3 +542,12 @@ class DatasetImages(models.Model):
         return 'Dataset Image #{0}'.format(self.id)
     
         
+'''
+    USER Geometry
+    max 3 per user
+'''
+class UserGeometry(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    geometry = models.GeometryField(srid=3857, null=True, blank=True)
+    name = models.CharField(max_length=355)

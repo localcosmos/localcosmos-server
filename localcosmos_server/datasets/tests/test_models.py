@@ -7,28 +7,27 @@
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.gdal import SpatialReference, CoordTransform
-from django.contrib.gis.geos import Point, Polygon
+from django.contrib.gis.geos import Point, Polygon, GEOSGeometry
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.files import File
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
-from django.utils import timezone
 
 from localcosmos_server.datasets.models import (Dataset, DatasetValidationRoutine, DatasetImages, IMAGE_SIZES,
-                                                DATASET_VALIDATION_CHOICES, DATASET_VALIDATION_DICT)
+    DATASET_VALIDATION_CHOICES, DATASET_VALIDATION_DICT, UserGeometry)
 
 from localcosmos_server.models import UserClients, TaxonomicRestriction
 
 from localcosmos_server.tests.common import (test_settings, TEST_IMAGE_PATH, TEST_CLIENT_ID, TEST_PLATFORM,
-    TEST_TIMESTAMP_OFFSET, TEST_LATITUDE, TEST_LONGITUDE, LARGE_TEST_IMAGE_PATH, DataCreator, TEST_TIMESTAMP)
+    TEST_TIMESTAMP_OFFSET, TEST_LATITUDE, TEST_LONGITUDE, LARGE_TEST_IMAGE_PATH, DataCreator, TEST_TIMESTAMP,
+    GEOJSON_POLYGON)
 
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithMedia, WithObservationForm
 from localcosmos_server.utils import timestamp_from_utc_with_offset
 
-from PIL import Image, ImageOps
+from PIL import Image
 
-import uuid, os, copy
+import uuid, os, json
 
 
 mercator_srid = SpatialReference(4326)
@@ -622,3 +621,27 @@ class TestDatasetImages(WithObservationForm, WithApp, WithUser, WithMedia, TestC
         image_text = str(dataset_image)
 
         self.assertEqual(image_text, 'Picea abies')
+
+
+class TestUserGeometry(WithUser, TestCase):
+
+    @test_settings
+    def test_create_get(self):
+
+        user = self.create_user()
+
+        geojson = json.dumps(GEOJSON_POLYGON['geometry'])
+        geos_geometry = GEOSGeometry(geojson, srid=4326)
+
+        name = 'Test name'
+
+        user_geometry = UserGeometry(
+            user=user,
+            geometry=geos_geometry,
+            name=name,
+        )
+
+        user_geometry.save()
+
+        geom_qry = UserGeometry.objects.filter(user=user)
+        self.assertEqual(geom_qry.first(), user_geometry)

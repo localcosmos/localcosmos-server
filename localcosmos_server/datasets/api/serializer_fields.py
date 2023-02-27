@@ -1,23 +1,38 @@
 
 from collections import OrderedDict
 from rest_framework import serializers
-from django.core.serializers import serialize
+from django.contrib.gis.geos import GEOSGeometry
 
-# WIP
+from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
+
+import json
+
+@extend_schema_field(OpenApiTypes.OBJECT)
 class GeoJSONField(serializers.Field):
 
     def to_representation(self, value):
 
-        # prepare OrderedDict geojson structure
+        value.transform(4326)
+
         geojson = OrderedDict()
 
         geojson["type"] = "Feature"
 
-        geojson["geometry"] = value.geojson
+        geojson["geometry"] = json.loads(value.geojson)
+
+        geojson["geometry"]["crs"] = {
+            "type": "name",
+            "properties": {  
+                "name": "EPSG:{0}".format(value.srid)
+            }
+        }
         
-        return geojson
+        return dict(geojson)
 
     def to_internal_value(self, data):
-        data = data.strip('rgb(').rstrip(')')
-        red, green, blue = [int(col) for col in data.split(',')]
-        return (red, green, blue)
+        geojson = json.dumps(data['geometry'])
+        srid_str = data['geometry']['crs']['properties']['name']
+        srid = int(srid_str.split(':')[-1])
+        geos_geometry = GEOSGeometry(geojson, srid=srid)
+        return geos_geometry

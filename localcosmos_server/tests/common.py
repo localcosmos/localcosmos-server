@@ -55,6 +55,31 @@ TEST_TIMESTAMP = timestamp_from_utc_with_offset(TEST_UTC_TIMESTAMP, TEST_TIMESTA
 TEST_LATITUDE = 49.63497717058325
 TEST_LONGITUDE = 11.091344909741967
 
+GEOJSON_POLYGON = {
+    "type": "Feature",
+    "geometry": {
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "EPSG:4326"
+            }
+        },
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [100.0, 0.0],
+                [101.0, 0.0],
+                [101.0, 1.0],
+                [100.0, 1.0],
+                [100.0, 0.0]
+            ]
+        ]
+    }
+}
+
+
+TEST_USER_GEOMETRY_NAME = 'Test user geometry'
+
 
 
 class DataCreator:

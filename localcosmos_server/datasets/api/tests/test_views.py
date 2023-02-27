@@ -1,15 +1,18 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
-from rest_framework.test import APIRequestFactory, APITestCase
+from rest_framework.test import APITestCase
 from rest_framework import status
 
 from django.urls import reverse
 
-from localcosmos_server.tests.common import test_settings, DataCreator, TEST_IMAGE_PATH, TEST_CLIENT_ID, TEST_PLATFORM
-from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia
+from localcosmos_server.tests.common import (test_settings, DataCreator, TEST_IMAGE_PATH, TEST_CLIENT_ID, TEST_PLATFORM,
+    GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME)
+from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia, WithUserGeometry
 
 from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages
 
 from django.utils import timezone
+
+import json
 
 
 class CreatedUsersMixin:
@@ -174,7 +177,7 @@ class WithDatasetPostData:
 
 
 
-class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+class TestListCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
 
 
     @test_settings
@@ -191,8 +194,6 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
         qry = Dataset.objects.all()
 
         self.assertFalse(qry.exists())
-
-        factory = APIRequestFactory()
 
         response = self.client.post(url, post_data, format='json')
 
@@ -273,6 +274,67 @@ class TestCreateDataset(WithDatasetPostData, WithObservationForm, WithUser, With
         dataset = qry.first()
         self.assertIsNone(dataset.user)
 
+
+    @test_settings
+    def test_get_list_registered(self):
+
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset.user = self.user
+        dataset.save()
+        dataset_image = self.create_dataset_image(dataset)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        #print(response.data)
+        _dataset = response.data['results'][0]
+
+        self.assertEqual(_dataset['uuid'], str(dataset.uuid))
+
+
+    @test_settings
+    def test_get_list_anonymous(self):
+    
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset_image = self.create_dataset_image(dataset)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
+
+        url_with_client_id = '{0}?client_id={1}'.format(url, dataset.client_id)        
+
+        response = self.client.get(url_with_client_id, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        #print(response.data)
+        _dataset = response.data['results'][0]
+        self.assertEqual(_dataset['uuid'], str(dataset.uuid))
+
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 0)
+
+
+        dataset.user = self.user
+        dataset.client_id = 'another client'
+        dataset.save()
+
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 0)
 
 
 
@@ -653,23 +715,128 @@ class TestDestroyDatasetImage(WithMedia, WithDatasetPostData, WithObservationFor
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
-class TestDatasetList(WithMedia, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+class TestCreateListUserGeometry(WithUserGeometry, WithUser, WithApp, CreatedUsersMixin, APITestCase):
 
     @test_settings
-    def test_get(self):
-
-        observation_form = self.create_observation_form()
-        dataset = self.create_dataset(observation_form=observation_form)
-        dataset_image = self.create_dataset_image(dataset)
+    def test_post(self):
+        
+        post_data = {
+            'geometry': GEOJSON_POLYGON,
+            'name': TEST_USER_GEOMETRY_NAME
+        }
 
         url_kwargs = {
             'app_uuid' : self.app.uuid,
         }
 
-        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
+        url = reverse('api_create_list_user_geometry', kwargs=url_kwargs)
 
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+    @test_settings
+    def test_post_maxed_out(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        for name in ['poly1', 'poly2', 'poly3']:
+
+            self.create_user_geometry(self.user, name=name)
+
+        
+        post_data = {
+            'geometry': GEOJSON_POLYGON,
+            'name': TEST_USER_GEOMETRY_NAME
+        }
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_create_list_user_geometry', kwargs=url_kwargs)
+
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+
+    @test_settings
+    def test_get(self):
+        
+        user_geometry = self.create_user_geometry(self.user)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_create_list_user_geometry', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+        self.client.force_authenticate(user=self.user)
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        #print(response.data)
-        dataset = response.data['results'][0]
+        self.assertEqual(len(response.data['results']), 1)
+        
+        data = response.data['results'][0]
+        self.assertEqual(data['id'], user_geometry.id)
+        self.assertEqual(data['name'], user_geometry.name)
+        self.assertEqual(dict(data['geometry']), GEOJSON_POLYGON)
+
+
+class TestManageUserGeometry(WithUserGeometry, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+    @test_settings
+    def test_get(self):
+        
+        user_geometry = self.create_user_geometry(self.user)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'pk': user_geometry.pk,
+        }
+
+        url = reverse('api_manage_user_geometry', kwargs=url_kwargs)
+
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(response.data['geometry'], GEOJSON_POLYGON)
+        self.assertEqual(response.data['name'], user_geometry.name)
+
+
+    @test_settings
+    def test_delete(self):
+        
+        user_geometry = self.create_user_geometry(self.user)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'pk': user_geometry.pk,
+        }
+
+        url = reverse('api_manage_user_geometry', kwargs=url_kwargs)
+
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

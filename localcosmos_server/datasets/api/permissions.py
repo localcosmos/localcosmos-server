@@ -91,3 +91,26 @@ class DatasetAppOnly(permissions.BasePermission):
             return True
         
         return False
+
+
+class AuthenticatedOwnerOnly(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, instance):
+
+        if request.user == instance.user:
+            return True
+        return False
+
+
+
+class MaxThreeInstancesPerUser(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+
+        if request.method == 'POST':
+            
+            count = view.queryset.filter(user=request.user).count()
+            if count >= 3:
+                return False
+            
+        return super().has_permission(request, view)
