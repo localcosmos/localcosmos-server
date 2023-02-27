@@ -379,6 +379,8 @@ class TaxonSerializer(serializers.Serializer):
 class DatasetListSerializer(serializers.ModelSerializer):
 
     taxon = serializers.SerializerMethodField()
+    coordinates = GeoJSONField()
+    geographic_reference = GeoJSONField()
 
     def get_taxon(self, instance):
 

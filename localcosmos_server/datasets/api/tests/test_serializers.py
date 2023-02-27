@@ -265,6 +265,12 @@ class TestDatasetListSerializer(WithObservationForm, WithMedia, WithApp, TestCas
 
         self.assertEqual(len(serializer.data), 1)
 
+        dataset_ = serializer.data[0]
+
+        self.assertEqual(dataset_['geographic_reference'], GEOJSON_POLYGON)
+
+        self.assertEqual(dataset_['coordinates']['type'],'Feature')
+
 
 
 class TestUserGeometrySerializer(WithUserGeometry, WithUser, WithApp, TestCase):

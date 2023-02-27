@@ -13,22 +13,26 @@ class GeoJSONField(serializers.Field):
 
     def to_representation(self, value):
 
-        value.transform(4326)
+        if value:
 
-        geojson = OrderedDict()
+            value.transform(4326)
 
-        geojson["type"] = "Feature"
+            geojson = OrderedDict()
 
-        geojson["geometry"] = json.loads(value.geojson)
+            geojson["type"] = "Feature"
 
-        geojson["geometry"]["crs"] = {
-            "type": "name",
-            "properties": {  
-                "name": "EPSG:{0}".format(value.srid)
+            geojson["geometry"] = json.loads(value.geojson)
+
+            geojson["geometry"]["crs"] = {
+                "type": "name",
+                "properties": {  
+                    "name": "EPSG:{0}".format(value.srid)
+                }
             }
-        }
-        
-        return dict(geojson)
+            
+            return dict(geojson)
+
+        return value
 
     def to_internal_value(self, data):
         geojson = json.dumps(data['geometry'])
