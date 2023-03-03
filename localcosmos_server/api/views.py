@@ -164,12 +164,6 @@ class ManageAccount(generics.RetrieveUpdateDestroyAPIView):
         obj = self.request.user
         self.check_object_permissions(self.request, obj)
         return obj
-
-
-    def delete(self, request, *args, **kwargs):        
-        response = super().delete(request, *args, **kwargs)
-        logout(request)
-        return response
     
 
 # a user enters his email address or username and gets an email

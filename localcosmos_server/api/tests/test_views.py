@@ -354,7 +354,7 @@ class TestDeleteAccount(GetJWTokenMixin, WithObservationForm, WithUser, WithApp,
             'app_uuid' : self.app.uuid,
         }
 
-        url = reverse('api_delete_account', kwargs=url_kwargs)
+        url = reverse('api_manage_account', kwargs=url_kwargs)
 
         return url
 

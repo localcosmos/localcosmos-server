@@ -7,8 +7,7 @@ from . import views
 urlpatterns = [
     # app unspecific
     path('', views.APIHome.as_view(), name='api_home'),
-    path('<uuid:app_uuid>/user/manage/', views.ManageAccount.as_view(), name='api_manage_account'),
-    path('<uuid:app_uuid>/user/delete/', views.ManageAccount.as_view(), name='api_delete_account'),
+    path('<uuid:app_uuid>/user/', views.ManageAccount.as_view(), name='api_manage_account'),
     path('<uuid:app_uuid>/user/register/', views.RegisterAccount.as_view(), name='api_register_account'),
     path('<uuid:app_uuid>/password/reset/', views.PasswordResetRequest.as_view(), name='api_password_reset'),
     # JSON WebToken
