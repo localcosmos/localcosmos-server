@@ -68,7 +68,7 @@ COMPLETED_VALIDATION_STEP = 'completed'
 
 class ObservationForm(models.Model):
 
-    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     version = models.IntegerField()
     definition = models.JSONField()
 
