@@ -1,7 +1,7 @@
 {% extends 'localcosmos_server/ajax/server_content_image_form.html' %}
 {% load i18n localcosmos_tags %}
 
-{% block base_url %}{% if content_image %}{% url 'manage_template_content_image' content_image.id %}{% else %}{% url 'manage_template_content_image' content_type.id content_instance.id image_type %}{% endif %}{% endblock %}
+{% block base_url %}{% if content_image %}{% url 'manage_component_image' content_image.id %}{% else %}{% url 'manage_component_image' content_type.id content_instance.id image_type %}{% endif %}{% endblock %}
 
 {% block footer %}
 	<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
@@ -16,10 +16,19 @@
 		(function (){
 			{% if request.method == 'POST' and form.is_valid %}
 
-				{% include 'template_content/ajax/reload_template_content_form_fields.html' %}
+				{% with content_key=component_key %}
+					{% include 'template_content/ajax/reload_template_content_form_fields.html' %}
+				{% endwith %}
+				var url = "{% url 'manage_component' content_instance.template_content.app.uid content_instance.pk component_key component_uuid %}";
 
-				$("#LargeModal").modal("hide");
-				$("#LargeModalContent").empty();
+				$.get(url, function(html){
+
+					$("#LargeModalContent").html(html);
+					ajaxify("LargeModalContent");
+				});
+
+				reloadPreview();
+				
 
 			{% else %}
 				{% include 'localcosmos_server/snippets/ckeditor_js_snippet.html' %}

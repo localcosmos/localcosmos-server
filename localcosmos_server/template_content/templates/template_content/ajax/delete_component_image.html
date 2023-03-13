@@ -1,0 +1,22 @@
+{% extends 'localcosmos_server/ajax/delete_server_content_image.html' %}
+
+{% block success_js %}
+	<script>
+		$("#Modal").modal("hide");
+		{% if deleted %}
+		
+			{% with content_key=component_key %}
+				{% include 'template_content/ajax/reload_template_content_form_fields.html' %}
+			{% endwith %}
+			var url = "{% url 'manage_component' content_instance.template_content.app.uid content_instance.pk component_key component_uuid %}";
+
+			$.get(url, function(html){
+				$("#LargeModalContent").html(html);
+				ajaxify("LargeModalContent");
+				$("#LargeModal").modal("show");
+			});
+			reloadPreview();
+			
+		{% endif %}
+	</script>
+{% endblock %}

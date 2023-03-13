@@ -1,0 +1,9 @@
+var template_contents_container = document.getElementById("{{ content_key }}-container");
+var url = "{% url 'get_template_content_form_fields' localized_template_content.id content_key %}";
+
+$.get(url, function(html){
+    $(template_contents_container).html(html);
+    ajaxify(template_contents_container.id);
+});
+
+reloadPreview();

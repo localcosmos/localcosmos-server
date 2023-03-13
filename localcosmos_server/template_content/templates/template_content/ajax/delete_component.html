@@ -1,0 +1,33 @@
+{% extends 'localcosmos_server/modals/modal_form.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Delete component' %}{% endblock %}
+
+{% block action %}{% url 'delete_component' app.uid localized_template_content.id content_key component_uuid %}{% endblock %}
+
+{% block body %}
+    {% blocktrans %}Delete component {{ component_template_name }}{% endblocktrans %}
+{% endblock %}
+
+
+{% block footer %}
+    {% include 'localcosmos_server/modals/footers/delete.html' %}
+{% endblock %}
+
+{% block script %}
+
+    <script>
+        (function (){
+            {% if deleted is True %}
+
+                {% include 'template_content/ajax/reload_template_content_form_fields.html' %}
+
+                $("#Modal").modal("hide");
+                $("#ModalContent").empty();
+
+            {% endif %}
+        })();
+
+    </script>
+{% endblock %}
+

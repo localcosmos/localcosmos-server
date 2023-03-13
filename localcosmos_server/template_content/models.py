@@ -17,7 +17,7 @@ PUBLISHED_IMAGE_TYPE_PREFIX = 'published-'
 
 TEMPLATE_TYPES = (
     ('page', _('Page')),
-    ('feature', _('Feature')),
+    ('component', _('Component')),
 )
 
 NAVIGATION_LINK_NAME_MAX_LENGTH = 20
@@ -205,12 +205,22 @@ class TemplateContent(PublicationMixin, models.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # use the templates on disk
-        self.draft_template = Template(self.app, self.draft_template_name)
+        self.draft_template = Template(self.app, self.draft_template_name, self.template_type)
 
         if self.published_template:
             # the published template, use the template data (definition&template) stored in the db
-            self.template = Template(self.app, self.name,
+            self.template = Template(self.app, self.name, self.template_type,
                 self.published_template.path, self.published_template_definition.path)
+
+
+    def get_component_template(self, content_key):
+
+        component_template_name = self.draft_template.definition['contents'][content_key]['templateName']
+        # load the component template
+        component_template = Template(self.app, component_template_name, 'component')
+
+        return component_template
+
 
     @property
     def name (self):
@@ -470,6 +480,97 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         return url
 
 
+    def get_component(self, component_key, component_uuid):
+
+        allow_multiple = self.template_content.draft_template.definition['contents'][component_key].get(
+            'allowMultiple', False)
+
+        component = {}
+
+        if self.draft_contents:
+
+            if allow_multiple == True:
+                
+                components = self.draft_contents.get(component_key, [])
+
+                for possible_component in components:
+
+                    if str(possible_component['uuid']) == str(component_uuid):
+                        component = possible_component
+                        break
+
+            else:
+                component = self.draft_contents.get(component_key, {})
+
+        return component
+
+
+    def add_or_update_component(self, component_key, component, save=True):
+
+        if 'uuid' not in component or not component['uuid']:
+            raise ValueError('Cannot add component without uuid')
+
+        allow_multiple = self.template_content.draft_template.definition['contents'][component_key].get(
+            'allowMultiple', False)
+
+        if not self.draft_contents:
+            self.draft_contents = {}
+
+        if allow_multiple == True:
+            index = None
+
+            if component_key not in self.draft_contents:
+                self.draft_contents[component_key] = []
+
+            for i, existing_component in enumerate(self.draft_contents[component_key], 0):
+                if str(existing_component['uuid']) == str(component['uuid']):
+                    index = i
+                    break
+
+            if index is not None:
+                self.draft_contents[component_key][index] = component
+            else:
+                self.draft_contents[component_key].append(component)
+
+        else:
+            self.draft_contents[component_key] = component
+
+        if save == True:
+            self.save()
+
+
+    def remove_component(self, component_key, component_uuid, save=True):
+
+        allow_multiple = self.template_content.draft_template.definition['contents'][component_key].get(
+            'allowMultiple', False)
+
+        if not self.draft_contents:
+            self.draft_contents = {}
+
+        if allow_multiple == True:
+            if component_key in self.draft_contents:
+
+                for index, existing_component in enumerate(self.draft_contents[component_key], 0):
+                    if str(existing_component['uuid']) == str(component_uuid):
+                        del self.draft_contents[component_key][index]
+                        break
+
+        else:
+            del self.draft_contents[component_key]
+
+        if save == True:
+            self.save()
+
+
+    def get_content_image_restrictions(self, image_type):
+        restrictions = {
+            'allow_cropping': False,
+            'allow_features': False,
+        }
+
+        return restrictions
+        
+
     class Meta:
         unique_together=('template_content', 'language')
 
@@ -504,6 +605,12 @@ class Navigation(PublicationMixin, models.Model):
     options = models.JSONField(null=True)
 
     objects = NavigationManager()
+
+    @property
+    def settings(self):
+        app_settings = self.app.get_settings()
+        navigation_settings = app_settings['templateContent']['navigations'][self.navigation_type]
+        return navigation_settings
 
     @property
     def toplevel_entries(self):

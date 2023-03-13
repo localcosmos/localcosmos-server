@@ -36,11 +36,11 @@ class TemplatePaths:
     @property
     def frontend_templates_path(self):
         app_root = self.app.get_installed_app_path(app_state='preview')
-        return os.path.join(app_root, TEMPLATE_CONTENT_FOLDER_NAME)
+        return os.path.join(app_root, TEMPLATE_CONTENT_FOLDER_NAME, self.template_type)
 
     @property
     def uploaded_templates_path(self):
-        return os.path.join(UPLOADED_TEMPLATES_ROOT, self.app.uid)
+        return os.path.join(UPLOADED_TEMPLATES_ROOT, self.app.uid, self.template_type)
 
 
 
@@ -54,10 +54,11 @@ class TemplatePaths:
 class Template(TemplatePaths):
 
     # name is used to identify the folder of the template files
-    def __init__(self, app, name, template_filepath=None, template_definition_filepath=None):
+    def __init__(self, app, name, template_type, template_filepath=None, template_definition_filepath=None):
 
         self.app = app
         self.name = name
+        self.template_type = template_type
 
         self.template_filepath = None
         self.template_definition_filepath = None
@@ -137,7 +138,6 @@ class Template(TemplatePaths):
         template_filepath = None
         template_definition_filepath = None
 
-        
         frontend_template_filepath, frontend_template_definition_filepath = self.get_template_filepaths(
             self.frontend_template_folder)
 
@@ -167,7 +167,7 @@ class Template(TemplatePaths):
                 template_definition_filepath = uploaded_template_definition_filepath
 
         if not template or not definition:
-            msg = 'Template not found: {0}. Looked in: {1} , {2}'.format(self.name, self.frontend_templates_path,
+            msg = 'Template "{0}" not found. Looked in: {1} , {2}'.format(self.name, self.frontend_templates_path,
                 self.uploaded_templates_path)
             raise FileNotFoundError(msg)
 
@@ -188,8 +188,9 @@ class Template(TemplatePaths):
 '''
 class Templates(TemplatePaths):
 
-    def __init__(self, app):
+    def __init__(self, app, template_type):
         self.app = app
+        self.template_type = template_type
 
 
     def get_all_templates(self):
@@ -198,13 +199,15 @@ class Templates(TemplatePaths):
 
         # iterate over all directories of frontend_templates_folder
         if os.path.isdir(self.frontend_templates_path):
+
             for frontend_dirname in os.listdir(self.frontend_templates_path):
-                template = Template(self.app, frontend_dirname)
+                template = Template(self.app, frontend_dirname, self.template_type)
                 templates[frontend_dirname] = template
 
         if os.path.isdir(self.uploaded_templates_path):
+
             for dirname in os.listdir(self.uploaded_templates_path):
-                template = Template(self.app, dirname)
+                template = Template(self.app, dirname, self.template_type)
 
                 if dirname in templates:
                     if template.definition['version'] < templates[dirname].definition['version']:

@@ -13,9 +13,11 @@ from django.utils.decorators import method_decorator
 
 from .models import TemplateContent, LocalizedTemplateContent, Navigation, NavigationEntry, LocalizedNavigationEntry
 from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentForm, TranslateTemplateContentForm,
-                    ManageNavigationForm, ManageNavigationEntryForm)
+                    ManageNavigationForm, ManageNavigationEntryForm, ManageComponentForm)
 
 from urllib.parse import urljoin
+
+import uuid
 
 
 class TemplateContentList(AppMixin, TemplateView):
@@ -26,7 +28,7 @@ class TemplateContentList(AppMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         
         localized_template_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
-            template_content__template_type='page', language=self.app.primary_language).order_by('pk')
+            template_content__template_type='page', language=self.app.primary_language, template_content__assignment=None).order_by('pk')
         context['localized_template_contents'] = localized_template_contents
 
         navigations = Navigation.objects.filter(app=self.app)
@@ -47,7 +49,7 @@ class TemplateContentList(AppMixin, TemplateView):
                 content = {
                     'assignment': assignment,
                     'template_content': template_content,
-                    "template_type": template_type,
+                    'template_type': template_type,
                 }
 
                 required_offline_contents.append(content)
@@ -72,7 +74,7 @@ class CreateTemplateContent(AppMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['template_type'] = self.kwargs['template_type']
-        context['assigment'] = self.kwargs.get('assignment', None)
+        context['assignment'] = self.kwargs.get('assignment', None)
         return context
 
 
@@ -140,9 +142,8 @@ class ManageTemplateContentCommon:
         ltc = self.template_content.get_locale(self.app.primary_language)
         slug = ltc.slug
 
-        template = self.template_content.draft_template
-
-        template_url = template.definition['templateUrl'].replace('{slug}', slug)
+        app_settings = self.app.get_settings()
+        template_url = app_settings['templateContent']['urlPattern'].replace('{slug}', slug)
 
         # the relative preview url
         app_preview_url = self.app.get_preview_url()
@@ -174,6 +175,31 @@ class ManageTemplateContentCommon:
         
         return initial
 
+
+    def get_updated_content_dict(self, template_definition, existing_dict, form):
+
+        # existing keys in JSON - content that already has been saved
+        old_keys = list(existing_dict.keys())
+
+        for content_key, content_definition in template_definition['contents'].items():
+
+            if content_definition['type'] in ['image', 'component']:
+                if content_key in old_keys:
+                    old_keys.remove(content_key)
+
+            content = form.cleaned_data.get(content_key, None)
+
+            if content and type(content) in [str, list] and len(content) > 0 and content not in self.empty_values:
+                existing_dict[content_key] = content
+
+                if content_key in old_keys:
+                    old_keys.remove(content_key)
+
+        # remove keys/data that do not occur anymore in the template
+        for old_key in old_keys:
+            del existing_dict[old_key]
+        
+        return existing_dict
     
     def save_localized_template_content(self, form):
         self.localized_template_content.draft_title = form.cleaned_data['draft_title']
@@ -181,40 +207,32 @@ class ManageTemplateContentCommon:
         if not self.localized_template_content.draft_contents:
             self.localized_template_content.draft_contents = {}
 
-        
-        # existing keys in JSON - content that already has been saved
-        old_keys = list(self.localized_template_content.draft_contents.keys())
-
         template_definition = self.localized_template_content.template_content.draft_template.definition
+        existing_dict = self.localized_template_content.draft_contents
+        
+        updated_dict = self.get_updated_content_dict(template_definition, existing_dict, form)
 
-        for content_key, content_definition in template_definition['contents'].items():
-
-            content = form.cleaned_data.get(content_key, None)
-
-            if content and type(content) in [str, list] and len(content) > 0 and content not in self.empty_values:
-                self.localized_template_content.draft_contents[content_key] = content
-
-                if content_key in old_keys:
-                    old_keys.remove(content_key)
-
-                self.localized_template_content.draft_contents[content_key] = content
-
-        # remove keys/data that do not occur anymore in the template
-        for old_key in old_keys:
-            del self.localized_template_content.draft_contents[old_key]
+        self.localized_template_content.draft_contents = updated_dict
 
         self.localized_template_content.save()
 
 
-class ManageLocalizedTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
+
+class WithLocalizedTemplateContent:
+
+    def set_template_content(self, **kwargs):
+        self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
+        self.template_content = self.localized_template_content.template_content
+        self.language = self.localized_template_content.language
+
+
+class ManageLocalizedTemplateContent(ManageTemplateContentCommon, AppMixin, WithLocalizedTemplateContent, FormView):
     
     template_name = 'template_content/manage_localized_template_content.html'
     form_class = ManageLocalizedTemplateContentForm
 
     def dispatch(self, request, *args, **kwargs):
-        self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
-        self.template_content = self.localized_template_content.template_content
-        self.language = self.localized_template_content.language
+        self.set_template_content(**kwargs)    
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -222,6 +240,117 @@ class ManageLocalizedTemplateContent(ManageTemplateContentCommon, AppMixin, Form
         self.save_localized_template_content(form)
 
         context = self.get_context_data(**self.kwargs)
+        return self.render_to_response(context)
+
+        
+
+class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTemplateContent, FormView):
+
+    template_name = 'template_content/ajax/manage_component.html'
+    form_class = ManageComponentForm
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_template_content(**kwargs)
+        self.set_component(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.component:
+            initial['uuid'] = self.component['uuid']
+        else:
+            initial['uuid'] = uuid.uuid4()
+
+        return initial
+
+
+    def set_component(self, **kwargs):
+        self.app = App.objects.get(uid=kwargs['app_uid'])
+        self.component_uuid = kwargs.pop('component_uuid', None)
+        self.content_key = kwargs['content_key']
+        
+        # load the component template
+        self.component = {}
+
+        if self.component_uuid:
+            self.component = self.localized_template_content.get_component(self.content_key, self.component_uuid)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['content_key'] = self.content_key
+        context['component'] = self.component
+        return context
+
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+
+        return form_class(self.app, self.template_content, self.localized_template_content, self.content_key, self.component, **self.get_form_kwargs())
+
+
+    def form_valid(self, form):
+        
+        if not self.localized_template_content.draft_contents:
+            self.localized_template_content.draft_contents = {}
+
+        template = self.template_content.get_component_template(self.content_key)
+
+        updated_component = self.get_updated_content_dict(template.definition, self.component, form)
+        if not form.cleaned_data['uuid']:
+            raise ValueError('uuid is missing')
+        updated_component['uuid'] = str(form.cleaned_data['uuid'])
+
+        self.localized_template_content.add_or_update_component(self.content_key, updated_component)
+
+        self.localized_template_content.save()
+
+        context = self.get_context_data(**self.kwargs)
+        context['success'] = True
+        return self.render_to_response(context)
+
+
+class DeleteComponent(TemplateView):
+
+    template_name = 'template_content/ajax/delete_component.html'
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_component(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+    def set_component(self, **kwargs):
+        self.app = App.objects.get(uid=kwargs['app_uid'])
+        self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
+        
+        self.content_key = kwargs['content_key']
+        self.component_uuid = kwargs['component_uuid']
+        
+        self.component_template = self.localized_template_content.template_content.get_component_template(
+            self.content_key)
+        self.component_template_name = self.component_template.definition['templateName']
+        
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['app'] = self.app
+        context['localized_template_content'] = self.localized_template_content
+        context['content_key'] = self.content_key
+        context['component_uuid'] = self.component_uuid
+        context['component_template_name'] = self.component_template_name
+        context['deleted'] = False
+        return context
+
+    def post(self, request, *args, **kwargs):
+        
+        self.localized_template_content.remove_component(self.content_key, self.component_uuid)
+
+        context = self.get_context_data(**kwargs)
+        context['deleted'] = True
+        print(context)
         return self.render_to_response(context)
 
 
@@ -263,9 +392,9 @@ class TranslateTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
     reloads all fields if field is multi
 '''
 from .forms import TemplateContentFormFieldManager
-class GetTemplateContentFormFileFields(FormView):
+class GetTemplateContentFormFields(FormView):
 
-    template_name = 'template_content/ajax/reloaded_file_fields.html'
+    template_name = 'template_content/ajax/reloaded_form_fields.html'
     form_class = forms.Form
 
     @method_decorator(ajax_required)
@@ -291,9 +420,8 @@ class GetTemplateContentFormFileFields(FormView):
 
         content_definition = template_definition['contents'][self.content_key]
 
-        instances = self.localized_template_content.images(image_type=self.content_key).order_by('pk')
         field_manager = TemplateContentFormFieldManager(self.app, self.template_content, self.localized_template_content)
-        form_fields = field_manager.get_form_fields(self.content_key, content_definition, instances)
+        form_fields = field_manager.get_form_fields(self.content_key, content_definition)
 
         for field in form_fields:
             form.fields[field['name']] = field['field']
@@ -324,6 +452,60 @@ class DeleteTemplateContentImage(DeleteServerContentImage):
         context['localized_template_content'] = self.object.content
         context['content_key'] = self.object.image_type
         return context
+
+
+
+'''
+    Create the component with its uuid
+    Upload the image
+    Go Back to the component Modal
+
+    image identifiers for components:
+    LocalizedTemplatecontent.image: component_key:component_uuid:content_key
+'''
+class ContextFromComponentIdentifier:
+
+    def get_image_type(self):
+        return self.image_type
+
+    def set_component(self):
+        image_type = self.get_image_type()
+        content_identifiers = image_type.split(':')
+        self.content_key = content_identifiers[-1]
+        self.component_key = content_identifiers[0]
+        self.component_uuid = content_identifiers[1]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.set_component()
+        context['content_key'] = self.content_key
+        context['component_key'] = self.component_key
+        context['component_uuid'] = self.component_uuid
+        return context
+
+
+class ManageComponentImage(ContextFromComponentIdentifier, ManageTemplateContentImage):
+    template_name = 'template_content/ajax/manage_component_image.html'
+
+    # if the user uploads an image before saving the component, save the component here
+    def save_image(self, form):
+        self.set_component()
+        # check if component exits, and save if if not
+        component = self.content_instance.get_component(self.component_key, self.component_uuid)
+
+        if not component:
+            new_component = {
+                'uuid': self.component_uuid
+            }
+            self.content_instance.add_or_update_component(self.component_key, new_component)
+        super().save_image(form)
+
+
+class DeleteComponentImage(ContextFromComponentIdentifier, DeleteTemplateContentImage):
+    template_name = 'template_content/ajax/delete_component_image.html'
+
+    def get_image_type(self):
+        return self.object.image_type
 
 
 '''

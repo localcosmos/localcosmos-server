@@ -1,0 +1,28 @@
+{% extends 'localcosmos_server/modals/large_modal_form.html' %}
+{% load i18n %}
+
+{% block title %}{% if component %}{% blocktrans with name=form.component_template_name %}Manage {{ name }}{% endblocktrans %}{% else %}{% blocktrans with name=form.component_template_name %}Create {{ name }}{% endblocktrans %}{% endif %}{% endblock %}
+
+{% block action %}
+    {% if component %}
+        {% url 'manage_component' app.uid localized_template_content.pk content_key component.uuid %}
+    {% else %}
+        {% url 'manage_component' app.uid localized_template_content.pk content_key %}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/save_close.html' %}
+{% endblock %}
+
+{% block script %}
+	{% if success %}
+		<script>
+			{% include 'template_content/ajax/reload_template_content_form_fields.html' %}
+
+			$("#LargeModal").modal("hide");
+			$("#LargeModalContent").empty();
+			
+		</script>
+	{% endif %}
+{% endblock %}

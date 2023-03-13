@@ -75,54 +75,7 @@
 				<form id="contentform" action="{% block form_action %}{% url 'manage_localized_template_content' app.uid localized_template_content.id %}{% endblock %}" method="POST">{% csrf_token %}
 
 					{% block form %}
-						{% for field in form %}
-
-							{% if field.field.content_definition %}
-
-								{% if field.field.content_definition.type == 'multi-image' %}
-				
-									{% if field.field.is_first %}
-										<div class="row field-label">
-											<div class="col-12">
-												{{ field.label }}
-											</div>
-										</div>
-										<div id="{{ field.field.content_key }}-container" class="row">
-									{% endif %}
-
-									{% include 'template_content/widgets/filecontent_field.html' %}
-
-									{% if field.field.is_last %}
-										</div>
-										<div class="row">
-											<div class="col-12 text-center"><br>
-												<button type="button" class="btn btn-outline-secondary add-content-button" data-target="{{ field.field.content_key }}-container">{% blocktrans with name=field.label %}add {{ name }}{% endblocktrans %}</button>
-											</div>
-										</div>
-									{% endif %}
-				
-								{% elif field.field.content_definition.type == 'image' %}
-										
-									{% if field.is_hidden %}
-									{% else %}
-										<div class="row field-label">
-											<div class="col-12">
-												{{ field.label }}
-											</div>
-										</div>
-									{% endif %}
-									<div id="{{ field.field.content_key }}-container" class="row">
-										{% include 'template_content/widgets/filecontent_field.html' %}
-									</div>
-
-								{% else %}
-									{% include 'template_content/widgets/textcontent_field.html' %}
-								{% endif %}
-							{% else %}
-									{% include 'localcosmos_server/bootstrap_field.html' %}
-							{% endif %}
-
-						{% endfor %}
+						{% include 'template_content/ajax/localized_template_content_form.html' %}
 					{% endblock %}
 
 					<hr>
@@ -139,30 +92,15 @@
 			</div>
 		</div>
 	</div>
-	<input id="content_image_current_edit" type="hidden" />
 {% endblock %}
 {% block extra_script %}
 	{% include 'template_content/ajax/manage_template_content_extra_scripts.html' %}
 
 	<script>
 
-		$(".add-content-button").on("click", function(ev){
-			ev.preventDefault();
-			var target =  $(this).attr("data-target");
-			cms_add_element("#" + target);
-		});
-
-
 		function reloadPreview(){
 			$("#contentPreview").attr("data", "{{ preview_url }}");
 		}
-
-		var current_edit = document.getElementById("content_image_current_edit");
-
-		$(".content-image-button").on("click", function(event){
-			let preview_id = event.currentTarget.getAttribute("data-container-id");
-			current_edit.value = preview_id;
-		});
 
 	</script>
 {% endblock %}

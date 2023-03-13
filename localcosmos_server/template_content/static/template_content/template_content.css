@@ -4,6 +4,27 @@ object, iframe {
 	border: 2px solid black;
 }
 
+.tc-preview {
+	width: 100%;
+	aspect-ratio: 1/1;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    background-color: rgb(150,150,150);
+	position:relative;
+	text-align: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+	display: flex;
+	justify-content:center;
+	align-items:center;
+}
+
+.tc-preview.instance {
+	background-color: rgb(200,200, 200);
+}
+
 
 .fileupload {
 	margin-bottom: 20px;

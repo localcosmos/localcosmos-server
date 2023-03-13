@@ -1,0 +1,30 @@
+{% load i18n static imagekit %}
+<div class="col-4 col-md-3 col-lg-2 mb-5">
+
+	{% block preview %}
+		<div class="tc-preview {% if widget.attrs.instance %}instance{% endif %}" style="background-image:url({% if widget.attrs.instance %}{% else %}{% static 'localcosmos_server/images/add_image.svg' %}{% endif %});">
+			<div>
+				{% if widget.attrs.preview_text %}
+					{{ widget.attrs.preview_text|truncatechars:20 }}
+				{% endif %}
+			</div>
+		</div>
+	{% endblock %}
+
+	<div class="btn-group dropup">
+		<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle content-image-button" data-container-id="{{ widget.attrs.content_key }}-container" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			{% trans 'Modify' %}
+		</button>
+		<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">
+			{% if widget.attrs.instance %}
+				<a class="dropdown-item xhr" data-url="{{ widget.attrs.data_url }}" ajax-target="LargeModalContent">{% blocktrans with name=widget.attrs.content_key %}Change {{ name }}{% endblocktrans %}</a>
+				<a class="dropdown-item xhr" data-url="{{ widget.attrs.delete_url }}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+			{% else %}
+			
+				<a class="dropdown-item xhr" data-url="{{ widget.attrs.data_url }}?new=1" ajax-target="LargeModalContent">{% blocktrans with name=widget.attrs.content_key %}Add {{ name }}{% endblocktrans %}</a>
+				
+			{% endif %}
+		</div>
+	</div>
+		
+</div>

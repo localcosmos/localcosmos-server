@@ -4,12 +4,14 @@ from localcosmos_server.template_content.models import LocalizedTemplateContent,
 
 from content_licencing.models import ContentLicenceRegistry
 
+from localcosmos_server.template_content.utils import get_component_image_key
+
 class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField()
     templateName = serializers.SerializerMethodField()
     version = serializers.SerializerMethodField()
-    templateUrl = serializers.SerializerMethodField()
+    templatePath = serializers.SerializerMethodField()
     contents = serializers.SerializerMethodField()
 
     template_definition = None
@@ -40,8 +42,30 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
     def get_version(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'version')
 
-    def get_templateUrl(self, localized_template_content):
-        return self.get_from_definition(localized_template_content, 'templateUrl')
+    def get_templatePath(self, localized_template_content):
+        return self.get_from_definition(localized_template_content, 'templatePath')
+
+    def get_image_data(self, content_definition, localized_template_content, image_type):
+
+        if content_definition['allowMultiple'] == True:
+            content_images = localized_template_content.images(image_type=image_type)
+            
+            image_data = []
+            for content_image in content_images:
+
+                serializer = ContentImageSerializer(content_image)
+                image_data.append(serializer.data)
+
+            return image_data
+        else:
+            content_image = localized_template_content.image(image_type=image_type)
+
+            if content_image:
+
+                serializer = ContentImageSerializer(content_image)
+                image_data = serializer.data
+                return image_data
+
 
     def get_contents(self, localized_template_content):
         preview = self.context.get('preview', True)
@@ -67,6 +91,8 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
         # add images to contents, according to the template definition
         for content_key, content_definition in template_definition['contents'].items():
 
+            content = contents.get(content_key, None)
+
             image_type = content_key
 
             if preview == False:
@@ -74,27 +100,41 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
             if content_definition['type'] == 'image':
 
-                content_image = primary_locale_template_content.image(image_type=image_type)
-                if content_image:
+                image_data = self.get_image_data(content_definition, primary_locale_template_content, image_type)
+                contents[content_key]['value'] = image_data
 
-                    serializer = ContentImageSerializer(content_image)
-                    contents[content_key]['value'] = serializer.data
 
-            elif content_definition['type'] == 'multi-image':
-                content_images = primary_locale_template_content.images(image_type=image_type)
-                contents[content_key]['value'] = []
-                for content_image in content_images:
+            elif content_definition['type'] == 'component' and content is not None:
 
-                    serializer = ContentImageSerializer(content_image)
-                    contents[content_key]['value'].append(serializer.data)
-            # add images to contents, according to the template definition
+                if content_key in contents:
+                    
+                    content = contents[content_key]['value']
+                
+                    component_template = primary_locale_template_content.template_content.get_component_template(content_key)
+
+                    component_definition = component_template.definition
+                    
+                    for component_content_key, component_content_definition in component_definition['contents'].items():
+
+                        if component_content_definition['type'] == 'image':
+
+                            
+
+                            component_uuid = content['uuid']
+
+                            image_type = get_component_image_key(content_key, component_uuid, component_content_key)
+
+                            image_data = self.get_image_data(content_definition, primary_locale_template_content, image_type)
+                        
+                        
+                
 
         return contents
 
 
     class Meta:
         model = LocalizedTemplateContent
-        fields = ['title', 'templateName', 'version', 'templateUrl', 'contents']
+        fields = ['title', 'templateName', 'templatePath', 'version', 'contents']
 
 
 class ContentLicenceSerializer(serializers.ModelSerializer):

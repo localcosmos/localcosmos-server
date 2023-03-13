@@ -1,5 +1,5 @@
 {% extends request.is_appadmin|yesno:"app_admin/base.html,app_kit/base.html" %}
-{% load i18n static %}
+{% load i18n static template_content_tags %}
 
 {% block extra_style %}
 	<link href="{% static 'template_content/template_content.css' %}" rel="stylesheet">
@@ -79,7 +79,8 @@
 							<div class="row">
 								{% for content in required_offline_contents %}
 									{% if content.template_content %}
-										{% with template_content=localized_template_content.template_content %}
+										{% get_locale content.template_content app.primary_language as localized_template_content %}
+										{% with template_content=content.template_content %}
 											<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
 												{% include 'template_content/template_content_list_entry.html' %}
 											</div>
