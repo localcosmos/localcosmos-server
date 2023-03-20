@@ -2,8 +2,6 @@ from django.utils.html import format_html
 from django import template
 register = template.Library()
 
-from localcosmos_server.template_content.models import LocalizedTemplateContent, LocalizedNavigation
-
 @register.simple_tag
 def get_locale(localizeable_instance, language_code):
     return localizeable_instance.get_locale(language_code)

@@ -1,5 +1,5 @@
 {% load i18n static imagekit %}
-<div class="col-4 col-md-3 col-lg-2 mb-5">
+<div class="col-4 col-md-3 col-lg-2">
 
 	{% block preview %}
 		<div class="tc-preview {% if widget.attrs.instance %}instance{% endif %}" style="background-image:url({% if widget.attrs.instance %}{% else %}{% static 'localcosmos_server/images/add_image.svg' %}{% endif %});">

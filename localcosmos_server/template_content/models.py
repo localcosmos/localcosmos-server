@@ -3,17 +3,16 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.core.files import File
-from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.models import App, ServerContentImageMixin, TaxonomicRestriction
 
 from django.utils import timezone
 
-import os, json, uuid
+import os, json, uuid, shutil
 
 from.Templates import Template
 
-PUBLISHED_IMAGE_TYPE_PREFIX = 'published-'
+from .utils import get_component_image_type, get_published_image_type, PUBLISHED_IMAGE_TYPE_PREFIX
 
 TEMPLATE_TYPES = (
     ('page', _('Page')),
@@ -23,7 +22,7 @@ TEMPLATE_TYPES = (
 NAVIGATION_LINK_NAME_MAX_LENGTH = 20
 TITLE_MAX_LENGTH = 255
 
-def get_template_content_root(template_content):
+def get_published_template_content_root(template_content):
 
     template_definition = template_content.draft_template.definition
 
@@ -34,19 +33,26 @@ def get_template_content_root(template_content):
     return path
 
 # store published template here
-def get_published_template_path(template_content, filename):
-    template_content_root = get_template_content_root(template_content)
+def get_published_page_template_path(template_content, filename):
+    template_content_root = get_published_template_content_root(template_content)
     unchanged_filename = os.path.basename(template_content.draft_template.template_filepath)
-    path = '/'.join([template_content_root, 'template', filename])
+    path = '/'.join([template_content_root, 'templates', 'page', unchanged_filename])
 
     return path
 
-def get_published_template_definition_path(template_content, filename):
-    template_content_root = get_template_content_root(template_content)
+def get_published_page_template_definition_path(template_content, filename):
+    template_content_root = get_published_template_content_root(template_content)
     unchanged_filename = os.path.basename(template_content.draft_template.template_definition_filepath)
-    path = '/'.join([template_content_root, 'template', unchanged_filename])
+    path = '/'.join([template_content_root, 'templates', 'page', unchanged_filename])
 
     return path
+
+
+# this is not used for django files, but for direct file operations. Include settings.MEDIA_ROOT
+def get_published_component_templates_root(template_content):
+    published_template_content_root = get_published_template_content_root(template_content)
+    published_component_templates_root = os.path.join(settings.MEDIA_ROOT, published_template_content_root, 'templates', 'component')
+    return published_component_templates_root
 
 
 class PublicationMixin:
@@ -197,8 +203,8 @@ class TemplateContent(PublicationMixin, models.Model):
 
     draft_template_name = models.CharField(max_length=355) # stores the actual template (e.g. .html)
 
-    published_template = models.FileField(null=True, upload_to=get_published_template_path)
-    published_template_definition = models.FileField(null=True, upload_to=get_published_template_definition_path)
+    published_template = models.FileField(null=True, upload_to=get_published_page_template_path)
+    published_template_definition = models.FileField(null=True, upload_to=get_published_page_template_definition_path)
 
     objects = TemplateContentManager()
 
@@ -213,6 +219,7 @@ class TemplateContent(PublicationMixin, models.Model):
                 self.published_template.path, self.published_template_definition.path)
 
 
+    # return different path for published pages
     def get_component_template(self, content_key):
 
         component_template_name = self.draft_template.definition['contents'][content_key]['templateName']
@@ -220,6 +227,40 @@ class TemplateContent(PublicationMixin, models.Model):
         component_template = Template(self.app, component_template_name, 'component')
 
         return component_template
+
+
+    def get_published_component_template(self, content_key):
+
+        component_template_name = self.template.definition['contents'][content_key]['templateName']
+        
+        published_component_template_definition_filepath = self.get_published_component_template_definition_filepath(component_template_name)
+        published_component_template_filepath = self.get_published_component_template_filepath(component_template_name)
+
+        component_template = Template(self.app, component_template_name, 'component',
+            template_filepath=published_component_template_filepath,
+            template_definition_filepath=published_component_template_definition_filepath)
+
+        return component_template
+
+
+    # for exising published component templates. Only if the files exist on disk
+    def get_published_component_template_definition_filepath(self, component_template_name):
+
+        published_component_template_folder = self.get_published_component_template_folder(component_template_name)
+        filename = '{0}.json'.format(component_template_name)
+        return os.path.join(published_component_template_folder, filename)
+
+    # ths should be adjusted to support other files (see Templates.py)
+    def get_published_component_template_filepath(self, component_template_name):
+
+        published_component_template_folder = self.get_published_component_template_folder(component_template_name)
+        filename = '{0}.html'.format(component_template_name)
+        return os.path.join(published_component_template_folder, filename)
+
+
+    def get_published_component_template_folder(self, component_template_name):
+        published_component_templates_root = get_published_component_templates_root(self)
+        return os.path.join(published_component_templates_root, component_template_name)
 
 
     @property
@@ -231,6 +272,18 @@ class TemplateContent(PublicationMixin, models.Model):
 
 
     def publish_assets(self):
+
+        published_templates_root = get_published_template_content_root(self)
+
+        if self.published_template.name and self.published_template.storage.exists(self.published_template.name):
+            self.published_template.storage.delete(self.published_template.name)
+
+        if self.published_template_definition.name and self.published_template_definition.storage.exists(self.published_template_definition.name):
+            self.published_template_definition.storage.delete(self.published_template_definition.name)
+
+        if os.path.isdir(published_templates_root):
+            shutil.rmtree(published_templates_root)
+
         # store TemplateContent.published_template and TemplateContent.published_template_definition
         filepaths = [self.draft_template.template_filepath, self.draft_template.template_definition_filepath]
 
@@ -245,6 +298,41 @@ class TemplateContent(PublicationMixin, models.Model):
 
                 if filepath == self.draft_template.template_definition_filepath:
                     self.published_template_definition.save(filename, djangofile)
+
+        # store components templates
+        template_definition = self.draft_template.definition
+
+        published_templates_root = get_published_template_content_root(self)
+        published_component_templates_root = os.path.join(published_templates_root, 'templates', 'component')
+
+        for content_key, content_definition in template_definition['contents'].items():
+
+            if content_definition['type'] == 'component':
+
+                component_template_name = content_definition['templateName']
+
+                component_template = self.get_component_template(content_key)
+
+                # does not exist
+                published_component_template_folder = self.get_published_component_template_folder(
+                    component_template_name)
+
+                if not os.path.isdir(published_component_template_folder):
+                    os.makedirs(published_component_template_folder)
+
+                component_template_filename = os.path.basename(component_template.template_filepath)
+                component_template_definition_filename = os.path.basename(component_template.template_definition_filepath)
+
+                published_component_template_filepath = os.path.join(published_component_template_folder,
+                    component_template_filename)
+                published_component_template_definition_filepath = os.path.join(published_component_template_folder,
+                    component_template_definition_filename)
+
+                print(published_component_template_definition_filepath)
+                shutil.copyfile(component_template.template_filepath, published_component_template_filepath)
+                shutil.copyfile(component_template.template_definition_filepath,
+                    published_component_template_definition_filepath)
+                
 
 
     def unpublish(self):
@@ -402,34 +490,75 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         return True
 
 
-    def publish_images(self):
+    def publish_components(self):
+
+        template_definition = self.template_content.draft_template.definition
+
+        for component_key, component_definition in template_definition['contents'].items():
+
+            if component_definition['type'] == 'component':
+
+                component_template = self.template_content.get_component_template(component_key)
+
+                instances = []
+
+                if component_definition.get('allowMultiple', False) == True:
+                    instances = self.draft_contents.get(component_key, [])
+                else:
+                    instance = self.draft_contents.get(component_key, None)
+                    if instance:
+                        instances.append(instance)
+
+
+                for component in instances:
+
+                    component_uuid = component['uuid']
+
+                    for content_key, content_definition in component_template.definition['contents'].items():
+                        
+                        # publish the image and add the url to the component
+                        if content_definition['type'] == 'image':
+                            image_type = get_component_image_type(component_key, component_uuid, content_key)
+
+                            self.publish_images(image_type, content_definition)
+
+
+    def publish_images(self, image_type, content_definition):
+
+        content_images = []
+
+        if content_definition.get('allowMultiple', False) == True:
+
+            content_images = self.images(image_type=image_type)
+        else:
+            content_image = self.image(image_type=image_type)
+            if content_image:
+                content_images = [content_image]
+    
+        published_image_type = get_published_image_type(image_type)
+
+        old_published_images = self.images(image_type=published_image_type)
+        old_published_images.delete()
+
+        for content_image in content_images:
+            published_content_image = content_image
+            published_content_image.pk = None
+            published_content_image.image_type = published_image_type
+            published_content_image.save()
+
+
+    def publish_toplevel_images(self):
 
         template_definition = self.template_content.draft_template.definition
         contents = template_definition['contents']
 
         for content_key, content_definition in contents.items():
 
-            content_images = []
-
             if content_definition['type'] == 'image':
 
-                content_images = [self.image(image_type=content_key)]
+                image_type = content_key
 
-            elif content_definition['type'] == 'multi-image':
-
-                content_images = self.images(image_type=content_key)
-
-            
-            published_image_type = '{0}{1}'.format(PUBLISHED_IMAGE_TYPE_PREFIX, content_key)
-
-            old_published_images = self.images(image_type=published_image_type)
-            old_published_images.delete()
-
-            for content_image in content_images:
-                published_content_image = content_image
-                published_content_image.pk = None
-                published_content_image.image_type = published_image_type
-                published_content_image.save()
+                self.publish_images(image_type, content_definition)
 
 
     def publish(self):
@@ -439,7 +568,9 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
         # currently, images are not translatable. This can change in the future
         if self.language == self.template_content.app.primary_language:
-            self.publish_images()
+            self.publish_toplevel_images()
+
+        self.publish_components()
 
         if self.published_version != self.draft_version:
 
@@ -474,9 +605,13 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
     def get_frontend_specific_url(self):
         app_settings = self.template_content.app.get_settings()
+
+        template = self.template_content.draft_template
+        template_name = template.definition['templateName']
+
         urlPattern = app_settings['templateContent']['urlPattern']
 
-        url = urlPattern.replace('{slug}', self.slug)
+        url = urlPattern.replace('{slug}', self.slug).replace('{templateName}', template_name)
         return url
 
 
@@ -569,6 +704,10 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         }
 
         return restrictions
+
+
+    def __str__(self):
+        return self.draft_title
         
 
     class Meta:

@@ -142,8 +142,11 @@ class ManageTemplateContentCommon:
         ltc = self.template_content.get_locale(self.app.primary_language)
         slug = ltc.slug
 
+        template = ltc.template_content.draft_template
+        template_name = template.definition['templateName']
+
         app_settings = self.app.get_settings()
-        template_url = app_settings['templateContent']['urlPattern'].replace('{slug}', slug)
+        template_url = app_settings['templateContent']['urlPattern'].replace('{slug}', slug).replace('{templateName}', template_name)
 
         # the relative preview url
         app_preview_url = self.app.get_preview_url()
@@ -178,6 +181,8 @@ class ManageTemplateContentCommon:
 
     def get_updated_content_dict(self, template_definition, existing_dict, form):
 
+        app_settings = self.app.get_settings()
+
         # existing keys in JSON - content that already has been saved
         old_keys = list(existing_dict.keys())
 
@@ -189,8 +194,28 @@ class ManageTemplateContentCommon:
 
             content = form.cleaned_data.get(content_key, None)
 
-            if content and type(content) in [str, list] and len(content) > 0 and content not in self.empty_values:
-                existing_dict[content_key] = content
+            if content:
+
+                if content_definition['type'] in ['text']:
+                
+                    if type(content) in [str, list] and len(content) > 0 and content not in self.empty_values:
+                        existing_dict[content_key] = content
+
+                elif content_definition['type'] in ['templateContentLink']:
+
+                    ltc = content
+
+                    template_name = ltc.template_content.draft_template_name
+
+                    url = app_settings['templateContent']['urlPattern'].replace('{slug}', content.slug).replace('{templateName}', template_name)
+
+                    existing_dict[content_key] = {
+                        'pk': str(ltc.pk),
+                        'slug': ltc.slug,
+                        'templateName': template_name,
+                        'title': ltc.published_title,
+                        'url': url,
+                    }
 
                 if content_key in old_keys:
                     old_keys.remove(content_key)
@@ -350,7 +375,6 @@ class DeleteComponent(TemplateView):
 
         context = self.get_context_data(**kwargs)
         context['deleted'] = True
-        print(context)
         return self.render_to_response(context)
 
 

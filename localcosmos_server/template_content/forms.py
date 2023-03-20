@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
-from .models import NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigation, NavigationEntry
+from .models import NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigation, NavigationEntry, LocalizedTemplateContent
 
 from .Templates import Template, Templates
 
@@ -15,7 +15,7 @@ from django.contrib.auth import get_user_model
 
 from localcosmos_server.forms import LocalizeableForm
 
-from localcosmos_server.template_content.utils import get_component_image_key
+from localcosmos_server.template_content.utils import get_component_image_type
 
 import re
 
@@ -85,10 +85,7 @@ class TemplateContentFormFieldManager:
             image_type = self._get_image_type(content_key)
             instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
 
-        elif content_type == 'component':
-            instances = self.localized_template_content.draft_contents.get(content_key, [])
-
-        elif content_type == 'text':
+        elif content_type in ['component', 'text', 'templateContentLink'] and self.localized_template_content.draft_contents:
             instances = self.localized_template_content.draft_contents.get(content_key, [])
 
         return instances
@@ -96,6 +93,17 @@ class TemplateContentFormFieldManager:
 
     def get_primary_locale_content(self, content_key):
         self.primary_locale_template_content.draft_contents.get(content_key, 'None')
+
+
+    def _add_primary_locale_content_to_form_field(self, form_field, content_key):
+
+        form_field.primary_locale_content = None
+
+        if self.primary_locale_template_content.draft_contents:
+            form_field.primary_locale_content = self.get_primary_locale_content(content_key)
+
+        return form_field
+
 
 
     def get_form_fields(self, content_key, content_definition):
@@ -287,10 +295,8 @@ class TemplateContentFormFieldManager:
         })
                                             
         form_field = forms.CharField(**field_kwargs)
-        form_field.primary_locale_content = None
 
-        if self.primary_locale_template_content.draft_contents:
-            form_field.primary_locale_content = self.get_primary_locale_content(content_key)
+        form_field = self._add_primary_locale_content_to_form_field(form_field, content_key)
         
         return form_field
 
@@ -315,9 +321,13 @@ class TemplateContentFormFieldManager:
         if instance:
             data_url_kwargs['component_uuid'] = instance['uuid']
             delete_url = reverse('delete_component', kwargs=data_url_kwargs)
+
             if 'identifierContent' in component_template.definition:
                 identifier_key = component_template.definition['identifierContent']
                 preview_text = instance.get(identifier_key, None)
+
+                if isinstance(preview_text, dict):
+                    preview_text = preview_text.get('title', None)
 
         data_url = reverse('manage_component', kwargs=data_url_kwargs)
 
@@ -335,12 +345,39 @@ class TemplateContentFormFieldManager:
         })
                                             
         form_field = ComponentField(**field_kwargs)
-        form_field.primary_locale_content = None
 
-        if self.primary_locale_template_content.draft_contents:
-            form_field.primary_locale_content = self.get_primary_locale_content(content_key)
+        form_field = self._add_primary_locale_content_to_form_field(form_field, content_key)
 
         return form_field
+
+
+    def _get_templateContentLink_form_field(self, content_key, content_definition, instance=None):
+
+        field_kwargs = self._get_common_field_kwargs(content_key, content_definition)
+
+        widget_attrs = self._get_common_widget_attrs(content_key, content_definition, instance)
+
+        widget = forms.Select(widget_attrs)
+
+        queryset = LocalizedTemplateContent.objects.filter(published_version__isnull=False)
+
+        initial = None
+
+        if instance:
+            initial = LocalizedTemplateContent.objects.filter(pk=instance['pk']).first()
+
+        field_kwargs.update({
+            'queryset': queryset,
+            'widget' : widget,
+            'initial' : initial,
+        })
+
+        form_field = forms.ModelChoiceField(**field_kwargs)
+
+        form_field = self._add_primary_locale_content_to_form_field(form_field, content_key)
+
+        return form_field
+
 
 
 class ComponentFormFieldManager(TemplateContentFormFieldManager):
@@ -358,7 +395,7 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
 
     # component_key:uuid:content_key
     def _get_image_type(self, content_key):
-        return get_component_image_key(self.component_key, self.component_uuid, content_key)
+        return get_component_image_type(self.component_key, self.component_uuid, content_key)
 
 
     def get_instances(self, content_key, content_type):
@@ -371,10 +408,7 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
                 image_type = self._get_image_type(content_key)
                 instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
 
-            elif content_type == 'component':
-                instances = self.component.get(content_key, [])
-
-            elif content_type == 'text':
+            elif content_type in ['component', 'text', 'templateContentLink']:
                 instances = self.component.get(content_key, [])
 
         return instances

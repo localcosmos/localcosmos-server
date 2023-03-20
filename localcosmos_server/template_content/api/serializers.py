@@ -4,14 +4,16 @@ from localcosmos_server.template_content.models import LocalizedTemplateContent,
 
 from content_licencing.models import ContentLicenceRegistry
 
-from localcosmos_server.template_content.utils import get_component_image_key
+from localcosmos_server.template_content.utils import get_component_image_type, get_published_image_type
 
 class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField()
     templateName = serializers.SerializerMethodField()
-    version = serializers.SerializerMethodField()
     templatePath = serializers.SerializerMethodField()
+    
+    version = serializers.SerializerMethodField()
+    
     contents = serializers.SerializerMethodField()
 
     template_definition = None
@@ -47,7 +49,12 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     def get_image_data(self, content_definition, localized_template_content, image_type):
 
-        if content_definition['allowMultiple'] == True:
+        preview = self.context.get('preview', True)
+
+        if preview == False:
+            image_type = get_published_image_type(image_type)
+
+        if content_definition.get('allowMultiple', False) == True:
             content_images = localized_template_content.images(image_type=image_type)
             
             image_data = []
@@ -66,71 +73,93 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                 image_data = serializer.data
                 return image_data
 
+    
+    def get_component_with_image_data(self, component_key, component, component_definition, component_uuid,
+        localized_template_content, image_getter):
+
+        for component_content_key, component_content_definition in component_definition['contents'].items():
+
+            if component_content_definition['type'] == 'image':
+
+                image_type = get_component_image_type(component_key, component_uuid, component_content_key)
+
+                image_data = image_getter(component_content_definition, localized_template_content, image_type)
+
+                component[component_content_key] = image_data
+        
+        return component
+
 
     def get_contents(self, localized_template_content):
+
         preview = self.context.get('preview', True)
 
-        if preview == True:
-            supplied_contents = localized_template_content.draft_contents
-        else:
-            supplied_contents = localized_template_content.published_contents
+        contents = {}
 
+        if preview == True:
+            if localized_template_content.draft_contents:
+                contents = localized_template_content.draft_contents.copy()
+        else:
+            contents = localized_template_content.published_contents.copy()
 
         template_definition = self.get_template_definition(localized_template_content)
-
-        contents = template_definition['contents'].copy()
 
         primary_language = localized_template_content.template_content.app.primary_language
         primary_locale_template_content = localized_template_content.template_content.get_locale(primary_language)
 
-        if supplied_contents:
-
-            for content_key, content in supplied_contents.items():
-                contents[content_key]['value'] = content
-        
-        # add images to contents, according to the template definition
+        # add imageUrl to contents, according to the template definition
         for content_key, content_definition in template_definition['contents'].items():
 
             content = contents.get(content_key, None)
 
-            image_type = content_key
-
-            if preview == False:
-                image_type = '{0}{1}'.format(PUBLISHED_IMAGE_TYPE_PREFIX, content_key)
-
             if content_definition['type'] == 'image':
 
+                image_type = content_key
+
                 image_data = self.get_image_data(content_definition, primary_locale_template_content, image_type)
-                contents[content_key]['value'] = image_data
+                contents[content_key] = image_data
 
+            elif content_definition['type'] == 'component' and content != None:
 
-            elif content_definition['type'] == 'component' and content is not None:
+                component_key = content_key
 
-                if content_key in contents:
+                if component_key in contents:
                     
-                    content = contents[content_key]['value']
-                
-                    component_template = primary_locale_template_content.template_content.get_component_template(content_key)
+                    if preview == True:
+                        component_template = primary_locale_template_content.template_content.get_component_template(
+                            component_key)
+                    else:
+                        component_template = primary_locale_template_content.template_content.get_published_component_template(
+                            component_key)
 
                     component_definition = component_template.definition
-                    
-                    for component_content_key, component_content_definition in component_definition['contents'].items():
 
-                        if component_content_definition['type'] == 'image':
+                    # one or more components?
+                    if content_definition.get('allowMultiple', False) == True:
 
-                            
+                        components = contents[component_key]
 
-                            component_uuid = content['uuid']
+                        for component_index, component in enumerate(components, 0):
 
-                            image_type = get_component_image_key(content_key, component_uuid, component_content_key)
+                            component_uuid = component['uuid']
 
-                            image_data = self.get_image_data(content_definition, primary_locale_template_content, image_type)
+                            component_with_image_data = self.get_component_with_image_data(component_key, component,
+                                component_definition, component_uuid, localized_template_content, self.get_image_data)
+
+                            content[component_index] = component_with_image_data
+
+                    else:
                         
-                        
-                
+                        component = contents[component_key]
+
+                        component_uuid = component['uuid']
+
+                        component_with_image_data = self.get_component_with_image_data(component_key, component,
+                            component_definition, component_uuid, localized_template_content, self.get_image_data)
+
+                        content[component_index] = component_with_image_data
 
         return contents
-
 
     class Meta:
         model = LocalizedTemplateContent
