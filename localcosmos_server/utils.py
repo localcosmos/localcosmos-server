@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.contenttypes.models import ContentType
 
 from datetime import datetime, timezone, timedelta
 
@@ -54,3 +55,28 @@ def get_taxon_search_url(app, content=None):
         taxon_search_url = reverse('search_app_taxon', kwargs={'app_uid':app.uid})
 
     return taxon_search_url
+
+
+def get_public_schema_content_type_for_model(__class__):
+    if 'django_tenants' in settings.INSTALLED_APPS:
+        from django_tenants.utils import schema_context
+        with schema_context('public'):
+            content_type = ContentType.objects.get_for_model(__class__)
+    
+    else:
+        content_type = ContentType.objects.get_for_model(__class__)
+
+    return content_type
+
+
+def get_public_schema_content_type(content_type_id):
+    
+    if 'django_tenants' in settings.INSTALLED_APPS:
+        from django_tenants.utils import schema_context
+        with schema_context('public'):
+            content_type = ContentType.objects.get(pk=content_type_id)
+    
+    else:
+        content_type = ContentType.objects.get(pk=content_type_id)
+
+    return content_type

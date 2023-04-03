@@ -12,7 +12,8 @@ import os, json, uuid, shutil
 
 from.Templates import Template
 
-from .utils import get_component_image_type, get_published_image_type, PUBLISHED_IMAGE_TYPE_PREFIX
+from .utils import (get_component_image_type, get_published_image_type, PUBLISHED_IMAGE_TYPE_PREFIX,
+                    get_frontend_specific_url)
 
 TEMPLATE_TYPES = (
     ('page', _('Page')),
@@ -606,13 +607,7 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
     def get_frontend_specific_url(self):
         app_settings = self.template_content.app.get_settings()
 
-        template = self.template_content.draft_template
-        template_name = template.definition['templateName']
-
-        urlPattern = app_settings['templateContent']['urlPattern']
-
-        url = urlPattern.replace('{slug}', self.slug).replace('{templateName}', template_name)
-        return url
+        return get_frontend_specific_url(app_settings, self)
 
 
     def get_component(self, component_key, component_uuid):

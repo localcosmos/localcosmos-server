@@ -17,6 +17,8 @@ from localcosmos_server.forms import LocalizeableForm
 
 from localcosmos_server.template_content.utils import get_component_image_type
 
+from localcosmos_server.utils import get_public_schema_content_type_for_model
+
 import re
 
 User = get_user_model()
@@ -83,6 +85,7 @@ class TemplateContentFormFieldManager:
 
         if content_type == 'image':
             image_type = self._get_image_type(content_key)
+            print('.images')
             instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
 
         elif content_type in ['component', 'text', 'templateContentLink'] and self.localized_template_content.draft_contents:
@@ -258,7 +261,7 @@ class TemplateContentFormFieldManager:
         else :
             if self.localized_template_content:
                 
-                ltc_content_type = ContentType.objects.get_for_model(self.localized_template_content)
+                ltc_content_type = get_public_schema_content_type_for_model(self.localized_template_content)
 
                 data_url_kwargs = {
                     'content_type_id' : ltc_content_type.id,

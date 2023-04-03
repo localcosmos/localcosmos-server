@@ -1,7 +1,10 @@
+from django.conf import settings
 from localcosmos_server.models import TaxonomicRestriction
 from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.models import App
+
+from localcosmos_server.utils import get_public_schema_content_type
 
 class AppMixin:
 
@@ -92,7 +95,13 @@ class ContentImageViewMixin(LicencingFormViewMixin):
             image_type = self.content_image.image_type
         else:
             new = bool(self.request.GET.get('new', False))
-            self.object_content_type = ContentType.objects.get(pk=kwargs['content_type_id'])
+
+            if self.ContentImageClass == ServerContentImage:
+                self.object_content_type = get_public_schema_content_type(kwargs['content_type_id'])
+
+            else:
+                self.object_content_type = ContentType.objects.get(pk=kwargs['content_type_id'])
+
             ContentModelClass = self.object_content_type.model_class()
             self.content_instance = ContentModelClass.objects.get(pk=kwargs['object_id'])
 

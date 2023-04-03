@@ -15,6 +15,8 @@ from .models import TemplateContent, LocalizedTemplateContent, Navigation, Navig
 from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentForm, TranslateTemplateContentForm,
                     ManageNavigationForm, ManageNavigationEntryForm, ManageComponentForm)
 
+from .utils import get_frontend_specific_url
+
 from urllib.parse import urljoin
 
 import uuid
@@ -140,13 +142,9 @@ class ManageTemplateContentCommon:
         #    slug = self.localized_template_content.slug
         #else:
         ltc = self.template_content.get_locale(self.app.primary_language)
-        slug = ltc.slug
-
-        template = ltc.template_content.draft_template
-        template_name = template.definition['templateName']
 
         app_settings = self.app.get_settings()
-        template_url = app_settings['templateContent']['urlPattern'].replace('{slug}', slug).replace('{templateName}', template_name)
+        template_url = get_frontend_specific_url(app_settings, ltc)
 
         # the relative preview url
         app_preview_url = self.app.get_preview_url()

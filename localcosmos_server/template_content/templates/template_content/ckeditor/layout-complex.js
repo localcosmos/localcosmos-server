@@ -1,5 +1,10 @@
 {
-    toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+    toolbar: [ 'heading', '|', 'bold', 'italic', 'underline', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'insertTable','|', 'sourceEditing' ],
+    table: {
+        contentToolbar: [
+            'tableColumn', 'tableRow', 'mergeTableCells', 'tableProperties', 'tableCellProperties', 'toggleTableCaption'
+        ]
+    },
 	link: {
         decorators: {
             addTargetToExternalLinks: {

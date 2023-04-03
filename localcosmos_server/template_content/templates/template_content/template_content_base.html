@@ -54,7 +54,7 @@
 							<div class="row">
 								{% for localized_template_content in localized_template_contents %}
 									{% with template_content=localized_template_content.template_content %}
-										<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4">
+										<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4 mb-4">
 											{% include 'template_content/template_content_list_entry.html' %}
 										</div>
 									{% endwith %}
