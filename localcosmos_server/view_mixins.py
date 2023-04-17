@@ -4,8 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.models import App
 
-from localcosmos_server.utils import get_public_schema_content_type
-
 class AppMixin:
 
     def dispatch(self, request, *args, **kwargs):
@@ -91,16 +89,12 @@ class ContentImageViewMixin(LicencingFormViewMixin):
         if 'content_image_id' in kwargs:
             self.content_image = self.ContentImageClass.objects.get(pk=kwargs['content_image_id'])
             self.object_content_type = self.content_image.content_type
-            self.content_instance = self.content_image.content
+            self.content_instance = self.object_content_type.get_object_for_this_type(pk=self.content_image.object_id)
             image_type = self.content_image.image_type
+
         else:
             new = bool(self.request.GET.get('new', False))
-
-            if self.ContentImageClass == ServerContentImage:
-                self.object_content_type = get_public_schema_content_type(kwargs['content_type_id'])
-
-            else:
-                self.object_content_type = ContentType.objects.get(pk=kwargs['content_type_id'])
+            self.object_content_type = ContentType.objects.get(pk=kwargs['content_type_id'])
 
             ContentModelClass = self.object_content_type.model_class()
             self.content_instance = ContentModelClass.objects.get(pk=kwargs['object_id'])

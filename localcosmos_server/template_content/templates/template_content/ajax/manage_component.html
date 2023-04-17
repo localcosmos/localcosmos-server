@@ -25,4 +25,13 @@
 			
 		</script>
 	{% endif %}
+	<script>
+		{% for field in form %}
+			{% if field.name in form.layoutable_full_fields %}
+				ClassicEditor.create( document.querySelector('#{{ field.auto_id }}'), {% include 'template_content/ckeditor/layout-complex.js' %});
+			{% elif field.name in form.layoutable_simple_fields %}
+				ClassicEditor.create( document.querySelector('#{{ field.auto_id }}'), {% include 'template_content/ckeditor/layout-simple.js' %});
+			{% endif %}
+		{% endfor %}
+	</script>
 {% endblock %}

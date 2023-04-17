@@ -18,13 +18,13 @@ urlpatterns = [
     path('app-admin/', include('localcosmos_server.datasets.urls', namespace='datasets')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.taxonomy.urls')), # cannot have the namespace appadmin
     # generic object order
-    path('store-object-order/<int:content_type_id>/',
+    path('app-admin/<str:app_uid>/store-object-order/<int:content_type_id>/',
         generic_views.StoreObjectOrder.as_view(), name='store_object_order'),
     # API
     path('api/', include('localcosmos_server.api.urls')),
     path('api/', include('localcosmos_server.datasets.api.urls')),
     path('api/', include('localcosmos_server.template_content.api.urls')),
-    #path('api/anycluster/', include('localcosmos_server.anycluster_schema_urls')),
+    path('api/anycluster/', include('anycluster.api.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(template_name='swagger-ui.html', url_name='schema'), name='swagger-ui'),

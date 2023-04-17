@@ -1,5 +1,5 @@
 {% load localcosmos_tags i18n %}
-<div id="entries-{{ navigation_entries.0.id }}" data-store-positions-url="{% url 'store_object_order' navigation_entries.0|ctype_id %}">
+<div id="entries-{{ navigation_entries.0.id }}" data-store-positions-url="{% url 'store_object_order' app.uid navigation_entries.0|ctype_id %}">
     {% for entry in navigation_entries %}
         <div id="ctype-{{ entry|ctype_id }}-{{ entry.id }}" class="row" data-object-id="{{ entry.id }}">
             <div class="col-12 {% if entry.parent %}pl-5{% endif %}">

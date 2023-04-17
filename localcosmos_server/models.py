@@ -452,7 +452,6 @@ class TaxonomicRestriction(TaxonomicRestrictionBase):
 '''
     Generic Content Images
 '''
-from localcosmos_server.utils import get_public_schema_content_type_for_model
 class ServerContentImageMixin:
 
     def get_model(self):
@@ -460,10 +459,6 @@ class ServerContentImageMixin:
 
 
     def get_content_type(self):
-        model = self.get_model()
-        if model == ServerContentImage:
-            return get_public_schema_content_type_for_model(self.__class__)
-
         return ContentType.objects.get_for_model(self.__class__)
 
     def _content_images(self, image_type='image'):
@@ -754,6 +749,7 @@ class ContentImageProcessing:
                 self.image_store.source_image.url), 'thumbnails', thumbname)
 
         return thumburl
+
 
 
 class ServerContentImage(ContentImageProcessing, ContentImageAbstract):

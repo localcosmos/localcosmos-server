@@ -168,8 +168,6 @@ STATIC_ROOT = '/var/www/localcosmos/static/'
 MEDIA_ROOT = '/var/www/localcosmos/media/'
 MEDIA_URL = '/media/'
 
-from localcosmos_server.settings import *
-
 # location where apps are installed
 # your apps index.html will be in LOCALCOSMOS_APPS_ROOT/{APP_UID}/www/index.html
 LOCALCOSMOS_APPS_ROOT = '/var/www/localcosmos/apps/' 
@@ -191,5 +189,15 @@ EMAIL_USE_SSL = bool(os.environ.get('EMAIL_USE_SSL', False))
 EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+#CORS_URLS_REGEX = r"^/api/.*$"
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
 
 from localcosmos_server.settings import *
