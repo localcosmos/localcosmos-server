@@ -3,9 +3,7 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from . import views
 from . import generic_views
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,7 +22,6 @@ urlpatterns = [
     path('api/', include('localcosmos_server.api.urls')),
     path('api/', include('localcosmos_server.datasets.api.urls')),
     path('api/', include('localcosmos_server.template_content.api.urls')),
-    path('api/anycluster/', include('anycluster.api.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(template_name='swagger-ui.html', url_name='schema'), name='swagger-ui'),

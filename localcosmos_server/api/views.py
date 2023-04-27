@@ -8,6 +8,7 @@
 #
 ###################################################################################################################
 from django.contrib.auth import logout
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import generics
@@ -36,6 +37,7 @@ from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients
 
 from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer, CamelCaseBrowsableAPIRenderer
 
 from drf_spectacular.utils import extend_schema, inline_serializer
 
@@ -101,7 +103,7 @@ class RegisterAccount(ManageUserClient, APIView):
 
     permission_classes = (AppMustExist,)
     parser_classes = (CamelCaseJSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
     serializer_class = RegistrationSerializer
 
     # this is for creating only
@@ -151,13 +153,13 @@ class ManageAccount(generics.RetrieveUpdateDestroyAPIView):
         - authenticated users only
         - owner only
         - [GET] delivers the account as json to the client
-        - [POST] validates and saves - and returns json
+        - [PUT] validates and saves - and returns json
     '''
 
     permission_classes = (IsAuthenticated, OwnerOnly)
     authentication_classes = (JWTAuthentication,)
     parser_classes = (CamelCaseJSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
     serializer_class = LocalcosmosUserSerializer
 
     def get_object(self):
@@ -170,7 +172,7 @@ class ManageAccount(generics.RetrieveUpdateDestroyAPIView):
 from django.contrib.auth.forms import PasswordResetForm
 class PasswordResetRequest(APIView):
     serializer_class = PasswordResetSerializer
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
     permission_classes = ()
 
     def post(self, request, *args, **kwargs):
@@ -249,3 +251,38 @@ class AppAPIHome(APIView):
             'app_name' : app.name,
         }
         return Response(context)
+
+
+##################################################################################################################
+#
+#   ANYCLUSTER POSTGRESQL SCHEMA AWARE WIEWS
+#
+##################################################################################################################
+from anycluster.api.views import (GridCluster, KmeansCluster, GetClusterContent, GetAreaContent, GetDatasetContent)
+
+class SchemaSpecificMapClusterer:
+
+    def get_schema_name(self, request):
+
+        schema_name = 'public'
+
+        if settings.LOCALCOSMOS_PRIVATE == False:
+            schema_name = request.tenant.schema_name
+
+        return schema_name
+
+
+class SchemaGridCluster(SchemaSpecificMapClusterer, GridCluster):
+    pass
+
+class SchemaKmeansCluster(SchemaSpecificMapClusterer, KmeansCluster):
+    pass
+
+class SchemaGetClusterContent(SchemaSpecificMapClusterer, GetClusterContent):
+    pass
+
+class SchemaGetAreaContent(SchemaSpecificMapClusterer, GetAreaContent):
+    pass
+
+class SchemaGetDatasetContent(SchemaSpecificMapClusterer, GetDatasetContent):
+    pass

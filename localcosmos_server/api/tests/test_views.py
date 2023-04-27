@@ -1,6 +1,8 @@
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework import status
 
+from django.conf import settings
+
 from django.urls import reverse
 
 from localcosmos_server.tests.common import (test_settings, test_settings_commercial, TEST_CLIENT_ID, TEST_PLATFORM)
@@ -11,10 +13,14 @@ from rest_framework.test import APIRequestFactory, APIClient
 
 from localcosmos_server.api.views import APIHome, RegisterAccount, TokenObtainPairViewWithClientID
 
+from djangorestframework_camel_case.util import underscoreize
+
 from localcosmos_server.datasets.models import Dataset
 
 from localcosmos_server.models import UserClients
 from django.contrib.auth import get_user_model
+
+import json
 
 User = get_user_model()
 
@@ -82,7 +88,13 @@ class TestRegisterAccount(WithApp, WithUser, WithObservationForm, APITestCase):
 
         self.assertEqual(json_response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(json_response.data['success'], True)
+        response_data = json.loads(json_response.content)
+
+        self.assertIn('firstName', response_data['user'])
+
+        self.assertEqual(response_data['success'], True)
+
+        self.assertEqual(underscoreize(response_data), json_response.data)
 
         for field, value in json_response.data['user'].items():
             if field in post_data:
@@ -94,7 +106,7 @@ class TestRegisterAccount(WithApp, WithUser, WithObservationForm, APITestCase):
         self.assertEqual(client.client_id, post_data['clientId'])
         self.assertEqual(client.platform, post_data['platform'])
 
-
+    
     @test_settings
     def test_post_with_existing_anonymous_dataset(self):
 
@@ -123,6 +135,8 @@ class TestRegisterAccount(WithApp, WithUser, WithObservationForm, APITestCase):
         dataset.refresh_from_db()
 
         self.assertEqual(dataset.user, user)
+    
+    
 
 
 class TestTokenObtainPairViewWithClientID(WithApp, WithObservationForm, WithUser, APITestCase):
@@ -171,6 +185,7 @@ class TestTokenObtainPairViewWithClientID(WithApp, WithObservationForm, WithUser
         self.assertEqual(client.platform, post_data['platform'])
         self.assertEqual(client.user, user)
         self.assertEqual(client.client_id, post_data['clientId'])
+
 
     @test_settings
     def test_with_anonymous_dataset(self):
@@ -271,6 +286,10 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         authed_response = authed_client.get(url)
 
         self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+
+        response_data = json.loads(authed_response.content)
+        self.assertIn('firstName', response_data)
+        self.assertEqual(underscoreize(response_data), authed_response.data)
 
         for key, value in authed_response.data.items():
 
