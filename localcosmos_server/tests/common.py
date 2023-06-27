@@ -52,8 +52,8 @@ TEST_TIMESTAMP_OFFSET = -60
 
 TEST_TIMESTAMP = timestamp_from_utc_with_offset(TEST_UTC_TIMESTAMP, TEST_TIMESTAMP_OFFSET)
 
-TEST_LATITUDE = 49.63497717058325
-TEST_LONGITUDE = 11.091344909741967
+TEST_LATITUDE = 49.63
+TEST_LONGITUDE = 11.09
 
 GEOJSON_POLYGON = {
     "type": "Feature",
@@ -81,18 +81,71 @@ GEOJSON_POLYGON = {
 TEST_USER_GEOMETRY_NAME = 'Test user geometry'
 
 
+TEST_TAXA = {
+    'Reptilia': {
+        'taxonSource': 'taxonomy.sources.col',
+        'taxonNuid': '00100800c',
+        'taxonLatname': 'Reptilia',
+        'taxonAuthor': '',
+        'nameUuid': '0754283f-1d7a-45b5-9051-ed2ccc3386e8',
+    },
+    'Amphibia': {
+        'taxonSource' : 'taxonomy.sources.col',
+        'taxonNuid': '001008002',
+        'taxonLatname': 'Amphibia',
+        'taxonAuthor': '',
+        'nameUuid': '3a82d87d-9f07-4720-a4b3-bb8d847ceb54',
+    },
+    'Lacerta agilis' : {
+        'taxonSource': 'taxonomy.sources.col',
+        'taxonNuid': '00100800c00301000m001',
+        'taxonLatname': 'Lacerta agilis',
+        'taxonAuthor': 'Linnaeus, 1758',
+        'nameUuid': 'c36819f7-4b65-477b-8756-389289c531ec',
+    },
+    'Natrix natrix': {
+        'taxonSource': 'taxonomy.sources.col',
+        'taxonNuid': '00100800c00301800m002',
+        'taxonLatname': 'Natrix natrix',
+        'taxonAuthor': '(Linnaeus, 1758)',
+        'nameUuid': 'b95b6c5f-47ac-4ad4-bd6a-4158c78165be',
+    },
+    'Bufo bufo': {
+        'taxonSource': 'taxonomy.sources.col',
+        'taxonNuid': '001008002001007008008',
+        'taxonLatname': 'Bufo bufo',
+        'taxonAuthor': '(Linnaeus, 1758)',
+        'nameUuid': 'eb00f3d2-6617-4ebc-9cfc-304d187799bd', 
+    },
+    'Rana aurora' : {
+        'taxonSource': 'taxonomy.sources.col',
+        'taxonNuid': '00100800200101600e004',
+        'taxonLatname': 'Rana aurora',
+        'taxonAuthor': 'Baird and Girard, 1852',
+        'nameUuid': 'b9d5f692-e296-4890-9d13-ee68273edda0',
+    }
+}
+
 
 class DataCreator:
 
-    def get_dataset_data(self, observation_form_json, alternative_data=False):
+    def get_dataset_data(self, observation_form_json, alternative_data=False, taxon=None):
         
         data = {}
 
         # iterate over all fields of observation_form_json and create test data
         for field in observation_form_json['fields']:
-            
-            method_name = 'get_{0}_test_data'.format(field['fieldClass'])
-            field_data = getattr(self, method_name)(field, alternative_data)
+
+            field_data = None
+
+            if field['fieldClass'] == 'TaxonField':
+                if taxon:
+                    field_data = taxon
+
+            if not field_data:
+                method_name = 'get_{0}_test_data'.format(field['fieldClass'])
+                field_data = getattr(self, method_name)(field, alternative_data)
+
             data[field['uuid']] = field_data
 
         return data

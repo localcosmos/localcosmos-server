@@ -131,7 +131,8 @@ class DatasetImagesSerializer(serializers.ModelSerializer):
 '''
     Datasets
 '''
-class DatasetSerializer(serializers.Serializer):
+# Retriee works without app_uuid in __init__ and is compatible with anycluster
+class DatasetRetrieveSerializer(serializers.Serializer):
 
     uuid = serializers.UUIDField(read_only=True)
 
@@ -149,12 +150,7 @@ class DatasetSerializer(serializers.Serializer):
 
     user = LocalcosmosUserSerializer(many=False, read_only=True, allow_null=True)
 
-    
-    def __init__(self, app_uuid, *args, **kwargs):
-        self.app_uuid = app_uuid
-        super().__init__(*args, **kwargs)
 
-    
     def get_observation_form(self, data):
         observation_form_uuid = data['observation_form']['uuid']
         observation_form_version = data['observation_form']['version']
@@ -165,6 +161,13 @@ class DatasetSerializer(serializers.Serializer):
         return observation_form
 
 
+class DatasetSerializer(DatasetRetrieveSerializer):
+    
+    def __init__(self, app_uuid, *args, **kwargs):
+        self.app_uuid = app_uuid
+        super().__init__(*args, **kwargs)
+
+    
     def validate(self, data):
 
         observation_form = self.get_observation_form(data)

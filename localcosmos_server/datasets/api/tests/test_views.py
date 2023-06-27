@@ -5,7 +5,7 @@ from rest_framework import status
 from django.urls import reverse
 
 from localcosmos_server.tests.common import (test_settings, DataCreator, TEST_IMAGE_PATH, TEST_CLIENT_ID, TEST_PLATFORM,
-    GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME)
+    GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME, TEST_TAXA)
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia, WithUserGeometry
 
 from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages
@@ -82,7 +82,6 @@ class TestCreateObservationForm(WithObservationForm, WithUser, WithApp, CreatedU
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertTrue(qry.exists())
-
 
 
 
@@ -841,3 +840,364 @@ class TestManageUserGeometry(WithUserGeometry, WithUser, WithApp, CreatedUsersMi
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+from anycluster.definitions import GEOMETRY_TYPE_VIEWPORT, GEOMETRY_TYPE_AREA
+from anycluster.tests.common import GEOJSON_RECTANGLE
+
+GRID_SIZE = 256
+ZOOM = 10
+
+class TestComplexAnyclusterRequests(WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form(observation_form_json=self.observation_form_point_json)
+
+
+    @test_settings
+    def test_get_taxonomic_map_content_count(self):
+        
+        url_kwargs = {
+            'zoom': ZOOM,
+            'grid_size': GRID_SIZE,
+            'app_uuid': self.app.uuid,
+        }
+
+        url = reverse('schema_get_map_content_count', kwargs=url_kwargs)
+
+        filters = []
+        modulations = {}
+
+        post_data = {
+            'geometry_type': GEOMETRY_TYPE_VIEWPORT,
+            'geojson': GEOJSON_RECTANGLE,
+            'filters': filters,
+            'modulations': modulations
+        }
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        expected_response = {
+            'count' : 0,
+            'modulations' : {}
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+        # add one reptile and amphib
+        lacerta_agilis = TEST_TAXA['Lacerta agilis']
+        rana_aurora = TEST_TAXA['Rana aurora']
+        bufo_bufo = TEST_TAXA['Bufo bufo']
+
+        amphibia = TEST_TAXA['Amphibia']
+        reptilia = TEST_TAXA['Reptilia']
+
+        dataset_1 = self.create_dataset(self.observation_form, taxon=lacerta_agilis)
+        dataset_2 = self.create_dataset(self.observation_form, taxon=rana_aurora)
+
+
+        modulations = {
+            'Amphibia' : {
+                'filters' : [
+                    {
+                        'column': 'taxon_source',
+                        'value': amphibia['taxonSource'],
+                        'operator': '=',
+                    },
+                    {
+                        'column': 'taxon_nuid',
+                        'value': amphibia['taxonNuid'],
+                        'operator': 'startswith',
+                        'logicalOperator': 'AND'
+                    }
+                ]
+            }
+        }
+
+        post_data['modulations'] = modulations
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        expected_response = {
+            'count': 2,
+            'modulations': {
+                'Amphibia': {
+                    'count': 1
+                }
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+
+        dataset_3 = self.create_dataset(self.observation_form, taxon=bufo_bufo)
+
+        # complex taxonfilter
+        modulations = {
+            'Amphibia&Reptilia' : {
+                'filters' : [
+                    {
+                        'filters' : [
+                            {
+                                'column': 'taxon_source',
+                                'value': amphibia['taxonSource'],
+                                'operator': '=',
+                            },
+                            {
+                                'column': 'taxon_nuid',
+                                'value': amphibia['taxonNuid'],
+                                'operator': 'startswith',
+                                'logicalOperator': 'AND'
+                            }
+                        ]
+                    },
+                    {
+                        'filters' : [
+                            {
+                                'column': 'taxon_source',
+                                'value': reptilia['taxonSource'],
+                                'operator': '=',
+                            },
+                            {
+                                'column': 'taxon_nuid',
+                                'value': reptilia['taxonNuid'],
+                                'operator': 'startswith',
+                                'logicalOperator': 'AND'
+                            }
+                        ],
+                        'logicalOperator' : 'OR',
+                    }
+                ]
+            },
+            'Amphibia': {
+                'filters': [
+                    {
+                        'column': 'taxon_source',
+                        'value': amphibia['taxonSource'],
+                        'operator': '=',
+                    },
+                    {
+                        'column': 'taxon_nuid',
+                        'value': amphibia['taxonNuid'],
+                        'operator': 'startswith',
+                        'logicalOperator': 'AND'
+                    }
+                ]
+            },
+            'Reptilia' : {
+                'filters' : [
+                    {
+                        'column': 'taxon_source',
+                        'value': reptilia['taxonSource'],
+                        'operator': '=',
+                    },
+                    {
+                        'column': 'taxon_nuid',
+                        'value': reptilia['taxonNuid'],
+                        'operator': 'startswith',
+                        'logicalOperator': 'AND'
+                    }
+                ]
+            }
+        }
+
+        post_data['modulations'] = modulations
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        expected_response = {
+            'count': 3,
+            'modulations': {
+                'Amphibia&Reptilia': {
+                    'count': 3
+                },
+                'Amphibia': {
+                    'count' : 2,
+                },
+                'Reptilia': {
+                    'count' : 1,
+                }
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+    @test_settings
+    def test_get_observation_form_map_content_counts(self):
+
+        lacerta_agilis = TEST_TAXA['Lacerta agilis']
+        rana_aurora = TEST_TAXA['Rana aurora']
+
+        dataset_1 = self.create_dataset(self.observation_form, taxon=lacerta_agilis)
+        dataset_2 = self.create_dataset(self.observation_form, taxon=rana_aurora)
+
+        url_kwargs = {
+            'zoom': ZOOM,
+            'grid_size': GRID_SIZE,
+            'app_uuid': self.app.uuid,
+        }
+
+        url = reverse('schema_get_map_content_count', kwargs=url_kwargs)
+
+        filters = []
+        modulations = {
+            'Observation form' : {
+                'column' : 'observation_form_id',
+                'value': self.observation_form.id,
+                'operator': '=',
+            }
+        }
+
+        post_data = {
+            'geometry_type': GEOMETRY_TYPE_VIEWPORT,
+            'geojson': GEOJSON_RECTANGLE,
+            'filters': filters,
+            'modulations': modulations
+        }
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        expected_response = {
+            'count': 2,
+            'modulations': {
+                'Observation form': {
+                    'count': 2
+                }
+            }
+        }
+        
+        self.assertEqual(parsed_response, expected_response)
+
+
+    @test_settings
+    def test_get_grouped_map_contents(self):
+
+
+        url_kwargs = {
+            'zoom': ZOOM,
+            'grid_size': GRID_SIZE,
+            'app_uuid': self.app.uuid,
+        }
+
+        filters = []
+
+        post_data = {
+            'geometry_type': GEOMETRY_TYPE_VIEWPORT,
+            'geojson': GEOJSON_RECTANGLE,
+            'filters': filters,
+            'group_by': 'name_uuid',
+        }
+
+        url = reverse('schema_get_grouped_map_contents', kwargs=url_kwargs)
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        self.assertEqual(parsed_response, {})
+
+        lacerta_agilis = TEST_TAXA['Lacerta agilis']
+        rana_aurora = TEST_TAXA['Rana aurora']
+        bufo_bufo = TEST_TAXA['Bufo bufo']
+
+
+        dataset_1 = self.create_dataset(self.observation_form, taxon=lacerta_agilis)
+        dataset_2 = self.create_dataset(self.observation_form, taxon=rana_aurora)
+        dataset_3 = self.create_dataset(self.observation_form, taxon=rana_aurora)
+        dataset_4 = self.create_dataset(self.observation_form, taxon=rana_aurora)
+        dataset_5 = self.create_dataset(self.observation_form, taxon=lacerta_agilis)
+
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        expected_response = {
+            'b9d5f692-e296-4890-9d13-ee68273edda0': {
+                'count': 3,
+                'taxon': {
+                    'nameUuid': 'b9d5f692-e296-4890-9d13-ee68273edda0',
+                    'taxonSource': 'taxonomy.sources.col',
+                    'taxonLatname': 'Rana aurora',
+                    'taxonAuthor': 'Baird and Girard, 1852',
+                    'taxonNuid': '00100800200101600e004'
+                }
+            },
+            'c36819f7-4b65-477b-8756-389289c531ec': {
+                'count': 2,
+                'taxon': {
+                    'nameUuid': 'c36819f7-4b65-477b-8756-389289c531ec',
+                    'taxonSource': 'taxonomy.sources.col',
+                    'taxonLatname': 'Lacerta agilis',
+                    'taxonAuthor': 'Linnaeus, 1758',
+                    'taxonNuid': '00100800c00301000m001'
+                }
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+
+'''
+    Test the image url when getting datasets
+'''
+class TestGetAreaContent(WithMedia, WithObservationForm, WithUser, WithApp, CreatedUsersMixin, APITestCase):
+
+
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form(observation_form_json=self.observation_form_point_json)
+
+
+    def test_get_area_content(self):
+
+        dataset = self.create_dataset(observation_form=self.observation_form)
+        dataset.user = self.user
+        dataset.save()
+        dataset_image = self.create_dataset_image(dataset)
+
+        qry = DatasetImages.objects.filter(dataset=dataset)
+
+        self.assertTrue(qry.exists())
+
+        self.assertTrue(dataset.thumbnail.endswith('.jpg'))
+
+
+        url_kwargs = {
+            'zoom': ZOOM,
+            'grid_size': GRID_SIZE,
+            'app_uuid': self.app.uuid,
+        }
+
+        url = reverse('schema_get_area_content', kwargs=url_kwargs)
+
+        post_data = {
+            'geometry_type': GEOMETRY_TYPE_AREA,
+            'geojson': GEOJSON_RECTANGLE,
+            'filters': [],
+        }
+
+        response = self.client.post(url, post_data, format='json')
+
+        parsed_response = json.loads(response.content)
+
+        retrieved_dataset = parsed_response[0]
+
+        self.assertEqual(retrieved_dataset['uuid'], str(dataset.uuid))
+
+        self.assertIn('images', retrieved_dataset)
+        image = retrieved_dataset['images'][0]
+        self.assertIn('imageUrl', image)
+        

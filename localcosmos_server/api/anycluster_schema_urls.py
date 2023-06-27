@@ -12,5 +12,9 @@ urlpatterns = [
           name='schema_get_area_content'),
      path('get-dataset-content/<int:zoom>/<int:grid_size>/<int:dataset_id>/',
           csrf_exempt(views.SchemaGetDatasetContent.as_view(),), name='schema_get_dataset_content'),
+     path('get-map-content-count/<int:zoom>/<int:grid_size>/', csrf_exempt(views.SchemaGetMapContentCount.as_view()),
+        name='schema_get_map_content_count'),
+    path('get-grouped-map-contents/<int:zoom>/<int:grid_size>/', csrf_exempt(views.SchemaGetGroupedMapContents.as_view()),
+        name='schema_get_grouped_map_contents'),
 ]
 

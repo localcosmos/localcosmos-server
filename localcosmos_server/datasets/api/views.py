@@ -1,13 +1,16 @@
-from rest_framework import generics, mixins
+from rest_framework import generics
+from rest_framework.views import APIView
 
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import (DatasetSerializer, ObservationFormSerializer, DatasetListSerializer, DatasetImagesSerializer,
-                            UserGeometrySerializer)
+                          UserGeometrySerializer)
+
 from .permissions import (AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly, AuthenticatedOwnerOnly,
-                            AnonymousObservationsPermissionOrGet, MaxThreeInstancesPerUser)
+                          AnonymousObservationsPermissionOrGet, MaxThreeInstancesPerUser)
 
 from localcosmos_server.api.permissions import AppMustExist
+from localcosmos_server.api.views import SchemaSpecificMapClusterer
 
 from localcosmos_server.datasets.models import Dataset, ObservationForm, DatasetImages, UserGeometry
 
@@ -17,13 +20,11 @@ from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiExam
 
 from .examples import get_observation_form_example
 
-import uuid
-
 
 @extend_schema_view(
     post=extend_schema(
         examples=[
-          OpenApiExample(
+            OpenApiExample(
                 'Observation Form',
                 description='observation form with all possible fields',
                 value={'definition': get_observation_form_example()}
@@ -41,7 +42,7 @@ class CreateObservationForm(generics.CreateAPIView):
 @extend_schema_view(
     get=extend_schema(
         examples=[
-          OpenApiExample(
+            OpenApiExample(
                 'Observation Form',
                 description='observation form with all possible fields',
                 value={'definition': get_observation_form_example()}
@@ -62,8 +63,8 @@ class RetrieveObservationForm(generics.RetrieveAPIView):
         queryset = self.filter_queryset(self.get_queryset())
 
         filter_kwargs = {
-            'uuid' : self.kwargs['observation_form_uuid'],
-            'version' : self.kwargs['version']
+            'uuid': self.kwargs['observation_form_uuid'],
+            'version': self.kwargs['version']
         }
         obj = generics.get_object_or_404(queryset, **filter_kwargs)
 
@@ -72,7 +73,7 @@ class RetrieveObservationForm(generics.RetrieveAPIView):
 
         return obj
 
-    
+
 class AppUUIDSerializerMixin:
 
     def get_serializer(self, *args, **kwargs):
@@ -84,14 +85,18 @@ class AppUUIDSerializerMixin:
 
         if getattr(self, 'swagger_fake_view', False):  # drf-yasg comp
             app_uuid = str(uuid.uuid4())
-            self.kwargs['app_uuid'] = app_uuid        
-        
+            self.kwargs['app_uuid'] = app_uuid
+
         return serializer_class(self.kwargs['app_uuid'], *args, **kwargs)
 
 
+'''
+    rewrite this for creation and get single dataset only
+'''
+
 
 class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
-    
+
     permission_classes = (AppMustExist, AnonymousObservationsPermissionOrGet,)
     parser_classes = (CamelCaseJSONParser,)
 
@@ -104,14 +109,14 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Dataset.objects.filter(app_uuid=self.kwargs['app_uuid'])
-        
+
         if self.request.user.is_authenticated:
-            queryset=queryset.filter(user=self.request.user)
+            queryset = queryset.filter(user=self.request.user)
         elif 'client_id' in self.request.GET:
-            queryset=queryset.filter(client_id=self.request.GET['client_id'])
+            queryset = queryset.filter(client_id=self.request.GET['client_id'])
         else:
             queryset = Dataset.objects.none()
-        
+
         return queryset
 
     def get_serializer(self, *args, **kwargs):
@@ -122,8 +127,8 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
 
         if getattr(self, 'swagger_fake_view', False):  # drf-yasg comp
             app_uuid = str(uuid.uuid4())
-            self.kwargs['app_uuid'] = app_uuid        
-        
+            self.kwargs['app_uuid'] = app_uuid
+
         if self.request.method == 'GET':
             return DatasetListSerializer(*args, **kwargs)
 
@@ -133,9 +138,10 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
 class ManageDataset(AppUUIDSerializerMixin, generics.RetrieveUpdateDestroyAPIView):
 
     lookup_field = 'uuid'
-    
+
     serializer_class = DatasetSerializer
-    permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
+    permission_classes = (
+        AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
     parser_classes = (CamelCaseJSONParser,)
 
     queryset = Dataset.objects.all()
@@ -146,11 +152,11 @@ class ManageDataset(AppUUIDSerializerMixin, generics.RetrieveUpdateDestroyAPIVie
         return [permission() for permission in self.permission_classes]
 
 
-
 class CreateDatasetImage(generics.CreateAPIView):
 
     serializer_class = DatasetImagesSerializer
-    permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly)
+    permission_classes = (
+        AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly)
     parser_classes = (CamelCaseMultiPartParser,)
 
     def create(self, request, *args, **kwargs):
@@ -158,14 +164,15 @@ class CreateDatasetImage(generics.CreateAPIView):
         dataset = Dataset.objects.get(uuid=kwargs['uuid'])
 
         request.data['dataset'] = str(dataset.uuid)
-        
+
         return super().create(request, *args, **kwargs)
 
 
 class DestroyDatasetImage(AppUUIDSerializerMixin, generics.DestroyAPIView):
-    
+
     serializer_class = DatasetSerializer
-    permission_classes = (AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
+    permission_classes = (
+        AppMustExist, AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly)
     parser_classes = (CamelCaseJSONParser,)
 
     queryset = DatasetImages.objects.all()
@@ -175,9 +182,10 @@ class CreateListUserGeometry(generics.ListCreateAPIView):
 
     queryset = UserGeometry.objects.all()
     serializer_class = UserGeometrySerializer
-    permission_classes = (AppMustExist, IsAuthenticated, MaxThreeInstancesPerUser)
+    permission_classes = (AppMustExist, IsAuthenticated,
+                          MaxThreeInstancesPerUser)
     parser_classes = (CamelCaseJSONParser,)
-    
+
 
 class ManageUserGeometry(generics.RetrieveDestroyAPIView):
 

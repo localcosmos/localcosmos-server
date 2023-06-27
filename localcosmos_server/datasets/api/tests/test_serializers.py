@@ -8,7 +8,7 @@ from localcosmos_server.tests.common import (test_settings, DataCreator, TEST_IM
     TEST_USER_GEOMETRY_NAME)
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia, WithUserGeometry
 from localcosmos_server.datasets.api.serializers import (ObservationFormSerializer, DatasetSerializer,
-    DatasetImagesSerializer, DatasetListSerializer, UserGeometrySerializer)
+    DatasetImagesSerializer, DatasetListSerializer, UserGeometrySerializer, DatasetRetrieveSerializer)
 
 from localcosmos_server.datasets.models import ObservationForm, DatasetImages, Dataset, UserGeometry
 
@@ -73,6 +73,19 @@ class TestObservationformSerializer(WithObservationForm, TestCase):
         self.assertEqual(observation_form.definition, self.observation_form_json)
 
 
+
+class TestDatasetRetrieveSerializer(WithObservationForm,  WithMedia, WithApp, TestCase):
+
+    @test_settings
+    def test_serialize(self):
+        
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
+
+        retrieve_serializer = DatasetRetrieveSerializer(dataset)
+        self.assertEqual(retrieve_serializer.data['data'], dataset.data)
+
+
 class TestDatasetSerializer(WithObservationForm,  WithMedia, WithApp, TestCase):
 
     @test_settings
@@ -118,6 +131,19 @@ class TestDatasetSerializer(WithObservationForm,  WithMedia, WithApp, TestCase):
 
         self.assertEqual(serializer.data['data'], dataset.data)
 
+    
+    @test_settings
+    def test_serialize_with_image(self):
+
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
+        self.create_dataset_image(dataset)
+
+        serializer = DatasetSerializer(self.app.uuid, dataset)
+
+        self.assertEqual(serializer.data['data'], dataset.data)
+
+        self.assertIn('images', serializer.data)
 
     @test_settings
     def test_validate(self):

@@ -15,6 +15,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 
 #from drf_spectacular.utils import inline_serializer, extend_schema
@@ -258,7 +259,9 @@ class AppAPIHome(APIView):
 #   ANYCLUSTER POSTGRESQL SCHEMA AWARE WIEWS
 #
 ##################################################################################################################
-from anycluster.api.views import (GridCluster, KmeansCluster, GetClusterContent, GetAreaContent, GetDatasetContent)
+from anycluster.api.views import (GridCluster, KmeansCluster, GetClusterContent, GetAreaContent, GetDatasetContent,
+    GetMapContentCount, GetGroupedMapContents)
+
 
 class SchemaSpecificMapClusterer:
 
@@ -270,19 +273,57 @@ class SchemaSpecificMapClusterer:
             schema_name = request.tenant.schema_name
 
         return schema_name
-
+        
 
 class SchemaGridCluster(SchemaSpecificMapClusterer, GridCluster):
-    pass
+    parser_classes = (JSONParser,)
+    renderer_classes = (JSONRenderer,)
 
 class SchemaKmeansCluster(SchemaSpecificMapClusterer, KmeansCluster):
-    pass
+    parser_classes = (JSONParser,)
+    renderer_classes = (JSONRenderer,)
 
 class SchemaGetClusterContent(SchemaSpecificMapClusterer, GetClusterContent):
-    pass
+    parser_classes = (JSONParser,)
+    renderer_classes = (JSONRenderer,)
 
+# the client expects imageUrl, not image_url
 class SchemaGetAreaContent(SchemaSpecificMapClusterer, GetAreaContent):
-    pass
+    parser_classes = (JSONParser,)
+    #renderer_classes = (JSONRenderer,)
 
 class SchemaGetDatasetContent(SchemaSpecificMapClusterer, GetDatasetContent):
-    pass
+    parser_classes = (JSONParser,)
+    renderer_classes = (JSONRenderer,)
+
+class SchemaGetMapContentCount(SchemaSpecificMapClusterer, GetMapContentCount):
+    parser_classes = (JSONParser,)
+    renderer_classes = (JSONRenderer,)
+
+'''
+    A taxon definition (taxonLatname etc) is returned, so use CamelCaseRenderer
+'''
+class SchemaGetGroupedMapContents(SchemaSpecificMapClusterer, GetGroupedMapContents):
+    parser_classes = (JSONParser,)
+    #renderer_classes = (JSONRenderer,)
+
+    def prepare_groups(self, groups):
+
+        prepared_groups = {}
+
+        for name_uuid, data in groups.items():
+
+            taxon = {
+                'name_uuid': name_uuid,
+                'taxon_source': data['taxon_source'],
+                'taxon_latname': data['taxon_latname'],
+                'taxon_author': data['taxon_author'],
+                'taxon_nuid': data['taxon_nuid'],
+            }
+
+            prepared_groups[name_uuid] = {
+                'count': data['count'],
+                'taxon': taxon,
+            }
+
+        return prepared_groups

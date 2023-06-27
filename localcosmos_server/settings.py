@@ -29,6 +29,9 @@ ANYCLUSTER_COORDINATES_COLUMN = 'coordinates'
 ANYCLUSTER_COORDINATES_COLUMN_SRID = 3857
 ANYCLUSTER_PINCOLUMN = 'taxon_nuid'
 ANYCLUSTER_ADDITIONAL_COLUMN = 'taxon_source'
+ANYCLUSTER_FILTERS = ['taxon_nuid', 'taxon_source', 'observation_form_id']
+ANYCLUSTER_GIS_MODEL_SERIALIZER = 'localcosmos_server.datasets.api.serializers.DatasetRetrieveSerializer'
+ANYCLUSTER_ADDITIONAL_GROUP_BY_COLUMNS = ['taxon_source', 'taxon_latname', 'taxon_author', 'taxon_nuid']
 
 # make session available for apps
 SESSION_COOKIE_HTTPONLY = True
@@ -42,6 +45,10 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 # needed for anycluster cache
 CORS_ALLOW_CREDENTIALS = True
+
+# needed for anycluster cache to work wit apps/cordova
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
 
 # django_rest_framework
 # enable token authentication only for API

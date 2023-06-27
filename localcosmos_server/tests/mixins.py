@@ -136,14 +136,14 @@ class WithObservationForm:
         return observation_form
 
 
-    def create_dataset(self, observation_form, user=None, app=None):
+    def create_dataset(self, observation_form, user=None, app=None, taxon=None):
 
         if app == None:
             app = self.app
 
         data_creator = DataCreator()
 
-        test_data = data_creator.get_dataset_data(self.observation_form_json)
+        test_data = data_creator.get_dataset_data(self.observation_form_json, taxon=taxon)
 
         dataset = Dataset(
             app_uuid = app.uuid,

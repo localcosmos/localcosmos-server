@@ -160,6 +160,9 @@ class LazyTaxonBase:
 
     # default str output
     def __str__(self):
+        if self.taxon_author:
+            return '{0} {1}'.format(self.taxon_latname, self.taxon_author)
+        
         return self.taxon_latname
 
     def __eq__(self, other):

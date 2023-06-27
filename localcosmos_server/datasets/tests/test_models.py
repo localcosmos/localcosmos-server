@@ -424,7 +424,7 @@ class TestDataset(WithValidationRoutine, WithObservationForm, WithApp, WithUser,
 class TestDatasetWithMedia(WithMedia, WithObservationForm, WithApp, WithUser, TestCase):
 
     @test_settings
-    def test_thumbnail_url(self):
+    def test_thumbnail(self):
 
         # first, test dataset without images
         observation_form = self.create_observation_form()
@@ -432,7 +432,7 @@ class TestDatasetWithMedia(WithMedia, WithObservationForm, WithApp, WithUser, Te
 
         dataset = Dataset.objects.get(pk=dataset.pk)
 
-        thumbnail = dataset.thumbnail_url()
+        thumbnail = dataset.thumbnail
         self.assertEqual(thumbnail, None)
 
         image = SimpleUploadedFile(name='test_image.jpg', content=open(TEST_IMAGE_PATH, 'rb').read(),
@@ -446,7 +446,7 @@ class TestDatasetWithMedia(WithMedia, WithObservationForm, WithApp, WithUser, Te
 
         dataset_image.save()
 
-        thumbnail = dataset.thumbnail_url()
+        thumbnail = dataset.thumbnail
         self.assertTrue(thumbnail.endswith('.jpg'))
 
         sized_url = dataset_image.get_image_url(250, square=True)

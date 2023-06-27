@@ -8,6 +8,7 @@ urlpatterns = [
         name='api_create_observation_form'),
     path('<uuid:app_uuid>/observation-form/<uuid:observation_form_uuid>/<int:version>/',
         views.RetrieveObservationForm.as_view(), name='api_retrieve_observation_form'),
+    # dataset
     path('<uuid:app_uuid>/dataset/', views.ListCreateDataset.as_view(), name='api_list_create_dataset'),
     path('<uuid:app_uuid>/dataset/<uuid:uuid>/', views.ManageDataset.as_view(), name='api_manage_dataset'),
     path('<uuid:app_uuid>/dataset/<uuid:uuid>/image/', views.CreateDatasetImage.as_view(),

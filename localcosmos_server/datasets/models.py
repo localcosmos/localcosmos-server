@@ -341,8 +341,8 @@ class Dataset(ModelWithTaxon):
             
         return queryset
 
-
-    def thumbnail_url(self):
+    @property
+    def thumbnail(self):
         image = DatasetImages.objects.filter(dataset=self).first()
 
         if image:
@@ -456,7 +456,7 @@ class DatasetImages(models.Model):
 
     resized_folder_name = 'resized'
 
-    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(Dataset, on_delete=models.CASCADE, related_name='images')
     field_uuid = models.UUIDField()
     image = models.ImageField(max_length=255, upload_to=dataset_image_path)
 
