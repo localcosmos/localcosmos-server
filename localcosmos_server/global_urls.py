@@ -11,6 +11,8 @@ urlpatterns = [
     path('log-out/', auth_views.LogoutView.as_view(extra_context={'base_template': 'base.html'}), name='log_out'),
     path('loggedout/', views.LoggedOut.as_view(extra_context={'base_template': 'base.html'}), name='loggedout'),
 
+    
+
     path('password-change/', auth_views.PasswordChangeView.as_view(
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_change_form.html'), name='password_change'),
@@ -24,6 +26,7 @@ urlpatterns = [
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_reset_done.html'), name='password_reset_done'),
+        
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_reset_confirm.html'), name='password_reset_confirm'),
@@ -31,6 +34,17 @@ urlpatterns = [
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_reset_complete.html'),
         name='password_reset_complete'),
+
+    # password reset with app specific look
+    path('<str:app_uid>/app-password-reset/', views.AppPasswordResetView.as_view(),
+        name='app_password_reset'),
+    path('<str:app_uid>/app-password-reset/<uidb64>/<token>/', views.AppPasswordResetConfirmView.as_view(),
+        name='app_password_reset_confirm'),
+    path('<str:app_uid>/app-password-reset/done/', views.AppPasswordResetDoneView.as_view(),
+        name='app_password_reset_done'),
+    path('<str:app_uid>/app-password-reset/complete/', views.AppPasswordResetCompleteView.as_view(),
+        name='app_password_reset_complete'),
+    
     # server content images
     path('manage-server-content-image/<int:content_type_id>/<int:object_id>/',
         views.ManageServerContentImage.as_view(), name='manage_server_content_image'),

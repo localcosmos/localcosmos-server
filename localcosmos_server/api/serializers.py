@@ -54,8 +54,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         extra_fields = {}
 
-        first_name = validated_data.get('first_name', None)
-        last_name = validated_data.get('last_name', None)
+        first_name = validated_data.get('first_name', '')
+        last_name = validated_data.get('last_name', '')
 
         if first_name:
             extra_fields['first_name'] = first_name

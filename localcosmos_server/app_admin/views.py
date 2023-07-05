@@ -12,7 +12,6 @@ from django.utils.decorators import method_decorator
 
 from localcosmos_server.models import AppUserRole
 
-
 from localcosmos_server.datasets.models import DATASET_VALIDATION_DICT, Dataset
 
 HUMAN_INTERACTION_CLASSES = [validation_classpath for validation_classpath, validation_class

@@ -21,18 +21,20 @@ class Command(BaseCommand):
 
         for app in App.objects.all():
 
-            features = app.get_features(app_state='review')
+            # TaxonField requires app
+            self.app = app
+            self.features = app.get_features(app_state='review')
 
-            installed_app_path = app.get_installed_app_path('review')
+            self.installed_app_path = app.get_installed_app_path('review')
 
-            if len(installed_app_path) > 0 and os.path.exists(installed_app_path) and 'GenericForm' in features:
+            if len(self.installed_app_path) > 0 and os.path.exists(self.installed_app_path) and 'GenericForm' in self.features:
 
-                generic_forms = features['GenericForm']['list']
+                generic_forms = self.features['GenericForm']['list']
 
                 for generic_form_entry in generic_forms:
 
                     relative_path = generic_form_entry['path'].lstrip('/')
-                    generic_form_json_path = os.path.join(installed_app_path, relative_path)
+                    generic_form_json_path = os.path.join(self.installed_app_path, relative_path)
 
                     with open(generic_form_json_path, 'r') as generic_form_file:
                         generic_form_json = json.loads(generic_form_file.read())
@@ -68,7 +70,7 @@ class Command(BaseCommand):
                             data[field['uuid']] = field_data
 
                         user = self.get_user()
-                        client_id=self.get_client_id(user=user)
+                        client_id = self.get_client_id(user=user)
                         
                         dataset = Dataset(
                             app_uuid = app.uuid,
@@ -76,6 +78,7 @@ class Command(BaseCommand):
                             data=data,
                             client_id=client_id,
                             user=user,
+                            platform='browser',
                         )
 
                         dataset.save()
@@ -103,7 +106,30 @@ class Command(BaseCommand):
         return 'test_client'
 
     def get_TaxonField_value(self, field=None):
-        pass
+        
+        taxon_profiles_registry_relative_path = self.features['TaxonProfiles']['registry'].lstrip('/')
+        registry_path = os.path.join(self.installed_app_path, taxon_profiles_registry_relative_path)
+
+        with open(registry_path, 'r') as registry_file:
+            registry = json.loads(registry_file.read())
+
+        uuids = list(registry.keys())
+
+        uuid_index = random.randint(0, len(uuids) -1)
+
+        uuid = uuids[uuid_index]
+
+        taxon_profile = registry[uuid]
+
+        taxon = {
+            'taxonSource': taxon_profile['taxonSource'],
+            'taxonLatname': taxon_profile['taxonLatname'],
+            'taxonAuthor': taxon_profile['taxonAuthor'],
+            'nameUuid': taxon_profile['nameUuid'],
+            'taxonNuid': taxon_profile['taxonNuid'],
+        }
+
+        return taxon
 
     def get_PointJSONField_value(self, field=None):
         

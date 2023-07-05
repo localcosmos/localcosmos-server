@@ -135,9 +135,30 @@ class TestRegisterAccount(WithApp, WithUser, WithObservationForm, APITestCase):
         dataset.refresh_from_db()
 
         self.assertEqual(dataset.user, user)
-    
-    
 
+
+    @test_settings
+    def test_register_without_name(self):
+
+        post_data = self.get_post_data()
+        del post_data['firstName']
+        del post_data['lastName']
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_register_account', kwargs=url_kwargs)
+
+        json_response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(json_response.status_code, status.HTTP_200_OK)
+
+        user = User.objects.get(uuid=json_response.data['user']['uuid'])
+
+        self.assertEqual(user.first_name, '')
+        self.assertEqual(user.last_name, '')
+    
 
 class TestTokenObtainPairViewWithClientID(WithApp, WithObservationForm, WithUser, APITestCase):
 

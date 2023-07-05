@@ -320,6 +320,30 @@ class App(models.Model):
 
         return features
 
+    @property
+    def logo_url(self):
+        app_state = 'review'
+        features = self.get_features(app_state=app_state)
+        if not features:
+            app_state = 'published'
+            features = self.get_features(app_state=app_state)
+
+        if features:
+            frontend_path = features['Frontend']['path'].lstrip('/')
+            installed_app_path = self.get_installed_app_path(app_state)
+            frontend_filepath = os.path.join(installed_app_path, frontend_path)
+
+            if os.path.isfile(frontend_filepath):
+                
+                with open(frontend_filepath, 'r') as frontend_file:
+                    frontend = json.loads(frontend_file.read())
+                    logo = frontend['userContent']['images'].get('logo', None)
+
+                    if logo:
+                        return logo['imageUrl']['1x'].lstrip('/')
+
+        return None
+
 
     def languages(self):
         languages = [self.primary_language]
@@ -710,7 +734,7 @@ class ContentImageProcessing:
         else:
             cropped_canvas = canvas_with_features
 
-        cropped_canvas.thumbnail([width, height], Image.ANTIALIAS)
+        cropped_canvas.thumbnail([width, height], Image.LANCZOS)
 
         if original_image.format != 'PNG':
             cropped_canvas = cropped_canvas.convert('RGB')

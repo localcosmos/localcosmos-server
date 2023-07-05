@@ -176,7 +176,13 @@ class PasswordResetRequest(APIView):
     renderer_classes = (CamelCaseJSONRenderer,)
     permission_classes = ()
 
+
+    def get_from_email(self):
+        return None
+
     def post(self, request, *args, **kwargs):
+
+        app = App.objects.get(uid=kwargs['app_uid'])
        
         serializer = self.serializer_class(data=request.data)
 
@@ -192,7 +198,12 @@ class PasswordResetRequest(APIView):
                 context['error_message'] = _('No matching user found.')
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
-            form.save(email_template_name='localcosmos_server/registration/password_reset_email.html')
+            extra_email_context = {
+                'app': app,
+            }
+
+            form.save(email_template_name='localcosmos_server/app/registration/password_reset_email.html',
+                extra_email_context=extra_email_context)
             context['success'] = True
             
         else:

@@ -43,3 +43,7 @@ class TestCreateTestData(WithObservationForm, WithApp, WithUser, TestCase):
 
         self.assertEqual(ds_qry.count(), app_count * of_count * DATASET_COUNT)
 
+        for ds in ds_qry:
+            self.assertTrue(ds.taxon_latname is not None)
+            #print(ds.taxon_latname)
+

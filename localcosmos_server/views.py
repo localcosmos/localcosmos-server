@@ -3,10 +3,12 @@ from django.views.generic import TemplateView, FormView
 from django.contrib.auth.views import LoginView
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.http import Http404
+from django.urls import reverse
 
 from localcosmos_server.forms import EmailOrUsernameAuthenticationForm, ManageContentImageForm
 from localcosmos_server.generic_views import AjaxDeleteView
 from localcosmos_server.models import ServerContentImage
+from localcosmos_server.view_mixins import AppMixin
 
 # activate permission rules
 from .permission_rules import *
@@ -32,6 +34,60 @@ class LogIn(LoginView):
 
 class LoggedOut(TemplateView):
     template_name = 'localcosmos_server/registration/loggedout.html'
+
+
+###################################################################################################################
+#
+#   APP SPECIFIC PASSWORD RESET
+#
+#   - visually app-specific, therfore, the app uid hast to be in the url
+#   - all app admin pages require a login, so /server/ is the place to do this
+###################################################################################################################
+from django.contrib.auth.views import (PasswordResetView, PasswordResetConfirmView, PasswordResetCompleteView,
+    PasswordResetDoneView)
+
+
+class AppBaseTemplateMixin:
+    extra_context = {'base_template': 'localcosmos_server/app/base.html'}
+
+
+class AppPasswordResetView(AppMixin, AppBaseTemplateMixin, PasswordResetView):
+    template_name = 'localcosmos_server/registration/password_reset_form.html'
+    email_template_name='localcosmos_server/app/registration/password_reset_email.html'
+
+    def get_success_url(self):
+        url_kwargs = {
+            'app_uid': self.app.uid,
+        }
+        success_url = reverse('app_password_reset_done', kwargs=url_kwargs)
+        return success_url
+
+    def form_valid(self, form):
+        self.extra_email_context = {
+            'app': self.app,
+        }
+
+        return super().form_valid(form)
+
+
+class AppPasswordResetConfirmView(AppMixin, AppBaseTemplateMixin, PasswordResetConfirmView):
+    template_name='localcosmos_server/registration/password_reset_confirm.html'
+
+    def get_success_url(self):
+        url_kwargs = {
+            'app_uid': self.app.uid,
+        }
+        success_url = reverse('app_password_reset_complete', kwargs=url_kwargs)
+        return success_url
+
+
+# confirmation that the password has been changed
+class AppPasswordResetCompleteView(AppMixin, AppBaseTemplateMixin, PasswordResetCompleteView):
+    template_name='localcosmos_server/app/registration/password_reset_complete.html'
+
+# confimration that the email has been sent
+class AppPasswordResetDoneView(AppMixin, AppBaseTemplateMixin, PasswordResetDoneView):
+    template_name='localcosmos_server/registration/password_reset_done.html'
 
 
 ###################################################################################################################
