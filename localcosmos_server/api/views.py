@@ -9,6 +9,7 @@
 ###################################################################################################################
 from django.contrib.auth import logout
 from django.conf import settings
+from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import generics
@@ -16,7 +17,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 #from drf_spectacular.utils import inline_serializer, extend_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -24,23 +25,28 @@ from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from rest_framework import status
 
-from localcosmos_server.models import App
+from localcosmos_server.models import App, ServerContentImage, LocalcosmosUser
 
 
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
-                            TokenObtainPairSerializerWithClientID)
+                            TokenObtainPairSerializerWithClientID, ServerContentImageSerializer)
 
-from .permissions import OwnerOnly, AppMustExist
+from .permissions import OwnerOnly, AppMustExist, ServerContentImageOwnerOrReadOnly
 
 from localcosmos_server.mails import send_registration_confirmation_email
 
 from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients
 
-from djangorestframework_camel_case.parser import CamelCaseJSONParser
+from djangorestframework_camel_case.parser import CamelCaseJSONParser, CamelCaseMultiPartParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer, CamelCaseBrowsableAPIRenderer
 
 from drf_spectacular.utils import extend_schema, inline_serializer
+
+
+SERVER_CONTENT_IMAGE_MODEL_MAP = {
+    'LocalcosmosUser': LocalcosmosUser
+}
 
 
 ##################################################################################################################
@@ -169,6 +175,130 @@ class ManageAccount(generics.RetrieveUpdateDestroyAPIView):
         return obj
     
 
+class ManageServerContentImage(APIView):
+
+    permission_classes = (IsAuthenticatedOrReadOnly, ServerContentImageOwnerOrReadOnly)
+    authentication_classes = (JWTAuthentication,)
+    parser_classes = (CamelCaseMultiPartParser,)
+    renderer_classes = (CamelCaseJSONRenderer,)
+    serializer_class = ServerContentImageSerializer
+
+
+    # replacement for get_object, checks object level permissions
+    def get_object(self, request, **kwargs):
+
+        if 'pk' in kwargs:
+            content_image = ServerContentImage.objects.filter(pk=kwargs['pk']).first()
+            if not content_image:
+                raise Http404
+
+            obj = content_image.content
+            self.image_type = content_image.image_type
+
+        else:
+            model_name = kwargs['model']
+            if model_name not in SERVER_CONTENT_IMAGE_MODEL_MAP:
+                raise Http404
+                
+            model = SERVER_CONTENT_IMAGE_MODEL_MAP[model_name]
+            self.image_type = kwargs['image_type']
+            obj = model.objects.filter(pk=kwargs['object_id']).first()
+
+            if not obj:
+                raise Http404
+
+        # obj is the content instance
+        self.check_object_permissions(request, obj)
+        return obj
+
+
+    def get_content_image(self, content_instance, **kwargs):
+
+        content_image = None
+
+        if 'pk' in kwargs:
+            content_image = ServerContentImage.objects.get(pk=kwargs['pk'])
+
+        else:
+            content_image = content_instance.image(image_type=kwargs['image_type'])
+
+        return content_image
+
+        
+    def get(self, request, *args, **kwargs):
+
+        # permission checks, raises 404s
+        content_instance = self.get_object(request, **kwargs)
+
+        content_image = self.get_content_image(content_instance, **kwargs)
+
+        if not content_image:
+            return Response('', status=status.HTTP_404_NOT_FOUND)
+
+        response_serializer = self.serializer_class(content_image)
+
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+    # create
+    def post(self, request, *args, **kwargs):
+
+        content_instance = self.get_object(request, **kwargs)
+
+        serializer = self.serializer_class(data=request.data)
+
+        serializer.is_valid()
+
+        if serializer.errors:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        image_type = kwargs['image_type']
+
+        content_image = self.get_content_image(content_instance, **kwargs)
+
+        old_image_store = None
+        if content_image:
+            old_image_store = content_image.image_store
+
+        new_content_image = serializer.save(serializer.validated_data, content_instance, image_type, request.user,
+            content_image=content_image)
+
+        if old_image_store:
+            self.clean_old_image_store(old_image_store)
+
+        response_serializer = self.serializer_class(new_content_image)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
+
+    # update
+    def put(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+
+    # delete
+    def delete(self, request, *args, **kwargs):
+        content_instance = self.get_object(request, **kwargs)
+
+        content_image = self.get_content_image(content_instance, **kwargs)
+
+        if not content_image:
+            raise Http404
+
+        old_image_store = content_image.image_store
+        content_image.delete()
+
+        self.clean_old_image_store(old_image_store)
+
+        return Response({'deleted': True}, status=status.HTTP_200_OK)
+        
+
+    def clean_old_image_store(self, old_image_store):
+
+        related_content_images = ServerContentImage.objects.filter(image_store=old_image_store).exists()
+
+        if not related_content_images:
+            old_image_store.delete()
+
+    
+
 # a user enters his email address or username and gets an email
 from django.contrib.auth.forms import PasswordResetForm
 class PasswordResetRequest(APIView):
@@ -182,7 +312,7 @@ class PasswordResetRequest(APIView):
 
     def post(self, request, *args, **kwargs):
 
-        app = App.objects.get(uid=kwargs['app_uid'])
+        app = App.objects.get(uuid=kwargs['app_uuid'])
        
         serializer = self.serializer_class(data=request.data)
 
@@ -203,12 +333,14 @@ class PasswordResetRequest(APIView):
             }
 
             form.save(email_template_name='localcosmos_server/app/registration/password_reset_email.html',
+                subject_template_name='localcosmos_server/app/registration/password_reset_subject.txt',
                 extra_email_context=extra_email_context)
             context['success'] = True
             
         else:
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
-        return Response(context)
+            
+        return Response(context, status=status.HTTP_200_OK)
 
 
 from rest_framework_simplejwt.views import TokenObtainPairView

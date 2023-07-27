@@ -15,6 +15,7 @@ class AppMustExist(permissions.BasePermission):
 
         return True
 
+
 class OwnerOnly(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
@@ -23,6 +24,29 @@ class OwnerOnly(permissions.BasePermission):
             return True
 
         if getattr(obj, 'user', None) == request.user:
+            return True
+
+        return False
+
+
+
+class ServerContentImageOwnerOrReadOnly(permissions.BasePermission):
+
+    allowed_image_types = {
+        'LocalcosmosUser' : ['profilepicture']
+    }
+
+    def has_object_permission(self, request, view, obj):
+
+        model_name = obj.__class__.__name__
+
+        if model_name not in self.allowed_image_types or view.image_type not in self.allowed_image_types[model_name]:
+            return False
+
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        if model_name == 'LocalcosmosUser' and obj == request.user:
             return True
 
         return False

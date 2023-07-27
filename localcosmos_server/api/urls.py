@@ -16,7 +16,13 @@ urlpatterns = [
     path('<uuid:app_uuid>/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
     # app specific
     path('<uuid:app_uuid>/', views.AppAPIHome.as_view(), name='app_api_home'),
-    path('<uuid:app_uuid>/anycluster/', include('localcosmos_server.api.anycluster_schema_urls')),    
+    path('<uuid:app_uuid>/anycluster/', include('localcosmos_server.api.anycluster_schema_urls')),
+    # content images
+    path('<uuid:app_uuid>/content-image/', views.ManageServerContentImage.as_view(), name='api_server_content_image'),
+    path('<uuid:app_uuid>/content-image/<str:model>/<int:object_id>/<str:image_type>/', views.ManageServerContentImage.as_view(),
+        name='api_server_content_image'),
+    path('<uuid:app_uuid>/content-image/<int:pk>/', views.ManageServerContentImage.as_view(),
+        name='api_server_content_image'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])

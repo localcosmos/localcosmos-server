@@ -1,13 +1,12 @@
 from rest_framework.test import APIRequestFactory, APITestCase
 from rest_framework import status
 
-from django.conf import settings
-
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from localcosmos_server.tests.common import (test_settings, test_settings_commercial, TEST_CLIENT_ID, TEST_PLATFORM)
-                                        
-from localcosmos_server.tests.mixins import WithUser, WithObservationForm, WithApp
+from localcosmos_server.tests.common import (test_settings, test_settings_commercial, TEST_CLIENT_ID, TEST_PLATFORM,
+     TEST_IMAGE_PATH, LARGE_TEST_IMAGE_PATH)                               
+from localcosmos_server.tests.mixins import WithMedia, WithUser, WithObservationForm, WithApp, WithServerContentImage
 
 from rest_framework.test import APIRequestFactory, APIClient
 
@@ -17,7 +16,7 @@ from djangorestframework_camel_case.util import underscoreize
 
 from localcosmos_server.datasets.models import Dataset
 
-from localcosmos_server.models import UserClients
+from localcosmos_server.models import UserClients, ServerImageStore
 from django.contrib.auth import get_user_model
 
 import json
@@ -314,6 +313,9 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, APITestCase):
 
         for key, value in authed_response.data.items():
 
+            if key == 'profile_picture':
+                continue
+
             user_value = getattr(user, key)
 
             if key == 'uuid':
@@ -513,3 +515,289 @@ class TestPasswordResetRequest(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         self.assertEqual(authed_response.status_code, status.HTTP_400_BAD_REQUEST)
 
         self.assertFalse(authed_response.data['success'])
+
+
+class TestManageServerContentImage(WithServerContentImage, GetJWTokenMixin, WithMedia, WithUser, WithApp, APITestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.superuser = self.create_superuser()
+        self.user = self.create_user()
+
+    def get_url_kwargs(self):
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'model': 'LocalcosmosUser',
+            'object_id': self.user.id,
+            'image_type': 'profilepicture',
+        }
+
+        return url_kwargs
+
+
+    @test_settings
+    def test_get_content_image_no_image(self):
+
+        # test generic get
+        get_url_kwargs = self.get_url_kwargs()
+
+        url = reverse('api_server_content_image', kwargs=get_url_kwargs)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # test with content image pk
+        pk_get_url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'pk': 1
+        }
+
+        url = reverse('api_server_content_image', kwargs=pk_get_url_kwargs)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    
+    @test_settings
+    def test_get(self):
+
+        content_image = self.get_content_image(self.user, self.user, image_type='profilepicture')
+
+        get_url_kwargs = self.get_url_kwargs()
+
+        url = reverse('api_server_content_image', kwargs=get_url_kwargs)
+
+        response = self.client.get(url, **get_url_kwargs)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        parsed_response = json.loads(response.content)
+
+        media_path = '/media/localcosmos-server/imagestore/{0}/thumbnails/a6a11b61d65ee19c4c22caa0682288ff-uncropped-nofeatures-'.format(
+            self.user.id)
+
+        expected_response = {
+            "id": content_image.id,
+            "imageUrl":{
+                "1x":"{0}200.jpg".format(media_path),
+                "2x":"{0}400.jpg".format(media_path),
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+        # pk
+
+        pk_get_url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'pk': content_image.pk
+        }
+
+        url = reverse('api_server_content_image', kwargs=pk_get_url_kwargs)
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), expected_response)
+
+
+    @test_settings
+    def test_get_wrong_model_name(self):
+
+        get_url_kwargs = {
+            'app_uuid' : self.app.uuid,
+            'model': 'LocalcosmosUserWrong',
+            'object_id': self.user.id,
+            'image_type': 'profilepicture',
+        }
+
+        url = reverse('api_server_content_image', kwargs=get_url_kwargs)
+
+        response = self.client.get(url, **get_url_kwargs)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+    def get_post_data(self, override_data={}):
+
+        image = SimpleUploadedFile(name='test_image.jpg', content=open(TEST_IMAGE_PATH, 'rb').read(),
+                                        content_type='image/jpeg')
+        data = {
+            'sourceImage' : image,
+            'cropParameters' : '',
+        }
+
+        data.update(override_data)
+
+        return data
+
+    @test_settings
+    def test_post(self):
+
+        post_data = self.get_post_data()
+
+        post_url_kwargs = self.get_url_kwargs()
+        url = reverse('api_server_content_image', kwargs=post_url_kwargs)
+
+        image = self.user.image('profilepicture')
+        self.assertEqual(image, None)
+
+        # mutlipart, json format cant upload files. Json data comes as string and has to be parsed
+        response = self.client.post(url, post_data, format='multipart')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+
+        post_data = self.get_post_data()
+        authed_response = authed_client.post(url, post_data, format='multipart')
+
+        self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+
+        parsed_response = json.loads(authed_response.content)
+
+        image = self.user.image('profilepicture')
+
+        media_path = '/media/localcosmos-server/imagestore/{0}/thumbnails/a6a11b61d65ee19c4c22caa0682288ff-uncropped-nofeatures-'.format(
+            self.user.id)
+
+        expected_response = {
+            "id": image.id,
+            "imageUrl":{
+                "1x":"{0}200.jpg".format(media_path),
+                "2x":"{0}400.jpg".format(media_path),
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+    @test_settings
+    def test_post_crop_parameters(self):
+
+        self.clean_media()
+
+        crop_parameters = {
+            'x': 1,
+            'y': 2,
+            'width': 3,
+            'height': 4,
+        }
+
+        override_data = {
+            'cropParameters' : json.dumps(crop_parameters),
+        }
+        
+        post_data = self.get_post_data(override_data=override_data)
+
+        post_url_kwargs = self.get_url_kwargs()
+        url = reverse('api_server_content_image', kwargs=post_url_kwargs)
+
+        authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+
+        authed_response = authed_client.post(url, post_data, format='multipart')
+
+        self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+
+        parsed_response = json.loads(authed_response.content)
+
+        self.user.refresh_from_db()
+        image = self.user.image('profilepicture')
+
+        self.assertEqual(image.crop_parameters, json.dumps(crop_parameters))
+
+        media_path = '/media/localcosmos-server/imagestore/{0}/thumbnails/a6a11b61d65ee19c4c22caa0682288ff-dffbde21fc7c45cf16aa73eddcf7f8cd-nofeatures-'.format(
+            self.user.id)
+
+        expected_response = {
+            "id": image.id,
+            "imageUrl":{
+                "1x":"{0}200.jpg".format(media_path),
+                "2x":"{0}400.jpg".format(media_path),
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+
+    @test_settings
+    def test_put(self):
+        
+        content_image = self.get_content_image(self.user, self.user, image_type='profilepicture')
+        old_image_store = content_image.image_store
+        qry = ServerImageStore.objects.filter(pk=old_image_store.pk)
+        image = self.user.image('profilepicture')
+        self.assertEqual(image, content_image)
+
+        put_image = SimpleUploadedFile(name='test_image.jpg', content=open(LARGE_TEST_IMAGE_PATH, 'rb').read(),
+                                        content_type='image/jpeg')
+        put_data = {
+            'sourceImage' : put_image,
+            'cropParameters' : '',
+        }
+
+        put_url_kwargs = self.get_url_kwargs()
+
+        url = reverse('api_server_content_image', kwargs=put_url_kwargs)
+        response = self.client.put(url, put_data, format='multipart')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        self.assertTrue(qry.exists())
+
+        put_image.seek(0)
+        authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+        authed_response = authed_client.put(url, put_data, format='multipart')
+
+        self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+
+        parsed_response = json.loads(authed_response.content)
+
+        media_path = '/media/localcosmos-server/imagestore/{0}/thumbnails/0793e1a469f8480283516bd8e545db79-uncropped-nofeatures-'.format(
+            self.user.id)
+
+        expected_response = {
+            "id": image.id,
+            "imageUrl":{
+                "1x":"{0}200.jpg".format(media_path),
+                "2x":"{0}400.jpg".format(media_path),
+            }
+        }
+
+        self.assertEqual(parsed_response, expected_response)
+
+        self.assertFalse(qry.exists())
+
+
+    @test_settings
+    def test_delete(self):
+        
+        content_image = self.get_content_image(self.user, self.user, image_type='profilepicture')
+        old_image_store = content_image.image_store
+        qry = ServerImageStore.objects.filter(pk=old_image_store.pk)
+
+        image = self.user.image('profilepicture')
+        self.assertEqual(image, content_image)
+
+        delete_url_kwargs = {
+            'app_uuid': self.app.uuid,
+            'pk': content_image.pk,
+        }
+
+        url = reverse('api_server_content_image', kwargs=delete_url_kwargs)
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+        authed_response = authed_client.delete(url)
+
+        self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+
+        self.assertFalse(qry.exists())
+
+        image = self.user.image('profilepicture')
+        self.assertEqual(image, None)
+        
+

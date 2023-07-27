@@ -1248,7 +1248,7 @@ msgstr "registrieren"
 
 #: templates/localcosmos_server/registration/password_change_done.html:17
 msgid "You have to use your new password the next time you log in."
-msgstr "Bei der nächsten Anmeldung musst du dein neues Paswort benutzen."
+msgstr "Bei der nächsten Anmeldung musst du dein neues Passwort benutzen."
 
 #: templates/localcosmos_server/registration/password_change_form.html:20
 msgid ""

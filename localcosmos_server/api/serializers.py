@@ -1,11 +1,16 @@
 from rest_framework import serializers
 
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+from localcosmos_server.models import ServerImageStore, ServerContentImage
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+import hashlib, json
 
 class TokenObtainPairSerializerWithClientID(TokenObtainPairSerializer):
 
@@ -18,9 +23,21 @@ class TokenObtainPairSerializerWithClientID(TokenObtainPairSerializer):
 '''
 class LocalcosmosUserSerializer(serializers.ModelSerializer):
 
+    profile_picture = serializers.SerializerMethodField()
+
+    def get_profile_picture(self, obj):
+        content_image = obj.image('profilepicture')
+        if content_image:
+            image_url = {
+                'imageUrl': content_image.srcset(request=self.context['request'])
+            }
+            return image_url
+        
+        return None
+
     class Meta:
         model = User
-        fields = ('uuid', 'username', 'first_name', 'last_name', 'email')
+        fields = ('id', 'uuid', 'username', 'first_name', 'last_name', 'email', 'profile_picture')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -77,3 +94,87 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
+class ServerContentImageSerializer(serializers.Serializer):
+
+    id = serializers.IntegerField(read_only=True)
+
+    source_image = serializers.ImageField(write_only=True) # not required for delete
+    # cannot combine binary image and json field
+    crop_parameters = serializers.CharField(allow_null=True, write_only=True)
+
+    image_url = serializers.JSONField(read_only=True, source='srcset')
+
+
+    def save(self, validated_data, content_instance, image_type, user, content_image=None):
+
+        image_file = validated_data['source_image']
+        content_type = ContentType.objects.get_for_model(content_instance)
+
+        file_md5 = hashlib.md5(image_file.read()).hexdigest()
+        # this line is extremely required. do not delete it. otherwise the file_ will not be read correctly
+        image_file.seek(0)
+
+        image_store = ServerImageStore(
+            source_image = image_file,
+            uploaded_by = user,
+            md5 = file_md5,
+        )
+
+        image_store.save()
+
+        crop_parameters = validated_data.get('crop_parameters', None)
+        
+        if content_image:
+
+            content_image.image_store = image_store
+
+            # has to be valid json
+            if crop_parameters:
+                content_image.crop_parameters = json.dumps(crop_parameters)
+            
+            content_image.save()
+
+            new_content_image = content_image
+        
+        else:
+            
+            new_content_image = ServerContentImage(
+                image_store=image_store,
+                content_type=content_type,
+                object_id=content_instance.id,
+                image_type=image_type,
+            )
+
+            # has to be valid json
+            if crop_parameters:
+                new_content_image.crop_parameters = json.dumps(crop_parameters)
+
+            new_content_image.save()
+
+        return new_content_image
+
+    # always return a dict
+    def validate_crop_parameters(self, value):
+
+        parsed_value = {}
+
+        if value:
+            try:
+                parsed_value = json.loads(value)
+                required_numbers = ['x', 'y', 'width', 'height']
+                for key in required_numbers:
+                    if key not in parsed_value:
+                        raise serializers.ValidationError('cropParameters require {0}'.format(key))
+                    else:
+                        try:
+                            number = int(parsed_value[key])
+                        except:
+                            raise serializers.ValidationError('cropParameters have to be integers'.format(key))
+                    
+            except:
+                raise serializers.ValidationError('Invalid cropParameters')
+
+        return parsed_value
+            

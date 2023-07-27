@@ -13,16 +13,99 @@ from .taxonomy.lazy import LazyAppTaxon
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
-
-# online ocntent
-from django.template import Template, TemplateDoesNotExist
-from django.template.backends.django import DjangoTemplates
-
 from localcosmos_server.slugifier import create_unique_slug
 
 from content_licencing.models import ContentLicenceRegistry
 
 import uuid, os, json, shutil
+
+
+
+'''
+    Generic Content Images
+'''
+class ServerContentImageMixin:
+
+    def get_model(self):
+        return ServerContentImage
+
+
+    def get_content_type(self):
+        return ContentType.objects.get_for_model(self.__class__)
+
+    def _content_images(self, image_type='image'):
+
+        content_type = self.get_content_type()
+        ContentImageModel = self.get_model()
+
+        self.content_images = ContentImageModel.objects.filter(content_type=content_type, object_id=self.pk,
+                                                          image_type=image_type).order_by('position')
+
+        return self.content_images
+
+    def all_images(self):
+
+        content_type = self.get_content_type()
+        ContentImageModel = self.get_model()
+
+        self.content_images = ContentImageModel.objects.filter(
+            content_type=content_type, object_id=self.pk)
+
+        return self.content_images
+
+    def images(self, image_type='image'):
+        return self._content_images(image_type=image_type)
+
+    def image(self, image_type='image'):
+        content_image = self._content_images(image_type=image_type).first()
+
+        if content_image:
+            return content_image
+
+        return None
+
+    def image_url(self, size=400):
+
+        content_image = self.image()
+
+        if content_image:
+            return content_image.image_url(size)
+
+        return static('noimage.png')
+
+    # this also deletes ImageStore entries and images on disk
+
+    def delete_images(self):
+
+        content_type = self.get_content_type()
+        ContentImageModel = self.get_model()
+
+        content_images = ContentImageModel.objects.filter(
+            content_type=content_type, object_id=self.pk)
+
+        for image in content_images:
+            # delete model db entries
+            image_store = image.image_store
+            image.delete()
+
+            image_is_used = ContentImageModel.objects.filter(
+                image_store=image_store).exists()
+
+            if not image_is_used:
+                image_store.delete()
+
+    def get_content_images_primary_localization(self):
+
+        locale = {}
+
+        content_images = self.images()
+
+        for content_image in content_images:
+
+            if content_image.text and len(content_image.text) > 0:
+                locale[content_image.text] = content_image.text
+
+        return locale
     
 
 class LocalcosmosUserManager(UserManager):
@@ -51,7 +134,7 @@ class LocalcosmosUserManager(UserManager):
         return superuser
 
 
-class LocalcosmosUser(AbstractUser):
+class LocalcosmosUser(ServerContentImageMixin, AbstractUser):
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     slug = models.SlugField(unique=True)
@@ -471,106 +554,20 @@ class TaxonomicRestriction(TaxonomicRestrictionBase):
     objects = TaxonomicRestrictionManager()
 
 
-
-
-'''
-    Generic Content Images
-'''
-class ServerContentImageMixin:
-
-    def get_model(self):
-        return ServerContentImage
-
-
-    def get_content_type(self):
-        return ContentType.objects.get_for_model(self.__class__)
-
-    def _content_images(self, image_type='image'):
-
-        content_type = self.get_content_type()
-        ContentImageModel = self.get_model()
-
-        self.content_images = ContentImageModel.objects.filter(content_type=content_type, object_id=self.pk,
-                                                          image_type=image_type).order_by('position')
-
-        return self.content_images
-
-    def all_images(self):
-
-        content_type = self.get_content_type()
-        ContentImageModel = self.get_model()
-
-        self.content_images = ContentImageModel.objects.filter(
-            content_type=content_type, object_id=self.pk)
-
-        return self.content_images
-
-    def images(self, image_type='image'):
-        return self._content_images(image_type=image_type)
-
-    def image(self, image_type='image'):
-        content_image = self._content_images(image_type=image_type).first()
-
-        if content_image:
-            return content_image
-
-        return None
-
-    def image_url(self, size=400):
-
-        content_image = self.image()
-
-        if content_image:
-            return content_image.image_url(size)
-
-        return static('noimage.png')
-
-    # this also deletes ImageStore entries and images on disk
-
-    def delete_images(self):
-
-        content_type = self.get_content_type()
-        ContentImageModel = self.get_model()
-
-        content_images = ContentImageModel.objects.filter(
-            content_type=content_type, object_id=self.pk)
-
-        for image in content_images:
-            # delete model db entries
-            image_store = image.image_store
-            image.delete()
-
-            image_is_used = ContentImageModel.objects.filter(
-                image_store=image_store).exists()
-
-            if not image_is_used:
-                image_store.delete()
-
-    def get_content_images_primary_localization(self):
-
-        locale = {}
-
-        content_images = self.images()
-
-        for content_image in content_images:
-
-            if content_image.text and len(content_image.text) > 0:
-                locale[content_image.text] = content_image.text
-
-        return locale
-
-
-
-
-
 def get_image_store_path(instance, filename):
     blankname, ext = os.path.splitext(filename)
 
-    new_filename = '{0}{1}'.format(instance.md5, ext)
+    md5 = instance.md5
+
+    if not md5:
+        md5 = hashlib.md5(instance.source_image.read()).hexdigest()
+        # this line is extremely required. do not delete it. otherwise the file will not be read correctly
+        instance.source_image.seek(0)
+
+    new_filename = '{0}{1}'.format(md5, ext)
     path = '/'.join(['localcosmos-server', 'imagestore', '{0}'.format(instance.uploaded_by.pk),
                      new_filename])
     return path
-
 
 
 class ImageStoreAbstract(ModelWithTaxon):
@@ -773,6 +770,25 @@ class ContentImageProcessing:
                 self.image_store.source_image.url), 'thumbnails', thumbname)
 
         return thumburl
+
+
+    def srcset(self, request=None, force=False):
+        
+        srcset = {
+            '1x' : self.image_url(size=200, force=force),
+            '2x' : self.image_url(size=400, force=force),
+        }
+
+        if request:
+
+            host = request.get_host()
+
+            for key, url in srcset.items():
+                absolute_url = '{0}://{1}{2}'.format(request.scheme, host, url)
+                srcset[key] = absolute_url
+        
+
+        return srcset
 
 
 

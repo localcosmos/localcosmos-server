@@ -3,7 +3,10 @@ from django.test import RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from localcosmos_server.models import LocalcosmosUser, App, SecondaryAppLanguages, AppUserRole
+from django.contrib.contenttypes.models import ContentType
+
+from localcosmos_server.models import (LocalcosmosUser, App, SecondaryAppLanguages, AppUserRole, ServerImageStore,
+    ServerContentImage)
 
 from localcosmos_server.datasets.models import Dataset, DatasetImages, UserGeometry
 
@@ -429,3 +432,32 @@ class WithUserGeometry:
         user_geometry.save()
 
         return user_geometry
+
+
+class WithServerContentImage:
+
+    def get_content_image(self, user, instance, image_type='image', crop_parameters=None):
+
+        image = SimpleUploadedFile(name='test_image.jpg', content=open(TEST_IMAGE_PATH, 'rb').read(),
+                                        content_type='image/jpeg')
+        
+        image_store = ServerImageStore(
+            source_image = image,
+            uploaded_by = user,
+        )
+
+        image_store.save()
+
+        content_image = ServerContentImage(
+            image_store = image_store,
+            content_type = ContentType.objects.get_for_model(instance),
+            object_id = instance.id,
+            image_type = image_type,
+        )
+
+        if crop_parameters:
+            content_image.crop_parameters = crop_parameters
+
+        content_image.save()
+
+        return content_image
