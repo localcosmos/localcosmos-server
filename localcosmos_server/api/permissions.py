@@ -4,6 +4,9 @@ from localcosmos_server.models import App
 
 class AppMustExist(permissions.BasePermission):
 
+    # the message currently is not being shown
+    message = 'App does not exist.'
+
     def has_permission(self, request, view):
 
         app_uuid = view.kwargs['app_uuid']

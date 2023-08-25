@@ -73,3 +73,7 @@ class TaxonField(forms.MultiValueField):
 
     def compress(self, data_list):
         return self.get_lazy_taxon(data_list)
+
+
+class SelectTaxonField(forms.ChoiceField):
+    pass

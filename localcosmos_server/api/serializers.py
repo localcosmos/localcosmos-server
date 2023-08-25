@@ -44,8 +44,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     password2 = serializers.CharField()
 
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
+    # adding those 2 lines will make these fields required for some odd reason
+    #first_name = serializers.CharField(required=False)
+    #last_name = serializers.CharField(required=False)
     email = serializers.EmailField()
     email2 = serializers.EmailField()
 

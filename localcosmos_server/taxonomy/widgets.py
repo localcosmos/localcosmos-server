@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.forms.widgets import MultiWidget, HiddenInput, CheckboxInput
+from django.forms.widgets import MultiWidget, HiddenInput, CheckboxInput, Select
 from django.urls import reverse
 
 # search across all taxonomy databases
@@ -79,3 +79,7 @@ class TaxonAutocompleteWidget(MultiWidget):
 
 class FixedTaxonWidget(TaxonAutocompleteWidget):
     template_name = 'localcosmos_server/widgets/taxonomy/fixed_taxon_widget.html'
+
+
+class SelectTaxonWidget(Select):
+    pass

@@ -115,6 +115,7 @@ class RegisterAccount(ManageUserClient, APIView):
 
     # this is for creating only
     def post(self, request, *args, **kwargs):
+
         serializer_context = { 'request': request }
         serializer = self.serializer_class(data=request.data, context=serializer_context)
 
@@ -316,7 +317,9 @@ class PasswordResetRequest(APIView):
        
         serializer = self.serializer_class(data=request.data)
 
-        context = {'success': False}
+        context = {
+            'success': False
+        }
         
         if serializer.is_valid():
             form = PasswordResetForm(data=serializer.data)
@@ -325,7 +328,7 @@ class PasswordResetRequest(APIView):
             users = list(users)
 
             if not users:
-                context['error_message'] = _('No matching user found.')
+                context['detail'] = _('No matching user found.')
                 return Response(context, status=status.HTTP_400_BAD_REQUEST)
 
             extra_email_context = {
@@ -338,6 +341,7 @@ class PasswordResetRequest(APIView):
             context['success'] = True
             
         else:
+            context.update(serializer.errors)
             return Response(context, status=status.HTTP_400_BAD_REQUEST)
             
         return Response(context, status=status.HTTP_200_OK)
