@@ -34,6 +34,7 @@ OBSERVATION_FORM_SCHEMA = {
             "items" : {
                 "oneOf": [
                     { "$ref": "#/$defs/TaxonField" },
+                    { "$ref": "#/$defs/SelectTaxonField" },
                     { "$ref": "#/$defs/PointJSONField" },
                     { "$ref": "#/$defs/GeoJSONField" },
                     { "$ref": "#/$defs/DecimalField" },
@@ -163,6 +164,39 @@ OBSERVATION_FORM_SCHEMA = {
                         "widget": {
                             "type": "string",
                             "enum": ["BackboneTaxonAutocompleteWidget"]
+                        }
+                    },
+                    "required" : ["widget", "label"]
+                },
+                "widgetAttrs": {
+                    "type": "object"
+                },
+            },
+            "required": ["uuid", "fieldClass", "version", "role", "definition", "position"]
+        },
+        "SelectTaxonField": {
+            "type": "object",
+            "allOf": [
+                { "$ref": "#/$defs/FieldBase"}
+            ],
+            "properties": {
+                "fieldClass": {
+                    "type": "string",
+                    "enum": ["SelectTaxonField"]
+                },
+                "role": {
+                    "type": "string",
+                    "enum": ["taxonomicReference", "regular"]
+                },
+                "definition" : {
+                    "type": "object",
+                    "allOf" : [
+                        { "$ref": "#/$defs/FieldDefinitionBase" }
+                    ],
+                    "properties": {
+                        "widget": {
+                            "type": "string",
+                            "enum": ["SelectTaxonWidget"]
                         }
                     },
                     "required" : ["widget", "label"]

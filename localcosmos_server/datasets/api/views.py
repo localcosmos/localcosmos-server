@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serializers import (DatasetSerializer, ObservationFormSerializer, DatasetListSerializer, DatasetImagesSerializer,
                           UserGeometrySerializer)
@@ -98,6 +99,7 @@ class AppUUIDSerializerMixin:
 class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
 
     permission_classes = (AppMustExist, AnonymousObservationsPermissionOrGet,)
+    authentication_classes = (JWTAuthentication,)
     parser_classes = (CamelCaseJSONParser,)
 
     def perform_create(self, serializer):

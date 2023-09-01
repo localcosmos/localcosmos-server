@@ -70,10 +70,10 @@ class DatasetOwnerOnly(permissions.BasePermission):
 
         # determine if the user is allowed to alter or delete a dataset
         # owner can be determined by device uuid or dataset.user == request.user
-        if request.user == dataset.user:
+        if request.user.is_authenticated == True and request.user == dataset.user:
             return True
         
-        if request.user.is_authenticated == False and client_id == dataset.client_id:
+        if not dataset.user and request.user.is_authenticated == False and client_id == dataset.client_id:
             return True
         
         return False

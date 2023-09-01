@@ -174,7 +174,17 @@ class DatasetSerializer(DatasetRetrieveSerializer):
 
         if not observation_form:
             raise serializers.ValidationError(_('Observation Form does not exist'))
-        
+
+        # check if required fields are missing in data
+        for generic_form_field in observation_form.definition['fields']:
+            if generic_form_field['definition']['required']:
+                required_uuid = generic_form_field['uuid']
+                if required_uuid not in data['data']:
+                    message = self.get_required_field_error_message(generic_form_field)
+                    error = {}
+                    error[required_uuid] = [message]
+                    raise serializers.ValidationError(error)
+
 
         for field_uuid, value in data['data'].items():
 
@@ -230,6 +240,9 @@ class DatasetSerializer(DatasetRetrieveSerializer):
 
     def validate_TaxonField(self, field, value):
         return self.validate_json_schema(value, TAXON_JSON_SCHEMA)
+
+    def validate_SelectTaxonField(self, field, value):
+        return self.validate_TaxonField(field, value)
     
     def validate_CharField(self, field, value):
         required = field['definition']['required']

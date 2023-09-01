@@ -10,18 +10,23 @@ def get_domain_name(request):
     return setup_domain_name
 
 
-def timestamp_from_utc_with_offset(utc_milliseconds, offset):
+def timestamp_from_utc_with_offset(utc_milliseconds, offset_minutes):
 
-    delta_minutes = 0-offset
+    # the offset is expectes as given from javascript's .getTimezoneOffset
+    # which returns the value you have to add to the local time to get back to UTC
+    # the way from UTC to local time requires the opposite 
+    delta_minutes = 0-offset_minutes
 
     tz = timezone(
         timedelta(minutes=delta_minutes)
     )
 
     # fromtimestamp takes seconds
-    local = (utc_milliseconds / 1000) + (delta_minutes * 60)
+    utc_seconds = int((utc_milliseconds / 1000))
 
-    timestamp = datetime.fromtimestamp(local, tz=tz)
+    # fromtimestamp expects a POSIX timestamp, which is the number of seconds
+    # since Thursday, 01.January 1970 UTC
+    timestamp = datetime.fromtimestamp(utc_seconds, tz=tz)
 
     return timestamp
 
