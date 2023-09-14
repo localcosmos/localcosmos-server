@@ -403,6 +403,45 @@ class App(models.Model):
 
         return features
 
+
+    # privacyPolicy and legalNotice are required
+    def get_legal_frontend_text(self, key):
+
+        text = ''
+
+        app_state = None
+
+        if self.published_version_path:
+            app_state = 'published'
+
+        elif self.review_version_path:
+            app_state = 'review'
+        
+        if app_state != None:
+            app_root = self.get_installed_app_path(app_state=app_state)
+
+            features = self.get_features(app_state=app_state)
+
+            frontend_relative_path = features['Frontend']['path']
+            frontend_path = os.path.join(app_root, frontend_relative_path.lstrip('/'))
+
+            with open(frontend_path, 'r') as frontend_file:
+                frontend = json.loads(frontend_file.read())
+
+            text = frontend['userContent']['texts'][key]
+        
+        return text
+
+
+
+    def get_legal_notice(self):
+        return self.get_legal_frontend_text('legalNotice')
+
+
+    def get_privacy_policy(self):
+        return self.get_legal_frontend_text('privacyPolicy')
+
+
     @property
     def logo_url(self):
         app_state = 'review'

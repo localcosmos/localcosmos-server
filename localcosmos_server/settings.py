@@ -98,8 +98,8 @@ DATASET_VALIDATION_CLASSES = (
 )
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(weeks=13),
+    'REFRESH_TOKEN_LIFETIME': timedelta(weeks=26),
 }
 
 LOCALCOSMOS_ENABLE_GOOGLE_CLOUD_API = False

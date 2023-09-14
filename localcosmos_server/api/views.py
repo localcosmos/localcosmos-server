@@ -432,7 +432,7 @@ class SchemaKmeansCluster(SchemaSpecificMapClusterer, KmeansCluster):
 
 class SchemaGetClusterContent(SchemaSpecificMapClusterer, GetClusterContent):
     parser_classes = (JSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
 # the client expects imageUrl, not image_url
 class SchemaGetAreaContent(SchemaSpecificMapClusterer, GetAreaContent):

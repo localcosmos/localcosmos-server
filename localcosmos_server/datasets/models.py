@@ -522,14 +522,21 @@ class DatasetImages(models.Model):
         return image_url
 
 
-    @property
-    def image_urls(self):
+    def prepend_host(self, request, url):
+        host = request.get_host()
+        absolute_url = '{0}://{1}{2}'.format(request.scheme, host, url)
+        return absolute_url
+
+
+    def image_urls(self, request=None):
 
         image_urls = {}
         
         for size_name, image_size in IMAGE_SIZES['all'].items():
             # create the resized image, respecting which side is the longer one
             image_url = self.get_image_url(image_size)
+            if request != None:
+                image_url = self.prepend_host(request, image_url)
             image_urls[size_name] = image_url
 
         return image_urls

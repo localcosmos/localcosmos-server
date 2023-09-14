@@ -14,15 +14,7 @@
 			<div class="col-12 text-center">
 				<div class="card">
 					<div class="card-body">
-						<h4>{%trans 'Operator and contact person' %}</h4>
-						{{ legal_notice.first_name }} {{ legal_notice.last_name }}<br>
-						{{ legal_notice.street }}<br>
-						{{ legal_notice.zip_code }} {{ legal_notice.city }}<br>
-						{{ legal_notice.country }}<br>
-						{{ legal_notice.email }}
-						{% if legal_notice.phone %}
-							<br> {{ legal_notice.phone }}
-						{% endif %}
+						{{ legal_text|safe }}
 					</div>
 				</div>
 			</div>

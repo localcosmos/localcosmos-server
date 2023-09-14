@@ -28,8 +28,14 @@ class LocalcosmosUserSerializer(serializers.ModelSerializer):
     def get_profile_picture(self, obj):
         content_image = obj.image('profilepicture')
         if content_image:
+
+            if ('request' in self.context):
+                image_url = content_image.srcset(self.context['request'])
+            else:
+                image_url = content_image.srcset()
+
             image_url = {
-                'imageUrl': content_image.srcset(request=self.context['request'])
+                'imageUrl': image_url
             }
             return image_url
         
@@ -38,6 +44,13 @@ class LocalcosmosUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'uuid', 'username', 'first_name', 'last_name', 'email', 'profile_picture')
+
+
+class LocalcosmosPublicUserSerializer(LocalcosmosUserSerializer):
+
+    class Meta:
+        model = User
+        fields = ('uuid', 'username', 'first_name', 'last_name', 'profile_picture')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

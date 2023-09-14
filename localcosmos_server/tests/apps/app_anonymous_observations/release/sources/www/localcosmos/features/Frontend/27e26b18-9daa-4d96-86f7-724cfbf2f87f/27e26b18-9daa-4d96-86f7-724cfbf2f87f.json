@@ -8,7 +8,8 @@
     "userContent": {
         "texts": {
             "aboutApp": "",
-            "appSources": ""
+            "appSources": "",
+            "legalNotice": "Test legal notice <i></i>"
         },
         "images": {
             "appBackground": {

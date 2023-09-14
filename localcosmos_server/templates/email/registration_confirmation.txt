@@ -6,7 +6,7 @@
 {% blocktrans with name=user.username %}Hello {{ name }}!{% endblocktrans %}
 ---------------------------------------------------------------------------=
 ------------
-{% blocktrans with url=app.url %}Thank you for registering on {{ url }}.{% endblocktrans %}
+{% blocktrans with name=app.name %}Thank you for registering on {{ name }}.{% endblocktrans %}
 
 ---------------------------------------------------------------------------=
 ------------

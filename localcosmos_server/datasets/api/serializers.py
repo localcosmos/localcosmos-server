@@ -9,7 +9,7 @@ from localcosmos_server.datasets.json_schemas import (POINT_JSON_FIELD_SCHEMA, G
 
 from localcosmos_server.datasets.api.serializer_fields import GeoJSONField
 
-from localcosmos_server.api.serializers import LocalcosmosUserSerializer
+from localcosmos_server.api.serializers import LocalcosmosPublicUserSerializer
 
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -118,7 +118,12 @@ class DatasetImagesSerializer(serializers.ModelSerializer):
     client_id = serializers.SerializerMethodField()
 
     def get_image_url(self, instance):
-        return instance.image_urls
+        if ('request' in self.context):
+            image_urls = instance.image_urls(self.context['request'])
+        else:
+            image_urls = instance.image_urls()
+            
+        return image_urls
 
     def get_client_id(self, instance):
         return instance.client_id
@@ -131,7 +136,7 @@ class DatasetImagesSerializer(serializers.ModelSerializer):
 '''
     Datasets
 '''
-# Retriee works without app_uuid in __init__ and is compatible with anycluster
+# Retrieve works without app_uuid in __init__ and is compatible with anycluster
 class DatasetRetrieveSerializer(serializers.Serializer):
 
     uuid = serializers.UUIDField(read_only=True)
@@ -140,15 +145,27 @@ class DatasetRetrieveSerializer(serializers.Serializer):
     
     data = serializers.JSONField()
 
-    client_id = serializers.CharField()
-    platform = serializers.CharField()
+    client_id = serializers.CharField(write_only=True)
+    platform = serializers.CharField(write_only=True)
 
-    created_at = serializers.DateTimeField(required=False)
-    last_modified = serializers.DateTimeField(required=False)
+    #created_at = serializers.DateTimeField(required=False)
+    #last_modified = serializers.DateTimeField(required=False)
 
-    images = DatasetImagesSerializer(many=True, read_only=True)
+    coordinates = serializers.SerializerMethodField()
 
-    user = LocalcosmosUserSerializer(many=False, read_only=True, allow_null=True)
+    timestamp = serializers.DateTimeField(read_only=True)
+
+    taxon_source = serializers.CharField(read_only=True)
+    taxon_latname = serializers.CharField(read_only=True)
+    taxon_author = serializers.CharField(read_only=True)
+    name_uuid = serializers.CharField(read_only=True)
+    taxon_nuid = serializers.CharField(read_only=True)
+
+    images = serializers.SerializerMethodField(read_only=True) #DatasetImagesSerializer(many=True, read_only=True)
+
+    user = LocalcosmosPublicUserSerializer(many=False, read_only=True, allow_null=True)
+
+    validation_step = serializers.CharField(read_only=True)
 
 
     def get_observation_form(self, data):
@@ -160,6 +177,33 @@ class DatasetRetrieveSerializer(serializers.Serializer):
 
         return observation_form
 
+    # always return lng lat Point
+    def get_coordinates(self, obj):
+        coordinates = None
+        if obj.coordinates:
+            coordinates = {
+                "type": "Feature",
+                "geometry": json.loads(obj.coordinates.geojson),
+            }
+        return coordinates
+
+
+    def get_images(self, obj):
+
+        images = DatasetImages.objects.filter(dataset=obj)
+
+        serialized_images = {}
+
+
+        for image in images:
+            field_uuid = str(image.field_uuid)
+            if field_uuid not in serialized_images:
+                serialized_images[field_uuid] = []
+            serializer = DatasetImagesSerializer(image, context=self.context)
+            serialized_images[field_uuid].append(serializer.data)
+        
+        return serialized_images
+    
 
 class DatasetSerializer(DatasetRetrieveSerializer):
     
@@ -412,6 +456,8 @@ class DatasetListSerializer(serializers.ModelSerializer):
         model = Dataset
         fields = ('uuid', 'taxon', 'coordinates', 'geographic_reference', 'timestamp', 'user', 'validation_step',
             'is_valid', 'is_published')
+
+
 
 
 

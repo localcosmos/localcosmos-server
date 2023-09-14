@@ -1198,6 +1198,14 @@ class TestGetAreaContent(WithMedia, WithObservationForm, WithUser, WithApp, Crea
         self.assertEqual(retrieved_dataset['uuid'], str(dataset.uuid))
 
         self.assertIn('images', retrieved_dataset)
-        image = retrieved_dataset['images'][0]
+
+        field_uuid = None
+        for field in self.observation_form.definition['fields']:
+            
+            if field['fieldClass'] == 'PictureField':
+                field_uuid = field['uuid']
+                break
+
+        image = retrieved_dataset['images'][field_uuid][0]
         self.assertIn('imageUrl', image)
         

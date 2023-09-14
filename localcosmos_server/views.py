@@ -99,40 +99,32 @@ class AppPasswordResetDoneView(AppMixin, AppBaseTemplateMixin, PasswordResetDone
 #   - the views declared here are for links in emails
 ###################################################################################################################
 from localcosmos_server.models import App
-import os, json
 
-class LegalNoticeMixin:
+class LegalTextMixin:
     
     def dispatch(self, request, *args, **kwargs):
         self.app = App.objects.get(uid=kwargs['app_uid'])
-
-        if not self.app.published_version_path:
-            raise Http404('App not published yet')
-    
-        legal_notice_path = os.path.join(self.app.published_version_path, 'legal_notice.json')
-
-        if not os.path.isfile(legal_notice_path):
-            raise Http404('Legal notice not found')
-            
-        with open(legal_notice_path, 'r') as f:
-            self.legal_notice = json.loads(f.read())
-
+        self.legal_text = self.app.get_legal_frontend_text(self.text_key)
         return super().dispatch(request, *args, **kwargs)
 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['app'] = self.app
-        context['legal_notice'] = self.legal_notice
+        context['legal_text'] = self.legal_text
         return context
     
 
-class LegalNotice(LegalNoticeMixin, TemplateView):
+class LegalNotice(LegalTextMixin, TemplateView):
+
+    text_key = 'legalNotice'
 
     template_name = 'localcosmos_server/legal/legal_notice.html'
 
 
-class PrivacyStatement(LegalNoticeMixin, TemplateView):
+class PrivacyStatement(LegalTextMixin, TemplateView):
+
+    text_key = 'privacyPolicy'
 
     template_name = 'localcosmos_server/legal/privacy_statement.html'
 
