@@ -163,7 +163,7 @@ OBSERVATION_FORM_SCHEMA = {
                     "properties": {
                         "widget": {
                             "type": "string",
-                            "enum": ["BackboneTaxonAutocompleteWidget"]
+                            "enum": ["BackboneTaxonAutocompleteWidget", "FixedTaxonWidget"]
                         }
                     },
                     "required" : ["widget", "label"]

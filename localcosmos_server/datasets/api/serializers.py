@@ -136,8 +136,25 @@ class DatasetImagesSerializer(serializers.ModelSerializer):
 '''
     Datasets
 '''
+class DatasetImagesMixin:
+
+    def get_images(self, obj):
+
+        images = DatasetImages.objects.filter(dataset=obj)
+
+        serialized_images = {}
+
+        for image in images:
+            field_uuid = str(image.field_uuid)
+            if field_uuid not in serialized_images:
+                serialized_images[field_uuid] = []
+            serializer = DatasetImagesSerializer(image, context=self.context)
+            serialized_images[field_uuid].append(serializer.data)
+        
+        return serialized_images
+
 # Retrieve works without app_uuid in __init__ and is compatible with anycluster
-class DatasetRetrieveSerializer(serializers.Serializer):
+class DatasetRetrieveSerializer(DatasetImagesMixin, serializers.Serializer):
 
     uuid = serializers.UUIDField(read_only=True)
 
@@ -186,23 +203,6 @@ class DatasetRetrieveSerializer(serializers.Serializer):
                 "geometry": json.loads(obj.coordinates.geojson),
             }
         return coordinates
-
-
-    def get_images(self, obj):
-
-        images = DatasetImages.objects.filter(dataset=obj)
-
-        serialized_images = {}
-
-
-        for image in images:
-            field_uuid = str(image.field_uuid)
-            if field_uuid not in serialized_images:
-                serialized_images[field_uuid] = []
-            serializer = DatasetImagesSerializer(image, context=self.context)
-            serialized_images[field_uuid].append(serializer.data)
-        
-        return serialized_images
     
 
 class DatasetSerializer(DatasetRetrieveSerializer):
@@ -435,26 +435,41 @@ class TaxonSerializer(serializers.Serializer):
     name_uuid = serializers.CharField()
 
 
-# this serializer is only for "my observations"
+
 class DatasetListSerializer(serializers.ModelSerializer):
 
     taxon = serializers.SerializerMethodField()
     coordinates = GeoJSONField()
     geographic_reference = GeoJSONField()
 
+    image_url = serializers.SerializerMethodField(read_only=True) #DatasetImagesSerializer(many=True, read_only=True)
+
+    user = LocalcosmosPublicUserSerializer(many=False, read_only=True, allow_null=True)
+
     def get_taxon(self, instance):
 
         taxon = None
-
+        
         if instance.taxon:
             serializer = TaxonSerializer(instance.taxon)
             taxon = serializer.data
 
         return taxon
 
+    def get_image_url(self, obj):
+
+        image = DatasetImages.objects.filter(dataset=obj).first()
+
+        image_url = None
+
+        serializer = DatasetImagesSerializer(image, context=self.context)
+        if serializer.data and 'image_url' in serializer.data:
+            image_url = serializer.data['image_url']
+        return image_url
+
     class Meta:
         model = Dataset
-        fields = ('uuid', 'taxon', 'coordinates', 'geographic_reference', 'timestamp', 'user', 'validation_step',
+        fields = ('uuid', 'taxon', 'coordinates', 'geographic_reference', 'timestamp', 'image_url', 'user', 'validation_step',
             'is_valid', 'is_published')
 
 

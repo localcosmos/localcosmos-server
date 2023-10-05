@@ -16,6 +16,7 @@ from localcosmos_server.api.views import SchemaSpecificMapClusterer
 from localcosmos_server.datasets.models import Dataset, ObservationForm, DatasetImages, UserGeometry
 
 from djangorestframework_camel_case.parser import CamelCaseJSONParser, CamelCaseMultiPartParser
+from djangorestframework_camel_case.render import CamelCaseJSONRenderer
 
 from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiExample, OpenApiParameter
 
@@ -94,13 +95,12 @@ class AppUUIDSerializerMixin:
 '''
     rewrite this for creation and get single dataset only
 '''
-
-
 class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
 
     permission_classes = (AppMustExist, AnonymousObservationsPermissionOrGet,)
     authentication_classes = (JWTAuthentication,)
     parser_classes = (CamelCaseJSONParser,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
     def perform_create(self, serializer):
 
@@ -117,7 +117,7 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
         elif 'client_id' in self.request.GET:
             queryset = queryset.filter(client_id=self.request.GET['client_id'])
         else:
-            queryset = Dataset.objects.none()
+            queryset = Dataset.objects.all()
 
         return queryset
 
