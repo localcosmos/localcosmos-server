@@ -57,6 +57,15 @@ class LazyTaxonBase:
             self.taxon_nuid = kwargs['taxon_nuid']
             self.name_uuid = kwargs['name_uuid']
 
+        elif 'taxonLatname' in kwargs and 'taxonAuthor' in kwargs and 'taxonSource' in kwargs and 'taxonNuid' in kwargs and 'nameUuid' in kwargs:
+            self.taxon_latname = kwargs['taxonLatname']
+            self.taxon_author = kwargs['taxonAuthor']
+            self.taxon_source = kwargs['taxonSource']
+            self.taxon_include_descendants = kwargs.get('taxonIncludeDescendants', False)
+
+            self.taxon_nuid = kwargs['taxonNuid']
+            self.name_uuid = kwargs['nameUuid']
+
         else:
             raise ValueError('Unable to instantiate LazyTaxon, improper parameters given: %s' %kwargs)
 

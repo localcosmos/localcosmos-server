@@ -8,8 +8,6 @@ class MapManager {
 
     constructor(widgetId, initialLatitude, initialLongitude, readonly, value) {
 
-        const self = this;
-
         this.mode = MAPMANAGER_MODES.POINT;
         this.readonly = readonly;
 
@@ -21,7 +19,7 @@ class MapManager {
         this.position = null; // the position of the map marker if it was set by a human, not the position of the inputs or the gps sensor
 
         // the buttons
-        this.positionJsonInput = document.getElementById(`${widgetId}`);
+        this.positionJsonInput = document.getElementById(`${widgetId}_1`);
         this.verbosePosition = document.getElementById(`${widgetId}_0`);
         this.gpsButton = document.getElementById(`${widgetId}_gpsbutton`);
         this.deleteButton = document.getElementById(`${widgetId}_delete`);
@@ -39,17 +37,15 @@ class MapManager {
         this.map = this.createMap(initialLatitude, initialLongitude);
 
         if (value == null) {
-            self.marker = null;
+            this.marker = null;
         }
         else {
-            self.marker = this.placeMarker(initialLatitude, initialLongitude);
+            this.placeMarker(initialLatitude, initialLongitude);
         }
 
         if (this.readonly == false) {
 
-            this.map.on('click', function (event) {
-                self.setMarker(event);
-            });
+            this.map.on('click', this.setMarker.bind(this));
 
             this.attachButtonListeners();
 
@@ -65,31 +61,21 @@ class MapManager {
     }
 
     attachButtonListeners() {
-        var self = this;
+        this.deleteButton.addEventListener('click', this.deleteMarker.bind(this));
 
-        this.deleteButton.addEventListener('click', function (event) {
-            self.deleteMarker(event);
-        });
-
-        this.gpsButton.addEventListener('click', function (event) {
-            self.watchPosition(event);
-        });
+        this.gpsButton.addEventListener('click', this.watchPosition.bind(this));
 
         if (this.pointInputButton != null) {
-            this.pointInputButton.addEventListener('click', function () {
-                self.enablePointInput();
-            });
+            this.pointInputButton.addEventListener('click', this.enablePointInput.bind(this));
         }
 
         if (this.areaInputButton != null) {
-            this.areaInputButton.addEventListener('click', function () {
-                self.enableAreaInput();
-            });
+            this.areaInputButton.addEventListener('click', this.enableAreaInput.bind(this));
         }
     }
 
     createMap(initialLatitude, initialLongitude) {
-        var layerSources = {
+        const layerSources = {
             "osm": L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png',
                 {
                     attribution: 'Map data &copy; OpenStreetMap contributors',
@@ -103,21 +89,13 @@ class MapManager {
                     attribution: 'Tiles &copy; Esri',
                     maxZoom: 20,
                     maxNativeZoom: 18
-                }),
-            "satellite_names": L.tileLayer('https://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.{ext}', {
-                attribution: '&mdash; Map data &copy; OpenStreetMap',
-                subdomains: 'abcd',
-                minZoom: 0,
-                maxNativeZoom: 18,
-                maxZoom: 20,
-                ext: 'png'
-            })
+                })
         };
 
-        var center = [initialLatitude, initialLongitude];
-        var zoom = 15;
+        const center = [initialLatitude, initialLongitude];
+        const zoom = 15;
 
-        var map = L.map(this.mapDivId, {
+        const map = L.map(this.mapDivId, {
             center: center,
             zoom: zoom,
             maxZoom: 24,
@@ -125,11 +103,11 @@ class MapManager {
         });
 
         // add tile layers
-        var satellite = L.layerGroup([layerSources.satellite_tiles, layerSources.satellite_names]);
+        const satellite = L.layerGroup([layerSources.satellite_tiles]);
 
         satellite.addTo(map);
 
-        var baseLayers = {
+        const baseLayers = {
             "Satellite": satellite,
             "Streets": layerSources["osm"]
         };
@@ -140,7 +118,7 @@ class MapManager {
     }
 
     setMapCenter(latitude, longitude) {
-        var latLng = L.latLng(latitude, longitude);
+        const latLng = L.latLng(latitude, longitude);
         this.map.setView(latLng);
     }
 
@@ -155,7 +133,7 @@ class MapManager {
         if (this.marker != null) {
             this.marker.remove();
         }
-        var marker = L.marker([lat, lng]).addTo(this.map);
+        const marker = L.marker([lat, lng]).addTo(this.map);
         this.marker = marker;
     }
 
@@ -165,7 +143,7 @@ class MapManager {
 
             this.placeMarker(event.latlng.lat, event.latlng.lng);
 
-            var position = this.latLngToPosition(event.latlng.lat, event.latlng.lng);
+            const position = this.latLngToPosition(event.latlng.lat, event.latlng.lng);
             this.position = position;
             this.setPositionFieldValues(position);
             this.clearWatch();
@@ -174,8 +152,7 @@ class MapManager {
     }
 
     latLngToPosition(latitude, longitude) {
-
-        var position = {
+        const position = {
             coords: {
                 latitude: latitude,
                 longitude: longitude,
@@ -188,8 +165,24 @@ class MapManager {
     }
 
     setPositionFieldValues(position) {
-        this.positionJsonInput.value = JSON.stringify(position);
-        var verbose = "" + position.coords.latitude.toFixed(4) + "N " + position.coords.longitude.toFixed(4) + "E";
+        const geojson = {
+            "type": "Feature",
+            "geometry": {
+                "crs": {
+                    "type": "name",
+                    "properties": {
+                        "name": "EPSG:4326"
+                    }
+                },
+                "type": "Point",
+                "coordinates": [position.coords.longitude, position.coords.latitude]
+            },
+            "properties": {
+                "accuracy": 0
+            }
+        };
+        this.positionJsonInput.value = JSON.stringify(geojson);
+        const verbose = "" + position.coords.latitude.toFixed(4) + "N " + position.coords.longitude.toFixed(4) + "E";
         this.verbosePosition.value = verbose;
     }
 
@@ -328,153 +321,3 @@ class MapManager {
     }
 
 }
-
-/*
-var mapmanager_maps = {
-    "leaflet": {
-        "create": function (div_id, initial_latitude, initial_longitude) {
-            var layerSources = {
-                "osm": L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png',
-                    {
-                        attribution: 'Map data &copy; OpenStreetMap contributors',
-                        subdomains: 'ab',
-                        maxZoom: 20,
-                        maxNativeZoom: 18
-                    }),
-
-                "satellite_tiles": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-                    {
-                        attribution: 'Tiles &copy; Esri',
-                        maxZoom: 20,
-                        maxNativeZoom: 18
-                    }),
-                "satellite_names": L.tileLayer('https://{s}.tile.stamen.com/toner-labels/{z}/{x}/{y}.{ext}', {
-                    attribution: '&mdash; Map data &copy; OpenStreetMap',
-                    subdomains: 'abcd',
-                    minZoom: 0,
-                    maxNativeZoom: 18,
-                    maxZoom: 20,
-                    ext: 'png'
-                })
-            };
-
-            var center = [initial_latitude, initial_longitude];
-            var zoom = 15;
-
-            var map = L.map(div_id, {
-                center: center,
-                zoom: zoom,
-                maxZoom: 24,
-                scrollWheelZoom: false
-            });
-
-            // add tile layers
-            var satellite = L.layerGroup([layerSources.satellite_tiles, layerSources.satellite_names]);
-
-            satellite.addTo(map);
-
-            var baseLayers = {
-                "Satellite": satellite,
-                "Streets": layerSources["osm"]
-            };
-
-            L.control.layers(baseLayers, {}, { "position": "topright" }).addTo(map);
-
-            return map;
-
-        },
-        "place_marker": function (manager, lat, lng) {
-            var latLng = L.latLng(lat, lng);
-            if (manager.marker != null) {
-                manager.marker.remove();
-            }
-            var marker = L.marker([lat, lng]).addTo(manager.map);
-            manager.marker = marker;
-        },
-        "attach_map_click_listener": function (manager) {
-            // place a marker on click
-            function setMarker(event) {
-
-                if (manager.mode == MAPMANAGER_MODES.POINT) {
-
-                    mapmanager_maps.leaflet.place_marker(manager, event.latlng.lat, event.latlng.lng);
-
-                    var position = manager.latLngToPosition(event.latlng.lat, event.latlng.lng);
-                    manager.position = position;
-                    manager.set_position_field_values(position);
-                    manager.clearWatch();
-                }
-            }
-
-            manager.map.on('click', setMarker);
-        },
-        "position_to_latlng": function (position) {
-            return L.latLng(position.coords.latitude, position.coords.longitude);
-        },
-        "set_map_center": function (map, latitude, longitude) {
-            var latLng = L.latLng(latitude, longitude);
-            map.setView(latLng);
-        },
-        "remove_marker": function (manager) {
-            if (manager.marker != null) {
-                manager.marker.remove();
-            }
-        }
-    },
-    "google": {
-        "create": function (div_id) {
-            var map = new google.maps.Map(document.getElementById(div_id), {
-                zoom: 14,
-                center: { lat: initial_latitude, lng: initial_longitude },
-                mapTypeId: google.maps.MapTypeId.TERRAIN,
-                streetViewControl: false,
-            });
-
-            return map;
-
-        },
-        "place_marker": function (manager, lat, lng) {
-
-            var latLng = new google.maps.LatLng(lat, lng);
-
-            if (manager.marker == null) {
-                var marker = new google.maps.Marker({
-                    position: { lat: lat, lng: lng },
-                    map: null
-                });
-                manager.marker = marker;
-            }
-
-            manager.marker.setMap(manager.map);
-            manager.marker.setPosition(latLng);
-        },
-        "attach_map_click_listener": function (manager) {
-
-            // place a marker on click
-            google.maps.event.addListener(manager.map, "click", function (event) {
-
-                if (manager.mode == MAPMANAGER_MODES.POINT) {
-
-                    mapmanager_maps.google.place_marker(manager, event.latLng.lat(), event.latLng.lng());
-
-                    var position = manager.latLngToPosition(event.latLng.lat(), event.latLng.lng());
-                    manager.position = position;
-                    manager.set_position_field_values(position);
-                    manager.clearWatch();
-                }
-            });
-        },
-        "position_to_latlng": function (position) {
-            return new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        },
-        "set_map_center": function (map, latitude, longitude) {
-            var latLng = new google.maps.LatLng(latitude, longitude);
-            map.setCenter(latLng);
-        },
-        "remove_marker": function (manager) {
-            manager.marker.setMap(null);
-            manager.position = null;
-        }
-    }
-};
-*/

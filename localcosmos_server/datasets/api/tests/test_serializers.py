@@ -8,7 +8,8 @@ from localcosmos_server.tests.common import (test_settings, DataCreator, TEST_IM
     TEST_USER_GEOMETRY_NAME)
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithObservationForm, WithMedia, WithUserGeometry
 from localcosmos_server.datasets.api.serializers import (ObservationFormSerializer, DatasetSerializer,
-    DatasetImagesSerializer, DatasetListSerializer, UserGeometrySerializer, DatasetRetrieveSerializer)
+    DatasetImagesSerializer, DatasetListSerializer, UserGeometrySerializer, DatasetRetrieveSerializer,
+    DatasetFilterSerializer)
 
 from localcosmos_server.datasets.models import ObservationForm, DatasetImages, Dataset, UserGeometry
 
@@ -297,6 +298,123 @@ class TestDatasetListSerializer(WithObservationForm, WithMedia, WithApp, TestCas
 
         self.assertEqual(dataset_['coordinates']['type'],'Feature')
 
+
+class TestDatasetFilterSerializer(WithObservationForm, WithMedia, WithApp, TestCase):
+
+    @test_settings
+    def test_serialize(self):
+
+        data = {
+            'filters' : [],
+        }
+
+        serializer = DatasetFilterSerializer(data=data)
+        serializer.is_valid()
+
+        self.assertEqual(serializer.errors, {})
+
+        data = {
+            'filters' : 'something wrong',
+        }
+
+        serializer = DatasetFilterSerializer(data=data)
+        serializer.is_valid()
+
+        self.assertIn('filters', serializer.errors)
+
+        # try filters
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
+
+        name_uuid_filter = {
+            'column': 'name_uuid',
+            'value': dataset.name_uuid,
+            'operator': '='
+        }
+
+        taxon_latname_filter = {
+            'column': 'taxon_latname',
+            'value': dataset.taxon_latname,
+            'operator': '!=',
+        }
+
+        taxon_nuid_filter = {
+            'column': 'taxon_latname',
+            'value': dataset.taxon_nuid,
+            'operator': 'startswith',
+        }
+
+        test_filters = [
+            [name_uuid_filter],
+            [taxon_latname_filter],
+            [name_uuid_filter, taxon_latname_filter],
+            [taxon_nuid_filter]
+        ]
+
+        for filter in test_filters:
+            data = {
+                'filters': filter,
+                'order_by': 'id',
+            }
+            serializer = DatasetFilterSerializer(data=data)
+            is_valid = serializer.is_valid()
+            if not is_valid:
+                print(serializer.errors)
+            self.assertEqual(serializer.errors, {})
+
+
+    @test_settings
+    def test_serialize_invalid_column(self):
+
+        coordinates_filter = {
+            'column': 'coordinates',
+            'value': 'string',
+            'operator': '='
+        }
+
+        data = {
+            'filters': [coordinates_filter]
+        }
+        serializer = DatasetFilterSerializer(data=data)
+        is_valid = serializer.is_valid()
+        self.assertIn('filters', serializer.errors)
+        self.assertIn('coordinates', serializer.errors['filters'][0])
+
+
+    @test_settings
+    def test_serialize_invalid_value(self):
+
+        name_uuid_filter = {
+            'column': 'name_uuid',
+            'value':  123,
+            'operator': '='
+        }
+
+        data = {
+            'filters': [name_uuid_filter]
+        }
+        serializer = DatasetFilterSerializer(data=data)
+        is_valid = serializer.is_valid()
+        self.assertIn('filters', serializer.errors)
+        self.assertIn('123', serializer.errors['filters'][0])
+
+    
+    @test_settings
+    def test_serialize_invalid_operator(self):
+
+        name_uuid_filter = {
+            'column': 'name_uuid',
+            'value':  "string",
+            'operator': 'endswith'
+        }
+
+        data = {
+            'filters': [name_uuid_filter]
+        }
+        serializer = DatasetFilterSerializer(data=data)
+        is_valid = serializer.is_valid()
+        self.assertIn('filters', serializer.errors)
+        self.assertIn('endswith', serializer.errors['filters'][0])
 
 
 class TestUserGeometrySerializer(WithUserGeometry, WithUser, WithApp, TestCase):

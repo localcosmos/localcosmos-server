@@ -1,47 +1,6 @@
 {% load i18n static %}
 <div class="row">
 	<div class="col-12 form-group">
-		<input id="{{ widget.attrs.id }}_0" class="form-control" type="{{ mode }}" name="{{ widget.name }}_0" {% if widget.value %}value="{{ widget.value.0 }}"{% endif %} />
-		<input id="{{ widget.attrs.id }}_1" type="hidden" name="{{ widget.name }}_1" {% if widget.value %}value="{{ widget.value.1 }}"{% endif %} />
+		{% include "django/forms/widgets/input.html" %}
 	</div>
 </div>
-
-{% if not widget.attrs.readonly %}
-	<script>
-		(function () {
-			var json_input = document.getElementById("{{ widget.attrs.id }}_1");
-			var verbose_input = document.getElementById("{{ widget.attrs.id }}_0");
-
-			const now = new Date();
-			const offset = now.getTimezoneOffset();
-			now.setMinutes(now.getMinutes() - offset);
-			
-			{% if mode == "date" %}
-				verbose_input.valueAsDate = now;
-			{% else %}
-      			const valueForField = now.toISOString().slice(0, 16);
-				verbose_input.value = valueForField;
-			{% endif %}
-
-			var set_date = function(){
-				var selectedDate = new Date(verbose_input.value);
-
-				var json_value = {
-				    "type": "Temporal",
-				    "cron": {
-				            "type": "timestamp",
-				            "format" : "unixtime",
-				            "timestamp": selectedDate.getTime(),
-							"timezone_offset" : selectedDate.getTimezoneOffset()
-				    }
-				};
-
-				json_input.value = JSON.stringify(json_value);
-			};
-
-			verbose_input.addEventListener("change", set_date);
-			set_date();
-
-		})();
-	</script>
-{% endif %}

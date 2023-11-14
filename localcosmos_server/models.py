@@ -488,6 +488,33 @@ class App(models.Model):
                 return locale.get(key, None)
 
         return None
+    
+
+    def get_vernacular(self, taxon, language):
+
+        app_settings = self.get_settings(app_state='published')
+        features = self.get_features(app_state='published')
+
+        vernacular_name = None
+
+        if language not in features['BackboneTaxonomy']['vernacularLookup']:
+            language = app_settings['PRIMARY_LANGUAGE']
+        
+        if language in features['BackboneTaxonomy']['vernacularLookup']:
+            relpath = features['BackboneTaxonomy']['vernacularLookup'][language].lstrip('/')
+
+            vernacular_lookup_path = os.path.join(self.published_version_path, relpath)
+            print(vernacular_lookup_path)
+            if os.path.isfile(vernacular_lookup_path):
+                with open(vernacular_lookup_path, 'r') as f:
+                    vernacular_lookup = json.loads(f.read())
+                    vernacular_names = vernacular_lookup.get(taxon.name_uuid, None)
+
+                    if vernacular_names:
+                        return vernacular_names['primary']
+                
+        return vernacular_name
+
 
     # LC PRIVATE: remove all contents from disk
     def delete(self, *args, **kwargs):

@@ -153,6 +153,11 @@ def get_app_locale(context, key):
     language = context['request'].LANGUAGE_CODE
     return context['request'].app.get_locale(key, language)
 
+@register.simple_tag(takes_context=True)
+def get_app_vernacular(context, taxon):
+    language = context['request'].LANGUAGE_CODE
+    return context['request'].app.get_vernacular(taxon, language)
+
 
 @register.simple_tag
 def content_image_url(instance, image_type):

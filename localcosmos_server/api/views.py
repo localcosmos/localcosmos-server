@@ -424,11 +424,11 @@ class SchemaSpecificMapClusterer:
 
 class SchemaGridCluster(SchemaSpecificMapClusterer, GridCluster):
     parser_classes = (JSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
 class SchemaKmeansCluster(SchemaSpecificMapClusterer, KmeansCluster):
     parser_classes = (JSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
 class SchemaGetClusterContent(SchemaSpecificMapClusterer, GetClusterContent):
     parser_classes = (JSONParser,)
@@ -437,15 +437,15 @@ class SchemaGetClusterContent(SchemaSpecificMapClusterer, GetClusterContent):
 # the client expects imageUrl, not image_url
 class SchemaGetAreaContent(SchemaSpecificMapClusterer, GetAreaContent):
     parser_classes = (JSONParser,)
-    #renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
 class SchemaGetDatasetContent(SchemaSpecificMapClusterer, GetDatasetContent):
     parser_classes = (JSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
 class SchemaGetMapContentCount(SchemaSpecificMapClusterer, GetMapContentCount):
     parser_classes = (JSONParser,)
-    renderer_classes = (JSONRenderer,)
+    renderer_classes = (CamelCaseJSONRenderer,)
 
 '''
     A taxon definition (taxonLatname etc) is returned, so use CamelCaseRenderer

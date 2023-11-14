@@ -784,3 +784,35 @@ TAXON_JSON_SCHEMA = {
     "required": ["taxonSource", "taxonLatname", "taxonNuid", "nameUuid"],
     "additionalProperties": False
 }
+
+DATASET_FILTERS_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://localcosmos.org/datasetfilter.schema.json",
+    "title": "Dataset filters",
+    "description": "A list of filters for filtering datasets",
+    "type": "array",
+    "items": {
+            "$ref": "#/$defs/datasetFilter"
+        },
+    "additionalProperties": False,
+    "$defs": {
+        "datasetFilter": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "type": "string",
+                    "enum": ["name_uuid", "taxon_latname", "taxon_author", "taxon_nuid"]
+                },
+                "value": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string",
+                    "enum" : ["=", "!=", "startswith"]
+                },
+            },
+            "required": ["column", "value", "operator"],
+            "additionalProperties": False
+        }
+    }
+}

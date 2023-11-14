@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -9,13 +8,9 @@ from django.utils.encoding import smart_str
 from localcosmos_server.decorators import ajax_required
 from localcosmos_server.generic_views import AjaxDeleteView
 
-from localcosmos_server.taxonomy.lazy import LazyAppTaxon
-
 from .forms import DatasetValidationRoutineForm, ObservationForm
 
 from .models import Dataset, DatasetValidationRoutine, DATASET_VALIDATION_CLASSES, DatasetImages
-
-import decimal
 
 from .csv_export import DatasetCSVExport
 
@@ -51,7 +46,7 @@ class HumanInteractionValidationView(FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_observation_form(self):
-        return self.observation_form_class(self.request.app, self.dataset.data)
+        return self.observation_form_class(self.request.app, self.dataset)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -76,7 +71,7 @@ class EditDataset(FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self):
-        return self.form_class(self.request.app, self.dataset.data)
+        return self.form_class(self.request.app, self.dataset)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -84,7 +79,7 @@ class EditDataset(FormView):
         return context
     
 
-# an expert may change dataset values -> only dataset.data['reported_values']
+# an expert may change dataset values -> only dataset.data
 class AjaxSaveDataset(FormView):
     
     form_class = ObservationForm
@@ -109,29 +104,15 @@ class AjaxSaveDataset(FormView):
         if form_class is None:
             form_class = self.get_form_class()
 
-        return self.form_class(self.request.app, self.dataset.data, **self.get_form_kwargs())
+        return self.form_class(self.request.app, self.dataset, **self.get_form_kwargs())
 
 
     def form_valid(self, form):
 
         # only update dataset.data.reported_values
-        reported_values = self.dataset.data['dataset']['reported_values']
+        reported_values = form.validated_dataset_data
 
-        for field_uuid, value in form.cleaned_data.items():
-
-            if field_uuid in form.locked_field_uuids:
-                continue
-
-            if isinstance(value, decimal.Decimal):
-                value = float(value)
-
-            elif isinstance(value, LazyAppTaxon):
-                value = value.as_json()
- 
-            # update field if possible
-            reported_values[field_uuid] = value
-
-        self.dataset.data['dataset']['reported_values'] = reported_values
+        self.dataset.data = reported_values
         self.dataset.save()
 
         context = self.get_context_data(**self.kwargs)

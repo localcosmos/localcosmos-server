@@ -102,7 +102,7 @@ class TestRetrieveObservationForm(WithObservationForm, WithUser, WithApp, Create
 
         response = self.client.get(url, format='json')
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # log in
         self.client.force_authenticate(user=self.user)
@@ -323,9 +323,10 @@ class TestListCreateDataset(WithDatasetPostData, WithObservationForm, WithMedia,
         _dataset = response.data['results'][0]
         self.assertEqual(_dataset['uuid'], str(dataset.uuid))
 
+        # retrieves all datasets
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 0)
+        self.assertEqual(len(response.data['results']), 1)
 
 
         dataset.user = self.user
@@ -334,7 +335,29 @@ class TestListCreateDataset(WithDatasetPostData, WithObservationForm, WithMedia,
 
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data['results']), 0)
+        self.assertEqual(len(response.data['results']), 1)
+
+    @test_settings
+    def test_get_list_all_datasets(self):
+    
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset_image = self.create_dataset_image(dataset)
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_list_create_dataset', kwargs=url_kwargs)
+
+        # retrieves all datasets
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 1)
+
+        #print(response.data)
+        _dataset = response.data['results'][0]
+        self.assertEqual(_dataset['uuid'], str(dataset.uuid))
 
 
 
@@ -547,6 +570,128 @@ class TestDeleteDataset(WithDatasetPostData, WithObservationForm, WithUser, With
         response = self.client.delete(url, post_data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+
+class TestGetFilteredDatasets(WithMedia, WithObservationForm, WithUser, WithApp, CreatedUsersMixin,
+    APITestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        observation_form = self.create_observation_form()
+        lacerta_agilis = TEST_TAXA['Lacerta agilis']
+        rana_aurora = TEST_TAXA['Rana aurora']
+
+        self.dataset_1 = self.create_dataset(observation_form, taxon=lacerta_agilis)
+        self.dataset_2 = self.create_dataset(observation_form, taxon=rana_aurora)
+
+    @test_settings
+    def test_no_filters(self):
+        
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_get_filtered_datasets', kwargs=url_kwargs)
+
+        response = self.client.post(url, data={}, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        
+        content = json.loads(response.content)
+        self.assertEqual(content['results'][1]['uuid'], str(self.dataset_1.uuid))
+        self.assertEqual(content['count'], 2)
+
+
+    @test_settings
+    def test_with_filters(self):
+        
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        post_data = {
+            'filters' : [
+                {
+                    'column': 'name_uuid',
+                    'value': str(self.dataset_1.taxon.name_uuid),
+                    'operator': '='
+                }
+            ]
+        }
+
+        url = reverse('api_get_filtered_datasets', kwargs=url_kwargs)
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        
+        content = json.loads(response.content)
+        self.assertEqual(content['results'][0]['uuid'], str(self.dataset_1.uuid))
+        self.assertEqual(content['count'], 1)
+
+        # test unequal
+        post_data = {
+            'filters' : [
+                {
+                    'column': 'name_uuid',
+                    'value': str(self.dataset_1.taxon.name_uuid),
+                    'operator': '!='
+                }
+            ]
+        }
+
+        url = reverse('api_get_filtered_datasets', kwargs=url_kwargs)
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        
+        content = json.loads(response.content)
+        self.assertEqual(content['results'][0]['uuid'], str(self.dataset_2.uuid))
+        self.assertEqual(content['count'], 1)
+
+        #test startswith
+        post_data = {
+            'filters' : [
+                {
+                    'column': 'taxon_nuid',
+                    'value': self.dataset_1.taxon.taxon_nuid[:-3],
+                    'operator': 'startswith'
+                }
+            ]
+        }
+
+        url = reverse('api_get_filtered_datasets', kwargs=url_kwargs)
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        
+        content = json.loads(response.content)
+        self.assertEqual(content['results'][0]['uuid'], str(self.dataset_1.uuid))
+        self.assertEqual(content['count'], 1)
+
+    @test_settings
+    def test_order_by(self):
+        
+        post_data = {
+            'orderBy': 'pk' # default is '-pk'
+        }
+
+        url_kwargs = {
+            'app_uuid' : self.app.uuid,
+        }
+
+        url = reverse('api_get_filtered_datasets', kwargs=url_kwargs)
+
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        
+        content = json.loads(response.content)
+        self.assertEqual(content['results'][0]['uuid'], str(self.dataset_1.uuid))
+        self.assertEqual(content['count'], 2)
 
 
 class TestCreateDatasetImage(WithMedia, WithDatasetPostData, WithObservationForm, WithUser, WithApp, CreatedUsersMixin,

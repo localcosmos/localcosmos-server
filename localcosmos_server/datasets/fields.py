@@ -2,7 +2,7 @@
 from django import forms
 from django.forms.fields import *
 from localcosmos_server.taxonomy.fields import *
-from localcosmos_server.utils import datetime_from_cron
+from localcosmos_server.utils import cron_from_datetime
 
 import json
 
@@ -43,35 +43,22 @@ class JSONField(forms.MultiValueField):
 '''
     Fields for Taxonomic, Geographic and Temporal Reference Fields
 '''
-class DateTimeJSONField(JSONField):
+class DateTimeJSONField(forms.DateTimeField):
 
     widget = SelectDateTimeWidget
 
     '''
-    def validate(self, value):
-
-        super().validate(value)
-        # validate the temporal json
+        create a valid Temporal JSON
     '''
-    # [verbose, json]
-    def compress(self, data_list):
-
-        """
-        Return a single value for the given list of values. The values can be
-        assumed to be valid.
-
-        For example, if this MultiValueField was instantiated with
-        fields=(DateField(), TimeField()), this might return a datetime
-        object created by combining the date and time in data_list.
-        """
-
-        if data_list:
-            cron = json.loads(data_list[1])
-            return datetime_from_cron(cron)
-
+    def to_python(self, value):
+        if value:
+            datetime_object = super().to_python(value)
+            return cron_from_datetime(datetime_object)
+        
         return None
 
-        
+
+
 class PointJSONField(JSONField):
     
     widget = MobilePositionInput

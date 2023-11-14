@@ -29,7 +29,6 @@ class ExpertReviewValidator(HumanInteractionValidator):
 
     def form_valid(self, dataset, view_instance, form):
 
-
         validation_result = form.cleaned_data['dataset_is_valid']
 
         if validation_result == 'is_valid':

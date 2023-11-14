@@ -7,9 +7,11 @@ from localcosmos_server.utils import datetime_from_cron
 
 from .models import DATASET_VALIDATION_CHOICES
 
+from .api.serializers import DatasetSerializer
+
 from . import fields, widgets
 
-import json
+import json, decimal
 
 
 class DatasetValidationRoutineForm(forms.Form):
@@ -60,25 +62,30 @@ class DatasetValidationRoutineForm(forms.Form):
 class ObservationForm(forms.Form):
 
     # fields that cannot be edited
-    locked_field_roles = ['temporal_reference', 'geographic_reference']
-    locked_field_classes = ['DateTimeJSONField', 'PointJSONField', 'PictureField']
+    locked_field_roles = ['temporal_reference']
+    locked_field_classes = ['DateTimeJSONField', 'PictureField']
     #locked_field_widget_classes = ['MobilePositionInput', 'CameraAndAlbumWidget', 'SelectDateTimeWidget']
 
     locked_field_uuids = []
 
-    def __init__(self, app, observation_form_json, *args, **kwargs):
+    def __init__(self, app, dataset, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.initial = self.get_initial_from_dataset(observation_form_json['dataset'])
+        self.app = app
+        self.dataset = dataset
+
+        self.validated_dataset_data = None
         
-        form_fields = observation_form_json['dataset']['observation_form']['fields']
+        observation_form = dataset.observation_form
+        form_fields = observation_form.definition['fields']
+        self.initial = self.get_initial_from_dataset(dataset)
 
         self.taxon_search_url = reverse('search_app_taxon', kwargs={'app_uid':app.uid})
 
 
         for form_field in form_fields:
 
-            field_class_name = form_field['field_class']
+            field_class_name = form_field['fieldClass']
             widget_class_name = form_field['definition']['widget']
 
 
@@ -124,24 +131,25 @@ class ObservationForm(forms.Form):
             self.fields[form_field['uuid']] = FieldClass(**field_kwargs)
 
 
-    def get_initial_from_dataset(self, dataset_json):
+    def get_initial_from_dataset(self, dataset):
         
         initial = {}
 
-        taxonomic_reference_uuid = dataset_json['observation_form']['taxonomic_reference']
-        temporal_reference_uuid = dataset_json['observation_form']['temporal_reference']
-        geographic_reference_uuid = dataset_json['observation_form']['geographic_reference']
+        observation_form_definition = dataset.observation_form.definition
+        taxonomic_reference_uuid = observation_form_definition['taxonomicReference']
+        temporal_reference_uuid = observation_form_definition['temporalReference']
+        geographic_reference_uuid = observation_form_definition['geographicReference']
 
-        for key, value in dataset_json['reported_values'].items():
+        for field_uuid, value in dataset.data.items():
 
-            if key == taxonomic_reference_uuid:
-                initial[key] = LazyAppTaxon(**value)
-            elif key == temporal_reference_uuid:
-                initial[key] = datetime_from_cron(value)
-            elif key == geographic_reference_uuid:
-                initial[key] = value
+            if field_uuid == taxonomic_reference_uuid:
+                initial[field_uuid] = LazyAppTaxon(**value)
+            elif field_uuid == temporal_reference_uuid:
+                initial[field_uuid] = datetime_from_cron(value)
+            elif field_uuid == geographic_reference_uuid:
+                initial[field_uuid] = value
             else:
-                initial[key] = value
+                initial[field_uuid] = value
                 
         return initial
 
@@ -170,3 +178,51 @@ class ObservationForm(forms.Form):
         }
 
         return kwargs
+    
+
+    def get_dataset_data(self):
+        reported_values = self.dataset.data
+
+        for field_uuid, value in self.cleaned_data.items():
+
+            if value in ['', None]:
+                if field_uuid in reported_values:
+                    del reported_values[field_uuid]
+                continue
+
+            if field_uuid in self.locked_field_uuids:
+                continue
+
+            if isinstance(value, decimal.Decimal):
+                value = float(value)
+
+            elif isinstance(value, LazyAppTaxon):
+                value = value.as_json()
+ 
+            # update field if possible
+            reported_values[field_uuid] = value
+
+        return reported_values
+    
+    
+    def clean(self):
+        cleaned_data = super().clean()
+
+        dataset_data = self.get_dataset_data()
+        post_data = {
+            'data': dataset_data,
+            'observation_form': {
+                'uuid': str(self.dataset.observation_form.uuid),
+                'version': self.dataset.observation_form.version,
+            },
+            'client_id': self.dataset.client_id,
+            'platform': self.dataset.platform,
+        }
+        serializer = DatasetSerializer(self.app.uuid, data=post_data)
+        serializer.is_valid()
+
+        if serializer.errors:
+            print(serializer.errors)
+            raise forms.ValidationError(json.dumps(serializer.errors))
+        
+        self.validated_dataset_data = dataset_data

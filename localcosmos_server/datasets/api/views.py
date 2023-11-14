@@ -1,11 +1,12 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.response import Response
 
 from .serializers import (DatasetSerializer, ObservationFormSerializer, DatasetListSerializer, DatasetImagesSerializer,
-                          UserGeometrySerializer)
+                          UserGeometrySerializer, DatasetFilterSerializer)
 
 from .permissions import (AnonymousObservationsPermission, DatasetOwnerOnly, DatasetAppOnly, AuthenticatedOwnerOnly,
                           AnonymousObservationsPermissionOrGet, MaxThreeInstancesPerUser)
@@ -55,7 +56,7 @@ class CreateObservationForm(generics.CreateAPIView):
 class RetrieveObservationForm(generics.RetrieveAPIView):
 
     serializer_class = ObservationFormSerializer
-    permission_classes = (AnonymousObservationsPermission,)
+    permission_classes = (AnonymousObservationsPermissionOrGet,)
     parser_classes = (CamelCaseJSONParser,)
 
     queryset = ObservationForm.objects.all()
@@ -93,7 +94,12 @@ class AppUUIDSerializerMixin:
 
 
 '''
-    rewrite this for creation and get single dataset only
+    Retrieve multiple Datasets or Create one Dataset
+    The GET endpoint is only for simple lookups:
+    - retrieve all datasets for the logged in user (GET)
+    - retrieve all datasets for one client_id (GET)
+    - retrieve all datasets (GET)
+    - more complex lookups require a separate POST endpoint with filters as JSON
 '''
 class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
 
@@ -116,8 +122,6 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
             queryset = queryset.filter(user=self.request.user)
         elif 'client_id' in self.request.GET:
             queryset = queryset.filter(client_id=self.request.GET['client_id'])
-        else:
-            queryset = Dataset.objects.all()
 
         return queryset
 
@@ -135,6 +139,61 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
             return DatasetListSerializer(*args, **kwargs)
 
         return DatasetSerializer(self.kwargs['app_uuid'], *args, **kwargs)
+
+
+class GetFilteredDatasets(generics.ListAPIView):
+    permission_classes = (AppMustExist,)
+    parser_classes = (CamelCaseJSONParser,)
+    renderer_classes = (CamelCaseJSONRenderer,)
+    serializer_class = DatasetListSerializer
+    filter_serializer = DatasetFilterSerializer
+
+    def get_queryset(self, filters=[], order_by=None):
+        queryset = Dataset.objects.filter(app_uuid=self.app_uuid)
+
+        orm_filters = {}
+        orm_excludes = {}
+        for filter in filters:
+            operator = filter['operator']
+
+            if operator == '=':
+                orm_filters[filter['column']] = filter['value']
+            elif operator == '!=':
+                orm_excludes[filter['column']] = filter['value']
+            elif operator == 'startswith':
+                column = '{0}__istartswith'.format(filter['column'])
+                orm_filters[column] = filter['value']
+
+        queryset = queryset.filter(**orm_filters).exclude(**orm_excludes)
+
+        if order_by:
+            queryset = queryset.order_by(order_by)
+
+        return queryset
+
+
+    def post(self, request, *args, **kwargs):
+
+        self.app_uuid = kwargs['app_uuid']
+
+        filter_serializer = self.filter_serializer(data=request.data)
+
+        if filter_serializer.is_valid():
+
+            filters = filter_serializer.validated_data.get('filters', [])
+            order_by = filter_serializer.validated_data.get('order_by', None)
+
+            queryset = self.get_queryset(filters, order_by)
+
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        
+        return Response(filter_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ManageDataset(AppUUIDSerializerMixin, generics.RetrieveUpdateDestroyAPIView):

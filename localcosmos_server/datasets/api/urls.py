@@ -15,6 +15,7 @@ urlpatterns = [
         name='api_create_dataset_image'),
     path('<uuid:app_uuid>/dataset/<uuid:uuid>/image/<int:pk>/', views.DestroyDatasetImage.as_view(),
         name='api_destroy_dataset_image'),
+    path('<uuid:app_uuid>/datasets/', views.GetFilteredDatasets.as_view(), name='api_get_filtered_datasets'),
     # user geometries
     path('<uuid:app_uuid>/user-geometry/', views.CreateListUserGeometry.as_view(),
         name='api_create_list_user_geometry'),

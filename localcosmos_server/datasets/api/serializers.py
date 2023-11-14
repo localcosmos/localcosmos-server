@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from localcosmos_server.datasets.models import ObservationForm, Dataset, DatasetImages, UserGeometry
 
 from localcosmos_server.datasets.json_schemas import (POINT_JSON_FIELD_SCHEMA, GEOJSON_FIELD_SCHEMA,
-    TEMPORAL_JSON_FIELD_SCHEMA, TAXON_JSON_SCHEMA)
+    TEMPORAL_JSON_FIELD_SCHEMA, TAXON_JSON_SCHEMA, DATASET_FILTERS_SCHEMA )
 
 from localcosmos_server.datasets.api.serializer_fields import GeoJSONField
 
@@ -118,7 +118,7 @@ class DatasetImagesSerializer(serializers.ModelSerializer):
     client_id = serializers.SerializerMethodField()
 
     def get_image_url(self, instance):
-        if ('request' in self.context):
+        if 'request' in self.context:
             image_urls = instance.image_urls(self.context['request'])
         else:
             image_urls = instance.image_urls()
@@ -179,6 +179,7 @@ class DatasetRetrieveSerializer(DatasetImagesMixin, serializers.Serializer):
     taxon_nuid = serializers.CharField(read_only=True)
 
     images = serializers.SerializerMethodField(read_only=True) #DatasetImagesSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField(read_only=True)
 
     user = LocalcosmosPublicUserSerializer(many=False, read_only=True, allow_null=True)
 
@@ -203,6 +204,22 @@ class DatasetRetrieveSerializer(DatasetImagesMixin, serializers.Serializer):
                 "geometry": json.loads(obj.coordinates.geojson),
             }
         return coordinates
+
+
+    def get_image_url(self, obj):
+        image_urls = None
+        image_url = obj.thumbnail
+            
+        if image_url:
+            if 'request' in self.context:
+                request = self.context['request']
+                host = request.get_host()
+                image_url = '{0}://{1}{2}'.format(request.scheme, host, image_url)
+            image_urls = {
+                '1x' : image_url
+            }
+            
+        return image_urls
     
 
 class DatasetSerializer(DatasetRetrieveSerializer):
@@ -473,7 +490,34 @@ class DatasetListSerializer(serializers.ModelSerializer):
             'is_valid', 'is_published')
 
 
+class DatasetFilterSerializer(serializers.Serializer):
 
+    allowed_ordering_columns = ['id', 'pk', 'name_uuid', 'taxon_latname', 'timestamp']
+
+    filters = serializers.JSONField(write_only=True, required=False)
+    order_by = serializers.CharField(write_only=True, required=False)
+
+    def validate_json_schema(self, value, schema):
+        try:
+            is_valid = jsonschema.validate(value, schema)
+        except jsonschema.exceptions.ValidationError as e:
+            raise serializers.ValidationError(e.message)
+        return value
+        
+    def validate_filters(self, value):
+        if value:
+            if not isinstance(value, list):
+                raise serializers.ValidationError('filters have to be a list')
+
+            return self.validate_json_schema(value, DATASET_FILTERS_SCHEMA)
+
+        return value
+
+    def validate_order_by(self, value):
+        if value not in self.allowed_ordering_columns:
+            raise serializers.ValidationError('ordering by {0} is not allowed. Allowed values are {1}'. format(value, ','.join(self.allowed_ordering_columns)))
+
+        return value
 
 
 class UserGeometrySerializer(serializers.ModelSerializer):

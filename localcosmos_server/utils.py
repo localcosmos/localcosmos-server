@@ -41,6 +41,25 @@ def datetime_from_cron(cron):
 
     return timestamp
 
+
+def cron_from_datetime(d):
+    delta = d.utcoffset()
+    days, seconds = delta.days, delta.seconds
+    hours = days * 24 + seconds // 3600
+
+    cron = {
+        'type': 'Temporal',
+        'cron': {
+            'type': 'timestamp',
+            'format': 'unixtime',
+            'timestamp': int(d.timestamp() * 1000), # JS milliseconds
+            'timezoneOffset': hours
+        }
+    }
+
+    return cron
+
+
 def api_filter_endpoints_hook(endpoints):
     # for (path, path_regex, method, callback) in endpoints:
     #      pass
