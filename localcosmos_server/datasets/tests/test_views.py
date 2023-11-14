@@ -8,23 +8,22 @@ from localcosmos_server.datasets.views import (ListDatasets, HumanInteractionVal
             DeleteDatasetImage, DownloadDatasetsCSV)
 
 
-from localcosmos_server.tests.mixins import (WithDataset, WithApp, WithUser, WithValidationRoutine, WithMedia,
+from localcosmos_server.tests.mixins import (WithObservationForm, WithApp, WithUser, WithValidationRoutine, WithMedia,
                                              CommonSetUp)
 
-from localcosmos_server.tests.common import test_settings
+from localcosmos_server.tests.common import test_settings, DataCreator
 
 from localcosmos_server.datasets.models import DatasetValidationRoutine
 
-import os
+import os, json
 
+class TestListDatasets(CommonSetUp, WithObservationForm, WithUser, WithApp, TestCase):
 
-
-@test_settings
-class TestListDatasets(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
-
+    @test_settings
     def test_get_context_data(self):
 
-        self.create_dataset()
+        observation_form = self.create_observation_form()
+        dataset = self.create_dataset(observation_form)
         
         url_kwargs = {
             'app_uid' : self.app.uid,
@@ -41,9 +40,14 @@ class TestListDatasets(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
         self.assertEqual(len(context['datasets']), 1)
 
 
-@test_settings
-class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, WithDataset, WithUser, WithApp,
-                                         TestCase):
+class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, WithObservationForm, WithUser,
+                                         WithApp, TestCase):
+    
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form()
+        self.dataset = self.create_dataset(self.observation_form)
 
     def get_url_kwargs(self):
         url_kwargs = {
@@ -55,8 +59,6 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
         return url_kwargs
     
     def get_view(self):
-
-        self.dataset = self.create_dataset()
 
         self.create_validation_routine()
 
@@ -74,7 +76,8 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
         view.request = request
 
         return view, request
-        
+    
+    @test_settings
     def test_dispatch(self):
 
         view, request = self.get_view()
@@ -87,6 +90,7 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
         self.assertEqual(view.validation_step, self.validation_step)
 
 
+    @test_settings
     def test_get_observation_form(self):
 
         view, request = self.get_view()
@@ -95,6 +99,7 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
         self.assertTrue(isinstance(observation_form, view.observation_form_class))
 
 
+    @test_settings
     def test_get_context_data(self):
 
         view, request = self.get_view()
@@ -112,6 +117,7 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
         self.assertEqual(context_data['observation_form'].__class__, view.observation_form_class)
 
 
+    @test_settings
     def test_form_valid(self):
 
         view, request = self.get_view()
@@ -140,6 +146,8 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
 
         self.assertEqual(response.status_code, 200)
 
+
+    @test_settings
     def test_get(self):
 
         view, request = self.get_view()
@@ -149,6 +157,8 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
 
         self.assertEqual(response.status_code, 200)
 
+
+    @test_settings
     def test_post(self):
 
         view, request = self.get_view()
@@ -164,8 +174,14 @@ class TestHumanInteractionValidationView(CommonSetUp, WithValidationRoutine, Wit
         self.assertEqual(response.status_code, 200)
 
 
-@test_settings
-class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
+
+class TestEditDataset(CommonSetUp, WithObservationForm, WithUser, WithApp, TestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form()
+        self.dataset = self.create_dataset(self.observation_form)
 
     def get_url_kwargs(self):
 
@@ -178,8 +194,6 @@ class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
         
 
     def get_view(self):
-
-        self.dataset = self.create_dataset()
 
         url_kwargs = self.get_url_kwargs()
         
@@ -192,7 +206,8 @@ class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
         view.request = request
 
         return view, request
-        
+    
+    @test_settings
     def test_dispatch(self):
 
         view, request = self.get_view()
@@ -205,6 +220,7 @@ class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+    @test_settings
     def test_get_form(self):
 
         view, request = self.get_view()
@@ -216,6 +232,7 @@ class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
         self.assertEqual(form.__class__, view.form_class)
         
 
+    @test_settings
     def test_get_context_data(self):
 
         view, request = self.get_view()
@@ -226,7 +243,7 @@ class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
 
         self.assertEqual(context_data['dataset'], self.dataset)
         
-
+    @test_settings
     def test_get(self):
 
         view, request = self.get_view()
@@ -237,26 +254,61 @@ class TestEditDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-@test_settings
-class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase):
+class TestAjaxSaveDataset(CommonSetUp, WithObservationForm, WithUser, WithApp, TestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form()
+        self.dataset = self.create_dataset(self.observation_form)
 
 
-    post_data = {
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_0" : "taxonomy.sources.col", # source
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_1" : "Picea abies changed", # latname
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_2" : "Linnaeus changed", # latname
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_3" : "1541aa08-7c23-4de0-9898-80d87e9227b4", # uuid
-        "7dfd9ff4-456e-426d-9772-df5824dab18f_4" : "006002009001005007002", # nuid
-        "98332a11-d56e-4a92-aeda-13e2f74453cb" : {"type": "Feature", "geometry": {"crs": {"type": "name", "properties": {"name": "EPSG:4326"}}, "type": "Point", "coordinates": [33.33, 44.44]}, "properties": {"accuracy": 1}},
-        "33cf1019-c8a1-4091-8c23-c95489c39094" : {"cron": {"type": "timestamp", "format": "unixtime", "timestamp": 1234567, "timezone_offset": 120}, "type": "Temporal"},
-        "e46c1a77-2070-49b4-a027-ca6b345cdca3" : "on", # BooleanField
-        "25efa219-c631-4701-98ed-d007f1acf3de" : "text", # CharField
-        "3f96ddc1-1d1b-4a52-a24c-b94d3e063923" : "choice 2",
-        "4b62fae2-0e6f-49e5-87a5-6a0756449273" : "2.2",
-        "b4b153d3-7b9b-4a32-b5b1-6ec3e95b6ec7" : "1.5",
-        "969d04d9-cbc2-45d1-83cd-1d3450fe8a35" : 3,
-        "1125a45a-6d38-4874-910d-b2dedcc7dedb" : ["mc1","mc2"],
-    }
+    def get_post_data(self):
+
+        post_data = {}
+
+        taxonomic_reference_uuid = self.observation_form.definition['taxonomicReference']
+        geographic_reference_uuid = self.observation_form.definition['geographicReference']
+        temporal_reference_uuid = self.observation_form.definition['temporalReference']
+
+        post_data['{0}_0'.format(taxonomic_reference_uuid)] = 'taxonomy.sources.col'
+        post_data['{0}_1'.format(taxonomic_reference_uuid)] = 'Picea abies changed'
+        post_data['{0}_2'.format(taxonomic_reference_uuid)] = 'Linnaeus changed'
+        post_data['{0}_3'.format(taxonomic_reference_uuid)] = '1541aa08-7c23-4de0-9898-80d87e9227b4'
+        post_data['{0}_4'.format(taxonomic_reference_uuid)] = '006002009001005007002'
+
+        post_data['{0}_0'.format(geographic_reference_uuid)] = 'Verbose area name'
+        post_data['{0}_1'.format(geographic_reference_uuid)] = json.dumps({
+            "type": "Feature",
+            "geometry": {
+                "crs": {
+                    "type": "name",
+                    "properties": {
+                        "name": "EPSG:4326"
+                    }
+                },
+                "type": "Point",
+                "coordinates": [33.33, 44.44]
+            },
+            "properties": {
+                "accuracy": 1
+            }
+        })
+
+        post_data[temporal_reference_uuid] = "2014-01-02T11:42Z"
+
+        # regular fields
+        post_data['ac4b0a7a-8fd0-439f-8874-0f146409d478'] = 'CharField content'
+        post_data['a3217a33-4c76-4d34-befd-d2f5195d1d66'] = 2.5
+        post_data['d451ca95-2324-413e-861d-71dd8aaa6e15'] = ['wahl 1', 'wahl 2']
+        post_data['35ed00ea-c364-455c-8765-c13ab9665307_0'] = 'Verbose point name'
+        post_data['35ed00ea-c364-455c-8765-c13ab9665307_1'] = post_data['{0}_1'.format(geographic_reference_uuid)]
+        post_data['95663afc-2f14-4087-9722-248cee51ba11'] = 'true' # BooleanField
+        post_data['1b35044c-2f26-4d92-85ff-b56a667a1741'] = '4'
+        post_data['a4af5d5f-17c8-45b7-9a31-9065aa9b183c'] = 1.234 # float
+        post_data['2187e7d8-be9f-449b-b07d-aac768e8a64a'] = 'wahl 1' # choice
+
+        return post_data
 
     def get_url_kwargs(self):
         
@@ -269,8 +321,6 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
 
     def get_view(self):
 
-        self.dataset = self.create_full_dataset()
-
         url_kwargs = self.get_url_kwargs()
         
         request = self.factory.get(reverse('datasets:save_dataset', kwargs=url_kwargs))
@@ -279,7 +329,7 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
         request.session = self.client.session
         request.META['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
         request.method = 'POST'
-        request.POST = self.post_data
+        request.POST = self.get_post_data()
 
         view = AjaxSaveDataset()
         view.request = request
@@ -287,7 +337,7 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
 
         return view, request
         
-
+    @test_settings
     def test_dispatch(self):
 
         view, request = self.get_view()
@@ -298,6 +348,7 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(view.dataset, self.dataset)
 
+    @test_settings
     def test_get_context_data(self):
 
         view, request = self.get_view()
@@ -308,6 +359,7 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
         self.assertEqual(context_data['dataset'], self.dataset)
         self.assertEqual(context_data['form'].__class__, view.form_class)
 
+    @test_settings
     def test_get_form(self):
 
         view, request = self.get_view()
@@ -318,6 +370,7 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
         self.assertEqual(form.__class__, view.form_class)
 
 
+    @test_settings
     def test_form_valid(self):
 
         view, request = self.get_view()
@@ -325,7 +378,8 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
 
         old_data = view.dataset.data.copy()
 
-        form = view.form_class(view.request.app, view.dataset.data, data=self.post_data)
+        post_data = self.get_post_data()
+        form = view.form_class(view.request.app, view.dataset, data=post_data)
 
         form.is_valid()
         self.assertEqual(form.errors, {})
@@ -335,88 +389,103 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
 
         self.dataset.refresh_from_db()
 
+        taxonomic_reference_uuid = self.observation_form.definition['taxonomicReference']
+        geographic_reference_uuid = self.observation_form.definition['geographicReference']
+        temporal_reference_uuid = self.observation_form.definition['temporalReference']
+
         # check all submitted values
-        for key, value in self.post_data.items():
+        for key, value in post_data.items():
 
             if '_' in key:
 
-                taxon_key = key.split('_')[0]
+                field_uuid = key.split('_')[0]
                 
-                dataset_value = self.dataset.data['dataset']['reported_values'][taxon_key]
+                dataset_value = self.dataset.data[field_uuid]
 
-                if key == "7dfd9ff4-456e-426d-9772-df5824dab18f_0":
-                    # taxon
-                    self.assertEqual(dataset_value['taxon_source'], value)
+                if field_uuid == taxonomic_reference_uuid:
 
-                elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_1":
-                    # taxon
-                    self.assertEqual(dataset_value['taxon_latname'], value)
-                    
-                elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_2":
-                    # taxon
-                    self.assertEqual(dataset_value['taxon_author'], value)
+                    if key == '{0}_0'.format(taxonomic_reference_uuid):
+                        # taxon
+                        self.assertEqual(dataset_value['taxonSource'], value)
 
-                elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_3":
-                    # taxon
-                    self.assertEqual(dataset_value['name_uuid'], value)
+                    elif key == '{0}_1'.format(taxonomic_reference_uuid):
+                        # taxon
+                        self.assertEqual(dataset_value['taxonLatname'], value)
+                        
+                    elif key == '{0}_2'.format(taxonomic_reference_uuid):
+                        # taxon
+                        self.assertEqual(dataset_value['taxonAuthor'], value)
 
-                elif key == "7dfd9ff4-456e-426d-9772-df5824dab18f_4":
-                    # taxon
-                    self.assertEqual(dataset_value['taxon_nuid'], value)
+                    elif key == '{0}_3'.format(taxonomic_reference_uuid):
+                        # taxon
+                        self.assertEqual(dataset_value['nameUuid'], value)
+
+                    elif key == '{0}_4'.format(taxonomic_reference_uuid):
+                        # taxon
+                        self.assertEqual(dataset_value['taxonNuid'], value)
+
+                elif field_uuid == geographic_reference_uuid:
+
+                    if key == '{0}_1'.format(geographic_reference_uuid):
+                        geojson = json.loads(value)
+                        self.assertEqual(dataset_value, geojson)
+
+                elif key == '35ed00ea-c364-455c-8765-c13ab9665307_1':
+                    self.assertEqual(dataset_value, json.loads(value))
 
             else:
 
-                dataset_value = self.dataset.data['dataset']['reported_values'][key]
+                dataset_value = self.dataset.data[key]
                 
-                if key == "98332a11-d56e-4a92-aeda-13e2f74453cb":
-                    # location, ignored
-                    self.assertEqual(dataset_value, old_data['dataset']['reported_values'][key])
 
-                elif key == "33cf1019-c8a1-4091-8c23-c95489c39094":
+                if key == temporal_reference_uuid:
                     # time, ignored
-                    self.assertEqual(dataset_value, old_data['dataset']['reported_values'][key])
+                    self.assertEqual(dataset_value, old_data[key])
 
-                elif key == "e46c1a77-2070-49b4-a027-ca6b345cdca3":
+                elif key == '95663afc-2f14-4087-9722-248cee51ba11':
                     # bool
                     self.assertTrue(dataset_value)
 
-                elif key == "25efa219-c631-4701-98ed-d007f1acf3de":
+                elif key == 'ac4b0a7a-8fd0-439f-8874-0f146409d478':
                     # charfield
                     self.assertEqual(dataset_value, value)
 
-                elif key == "3f96ddc1-1d1b-4a52-a24c-b94d3e063923":
+                elif key == '2187e7d8-be9f-449b-b07d-aac768e8a64a':
                     # choice
                     self.assertEqual(dataset_value, value)
 
-                elif key == "4b62fae2-0e6f-49e5-87a5-6a0756449273":
+                elif key == 'a3217a33-4c76-4d34-befd-d2f5195d1d66':
                     # decimal
                     self.assertEqual(dataset_value, float(value))
 
-                elif key == "b4b153d3-7b9b-4a32-b5b1-6ec3e95b6ec7":
+                elif key == 'a4af5d5f-17c8-45b7-9a31-9065aa9b183c':
                     # float
                     self.assertEqual(dataset_value, float(value))
                 
-                elif key == "969d04d9-cbc2-45d1-83cd-1d3450fe8a35":
+                elif key == '1b35044c-2f26-4d92-85ff-b56a667a1741':
                     # int
                     self.assertEqual(dataset_value, int(value))
 
-                elif key == "1125a45a-6d38-4874-910d-b2dedcc7dedb":
+                elif key == 'd451ca95-2324-413e-861d-71dd8aaa6e15':
                     # multiple choice
                     self.assertEqual(dataset_value, value)
+                
 
-
+    @test_settings
     def test_post(self):
 
         view, request = self.get_view()
 
         url_kwargs = self.get_url_kwargs()
 
-        response = self.client.post(reverse('datasets:save_dataset', kwargs=url_kwargs), self.post_data,
+        post_data = self.get_post_data()
+        response = self.client.post(reverse('datasets:save_dataset', kwargs=url_kwargs), post_data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         self.assertEqual(response.status_code, 200)
 
 
+    @test_settings
     def test_loggedout(self):
 
         view, request = self.get_view()
@@ -425,26 +494,35 @@ class TestAjaxSaveDataset(CommonSetUp, WithDataset, WithUser, WithApp, TestCase)
 
         self.client.logout()
 
-        response = self.client.post(reverse('datasets:save_dataset', kwargs=url_kwargs), self.post_data,
+        post_data = self.get_post_data()
+        response = self.client.post(reverse('datasets:save_dataset', kwargs=url_kwargs), post_data,
                                     HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         self.assertEqual(response.status_code, 302)
 
 
+    @test_settings
     def test_bad_request_no_ajax(self):
 
         view, request = self.get_view()
         url_kwargs = self.get_url_kwargs()
 
-        response = self.client.post(reverse('datasets:save_dataset', kwargs=url_kwargs), self.post_data)
+        post_data = self.get_post_data()
+        response = self.client.post(reverse('datasets:save_dataset', kwargs=url_kwargs), post_data)
 
         self.assertEqual(response.status_code, 400)
         
 
-@test_settings
-class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, WithMedia, TestCase):
 
-    picture_field_uuid = "74763c0c-ea70-4280-940f-5ddb41d74747"
+class TestAjaxLoadFormFieldImages(CommonSetUp, WithObservationForm, WithUser, WithApp, WithMedia, TestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form()
+        self.dataset = self.create_dataset(self.observation_form)
+
+        self.picture_field_uuid = self.get_image_field_uuid(self.observation_form)
 
     def get_url_kwargs(self):
         
@@ -457,8 +535,7 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
 
     def get_view(self):
 
-        self.dataset = self.create_full_dataset()
-        self.dataset_image = self.create_dataset_image(self.dataset, self.picture_field_uuid)
+        self.dataset_image = self.create_dataset_image(self.dataset)
 
         url_kwargs = self.get_url_kwargs()
 
@@ -478,7 +555,7 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
 
         return view, request
         
-
+    @test_settings
     def test_dispatch(self):
 
         view, request = self.get_view()
@@ -490,7 +567,7 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
         self.assertEqual(view.dataset, self.dataset)
         self.assertEqual(view.field_uuid, self.picture_field_uuid)
         
-
+    @test_settings
     def test_get_context_data(self):
         view, request = self.get_view()
         view.dataset = self.dataset
@@ -500,6 +577,7 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
         self.assertEqual(context['images'].first(), self.dataset_image)
 
 
+    @test_settings
     def test_get(self):
 
         view, request = self.get_view()
@@ -516,6 +594,7 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
         self.assertEqual(response.status_code, 200)
 
 
+    @test_settings
     def test_loggedout(self):
 
         view, request = self.get_view()
@@ -534,6 +613,7 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
         self.assertEqual(response.status_code, 302)
 
 
+    @test_settings
     def test_bad_request_no_ajax(self):
 
         view, request = self.get_view()
@@ -549,11 +629,11 @@ class TestAjaxLoadFormFieldImages(CommonSetUp, WithDataset, WithUser, WithApp, W
         self.assertEqual(response.status_code, 400)
         
         
-@test_settings
 class TestLargeModalImage(WithApp, TestCase):
 
     url_name = 'datasets:large_modal_image'
 
+    @test_settings
     def test_get_context_data(self):
 
         self.factory = RequestFactory()
@@ -577,12 +657,13 @@ class TestLargeModalImage(WithApp, TestCase):
         self.assertEqual(context['image_url'], get_data['image_url'])
 
         
-@test_settings
-class TestShowDatasetValidationRoutine(CommonSetUp, WithDataset, WithUser, WithApp, WithMedia,
+
+class TestShowDatasetValidationRoutine(CommonSetUp, WithObservationForm, WithUser, WithApp, WithMedia,
                                        WithValidationRoutine, TestCase):
 
     url_name = 'datasets:dataset_validation_routine'
 
+    @test_settings
     def test_get_context_data(self):
 
         self.create_validation_routine()
@@ -606,9 +687,15 @@ class TestShowDatasetValidationRoutine(CommonSetUp, WithDataset, WithUser, WithA
         self.assertEqual(len(context['available_validation_classes']), 1)
 
 
-@test_settings
-class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser, WithApp, WithValidationRoutine,
-                                             TestCase):
+
+class TestManageDatasetValidationRoutineStep(CommonSetUp, WithObservationForm, WithUser, WithApp,
+                                             WithValidationRoutine, TestCase):
+    
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form()
+        self.dataset = self.create_dataset(self.observation_form)
 
 
     post_data = {
@@ -650,8 +737,6 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
     
 
     def get_view(self, url_name, url_kwargs, get_data={}):
-
-        self.dataset = self.create_full_dataset()
         
         request = self.factory.get(reverse(url_name, kwargs=url_kwargs), get_data)
         request.user = self.user
@@ -666,6 +751,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         return view, request
         
 
+    @test_settings
     def test_dispatch_add(self):
 
         url_kwargs = self.get_url_kwargs()        
@@ -677,6 +763,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(response.status_code, 200)
 
 
+    @test_settings
     def test_dispatch_manage(self):
 
         self.create_validation_routine()
@@ -694,6 +781,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(view.validation_step, validation_step)
 
 
+    @test_settings
     def test_get_form_kwargs_add(self):
 
         url_kwargs = self.get_url_kwargs()        
@@ -706,6 +794,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(form_kwargs['instance'], None)
         
 
+    @test_settings
     def test_get_form_kwargs_manage(self):
 
         self.create_validation_routine()
@@ -723,6 +812,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(form_kwargs['instance'], validation_step)
         
 
+    @test_settings
     def test_get_form(self):
 
         url_kwargs = self.get_url_kwargs()
@@ -739,6 +829,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(form.validation_routine, validation_routine)
 
 
+    @test_settings
     def test_get_context_data(self):
 
         self.create_validation_routine()
@@ -757,6 +848,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(context['validation_step'], validation_step)
         
 
+    @test_settings
     def test_get_initial(self):
 
         self.create_validation_routine()
@@ -776,6 +868,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(initial['position'], validation_step.position)
 
 
+    @test_settings
     def test_get_manage(self):
 
         self.create_validation_routine()
@@ -790,6 +883,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(response.status_code, 200)
 
 
+    @test_settings
     def test_get_add(self):
 
         self.create_validation_routine()
@@ -804,6 +898,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(response.status_code, 200)
         
 
+    @test_settings
     def test_form_valid_add(self):
 
         url_kwargs = self.get_url_kwargs()
@@ -831,6 +926,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(response.context_data['form'].__class__, view.form_class)
 
 
+    @test_settings
     def test_form_valid_manage(self):
 
         self.create_validation_routine()
@@ -860,6 +956,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(response.context_data['form'].__class__, view.form_class)
         
 
+    @test_settings
     def test_get_no_ajax_bad_request(self):
 
         self.create_validation_routine()
@@ -874,6 +971,7 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         self.assertEqual(response.status_code, 400)
 
 
+    @test_settings
     def test_post(self):
 
         url_kwargs = self.get_url_kwargs()
@@ -890,12 +988,16 @@ class TestManageDatasetValidationRoutineStep(CommonSetUp, WithDataset, WithUser,
         
 
 
-@test_settings
-class TestDownloadDatasetsCSV(CommonSetUp, WithDataset, WithUser, WithApp, WithMedia, TestCase):
+class TestDownloadDatasetsCSV(CommonSetUp, WithObservationForm, WithUser, WithApp, WithMedia, TestCase):
 
+    def setUp(self):
+        super().setUp()
+
+        self.observation_form = self.create_observation_form()
+        self.dataset = self.create_dataset(self.observation_form)
+
+    @test_settings
     def test_get(self):
-
-        dataset = self.create_dataset()
 
         url_kwargs = {
             'app_uid' : self.app.uid,

@@ -605,7 +605,7 @@ class TestDatasetImages(WithObservationForm, WithApp, WithUser, WithMedia, TestC
         dataset = self.create_dataset(observation_form=observation_form)
         dataset_image = self.create_dataset_image(dataset, image_path=LARGE_TEST_IMAGE_PATH)
 
-        image_urls = dataset_image.image_urls
+        image_urls = dataset_image.image_urls()
 
         for size_name, image_size in IMAGE_SIZES['all'].items():
             self.assertIn(size_name, image_urls)

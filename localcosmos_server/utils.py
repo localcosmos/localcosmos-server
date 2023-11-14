@@ -45,7 +45,7 @@ def datetime_from_cron(cron):
 def cron_from_datetime(d):
     delta = d.utcoffset()
     days, seconds = delta.days, delta.seconds
-    hours = days * 24 + seconds // 3600
+    minutes = (seconds % 3600) // 60
 
     cron = {
         'type': 'Temporal',
@@ -53,7 +53,7 @@ def cron_from_datetime(d):
             'type': 'timestamp',
             'format': 'unixtime',
             'timestamp': int(d.timestamp() * 1000), # JS milliseconds
-            'timezoneOffset': hours
+            'timezoneOffset': minutes
         }
     }
 

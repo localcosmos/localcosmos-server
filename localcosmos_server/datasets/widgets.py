@@ -1,5 +1,6 @@
 from django.contrib.gis import forms
 from django.forms.widgets import *
+from django.utils.translation import gettext_lazy as _
 
 from localcosmos_server.taxonomy.widgets import TaxonAutocompleteWidget as BackboneTaxonAutocompleteWidget
 
@@ -45,7 +46,7 @@ class JSONWidget(forms.MultiWidget):
         """
         Return a value as it should appear when rendered in a template.
         """
-        if value:
+        if value and len(value) == 2:
             return [value[0], json.dumps(value[1])]
         
         return None
@@ -88,6 +89,14 @@ class MobilePositionInput(JSONWidget):
 
 class PointOrAreaInput(JSONWidget):
     template_name = 'datasets/widgets/point_or_area_input.html'
+
+    def verbose_value(self, value):
+        return _('Point or Area')
+    
+    def value_to_json(self, value):
+        if type(value) == str:
+            return json.loads(value)
+        return value
 
         
 class SelectDateTimeWidget(forms.DateTimeInput):
