@@ -129,7 +129,7 @@ class LazyTaxonBase:
     def as_typeahead_choice(self, label=None):
 
         if label is None:
-            label = self.taxon_latname
+            label = '{0} {1}'.format(self.taxon_latname, self.taxon_author or '')
         
         obj = {
             'label': label,
