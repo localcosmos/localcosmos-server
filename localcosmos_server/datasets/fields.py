@@ -87,3 +87,5 @@ class GeoJSONField(JSONField):
 class PictureField(forms.ImageField):
 
     widget = CameraAndAlbumWidget
+
+

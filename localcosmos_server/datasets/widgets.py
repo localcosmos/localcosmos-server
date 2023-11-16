@@ -2,7 +2,8 @@ from django.contrib.gis import forms
 from django.forms.widgets import *
 from django.utils.translation import gettext_lazy as _
 
-from localcosmos_server.taxonomy.widgets import TaxonAutocompleteWidget as BackboneTaxonAutocompleteWidget
+from localcosmos_server.taxonomy.widgets import (TaxonAutocompleteWidget as BackboneTaxonAutocompleteWidget,
+                                                 SelectTaxonWidget)
 
 import json
 
@@ -105,4 +106,3 @@ class SelectDateTimeWidget(forms.DateTimeInput):
 
 class CameraAndAlbumWidget(forms.FileInput):
     template_name = 'datasets/widgets/picture_widget.html'
-    

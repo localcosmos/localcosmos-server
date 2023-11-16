@@ -3,6 +3,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
+from localcosmos_server.taxonomy.widgets import (get_choices_from_taxonomic_restrictions,
+                                                 get_taxon_map_from_taxonomic_restrictions)
 from localcosmos_server.utils import datetime_from_cron
 
 from .models import DATASET_VALIDATION_CHOICES
@@ -111,6 +113,16 @@ class ObservationForm(forms.Form):
                 widget_kwargs['taxon_search_url'] = self.taxon_search_url
                 # set to a bogus value to not display taxonomic source selection
                 widget_kwargs['fixed_taxon_source'] = 'apptaxa'
+
+            if field_class_name == 'SelectTaxonField':
+                taxonomic_restrictions = form_field['taxonomicRestrictions']
+                choices = get_choices_from_taxonomic_restrictions(taxonomic_restrictions)
+                taxon_map = get_taxon_map_from_taxonomic_restrictions(taxonomic_restrictions)
+                widget_kwargs['choices'] = choices
+                widget_kwargs['taxon_map'] = taxon_map
+                field_kwargs['choices'] = choices
+                field_kwargs['taxon_map'] = taxon_map
+
 
             # lock certain fields
             if field_class_name in self.locked_field_classes or form_field['role'] in self.locked_field_roles:

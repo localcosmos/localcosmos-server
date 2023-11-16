@@ -3,12 +3,19 @@ from django.utils.translation import gettext_lazy as _
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
-from localcosmos_server.taxonomy.widgets import (TaxonAutocompleteWidget)
+from localcosmos_server.taxonomy.widgets import (TaxonAutocompleteWidget, SelectTaxonWidget, ListToLazyTaxon)
 
 '''
     A field that returns a LazyTaxon instance
 '''
-class TaxonField(forms.MultiValueField):
+class LazyTaxonField(ListToLazyTaxon):
+
+    def compress(self, data_list):
+        return self.get_lazy_taxon(data_list)
+    
+
+
+class TaxonField(LazyTaxonField, forms.MultiValueField):
 
     widget = TaxonAutocompleteWidget
     lazy_taxon_class = LazyAppTaxon
@@ -51,16 +58,9 @@ class TaxonField(forms.MultiValueField):
 
     def get_lazy_taxon(self, data_list):
 
-        if len(data_list) >= 4:
+        taxon_kwargs = self.get_taxon_kwargs(data_list)
 
-            taxon_kwargs = {
-                'taxon_source' : data_list[0],
-                'taxon_latname' : data_list[1],
-                'taxon_author' : data_list[2],
-                'name_uuid' : data_list[3],
-                'taxon_nuid' : data_list[4],
-            }
-
+        if taxon_kwargs:
             if len(data_list) == 6:
                 taxon_kwargs['taxon_include_descendants'] = data_list[5]
 
@@ -71,9 +71,32 @@ class TaxonField(forms.MultiValueField):
         return None
 
 
-    def compress(self, data_list):
-        return self.get_lazy_taxon(data_list)
 
+class SelectTaxonField(LazyTaxonField, forms.MultiValueField):
+    
+    widget = SelectTaxonWidget
+    lazy_taxon_class = LazyAppTaxon
 
-class SelectTaxonField(forms.ChoiceField):
-    pass
+    def __init__(self, *args, **kwargs):
+
+        choices = kwargs.pop('choices')
+        taxon_map = kwargs.pop('taxon_map')
+
+        widget_kwargs = {
+            'choices' : choices,
+            'taxon_map': taxon_map,
+            'attrs' : kwargs.pop('widget_attrs', {}),
+        }
+
+        self.widget = self.widget(**widget_kwargs)
+        
+        fields = [
+            forms.CharField(), # taxon_source
+            forms.CharField(), # taxon_latname
+            forms.CharField(required=False), # taxon_author
+            forms.CharField(), # name_uuid
+            forms.CharField(), # taxon_nuid
+        ]
+
+        super().__init__(fields, *args, require_all_fields=True, **kwargs)
+

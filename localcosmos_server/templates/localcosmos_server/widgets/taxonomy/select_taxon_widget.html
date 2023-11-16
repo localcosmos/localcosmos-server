@@ -1,0 +1,62 @@
+{% load i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block widgets %}
+	{% spaceless %}
+		{% for widget in widget.subwidgets %}
+			{% include widget.template_name %}
+		{% endfor %}
+	{% endspaceless %}
+	<div class="form-row mt-2">
+		<div class="col-12 col-md-6 col-lg-4">
+			<label for="validationTooltip04">State</label>
+			<select id="{{ widget.attrs.id }}_select" class="custom-select" required>
+				{% for choice in choices %}
+					<option value="{{ choice.0 }}">{{ choice.1 }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	<script type="text/javascript">
+		(function(){
+			const taxonMap = JSON.parse('{{ taxon_map|safe }}');
+			const select = document.getElementById('{{ widget.attrs.id }}_select');
+
+			const taxonSourceInput = document.getElementById('{{ widget.attrs.id }}_0');
+			const taxonLatnameInput = document.getElementById('{{ widget.attrs.id }}_1');
+			const taxonAuthorInput = document.getElementById('{{ widget.attrs.id }}_2');
+			const nameUuidInput = document.getElementById('{{ widget.attrs.id }}_3');
+			const taxonNuidInput = document.getElementById('{{ widget.attrs.id }}_4');
+
+			const setTaxon = (taxon) => {
+				taxonSourceInput.value = taxon['taxon_source'];
+				taxonLatnameInput.value = taxon['taxon_latname'];
+				taxonAuthorInput.value = taxon['taxon_author'];
+				nameUuidInput.value = taxon['name_uuid'];
+				taxonNuidInput.value = taxon['taxon_nuid'];
+			};
+
+			select.addEventListener('change', function(event){
+				const nameUuid = event.target.value;
+				const taxon = taxonMap[nameUuid];
+				setTaxon(taxon);
+			});
+
+			{% if widget.value %}
+				const initialChoiceNameUuid = '{{ widget.value.name_uuid }}';
+				select.value = initialChoiceNameUuid;
+			{% else %}
+				const initialChoiceNameUuid = '{{ choices.0.0 }}';
+			{% endif %}
+
+			const initialTaxon = taxonMap[initialChoiceNameUuid];
+			setTaxon(initialTaxon);
+
+			
+		})();
+	</script>
+{% endblock %}
