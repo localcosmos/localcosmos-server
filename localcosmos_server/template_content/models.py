@@ -984,7 +984,8 @@ class LocalizedNavigationEntry(models.Model):
             url = self.url
 
         serialized_entry = {
-            'link_name': self.link_name,
+            'linkName': self.link_name,
+            'link_name': self.link_name, # backwards compatibility, deprecate it in the future
             'url': url,
             'children': [],
         }

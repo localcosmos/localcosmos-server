@@ -11,8 +11,6 @@ urlpatterns = [
     path('log-out/', auth_views.LogoutView.as_view(extra_context={'base_template': 'base.html'}), name='log_out'),
     path('loggedout/', views.LoggedOut.as_view(extra_context={'base_template': 'base.html'}), name='loggedout'),
 
-    
-
     path('password-change/', auth_views.PasswordChangeView.as_view(
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_change_form.html'), name='password_change'),

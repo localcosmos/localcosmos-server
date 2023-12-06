@@ -492,7 +492,8 @@ class DatasetListSerializer(serializers.ModelSerializer):
 
 class DatasetFilterSerializer(serializers.Serializer):
 
-    allowed_ordering_columns = ['id', 'pk', 'name_uuid', 'taxon_latname', 'timestamp']
+    allowed_ordering_columns = ['id', 'pk', 'name_uuid', 'taxon_latname', 'timestamp',
+                                '-timestamp', '-pk']
 
     filters = serializers.JSONField(write_only=True, required=False)
     order_by = serializers.CharField(write_only=True, required=False)
