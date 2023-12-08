@@ -16,7 +16,13 @@ def send_registration_confirmation_email(user, app_uuid):
     app = App.objects.get(uuid=app_uuid)
 
     legal_notice = app.get_legal_notice()
+    frontend = app.get_frontend()
 
+    # backwards compatibility
+    support_email = None
+    if 'configuration' in frontend['userContent'] and 'supportEmail' in frontend['userContent']['configuration']:
+        support_email = frontend['userContent']['configuration']['supportEmail']
+    
     CLEANR = re.compile('<.*?>') 
 
     legal_notice_plain_text = re.sub(CLEANR, '', legal_notice)
@@ -37,6 +43,7 @@ def send_registration_confirmation_email(user, app_uuid):
         'site' : Site.objects.get_current(),
         'legal_notice_url' : legal_notice_url,
         'privacy_statement_url' : privacy_statement_url,
+        'support_email': support_email,
     }
 
     text_message = render_to_string('email/registration_confirmation.txt', ctx)

@@ -410,11 +410,9 @@ class App(models.Model):
 
 
     # privacyPolicy and legalNotice are required
-    def get_legal_frontend_text(self, key):
-
-        text = ''
-
+    def get_frontend(self):
         app_state = None
+        frontend = None
 
         if self.published_version_path:
             app_state = 'published'
@@ -432,11 +430,19 @@ class App(models.Model):
 
             with open(frontend_path, 'r') as frontend_file:
                 frontend = json.loads(frontend_file.read())
+        
+        return frontend
+        
 
+    def get_legal_frontend_text(self, key):
+
+        text = ''
+
+        frontend = self.get_frontend()
+        if frontend:
             text = frontend['userContent']['texts'][key]
         
         return text
-
 
 
     def get_legal_notice(self):

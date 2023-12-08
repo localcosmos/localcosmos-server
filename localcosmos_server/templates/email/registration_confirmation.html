@@ -332,9 +332,13 @@
 				</table>
 				<div class="footer">
 					<table width="100%">
-						<tr>
-							<td class="aligncenter content-block">{% trans 'Questions?' %} Email <a href="mailto:{{ legal_notice.email }}">{{ legal_notice.email }}</a></td>
-						</tr>
+						{% if support_email %}
+							<tr>
+								<td class="aligncenter content-block">
+									{% trans 'Questions?' %} E-Mail <a href="mailto:{{ support_email }}">{{ support_email }}</a>
+								</td>
+							</tr>
+						{% endif %}
 						<tr>
 							<td class="aligncenter content-block">
 								<a href="https://{{ site.domain }}{{ legal_notice_url }}" target="_blank">{% trans 'Legal notice' %}</a> &nbsp; &nbsp;

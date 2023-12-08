@@ -62,7 +62,9 @@
                 "imageUrl": null
             }
         },
-        "configuration": {}
+        "configuration": {
+            "supportEmail": "test@support.com"
+        }
     },
     "isMulticontent": false
 }
