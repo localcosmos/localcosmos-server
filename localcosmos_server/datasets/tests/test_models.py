@@ -623,6 +623,61 @@ class TestDatasetImages(WithObservationForm, WithApp, WithUser, WithMedia, TestC
         self.assertEqual(image_text, 'Picea abies')
 
 
+    @test_settings
+    def test_auto_delete_image_file_on_delete(self):
+
+        observation_form=self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset_image = self.create_dataset_image(dataset, image_path=LARGE_TEST_IMAGE_PATH)
+
+        image_text = str(dataset_image)
+
+        self.assertEqual(image_text, 'Picea abies')
+
+        image_urls = dataset_image.image_urls()
+
+        image_path = dataset_image.image.path
+        self.assertTrue(os.path.isfile(image_path))
+
+        thumbnails_folder = dataset_image.resized_folder
+        self.assertTrue(os.path.isdir(thumbnails_folder))
+
+        dataset_image.delete()
+        self.assertFalse(os.path.isfile(image_path))
+        self.assertFalse(os.path.isdir(thumbnails_folder))
+
+    
+    @test_settings
+    def test_auto_delete_image_file_on_change(self):
+        
+        observation_form=self.create_observation_form()
+        dataset = self.create_dataset(observation_form=observation_form)
+        dataset_image = self.create_dataset_image(dataset, image_path=LARGE_TEST_IMAGE_PATH)
+
+        folder_path = os.path.dirname(dataset_image.image.path)
+        thumbnails_folder = os.path.join(folder_path, dataset_image.resized_folder_name)
+        self.assertFalse(os.path.isdir(thumbnails_folder))
+        thumbnails_folder = dataset_image.resized_folder
+
+        image_path = dataset_image.image.path
+
+        self.assertTrue(os.path.isfile(image_path))
+
+        image_urls = dataset_image.image_urls()
+        self.assertTrue(os.path.isdir(thumbnails_folder))
+
+        # change the image
+        image_file = SimpleUploadedFile(name='new_test_image.jpg', content=open(TEST_IMAGE_PATH, 'rb').read(),
+                                   content_type='image/jpeg')
+        
+        dataset_image.image = image_file
+        dataset_image.save()
+
+        self.assertFalse(os.path.isfile(image_path))
+        self.assertFalse(os.path.isdir(thumbnails_folder))
+
+
+
 class TestUserGeometry(WithUser, TestCase):
 
     @test_settings

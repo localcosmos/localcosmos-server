@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import connection
+from django.dispatch import receiver
 
 from django.contrib.gis.db.models.functions import Centroid
 
@@ -22,7 +23,7 @@ from djangorestframework_camel_case.util import underscoreize
 
 from PIL import Image, ImageOps
 
-import uuid, json, os
+import uuid, json, os, shutil
 
 from .json_schemas import OBSERVATION_FORM_SCHEMA
 
@@ -539,7 +540,7 @@ class DatasetImages(models.Model):
                 image_url = self.prepend_host(request, image_url)
             image_urls[size_name] = image_url
 
-        return image_urls
+        return image_urls 
 
 
     def __str__(self):
@@ -547,8 +548,49 @@ class DatasetImages(models.Model):
             return self.dataset.taxon_latname
         
         return 'Dataset Image #{0}'.format(self.id)
-    
+
+
+@receiver(models.signals.post_delete, sender=DatasetImages)
+def auto_delete_image_file_on_delete(sender, instance, **kwargs):
+    '''
+    Deletes file from filesystem
+    when corresponding `DatasetImages` object is deleted.
+    '''
+    if instance.image:
+        resized_images_folder = instance.resized_folder
+        if os.path.isdir(resized_images_folder):
+            shutil.rmtree(resized_images_folder)
+
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
         
+
+@receiver(models.signals.pre_save, sender=DatasetImages)
+def auto_delete_image_file_on_change(sender, instance, **kwargs):
+    '''
+    Deletes old file from filesystem
+    when corresponding `MediaFile` object is updated
+    with new file.
+    '''
+    if not instance.pk:
+        return False
+
+    try:
+        old_file = DatasetImages.objects.get(pk=instance.pk).image
+    except DatasetImages.DoesNotExist:
+        return False
+
+    new_file = instance.image
+    if not old_file == new_file:
+        if os.path.isfile(old_file.path):
+            os.remove(old_file.path)
+
+        folder_path = os.path.dirname(old_file.path)
+        old_resized_images_folder = os.path.join(folder_path, instance.resized_folder_name)
+        if os.path.isdir(old_resized_images_folder):
+            shutil.rmtree(old_resized_images_folder)
+
 '''
     USER Geometry
     max 3 per user

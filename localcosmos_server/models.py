@@ -151,9 +151,14 @@ class LocalcosmosUser(ServerContentImageMixin, AbstractUser):
     # there is a bug in django for Dataset.user.on_delete=models.SET_NULL (django 3.1)
     # anonymize the datasets here instead of letting django call SET_NULL
     def anonymize_datasets(self):
-        from localcosmos_server.datasets.models import Dataset
+        from localcosmos_server.datasets.models import Dataset, DatasetImages
         datasets = Dataset.objects.filter(user=self)
         for dataset in datasets:
+
+            # delete all images of this dataset, also remove it from disk
+            # this is due to legal implications
+            images = DatasetImages.objects.filter(dataset=dataset)
+
             dataset.user = None
 
         Dataset.objects.bulk_update(datasets, ['user'])
