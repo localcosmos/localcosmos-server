@@ -166,16 +166,16 @@ msgstr "Noch keine Nutzer."
 
 #: datasets/api/serializers.py:69
 msgid "Invalid observation form given."
-msgstr ""
+msgstr "Ungültiges Beobachtungsformular angegeben"
 
 #: datasets/api/serializers.py:92
 #, python-brace-format
 msgid "Object with uuid={value} does not exist."
-msgstr ""
+msgstr "Objekt mit uuid={value} existiert nicht."
 
 #: datasets/api/serializers.py:93
 msgid "Invalid value."
-msgstr ""
+msgstr "Ungültiger Wert"
 
 #: datasets/api/serializers.py:237
 msgid "Observation Form does not exist"
@@ -184,32 +184,32 @@ msgstr "Das Beobachtungsformular existiert nicht"
 #: datasets/api/serializers.py:259
 #, python-format
 msgid "Invalid field uuid: %(field_uuid)s"
-msgstr ""
+msgstr "Ungültige field uuid: %(field_uuid)s"
 
 #: datasets/api/serializers.py:278
 #, python-format
 msgid "The field %(field_name)s is required."
-msgstr ""
+msgstr "Das Feld %(field_name)s ist erforderlich."
 
 #: datasets/api/serializers.py:282
 #, python-format
 msgid "Invalid datatype for %(field_name)s."
-msgstr ""
+msgstr "Ungültiger Datentyp für %(field_name)s."
 
 #: datasets/api/serializers.py:323
 #, python-format
 msgid "Minimum value for %(field_name)s is %(min)s."
-msgstr ""
+msgstr "Minimaler Wert für %(field_name)s ist %(min)s."
 
 #: datasets/api/serializers.py:330
 #, python-format
 msgid "Maximum value for %(field_name)s is %(max)s."
-msgstr ""
+msgstr "Maximaler Wert für %(field_name)s ist %(max)s."
 
 #: datasets/api/serializers.py:380
 #, python-format
 msgid "Invalid choice for %(field_name)s: %(value)s"
-msgstr ""
+msgstr "Ungültige Auswahl für %(field_name)s: %(value)s"
 
 #: datasets/forms.py:56
 msgid "This step already exists in your Validation Routine"
@@ -435,11 +435,11 @@ msgstr "In deiner App öffnet dieser Button das Fotoalbum."
 
 #: datasets/templates/datasets/widgets/point_or_area_input.html:30
 msgid "Point"
-msgstr ""
+msgstr "Punkt"
 
 #: datasets/templates/datasets/widgets/point_or_area_input.html:31
 msgid "Area"
-msgstr ""
+msgstr "Gebiet"
 
 #: datasets/validation/base.py:105
 msgid "This dataset is currently waiting for review."
@@ -492,7 +492,7 @@ msgstr "Willst du wirklich diese Beobachtung löschen?"
 
 #: datasets/widgets.py:95
 msgid "Point or Area"
-msgstr ""
+msgstr "Punkt oder Gebiet"
 
 #: forms.py:43
 msgid "Username or email address"
@@ -508,7 +508,7 @@ msgstr "Du hast einen ungültigen Bereich des Bildes ausgewählt."
 
 #: forms.py:236
 msgid "Invalid features drawn on canvas."
-msgstr ""
+msgstr "Ungültiges Element gezeichnet"
 
 #: forms.py:258
 msgid "The image upload was not successful. Please try again."
@@ -517,16 +517,16 @@ msgstr ""
 
 #: forms.py:299
 msgid "Text that will be shown together with this image."
-msgstr ""
+msgstr "Text, der zusammen mit diesem Bild gezeigt wird"
 
 #: forms.py:336
 msgid "This field is required."
-msgstr ""
+msgstr "Dieses Feld ist erforderlich."
 
 #: mails.py:24 templates/email/registration_confirmation.html:8
 #: templates/email/registration_confirmation.txt:4
 msgid "Registration confirmation"
-msgstr ""
+msgstr "Registrierungsbestätigung"
 
 #: models.py:541
 msgid "admin"
@@ -804,7 +804,7 @@ msgstr "Template"
 #: template_content/forms.py:548
 #, python-format
 msgid "A navigation of type %(navigation_type)s already exists"
-msgstr ""
+msgstr "Eine Navigation vom Typ %(navigation_type)s existiert bereits"
 
 #: template_content/forms.py:561 template_content/models.py:19
 msgid "Page"
@@ -842,7 +842,7 @@ msgstr "Komponente löschen"
 #: template_content/templates/template_content/ajax/delete_component.html:9
 #, python-format
 msgid "Delete component %(component_template_name)s"
-msgstr ""
+msgstr "Komponente %(component_template_name)s löschen"
 
 #: template_content/templates/template_content/ajax/manage_component.html:4
 msgid "Manage %(name)s"
@@ -973,19 +973,19 @@ msgstr "hinzufügen"
 
 #: template_content/templates/template_content/create_template_content.html:18
 msgid "Your frontend does not supply any templates."
-msgstr ""
+msgstr "Dein Frontend enthält keine Templates"
 
 #: template_content/templates/template_content/create_template_content.html:26
 msgid "Custom templates"
-msgstr ""
+msgstr "Custom Templates"
 
 #: template_content/templates/template_content/create_template_content.html:28
 msgid "You can create and upload your own custom templates."
-msgstr ""
+msgstr "Du kannst eigene Templates erstellen und hochladen"
 
 #: template_content/templates/template_content/create_template_content.html:30
 msgid "Upload custom template"
-msgstr ""
+msgstr "Custom Template hochladen"
 
 #: template_content/templates/template_content/manage_localized_template_content.html:19
 msgid "published"
@@ -1029,7 +1029,7 @@ msgstr "Noch keine Einträge"
 
 #: template_content/templates/template_content/manage_navigation_entries.html:17
 msgid "add entry"
-msgstr ""
+msgstr "Eintrag hinzufügen"
 
 #: template_content/templates/template_content/template_content_base.html:22
 msgid "TemplateContent"
@@ -1061,11 +1061,11 @@ msgstr "Neue Seite hinzufügen"
 
 #: template_content/templates/template_content/template_content_base.html:78
 msgid "Frontend requirements"
-msgstr ""
+msgstr "Frontend-Anforderungen"
 
 #: template_content/templates/template_content/template_content_base.html:110
 msgid "create"
-msgstr ""
+msgstr "erstellen"
 
 #: template_content/templates/template_content/template_content_list_entry.html:24
 #, python-format
@@ -1204,16 +1204,18 @@ msgid ""
 "You're receiving this email because you requested a password reset for your "
 "user account for the app %(name)s."
 msgstr ""
+"Du erhältst diese E-Mail, weil du ein neues Passwort für deinen Account bei der App "
+"%(name)s angefordert hast."
 
 #: templates/localcosmos_server/app/registration/password_reset_email.html:4
 #: templates/localcosmos_server/registration/password_reset_email.html:4
 msgid "Please go to the following page and choose a new password:"
-msgstr ""
+msgstr "Bitte gehe zu nachfolgender Seite und lege ein neues Passwort fest:"
 
 #: templates/localcosmos_server/app/registration/password_reset_email.html:8
 #: templates/localcosmos_server/registration/password_reset_email.html:8
 msgid "Your username, in case you've forgotten:"
-msgstr ""
+msgstr "Dein Benutzername, falls du ihn vergessen hast:"
 
 #: templates/localcosmos_server/app/registration/password_reset_email.html:10
 msgid "Thanks for using our app!"
@@ -1328,6 +1330,8 @@ msgid ""
 "You're receiving this email because you requested a password reset for your "
 "user account at %(site_name)s."
 msgstr ""
+"Du erhältst diese E-Mail, weil du angefordert hast, deinn Passwort auf "
+"%(site_name)s zurückzusetzen."
 
 #: templates/localcosmos_server/registration/password_reset_email.html:10
 msgid "Thanks for using our site!"
