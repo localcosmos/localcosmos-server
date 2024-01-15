@@ -801,3 +801,31 @@ class TestManageServerContentImage(WithServerContentImage, GetJWTokenMixin, With
         self.assertEqual(image, None)
         
 
+class TestGetUserProfile(WithUser, WithApp, APITestCase):
+
+    @test_settings
+    def test_get(self):
+
+        user = self.create_user()
+        su = self.create_superuser()
+
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'uuid': str(user.uuid)
+        }
+        url = reverse('api_get_user_profile', kwargs=url_kwargs)
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+
+        expected_content = {
+            'uuid': str(user.uuid),
+            'username': user.username,
+            'firstName': user.first_name,
+            'lastName': user.last_name,
+            'profilePicture': None,
+            'dateJoined': user.date_joined.strftime('%Y-%m-%dT%H:%M:%S.%fZ'), # '2023-12-15T13:20:30.210506Z'
+            'datasetCount': 0,
+        }
+        self.assertEqual(json.loads(response.content), expected_content)
+

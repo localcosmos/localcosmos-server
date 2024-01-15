@@ -29,7 +29,8 @@ from localcosmos_server.models import App, ServerContentImage, LocalcosmosUser
 
 
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
-                            TokenObtainPairSerializerWithClientID, ServerContentImageSerializer)
+                            TokenObtainPairSerializerWithClientID, ServerContentImageSerializer,
+                            LocalcosmosPublicUserSerializer)
 
 from .permissions import OwnerOnly, AppMustExist, ServerContentImageOwnerOrReadOnly
 
@@ -375,6 +376,18 @@ class TokenObtainPairViewWithClientID(ManageUserClient, TokenObtainPairView):
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
+
+
+class GetUserProfile(generics.RetrieveAPIView):
+    serializer_class = LocalcosmosPublicUserSerializer
+    renderer_classes = (CamelCaseJSONRenderer,)
+    parser_classes = (CamelCaseJSONParser,)
+    permission_classes = ()
+
+    lookup_field = 'uuid'
+    lookup_url_kwargs = 'uuid'
+
+    queryset = LocalcosmosUser.objects.all()
 
 ##################################################################################################################
 #

@@ -6,7 +6,7 @@ from localcosmos_server.tests.common import test_settings, TEST_CLIENT_ID, TEST_
 from localcosmos_server.tests.mixins import WithUser, WithMedia, WithServerContentImage
 
 from localcosmos_server.api.serializers import (TokenObtainPairSerializerWithClientID, RegistrationSerializer,
-    PasswordResetSerializer, ServerContentImageSerializer)
+    PasswordResetSerializer, ServerContentImageSerializer, LocalcosmosPublicUserSerializer)
 
 
 from rest_framework import serializers
@@ -248,3 +248,23 @@ class TestServerContentImageSerializer(WithUser, WithServerContentImage, WithMed
 
 
 
+class TestLocalcosmosPublicUserSerializer(WithUser, TestCase):
+
+    @test_settings
+    def test_serialize(self):
+
+        user = self.create_user()
+
+        serializer = LocalcosmosPublicUserSerializer(user)
+
+        expected_data = {
+            'uuid': str(user.uuid),
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'profile_picture': None,
+            'date_joined': user.date_joined.strftime('%Y-%m-%dT%H:%M:%S.%fZ'), # '2023-12-15T13:20:30.210506Z'
+            'dataset_count': 0,
+        }
+
+        self.assertEqual(serializer.data, expected_data)

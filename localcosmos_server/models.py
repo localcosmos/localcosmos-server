@@ -163,6 +163,10 @@ class LocalcosmosUser(ServerContentImageMixin, AbstractUser):
 
         Dataset.objects.bulk_update(datasets, ['user'])
 
+    def dataset_count(self):
+        from localcosmos_server.datasets.models import Dataset
+        return Dataset.objects.filter(user=self).count()
+
     # do not alter the delete method
     def delete(self, using=None, keep_parents=False):
 

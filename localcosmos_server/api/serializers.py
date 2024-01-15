@@ -44,13 +44,20 @@ class LocalcosmosUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'uuid', 'username', 'first_name', 'last_name', 'email', 'profile_picture')
+        read_only_fields = ['username']
 
 
 class LocalcosmosPublicUserSerializer(LocalcosmosUserSerializer):
 
+    dataset_count = serializers.SerializerMethodField()
+
+    def get_dataset_count(self, obj):
+        return obj.dataset_count()
+
     class Meta:
         model = User
-        fields = ('uuid', 'username', 'first_name', 'last_name', 'profile_picture')
+        fields = ('uuid', 'username', 'first_name', 'last_name', 'profile_picture', 'date_joined',
+                  'dataset_count')
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
