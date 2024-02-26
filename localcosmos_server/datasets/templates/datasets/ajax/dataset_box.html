@@ -13,7 +13,13 @@
 				{% trans 'Observation without taxon' %}
 			{% endif %}
 		</h5>
-		<h6 class="card-subtitle mb-2 text-muted">{{ dataset.timestamp }}</h6>
+		<div class="text-muted">
+			{% trans 'observed at' %}: <h6 class="card-subtitle mb-2">{{ dataset.timestamp }}</h6>
+		</div>
+		<div class="text-muted">
+			{% trans 'submitted at' %}: <h6 class="card-subtitle mb-2">{{ dataset.created_at }}</h6>
+		</div>
+		
 		<p class="card-text">
 			{% if dataset.validation_step == 'completed' %}
 				{% if dataset.is_valid %}

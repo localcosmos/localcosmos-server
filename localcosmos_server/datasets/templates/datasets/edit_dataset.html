@@ -12,8 +12,32 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-12">
-				<h2>{% trans 'Observation' %} #{{dataset.id}}</h2>
-				{% trans 'by' %} {% if dataset.user %}{{ dataset.user }}{% else %}{% trans 'anonymous user' %}{% endif %}
+				<h2>{% trans 'Observation' %} #{{ dataset.id }}</h2>
+				{% trans 'by' %}
+				{% if dataset.user %}
+					{{ dataset.user }}
+				{% else %}
+					{% trans 'anonymous user' %}
+				{% endif %}
+				<div>
+					<small>
+						{% if dataset.user.first_name %}
+							{{ dataset.user.first_name }}
+						{% endif %}
+						{% if dataset.user.last_name %}
+							{{ dataset.user.last_name }}
+						{% endif %}
+					</small>
+				</div>
+				
+				
+				{% if dataset.user %}
+					<div>
+						<a href="mailto:{{ dataset.user.email }}">
+							{% trans 'contact user' %}
+						</a>
+					</div>					
+				{% endif %}
 			</div>
 		</div>
 		<hr>
