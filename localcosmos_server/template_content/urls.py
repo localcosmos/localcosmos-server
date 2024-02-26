@@ -51,6 +51,9 @@ urlpatterns = [
       views.ManageNavigationEntry.as_view(), name='manage_template_content_navigation_entry'),
    path('delete-template-content-navigation-entry/<int:pk>/', views.DeleteNavigationEntry.as_view(),
       name='delete_template_content_navigation_entry'),
+   # translating navigations
+   path('<str:app_uid>/translate-template-content-navigation/<int:pk>/<str:language>/', views.TranslateNavigation.as_view(),
+      name='translate_template_content_navigation'),
    # components
    path('<str:app_uid>/manage-component/<int:localized_template_content_id>/<str:content_key>/',
       views.ManageComponent.as_view(), name='manage_component'),
@@ -65,4 +68,7 @@ urlpatterns = [
       views.ManageComponentImage.as_view(), name='manage_component_image'),
    path('delete-component-image/<int:pk>/', views.DeleteComponentImage.as_view(),
       name='delete_component_image'),
+   # translation, component view
+   path('<str:app_uid>/translate-template-content/<int:template_content_id>/component-view/<str:content_key>/<uuid:component_uuid>/',
+      views.ComponentContentView.as_view(), name='component_content_view'),
 ]

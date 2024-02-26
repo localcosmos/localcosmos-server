@@ -1,0 +1,57 @@
+{% extends 'localcosmos_server/modals/large_modal_base.html' %}
+{% load i18n static template_content_tags %}
+
+{% block title %}
+    {{ content_key|title }}
+
+    {% if language %}
+        <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /> {{ language }}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
+    <div>
+        {% for field in form %}
+            {% if field.is_hidden %}
+            {% else %}
+
+            <div class="mt-2">
+                <div>
+                    {{ field.label }}: 
+                    {% if field.field.language %}
+                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+                    {% endif %}
+                </div>
+
+                {% if field.field.content_definition and field.field.content_definition.type == 'image' %}
+                    <div class="mx-3">
+                        {% if field.field.widget.attrs.instance %}
+                            <div class="col-4">
+                                <img  class="img-fluid" src="{{ field.field.widget.attrs.instance.image_url }}" />
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                {% trans 'No image supplied.' %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% else %}
+
+                    <div class="mx-3">
+                        <div class="card mb-2">
+                            <div class="card-body bg-light">
+                                {{ field.field.initial }}
+                            </div>
+                        </div>
+                    </div>
+                
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% include 'localcosmos_server/modals/footers/close.html' %}
+{% endblock %}

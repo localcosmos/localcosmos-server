@@ -4,12 +4,15 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
-from .models import NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigation, NavigationEntry, LocalizedTemplateContent
+from .models import (NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigation, NavigationEntry,
+                     LocalizedTemplateContent, NavigationEntry, LocalizedNavigationEntry)
 
 from .Templates import Template, Templates
 
 from .fields import ComponentField
 from .widgets import ContentWithPreviewWidget, FileContentWidget, TextareaContentWidget, TextContentWidget
+
+from .utils import get_preview_text
 
 from django.contrib.auth import get_user_model
 
@@ -81,19 +84,19 @@ class TemplateContentFormFieldManager:
 
         instances = []
 
-        if content_type == 'image':
-            image_type = self._get_image_type(content_key)
-            print('.images')
-            instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
+        if self.localized_template_content:
+            if content_type == 'image':
+                image_type = self._get_image_type(content_key)
+                instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
 
-        elif content_type in ['component', 'text', 'templateContentLink'] and self.localized_template_content.draft_contents:
-            instances = self.localized_template_content.draft_contents.get(content_key, [])
+            elif content_type in ['component', 'text', 'templateContentLink'] and self.localized_template_content.draft_contents:
+                instances = self.localized_template_content.draft_contents.get(content_key, [])
 
         return instances
 
 
     def get_primary_locale_content(self, content_key):
-        self.primary_locale_template_content.draft_contents.get(content_key, 'None')
+        return self.primary_locale_template_content.draft_contents.get(content_key, None)
 
 
     def _add_primary_locale_content_to_form_field(self, form_field, content_key):
@@ -275,6 +278,15 @@ class TemplateContentFormFieldManager:
         widget = FileContentWidget(widget_attrs)
         form_field = forms.ImageField(widget=widget, **field_kwargs)
 
+        # add primary locale ServerContentImage as form_field.primary_locale_content
+        allow_multiple = content_definition.get('allowMultiple', False)
+        if allow_multiple == True:
+            primary_locale_images = list(self.primary_locale_template_content.images(image_type=content_key).order_by('pk'))
+        else:
+            primary_locale_images = self.primary_locale_template_content.images(image_type=content_key).order_by('pk').last()
+
+        form_field.primary_locale_content = primary_locale_images
+
         return form_field
 
 
@@ -323,12 +335,7 @@ class TemplateContentFormFieldManager:
             data_url_kwargs['component_uuid'] = instance['uuid']
             delete_url = reverse('delete_component', kwargs=data_url_kwargs)
 
-            if 'identifierContent' in component_template.definition:
-                identifier_key = component_template.definition['identifierContent']
-                preview_text = instance.get(identifier_key, None)
-
-                if isinstance(preview_text, dict):
-                    preview_text = preview_text.get('title', None)
+            preview_text = get_preview_text(component_template, instance)
 
         data_url = reverse('manage_component', kwargs=data_url_kwargs)
 
@@ -440,7 +447,9 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
         self.layoutable_simple_fields = set([])
 
         self.set_template_definition()
-        self.set_form_fields()
+
+        if self.localized_template_content:
+            self.set_form_fields()
 
 
     def set_template_definition(self):
@@ -524,7 +533,10 @@ class ManageNavigationForm(LocalizeableForm):
         super().__init__(*args, **kwargs)
         # read navigation_type choices from frontend
         frontend_settings = app.get_settings()
-        navigations = frontend_settings['templateContent']['navigations']
+        navigations = {}
+        
+        if 'templateContent' in frontend_settings and 'navigations' in frontend_settings['templateContent']:
+            navigations = frontend_settings['templateContent']['navigations']
 
         choices = []
 
@@ -596,6 +608,52 @@ class ManageNavigationEntryForm(LocalizeableForm):
 
 
 
+class TranslateNavigationForm(LocalizeableForm):
+
+    name = forms.CharField(max_length=355, label=_('Name of the navigation'))
+    localizeable_fields = ['name']
+    
+    def __init__(self, app, navigation, *args, **kwargs):
+        self.navigation = navigation
+        self.primary_language = app.primary_language
+        self.language = kwargs['language']
+        self.primary_locale_navigation = navigation.get_locale(self.primary_language)
+        self.navigation_entries = NavigationEntry.objects.filter(navigation=self.navigation)
+
+        self.localized_navigation = navigation.get_locale(self.language)
+        super().__init__(*args, **kwargs)
+
+        self.set_form_fields()
 
 
+    def set_form_fields(self):
+        
+        self.fields['name'].primary_locale_text = self.primary_locale_navigation.name
 
+        for navigation_entry in self.navigation_entries:
+
+            primary_locale_navigation_entry = navigation_entry.get_locale(self.primary_language) 
+            localized_navigation_entry = navigation_entry.get_locale(self.language)
+            widget = forms.TextInput
+
+            initial = ''
+            if localized_navigation_entry:
+                initial = localized_navigation_entry.link_name
+
+            label = '{0}'.format(primary_locale_navigation_entry.link_name)
+                                                
+            field_kwargs = {
+                'widget' : widget,
+                'initial' : initial,
+                'label': label,
+                'required': False
+            }
+                                                
+            form_field = forms.CharField(**field_kwargs)
+            form_field.primary_locale_text = primary_locale_navigation_entry.link_name
+            form_field.language = self.language
+            form_field.navigation_entry = navigation_entry
+
+            field_name = 'ne-{0}'.format(navigation_entry.id)
+
+            self.fields[field_name] = form_field

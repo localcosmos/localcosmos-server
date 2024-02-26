@@ -1,0 +1,45 @@
+{% load i18n template_content_tags %}
+
+{% if content_definition and content_definition.type == 'image' %}
+    {% if primary_locale_content %}
+        <div class="col-12">
+            <img src="{{ primary_locale_content.image_url }}" />
+        </div>
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                {% trans 'There is no image that needs to be translated.' %}
+            </div>         
+        </div>
+    {% endif %}
+{% elif content_definition and content_definition.type == 'component' %}
+    {% if primary_locale_content %}
+        <div class="col-4 col-md-3 col-lg-2">
+            <div class="tc-preview">
+                <div>
+                    {% get_component_preview_text localized_template_content content_key primary_locale_content %}
+                </div>
+            </div>
+            <div class="mt-1">
+                <a href="#" class="xhr btn btn-outline-primary btn-xs" ajax-target="LargeModalContent" data-url="{% url 'component_content_view' app.uid localized_template_content.template_content.id content_key primary_locale_content.uuid %}">
+                    {% trans 'show' %}
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            {% trans 'There is no component that needs to be translated.' %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="col-12">
+        <div class="card mb-2">
+            <div class="card-body bg-light">
+                {% if primary_locale_content %}
+                    {{ primary_locale_content|safe }}
+                {% endif %}
+    
+            </div>
+        </div>
+    </div>
+{% endif %}

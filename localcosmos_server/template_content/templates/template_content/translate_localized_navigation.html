@@ -1,0 +1,102 @@
+{% extends 'template_content/template_content_base.html' %}
+{% load i18n imagekit static localcosmos_tags %}
+
+{% block extra_style %}
+	<link href="{% static 'template_content/template_content.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+	<div class="container mt-3">
+		<div class="row">
+			<div class="col-12">
+                <h3>
+					{% if localized_navigation %}
+						{{ localized_navigation.name }} <img src="{% static 'localcosmos_server/images/countries/' %}{{ localized_navigation.language }}.gif" />
+						
+						<small><span class="badge badge-info">version {{ localized_navigation.draft_version }}</span></small>
+
+						{% if localized_navigation.published_version == localized_navigation.draft_version %}
+							<small><span class="badge badge-success">{% trans 'published' %}</span></small>
+						{% else %}
+							{% if localized_navigation.published_version %}
+								<small><span class="badge badge-warning">{% trans 'unpublished changes' %}</span></small>
+							{% else %}
+								<small><span class="badge badge-warning">{% trans 'not published' %}</span></small>
+							{% endif %}
+						{% endif %}
+                    {% else %}
+                        {{ primary_locale_navigation.name }}
+					{% endif %}
+					<!--
+					{% if app.secondary_languages %}
+						{% if localized_template_content.published_version == localized_template_content.draft_version %}
+						{% else %}
+							{% if localized_template_content.translation_ready %}
+								<small><span class="badge badge-info">{% trans 'ready for translation' %}</span></small>
+							{% else %}
+								<small><span class="badge badge-warning">{% trans 'not ready for translation' %}</span></small>
+							{% endif %}
+						{% endif %}
+					{% endif %}
+					-->
+				</h3>
+            </div>
+        </div>
+        {% if saved %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-success">
+                        {% trans 'Successfully saved your translation.' %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-12">
+                <form id="navigationform" action="{% url 'translate_template_content_navigation' app.uid navigation.pk language %}" method="POST">{% csrf_token %}
+
+					{% for field in form %}
+                        {% if field.is_hidden %}
+                            {{ field }}
+                        {% else %}
+                            <div class="mt-3">
+                                <h5>
+                                    {{ field.label }}
+                                </h5>
+                            </div>
+                            <div class="col-12">
+                                <div>
+                                    <img src="{% static 'localcosmos_server/images/countries/' %}{{ app.primary_language }}.gif" /> {{ app.primary_language }}
+                                </div>
+                                <div class="card mb-2">
+                                    <div class="card-body bg-light">
+                                        {% if field.field.primary_locale_text %}
+                                            {{ field.field.primary_locale_text|safe }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div>
+                                    {% if field.field.language %}
+                                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    {{ field }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+					<hr>
+					<p>
+						<button type="submit" class="btn btn-outline-primary">
+							{% trans 'save translation' %}
+						</button>
+					</p>
+				</form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

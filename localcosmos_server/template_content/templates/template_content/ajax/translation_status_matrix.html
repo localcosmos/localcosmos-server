@@ -1,4 +1,5 @@
 {% load i18n static template_content_tags %}
+{% get_locale localizeable_instance app.primary_language as primary_locale %}
 {% for language in app.languages %}
     <div class="row {% if not forloop.last %}mb-3{% endif %}">
         <div class="col-auto">
@@ -22,7 +23,7 @@
 
                 {% if locale.language in app.secondary_languages %}
                     {% if locale.translation_is_complete %}
-                        {% if locale.draft_version != localizeable_instance.draft_version %}
+                        {% if locale.draft_version != primary_locale.draft_version %}
                             <span class="badge badge-warning">{% trans 'old version' %}</span>
                         {% else %}
                             <span class="badge badge-success">{% trans 'translation complete' %}</span>

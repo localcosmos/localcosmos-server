@@ -866,13 +866,32 @@ class LocalizedNavigation(models.Model):
 
 
     def translation_complete(self):
+        translation_errors = []
         
         primary_language = self.navigation.app.primary_language
 
         if self.language == primary_language:
             return []
+        
+        else:
+            navigation_entries = NavigationEntry.objects.filter(navigation=self.navigation)
 
-        raise NotImplementedError('multilanguage navigations are not implemented yet')
+            for navigation_entry in navigation_entries:
+                localized_navigation_entry = navigation_entry.get_locale(self.language)
+
+                if not localized_navigation_entry:
+                    translation_errors.append(_('The translation for the language %(language)s is incomplete.') % {'language':self.language})
+                    break
+
+        return translation_errors
+
+
+    @property
+    def translation_is_complete(self):
+        translation_errors = self.translation_complete()
+        if translation_errors:
+            return False
+        return True
 
 
     def publish(self):

@@ -11,9 +11,10 @@ from localcosmos_server.view_mixins import AppMixin, FormLanguageMixin
 from localcosmos_server.decorators import ajax_required
 from django.utils.decorators import method_decorator
 
-from .models import TemplateContent, LocalizedTemplateContent, Navigation, NavigationEntry, LocalizedNavigationEntry
+from .models import (TemplateContent, LocalizedTemplateContent, Navigation, LocalizedNavigation,
+                     NavigationEntry, LocalizedNavigationEntry)
 from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentForm, TranslateTemplateContentForm,
-                    ManageNavigationForm, ManageNavigationEntryForm, ManageComponentForm)
+                    ManageNavigationForm, ManageNavigationEntryForm, ManageComponentForm, TranslateNavigationForm)
 
 from .utils import get_frontend_specific_url
 
@@ -28,6 +29,15 @@ class TemplateContentList(AppMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        # check if the frontend supports navigations
+        frontend_settings = self.app.get_settings()
+        supports_navigations = False
+
+        if 'templateContent' in frontend_settings and 'navigations' in frontend_settings['templateContent']:
+            supports_navigations = True
+
+        context['supports_navigations'] = supports_navigations
         
         localized_template_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
             template_content__template_type='page', language=self.app.primary_language, template_content__assignment=None).order_by('pk')
@@ -40,21 +50,23 @@ class TemplateContentList(AppMixin, TemplateView):
         if settings.LOCALCOSMOS_PRIVATE == False:
             app_settings = self.app.get_settings()
 
-            pages = app_settings['templateContent'].get('requiredOfflineContents', {})
-            for assignment, definition in pages.items():
+            if 'templateContent' in app_settings:
 
-                template_type = definition['templateType']
+                pages = app_settings['templateContent'].get('requiredOfflineContents', {})
+                for assignment, definition in pages.items():
 
-                template_content = TemplateContent.objects.filter(app=self.app, template_type=template_type,
-                    assignment=assignment).first()
+                    template_type = definition['templateType']
 
-                content = {
-                    'assignment': assignment,
-                    'template_content': template_content,
-                    'template_type': template_type,
-                }
+                    template_content = TemplateContent.objects.filter(app=self.app, template_type=template_type,
+                        assignment=assignment).first()
 
-                required_offline_contents.append(content)
+                    content = {
+                        'assignment': assignment,
+                        'template_content': template_content,
+                        'template_type': template_type,
+                    }
+
+                    required_offline_contents.append(content)
 
         context['required_offline_contents'] = required_offline_contents
 
@@ -164,7 +176,7 @@ class ManageTemplateContentCommon:
 
         initial = {}
         
-        if self.save_localized_template_content:
+        if self.localized_template_content:
             initial = {
                 'draft_title' : self.localized_template_content.draft_title,
                 'input_language' : self.localized_template_content.language,
@@ -378,8 +390,7 @@ class DeleteComponent(TemplateView):
 
 '''
     use the same form / template as for the primary language
-    but display the primary language abov ethe input fields
-    display images, bu do not offer translations for images
+    but display the primary language above the input fields
 '''
 class TranslateTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
     
@@ -789,3 +800,107 @@ class ManageNavigationEntry(AppMixin, FormLanguageMixin, FormView):
 
 class DeleteNavigationEntry(AjaxDeleteView):
     model = NavigationEntry
+
+
+class ComponentContentView(ManageComponent):
+
+    template_name = 'template_content/ajax/component_content_view.html'
+
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_template_content(**kwargs)
+        self.set_component(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+
+
+    def set_template_content(self, **kwargs):
+        self.template_content = TemplateContent.objects.get(pk=kwargs['template_content_id'])
+        self.app = self.template_content.app
+        self.language = self.app.primary_language
+        self.localized_template_content = self.template_content.get_locale(self.language)
+
+
+class TranslateNavigation(AppMixin, FormView):
+    
+    template_name = 'template_content/translate_localized_navigation.html'
+    form_class = TranslateNavigationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.set_navigation(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def set_navigation(self, **kwargs):
+        self.app = App.objects.get(uid=kwargs['app_uid'])
+        self.navigation = Navigation.objects.get(pk=kwargs['pk'])
+        self.language = kwargs['language']
+        self.localized_navigation = self.navigation.get_locale(self.language)
+        self.primary_locale_navigation = self.navigation.get_locale(self.app.primary_language)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['localized_navigation'] = self.localized_navigation
+        context['navigation'] = self.navigation
+        context['primary_locale_navigation'] = self.primary_locale_navigation
+        context['language'] = self.language
+        context['saved'] = False
+        return context
+    
+
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['language'] = self.language
+        return form_kwargs
+    
+    
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.localized_navigation:
+            initial['name'] = self.localized_navigation.name
+        return initial
+
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(self.app, self.navigation, **self.get_form_kwargs())
+    
+
+    def save_localized_navigation(self, form):
+        
+        for field in form:
+
+            if hasattr(field.field, 'navigation_entry'):
+
+                navigation_entry = field.field.navigation_entry
+                localized_navigation_entry = navigation_entry.get_locale(self.language)
+
+                link_name = form.cleaned_data.get(field.name, '')
+
+                if not link_name or link_name == '':
+                    if localized_navigation_entry:
+                        localized_navigation_entry.delete()
+
+                else:
+                    if not localized_navigation_entry:
+                        localized_navigation_entry = LocalizedNavigationEntry(
+                            navigation_entry=navigation_entry,
+                            link_name = link_name,
+                            language = self.language,
+                        )
+                        localized_navigation_entry.save()
+    
+
+    def form_valid(self, form):
+
+        if not self.localized_navigation:
+            self.localized_navigation = LocalizedNavigation.objects.create(self.navigation, self.language,
+                                                                           form.cleaned_data['name'])
+
+        self.save_localized_navigation(form)
+
+        context = self.get_context_data(**self.kwargs)
+        context['saved'] = True
+        return self.render_to_response(context)
+        

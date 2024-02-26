@@ -7,50 +7,91 @@
 {% block form_action %}{% url 'translate_template_content' app.uid template_content.id language %}{% endblock %}
 
 {% block form %}
+    {% if not localized_template_content %}
+        <div class="alert alert-info">
+            {% trans 'Before translating the components, you have to translate the title.' %}
+        </div>
+    {% endif %}
+
     {% for field in form %}
+        {% if field.is_hidden %}
+            {{ field }}
+        {% else %}
 
-        
+            <h5 class="mt-5">{{ field.label }}</h5>
 
-                {% if field.is_hidden %}
+            {# the field in the primary language #}
+            <div>
+
+                <img src="{% static 'localcosmos_server/images/countries/' %}{{ app.primary_language }}.gif" /> {{ app.primary_language }}
+
+                {% if field.field.content_key %}
+                    {% with content_key=field.field.content_key content_definition=field.field.content_definition %}
+                        {% if field.field.allow_multiple == True %}
+                            {% if field.field.primary_locale_content %}
+                                <div class="row">
+                                    {% for primary_locale_content in field.field.primary_locale_content %}
+                                        {% include 'template_content/ajax/primary_localization.html' %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    {% trans 'There is no content that needs to be translated.' %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                                <div class="row">
+                                    {% with primary_locale_content=field.field.primary_locale_content %}
+                                        {% include 'template_content/ajax/primary_localization.html' %}
+                                    {% endwith %}
+                                </div>
+                        {% endif %}
+                    {% endwith %}
                 {% else %}
+                    {% get_content form.template_content field.name app.primary_language as primary_locale_content %}
+                    <div class="row">
+                        {% include 'template_content/ajax/primary_localization.html' %}
+                    </div>
+                {% endif %}
+            </div>
 
-                    {% if field.field.content_definition and field.field.content_definition.type == 'multi-image' %}
-                    {% elif field.field.content_definition and field.field.content_definition.type == 'image' %}
-                    {% else %}
+            {# the field for the translation of the above #}
+            <div class="mt-2">
+                {% if field.field.language %}
+                    <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+                {% endif %}
 
-
-                        <h5 class="mt-5">{{ field.label }}</h5>
-
-                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ app.primary_language }}.gif" /> {{ app.primary_language }}
-                        <div class="card mb-2">
-                            <div class="card-body bg-light">
-
-                                {% get_content form.template_content field.name app.primary_language %}
-
+                {% if field.field.content_definition and field.field.content_definition.type == 'image' %}
+                    <div id="{{ field.field.content_key }}-container" class="row">
+                        {% if field.field.primary_locale_content.requires_translation %}
+                            {{ field }}
+                        {% else %}
+                            <div class="col-12">
+                                <div class="alert alert-info mt-2">
+                                    {% trans 'This image does not require a translation. The image above (if any) will be used for all languages.' %}
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
-                {% endif %}
-
-                {% if field.field.content_definition and field.field.content_definition.type == 'multi-image' %}
-                {% elif field.field.content_definition and field.field.content_definition.type == 'image' %}
+                        {% endif %}
+                    </div>
                 {% else %}
 
-                    {% if field.field.language %}
-                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
-                    {% endif %}
-
-                    {{ field }}
-
-                    {% if field.help_text %}
-                        <small class="form-text text-muted">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% if field.errors %}
-                        <div class="text-danger">{% for error in field.errors %}{{ error }}<br>{% endfor %}</div>
-                    {% endif %}
+                    <div id="{{ field.field.content_key }}-container" {% if field.field.content_definition %}class="row"{% endif %}>
+                        {{ field }}
+                    </div>
+                
+                {% if field.help_text %}
+                    <small class="form-text text-muted ml-3">{{ field.help_text|safe }}</small>
                 {% endif %}
+                {% if field.errors %}
+                    <div class="text-danger">{% for error in field.errors %}{{ error }}<br>{% endfor %}</div>
+                {% endif %}
+                {% endif %}
+            </div>
+
+        {% endif %}
 
     {% endfor %}
+    
 {% endblock %}
 
 {% block save_button_text %}{% trans 'save translation' %}{% endblock %}
