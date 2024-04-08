@@ -8,7 +8,7 @@ from django.utils.encoding import smart_str
 from localcosmos_server.decorators import ajax_required
 from localcosmos_server.generic_views import AjaxDeleteView
 
-from .forms import DatasetValidationRoutineForm, ObservationForm
+from .forms import DatasetValidationRoutineForm, ObservationForm, AddDatasetImageForm
 
 from .models import Dataset, DatasetValidationRoutine, DATASET_VALIDATION_CLASSES, DatasetImages
 
@@ -133,6 +133,8 @@ class AjaxLoadFormFieldImages(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['dataset'] = self.dataset
+        context['field_uuid'] = self.field_uuid
         images = DatasetImages.objects.filter(dataset=self.dataset, field_uuid=self.field_uuid)
         context['images'] = images
         return context
@@ -293,3 +295,43 @@ class DownloadDatasetsCSV(TemplateView):
         # It's usually a good idea to set the 'Content-Length' header too.
         # You can also set any other required headers: Cache-Control, etc.
         return response
+
+
+class AddDatasetImage(FormView):
+
+    template_name = 'datasets/validation/ajax/add_dataset_image.html'
+    form_class = AddDatasetImageForm
+
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_dataset(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def set_dataset(self, **kwargs):
+        self.dataset = Dataset.objects.get(pk=kwargs['dataset_id'])
+        self.image_field_uuid=kwargs['image_field_uuid']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dataset'] = self.dataset
+        context['image_field_uuid'] = self.image_field_uuid
+        context['success'] = False
+        return context
+
+    def form_valid(self, form):
+        
+        image_file = form.cleaned_data['image']
+
+        dataset_image = DatasetImages(
+            dataset = self.dataset,
+            field_uuid = self.image_field_uuid,
+            image = image_file,
+        )
+
+        dataset_image.save()
+
+        context = self.get_context_data(**self.kwargs)
+        context['success'] = True
+
+        return self.render_to_response(context)
+

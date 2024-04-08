@@ -1,6 +1,7 @@
 from django import forms
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import FileExtensionValidator
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 from localcosmos_server.taxonomy.widgets import (get_choices_from_taxonomic_restrictions,
@@ -238,3 +239,9 @@ class ObservationForm(forms.Form):
             raise forms.ValidationError(json.dumps(serializer.errors))
         
         self.validated_dataset_data = dataset_data
+
+
+class AddDatasetImageForm(forms.Form):
+
+    image = forms.ImageField(
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png'])])

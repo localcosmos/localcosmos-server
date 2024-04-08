@@ -23,6 +23,7 @@ TEMPLATE_TYPES = (
 NAVIGATION_LINK_NAME_MAX_LENGTH = 20
 TITLE_MAX_LENGTH = 255
 
+# a relative path
 def get_published_template_content_root(template_content):
 
     template_definition = template_content.draft_template.definition
@@ -179,8 +180,8 @@ class TemplateContentManager(models.Manager):
     - template content which is not available offline can be fetched using the API
     - this can only work if some sort of menu is being fetched from the server
     - template content does not have to be part of a menu
-    - offline (build) template content is never newer than the online version
-    - the app can query online to get new contents, should also fetch template then
+    - offline (built) template content is never newer than the online version
+    - the app can query api to get new contents, should also fetch template (+definition) then
 
     published_template:
         The actual template and its definition are stored in the database rather then store a path 
@@ -274,6 +275,7 @@ class TemplateContent(PublicationMixin, models.Model):
 
     def publish_assets(self):
 
+        # relative to settings.MEDIA_ROOT as required by django
         published_templates_root = get_published_template_content_root(self)
 
         if self.published_template.name and self.published_template.storage.exists(self.published_template.name):
@@ -282,14 +284,15 @@ class TemplateContent(PublicationMixin, models.Model):
         if self.published_template_definition.name and self.published_template_definition.storage.exists(self.published_template_definition.name):
             self.published_template_definition.storage.delete(self.published_template_definition.name)
 
-        if os.path.isdir(published_templates_root):
-            shutil.rmtree(published_templates_root)
+        absolute_published_templates_root = os.path.join(settings.MEDIA_ROOT, published_templates_root)
+        if os.path.isdir(absolute_published_templates_root):
+            shutil.rmtree(absolute_published_templates_root)
 
         # store TemplateContent.published_template and TemplateContent.published_template_definition
         filepaths = [self.draft_template.template_filepath, self.draft_template.template_definition_filepath]
 
         for filepath in filepaths:
-
+            
             with open(filepath, 'r') as template_file:
                 filename = os.path.basename(filepath)
                 djangofile = File(template_file)
@@ -303,8 +306,8 @@ class TemplateContent(PublicationMixin, models.Model):
         # store components templates
         template_definition = self.draft_template.definition
 
-        published_templates_root = get_published_template_content_root(self)
-        published_component_templates_root = os.path.join(published_templates_root, 'templates', 'component')
+        # published_templates_root = get_published_template_content_root(self)
+        # published_component_templates_root = os.path.join(published_templates_root, 'templates', 'component')
 
         for content_key, content_definition in template_definition['contents'].items():
 
@@ -329,7 +332,6 @@ class TemplateContent(PublicationMixin, models.Model):
                 published_component_template_definition_filepath = os.path.join(published_component_template_folder,
                     component_template_definition_filename)
 
-                print(published_component_template_definition_filepath)
                 shutil.copyfile(component_template.template_filepath, published_component_template_filepath)
                 shutil.copyfile(component_template.template_definition_filepath,
                     published_component_template_definition_filepath)

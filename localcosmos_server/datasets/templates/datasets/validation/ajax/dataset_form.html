@@ -9,6 +9,9 @@
 				</div>
 			</div>
 		{% endif %}
+	</div>
+	<hr>
+	<div class="row">
 		<div class="col-12">
 			<button type="submit" class="btn btn-outline-primary">{% trans 'Update dataset' %}</button>
 			<a href="{% url 'datasets:delete_dataset' request.app.uid dataset.id %}" class="btn btn-danger xhr" ajax-target="ModalContent">{% trans 'Delete dataset' %}</a>

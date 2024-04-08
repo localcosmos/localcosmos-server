@@ -120,6 +120,36 @@
             }
         }
     },
+    "templateContent": {
+        "urlPattern": "/pages/{templateName}/{slug}/",
+        "navigations": {
+            "main": {
+                "name": "Main navigation",
+                "maxLevels": 2
+            },
+            "more": {
+                "name": "More - Burger",
+                "maxLevels": 1
+            },
+            "legal": {
+                "name": "Legal Navigation"
+            }
+        },
+        "requiredOfflineContents": {
+            "home": {
+                "templateType": "page",
+                "allowedTemplates": [
+                    "home"
+                ]
+            },
+            "footer": {
+                "templateType": "feature",
+                "allowedTemplates": [
+                    "footer"
+                ]
+            }
+        }
+    },
     "cordova": {
         "platforms": {
             "android": "android@10.1.2",

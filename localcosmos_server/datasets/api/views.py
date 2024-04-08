@@ -141,12 +141,14 @@ class ListCreateDataset(AppUUIDSerializerMixin, generics.ListCreateAPIView):
         return DatasetSerializer(self.kwargs['app_uuid'], *args, **kwargs)
 
 
-class GetFilteredDatasets(generics.ListAPIView):
+class GetFilteredDatasets(generics.GenericAPIView):
     permission_classes = (AppMustExist,)
     parser_classes = (CamelCaseJSONParser,)
     renderer_classes = (CamelCaseJSONRenderer,)
     serializer_class = DatasetListSerializer
     filter_serializer = DatasetFilterSerializer
+
+    http_method_names = ['post']
 
     def get_queryset(self, filters=[], order_by=None):
         queryset = Dataset.objects.filter(app_uuid=self.app_uuid)
