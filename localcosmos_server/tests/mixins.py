@@ -139,7 +139,7 @@ class WithObservationForm:
         return observation_form
 
 
-    def create_dataset(self, observation_form, user=None, app=None, taxon=None):
+    def create_dataset(self, observation_form, user=None, app=None, taxon='default'):
 
         if app == None:
             app = self.app

@@ -1,10 +1,12 @@
 from django.core.exceptions import PermissionDenied
 
-import rules
-
 class ExpertOnlyMixin:
     def dispatch(self, request, *args, **kwargs):
-        has_access = rules.test_rule('app.is_expert', request.user, request.app)
+
+        if not request.user.is_authenticated:
+            return False
+
+        has_access = request.user.has_perm('app.is_expert', request.app)
 
         if not has_access:
             raise PermissionDenied
@@ -14,7 +16,11 @@ class ExpertOnlyMixin:
 
 class AdminOnlyMixin:
     def dispatch(self, request, *args, **kwargs):
-        has_access = rules.test_rule('app.is_admin', request.user, request.app)
+
+        if not request.user.is_authenticated:
+            return False
+
+        has_access = request.user.has_perm('app.is_admin', request.app)
 
         if not has_access:
             raise PermissionDenied

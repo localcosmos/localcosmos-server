@@ -11,6 +11,7 @@ def is_app_admin(user, app):
         return True
     return AppUserRole.objects.filter(app=app, user=user, role='admin').exists()
 
+
 @rules.predicate
 def is_expert(user, app):
     if user.is_superuser or user.is_staff:
@@ -25,7 +26,7 @@ def is_expert(user, app):
 ###################################################################################################################
 
 # install an app
-rules.add_rule('server.can_install_app', rules.is_staff)
+rules.add_perm('server.can_install_app', rules.is_staff)
 
 ###################################################################################################################
 #
@@ -34,9 +35,7 @@ rules.add_rule('server.can_install_app', rules.is_staff)
 ###################################################################################################################
 
 # update an app
-rules.add_rule('app.is_admin', is_app_admin)
-rules.add_rule('app.can_update', is_app_admin)
-
+rules.add_perm('app.is_admin', is_app_admin)
 
 ###################################################################################################################
 #
@@ -44,18 +43,16 @@ rules.add_rule('app.can_update', is_app_admin)
 #   - app admins are also experts
 #
 ###################################################################################################################
-rules.add_rule('app.is_expoert', is_expert)
+rules.add_perm('app.is_expert', is_expert)
 
 # accessing app admin
-rules.add_rule('app_admin.has_access', is_expert)
+rules.add_perm('app_admin.has_access', is_expert)
 
 # perm for review dataset
-rules.add_rule('datasets.can_review_dataset', is_expert)
-
+rules.add_perm('datasets.can_review_dataset', is_expert)
 
 # perm for delete dataset
-rules.add_rule('datasets.can_delete_dataset', is_expert)
-
+rules.add_perm('datasets.can_delete_dataset', is_expert)
 
 # perm for update dataset
-rules.add_rule('datasets.can_update_dataset', is_expert)
+rules.add_perm('datasets.can_update_dataset', is_expert)

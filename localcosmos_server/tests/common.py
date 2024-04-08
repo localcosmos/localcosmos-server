@@ -129,7 +129,7 @@ TEST_TAXA = {
 
 class DataCreator:
 
-    def get_dataset_data(self, observation_form_json, alternative_data=False, taxon=None):
+    def get_dataset_data(self, observation_form_json, alternative_data=False, taxon='default'):
         
         data = {}
 
@@ -140,9 +140,12 @@ class DataCreator:
 
             if field['fieldClass'] == 'TaxonField':
                 if taxon:
-                    field_data = taxon
+                    if taxon == 'default':
+                        field_data = self.get_TaxonField_test_data(field, alternative_data)
+                    elif taxon != None:
+                        field_data = taxon
 
-            if not field_data:
+            elif not field_data:
                 method_name = 'get_{0}_test_data'.format(field['fieldClass'])
                 field_data = getattr(self, method_name)(field, alternative_data)
 

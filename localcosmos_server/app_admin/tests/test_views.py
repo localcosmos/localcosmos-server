@@ -5,14 +5,14 @@ from localcosmos_server.app_admin.views import (AdminHome, UserList, ManageAppUs
                                                 HUMAN_INTERACTION_CLASSES)
 
 from localcosmos_server.tests.common import test_settings
-from localcosmos_server.tests.mixins import WithApp, WithUser, WithDataset
+from localcosmos_server.tests.mixins import WithApp, WithUser, WithObservationForm
 
 from localcosmos_server.models import AppUserRole
 
 import json
 
 @test_settings
-class TestAdminHome(WithApp, WithUser, WithDataset, TestCase):
+class TestAdminHome(WithApp, WithUser, WithObservationForm, TestCase):
 
     def setUp(self):
         super().setUp()
@@ -29,6 +29,8 @@ class TestAdminHome(WithApp, WithUser, WithDataset, TestCase):
         self.superuser = self.create_superuser()
 
         self.role.save()
+
+        self.observation_form = self.create_observation_form()
         
 
     def test_get_context_data(self):
@@ -50,12 +52,13 @@ class TestAdminHome(WithApp, WithUser, WithDataset, TestCase):
 
 
     def test_get_context_data_with_datasets(self):
-        dataset = self.create_dataset()
+        dataset = self.create_dataset(self.observation_form)
 
         dataset.validation_step = HUMAN_INTERACTION_CLASSES[0]
         dataset.save()
 
-        dataset_notaxon = self.create_notaxon_dataset()
+        dataset_notaxon = self.create_dataset(self.observation_form, taxon=None)
+        dataset_notaxon.save()
 
         url_kwargs = {
             'app_uid' : self.app.uid,

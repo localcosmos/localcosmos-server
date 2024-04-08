@@ -36,7 +36,7 @@ class AppAdminMiddleware(MiddlewareMixin):
                     url = '{0}?next={1}'.format(reverse('log_in'), request.path)
                     return redirect(url)
 
-                has_access = rules.test_rule('app_admin.has_access', user, app)
+                has_access = user.has_perm('app_admin.has_access', app)
                 if not has_access:
                     raise PermissionDenied
 
