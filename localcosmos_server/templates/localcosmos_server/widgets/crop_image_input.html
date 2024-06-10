@@ -7,6 +7,13 @@
 <br>
 <p>
 	{% include "django/forms/widgets/file.html" %}
+	{% if current_image %}
+		<div class="text-left">
+			<small>
+				<a href="{{ current_image.url }}" class="text-secondary" target="_blank" style="opacity:0.3">&rarr;{% trans 'current image' %}</a>
+			</small>
+		</div>
+	{% endif %}
 </p>
 <script>
 

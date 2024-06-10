@@ -199,3 +199,9 @@ class ServerContentImageSerializer(serializers.Serializer):
 
         return parsed_value
             
+
+
+class ContactUserSerializer(serializers.Serializer):
+    
+    subject = serializers.CharField()
+    message = serializers.CharField(min_length=10)

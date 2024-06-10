@@ -829,3 +829,32 @@ class TestGetUserProfile(WithUser, WithApp, APITestCase):
         }
         self.assertEqual(json.loads(response.content), expected_content)
 
+
+
+class TestContactUser(GetJWTokenMixin, WithUser, WithApp, APITestCase):
+    
+    @test_settings
+    def test_post(self):
+        
+        sender = self.create_user()
+        receiver = self.create_superuser()
+        
+        
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'user_uuid': str(receiver.uuid)
+        }        
+        url = reverse('api_contact_user', kwargs=url_kwargs)
+        
+        post_data  = {
+            'subject': 'Hello User',
+            'message': 'This is a nice message to you. Have fun.'
+        }
+        response = self.client.post(url, post_data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+        authed_client = self.get_authenticated_client(sender.username, self.test_password)
+        authed_response = authed_client.post(url, post_data, format='json')
+        
+        self.assertEqual(authed_response.status_code, status.HTTP_200_OK)

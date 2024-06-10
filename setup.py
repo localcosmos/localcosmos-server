@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 install_requires = [
-    'django>=4.1.0,<=5.0.1',
+    'django>=4.1.0,<=5.0.4',
     'djangorestframework==3.14.0',
     'djangorestframework-simplejwt==5.2.*',
     'djangorestframework-camel-case==1.3.0',
@@ -20,12 +20,11 @@ install_requires = [
     'Pillow',
     'matplotlib',
     'django-taggit==3.1.0',
-    'django-road',
 ]
 
 setup(
     name='localcosmos_server',
-    version='0.18.9',
+    version='0.19.2',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -41,7 +40,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.10',
+    python_requires='>=3.6',
     include_package_data=True,
     install_requires=install_requires,
 )

@@ -266,8 +266,11 @@ class App(models.Model):
     # online content uses this to load a preview on the LC private installation
     url = models.URLField(null=True)
 
-    # url for downloading the currently released apk/aab
+    # url for downloading the currently released apk
     apk_url = models.URLField(null=True)
+    
+    # url for downloading the currently released aab
+    aab_url = models.URLField(null=True)
 
     # url for downloading the currently released ipa
     # as of 2019 this does not make any sense, because apple does not support ad-hoc installations

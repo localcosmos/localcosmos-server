@@ -30,11 +30,11 @@ from localcosmos_server.models import App, ServerContentImage, LocalcosmosUser
 
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
                             TokenObtainPairSerializerWithClientID, ServerContentImageSerializer,
-                            LocalcosmosPublicUserSerializer)
+                            LocalcosmosPublicUserSerializer, ContactUserSerializer)
 
 from .permissions import OwnerOnly, AppMustExist, ServerContentImageOwnerOrReadOnly
 
-from localcosmos_server.mails import send_registration_confirmation_email
+from localcosmos_server.mails import (send_registration_confirmation_email, send_user_contact_email)
 
 from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients
@@ -388,6 +388,43 @@ class GetUserProfile(generics.RetrieveAPIView):
     lookup_url_kwargs = 'uuid'
 
     queryset = LocalcosmosUser.objects.all()
+    
+    
+    
+class ContactUser(APIView):
+    '''
+        Contact a user
+        - authenticated users only
+        - contected user user gets mail
+        - contectee does not get an email
+        - [POST] delivers an email to the user
+    '''
+
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    parser_classes = (CamelCaseJSONParser,)
+    renderer_classes = (CamelCaseJSONRenderer,)
+    serializer_class = ContactUserSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        # permission checks, raises 404s
+        sending_user = self.request.user
+
+        receiving_user = LocalcosmosUser.objects.filter(uuid=kwargs['user_uuid']).first()
+
+        if not receiving_user:
+            return Response('', status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.serializer_class(data=request.data)
+        
+        if serializer.is_valid():
+            # send mail
+            send_user_contact_email(kwargs['app_uuid'], sending_user, receiving_user,
+                                    serializer.data['subject'], serializer.data['message'])
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ##################################################################################################################
 #

@@ -12,6 +12,9 @@ urlpatterns = [
     path('<uuid:app_uuid>/password/reset/', views.PasswordResetRequest.as_view(), name='api_password_reset'),
     # user profile
     path('<uuid:app_uuid>/user-profile/<uuid:uuid>/', views.GetUserProfile.as_view(), name='api_get_user_profile'),
+    # contact user
+    path('<uuid:app_uuid>/contact-user/<uuid:user_uuid>/', views.ContactUser.as_view(),
+         name='api_contact_user'),
     # JSON WebToken
     path('<uuid:app_uuid>/token/', views.TokenObtainPairViewWithClientID.as_view(), name='token_obtain_pair'),
     path('<uuid:app_uuid>/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
