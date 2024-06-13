@@ -9,7 +9,7 @@ from localcosmos_server.tests.common import (test_settings, TEST_IMAGE_PATH, TES
 
 from localcosmos_server.datasets.csv_export import DatasetCSVExport
 
-class TestDatasetCSVExport(WithObservationForm, WithApp, WithUser, TestCase):    
+class TestDatasetCSVExport(WithMedia, WithObservationForm, WithApp, WithUser, TestCase):    
     
     @test_settings
     def test_init(self):
