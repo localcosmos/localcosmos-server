@@ -35,6 +35,7 @@ class TestDatasetCSVExport(WithMedia, WithObservationForm, WithApp, WithUser, Te
         qs = exporter.get_queryset()
         
         self.assertEqual(qs.count(), 1)
+        
     
     @test_settings
     def test_write_csv(self):

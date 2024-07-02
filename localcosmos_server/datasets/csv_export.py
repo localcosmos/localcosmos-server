@@ -10,9 +10,14 @@ class DatasetCSVExport:
     def __init__(self, app, filters={}):
 
         filters['app_uuid'] = app.uuid
+        
+        dir_name = 'exports'
+        filename = 'datasets.csv'
 
-        self.csv_dir = os.path.join(app.media_base_path, 'exports')
-        self.filepath =  os.path.join(self.csv_dir, 'datasets.csv')
+        self.csv_dir = os.path.join(app.media_base_path, dir_name)
+        self.filepath =  os.path.join(self.csv_dir, filename)
+        
+        self.url = os.path.join(app.media_base_url, dir_name, filename)
         
         self.filters = filters
         
@@ -152,6 +157,10 @@ class DatasetCSVExport:
         if value:
             return '{0} {1}'.format(value['taxonLatname'], value['taxonAuthor'])
         return value
+    
+    
+    def serialize_SelectTaxonField(self, value):
+        return self.serialize_TaxonField(value)
     
 
     def serialize_PointJSONField(self, value):

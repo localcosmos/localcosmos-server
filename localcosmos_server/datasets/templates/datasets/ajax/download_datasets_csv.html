@@ -1,0 +1,12 @@
+{% extends 'localcosmos_server/modals/modal_base.html' %}
+{% load i18n %}
+
+
+{% block title %}{% blocktrans %}Download csv{% endblocktrans %}{% endblock %}
+
+{% block body %}
+    <div id="csv-result">
+        {% include 'datasets/ajax/download_datasets_csv_button.html' %}
+    </div>
+{% endblock %}
+

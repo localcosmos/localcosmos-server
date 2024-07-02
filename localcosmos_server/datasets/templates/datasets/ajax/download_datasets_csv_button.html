@@ -1,0 +1,27 @@
+{% load i18n static %}
+{% if ready %}
+    <div class="text-center">
+        <a href="{{ csv_url }}" class="btn btn-outline-success" download>{% trans 'Download data' %}</a>
+    </div>
+{% else %}
+    <div class="text-center">
+        <div>
+            {% trans 'creating csv' %}
+        </div>
+        <div>
+            <img src="{% static 'images/spinner.gif' %}" />
+        </div>
+    </div>
+{% endif %}
+
+{% block script %}
+    {% if not ready %}
+        <script>
+            setTimeout(function(){
+                $.get("{% url 'datasets:download_datasets_csv' request.app.uid %}", function(html){
+                    $('#csv-result').html(html);
+                });
+            }, 1000);
+        </script>
+    {% endif %}
+{% endblock %}

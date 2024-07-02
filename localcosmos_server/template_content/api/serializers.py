@@ -9,8 +9,8 @@ from localcosmos_server.template_content.utils import get_component_image_type, 
 class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField()
-    templateName = serializers.SerializerMethodField()
-    templatePath = serializers.SerializerMethodField()
+    template_name = serializers.SerializerMethodField()
+    template_path = serializers.SerializerMethodField()
     
     version = serializers.SerializerMethodField()
     
@@ -168,10 +168,10 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
 class ContentLicenceSerializer(serializers.ModelSerializer):
 
-    licenceVersion = serializers.CharField(source='licence_version')
-    creatorName = serializers.CharField(source='creator_name')
-    creatorLink = serializers.CharField(source='creator_link')
-    sourceLink = serializers.CharField(source='source_link')
+    licence_version = serializers.CharField(source='licence_version')
+    creator_name = serializers.CharField(source='creator_name')
+    creator_link = serializers.CharField(source='creator_link')
+    source_link = serializers.CharField(source='source_link')
 
     class Meta:
         model = ContentLicenceRegistry
@@ -180,7 +180,7 @@ class ContentLicenceSerializer(serializers.ModelSerializer):
 
 class ContentImageSerializer(serializers.Serializer):
     
-    imageUrl = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     licence = serializers.SerializerMethodField()
 
     def get_imageUrl(self, content_image):

@@ -12,7 +12,7 @@
 			</div>
 			<div class="col-12">
 				{% trans 'Download all observations as .csv' %}<br>
-				<a href="{% url 'datasets:download_datasets_csv' request.app.uid %}" class="btn btn-outline-primary">{% trans 'Download' %}</a>
+				<a href="{% url 'datasets:create_download_datasets_csv' request.app.uid %}" class="xhr btn btn-outline-primary" ajax-target="ModalContent">{% trans 'Download' %}</a>
 			</div>
 		</div>
 		<div class="row mt-4">

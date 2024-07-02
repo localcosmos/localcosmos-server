@@ -3,7 +3,7 @@ from django.forms.widgets import *
 from django.utils.translation import gettext_lazy as _
 
 from localcosmos_server.taxonomy.widgets import (TaxonAutocompleteWidget as BackboneTaxonAutocompleteWidget,
-                                                 SelectTaxonWidget)
+                                                 SelectTaxonWidget, FixedTaxonWidget)
 
 import json
 

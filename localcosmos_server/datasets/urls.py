@@ -7,6 +7,7 @@ app_name = 'datasets'
 urlpatterns = [
     path('<str:app_uid>/datasets/', views.ListDatasets.as_view(), name='list_datasets'),
     path('<str:app_uid>/datasets/csv/', views.DownloadDatasetsCSV.as_view(), name='download_datasets_csv'),
+    path('<str:app_uid>/datasets/create-csv/', views.CreateDownloadDatasetsCSV.as_view(), name='create_download_datasets_csv'),
     path('<str:app_uid>/dataset/<int:dataset_id>/edit/', views.EditDataset.as_view(), name='edit_dataset'),
     path('<str:app_uid>/dataset-validation-routine/', views.ShowDatasetValidationRoutine.as_view(),
         name='dataset_validation_routine'),

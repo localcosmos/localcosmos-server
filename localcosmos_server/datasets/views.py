@@ -1,3 +1,4 @@
+from typing import Any
 from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -282,19 +283,57 @@ class DeleteDatasetImage(AjaxDeleteView):
         return _('Do you really want to delete this image?')
 
 
-class DownloadDatasetsCSV(TemplateView):
 
+class CreateDownloadDatasetsCSV(TemplateView):
+    
+    template_name = 'datasets/ajax/download_datasets_csv.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['csv_file'] = None
+        context['ready'] = False
+        
+        return context 
+    
     def get(self, request, *args, **kwargs):
-        csv_export = DatasetCSVExport(request.app)
-
+        
+        # this could run in a thread
+        csv_export = DatasetCSVExport(self.request.app)
         csv_export.write_csv()
 
+        # couldnt get X-Sendfile to work with django, wsgi and nginx
+        '''        
         response = HttpResponse(content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename=datasets.csv'
-        response['X-Sendfile'] = smart_str(csv_export.filepath)
+        
+        filepath = smart_str('http://{0}{1}'.format(request.get_host(), csv_export.url))
+        
+        response['X-Sendfile'] = filepath
+        response['X-Accel-Redirect'] = filepath
         # It's usually a good idea to set the 'Content-Length' header too.
         # You can also set any other required headers: Cache-Control, etc.
-        return response
+        '''
+        
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+    
+    
+class DownloadDatasetsCSV(TemplateView):
+    
+    template_name = 'datasets/ajax/download_datasets_csv_button.html'
+    
+    def get_context_data(self, **kwargs):
+        csv_export = DatasetCSVExport(self.request.app)
+        
+        context = super().get_context_data(**kwargs)
+        context['ready'] = True
+        context['csv_url'] = csv_export.url
+        return context
+
+    @method_decorator(ajax_required)
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
 
 
 class AddDatasetImage(FormView):

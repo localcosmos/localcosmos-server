@@ -316,6 +316,10 @@ class App(models.Model):
     def media_base_path(self):
         return os.path.join(settings.MEDIA_ROOT, self.uid)
 
+    @property
+    def media_base_url(self):
+        return os.path.join(settings.MEDIA_URL, self.uid)
+
 
     def get_url(self):
         if settings.LOCALCOSMOS_PRIVATE == True:
@@ -537,9 +541,10 @@ class App(models.Model):
     # LC PRIVATE: remove all contents from disk
     def delete(self, *args, **kwargs):
         app_folder = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.uid)
+        super().delete(*args, **kwargs)
+        
         if os.path.isdir(app_folder):
             shutil.rmtree(app_folder)
-        super().delete(*args, **kwargs)
         
 
     def __str__(self):
