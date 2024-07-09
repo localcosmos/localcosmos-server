@@ -6,11 +6,12 @@ from content_licencing.models import ContentLicenceRegistry
 
 from localcosmos_server.template_content.utils import get_component_image_type, get_published_image_type
 
+# do not replace camelCase with underscore_case without adapting app_kit's ContentImageBuilder.build_licence
 class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     title = serializers.SerializerMethodField()
-    template_name = serializers.SerializerMethodField()
-    template_path = serializers.SerializerMethodField()
+    templateName = serializers.SerializerMethodField()
+    templatePath = serializers.SerializerMethodField()
     
     version = serializers.SerializerMethodField()
     
@@ -166,21 +167,22 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
         fields = ['title', 'templateName', 'templatePath', 'version', 'contents']
 
 
+# do not replace camelCase with underscore_case without adapting app_kit's ContentImageBuilder.build_licence
 class ContentLicenceSerializer(serializers.ModelSerializer):
 
-    licence_version = serializers.CharField(source='licence_version')
-    creator_name = serializers.CharField(source='creator_name')
-    creator_link = serializers.CharField(source='creator_link')
-    source_link = serializers.CharField(source='source_link')
+    licenceVersion = serializers.CharField(source='licence_version')
+    creatorName = serializers.CharField(source='creator_name')
+    creatorLink = serializers.CharField(source='creator_link')
+    sourceLink = serializers.CharField(source='source_link')
 
     class Meta:
         model = ContentLicenceRegistry
         fields = ('licence', 'licenceVersion', 'creatorName', 'creatorLink', 'sourceLink')
 
-
+# do not replace imageUrl with image_url without adapting app_kit's ContentImageBuilder.build_licence
 class ContentImageSerializer(serializers.Serializer):
     
-    image_url = serializers.SerializerMethodField()
+    imageUrl = serializers.SerializerMethodField()
     licence = serializers.SerializerMethodField()
 
     def get_imageUrl(self, content_image):
