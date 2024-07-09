@@ -136,6 +136,7 @@ class ManageTaxonomicRestrictionsCommon:
 
         return self.render_to_response(context)
 
+
 class ManageTaxonomicRestrictions(ManageTaxonomicRestrictionsCommon, AppMixin, FormView):
 
     def get_taxon_search_url(self):

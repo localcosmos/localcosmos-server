@@ -11,7 +11,6 @@ from localcosmos_server.server_control_panel.views import (AppsContextMixin, LCP
 from localcosmos_server.models import App, SecondaryAppLanguages
 
 from localcosmos_server.tests.mixins import WithApp, WithUser, WithMedia, CommonSetUp
-from localcosmos_server.online_content.tests.test_views import WithPublishedApp
 
 from localcosmos_server.tests.common import TEST_MEDIA_ROOT
 
@@ -348,7 +347,7 @@ class TestEditAppAndAppMixin(CommonSetUp, GetViewMixin, WithUser, WithApp, WithM
 
         
 @test_settings
-class TestCheckAppApiStatus(CommonSetUp, WithPublishedApp, GetViewMixin, WithUser, WithApp, WithMedia, TestCase):
+class TestCheckAppApiStatus(CommonSetUp, GetViewMixin, WithUser, WithApp, WithMedia, TestCase):
 
     def get_url_kwargs(self):
 

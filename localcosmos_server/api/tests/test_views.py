@@ -327,9 +327,11 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, APITestCase):
     def test_put(self):
         
         user = self.create_user()
+        
+        # currently, username is a read only field
 
         put_data = {
-            'username' : 'new_username',
+            #'username' : 'new_username',
             'firstName' : 'new first name',
             'lastName' : 'new last name',
             'email' : 'new@mail.email',
@@ -356,7 +358,7 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         self.assertEqual(user.first_name, put_data['firstName'])
         self.assertEqual(user.last_name, put_data['lastName'])
         self.assertEqual(user.email, put_data['email'])
-        self.assertEqual(user.username, put_data['username'])
+        #self.assertEqual(user.username, put_data['username'])
 
     @test_settings
     def test_put_400(self):
@@ -380,7 +382,8 @@ class TestManageAccount(GetJWTokenMixin, WithUser, WithApp, APITestCase):
 
         self.assertEqual(authed_response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        self.assertIn('username', authed_response.data)
+        # currently, username is read only
+        #self.assertIn('username', authed_response.data)
         self.assertIn('email', authed_response.data)
 
 

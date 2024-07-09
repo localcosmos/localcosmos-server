@@ -9,7 +9,7 @@
 FROM ubuntu:20.04
 ENV UBUNTU_NAME=focal
 
-MAINTAINER Thomas Uher <thomas.uher@sisol-systems.com>
+LABEL maintainer Thomas Uher <thomas.uher@sisol-systems.com>
 
 ENV PYTHONUNBUFFERED 1
 
@@ -48,7 +48,7 @@ RUN make &&\
 
 # install django, localcosmos_server
 RUN pip3 install wheel &&\
-    pip3 install django==3.1.* uwsgi &&\
+    pip3 install django==4.2.* uwsgi &&\
     pip3 install localcosmos_server
 
 # create the django project

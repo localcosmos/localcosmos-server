@@ -8,7 +8,6 @@ from localcosmos_server.tests.common import test_settings, MockPost
 from localcosmos_server.taxonomy.views import (SearchAppTaxon, ManageTaxonomicRestrictions,
                                                RemoveAppTaxonomicRestriction)
 
-from localcosmos_server.online_content.tests.test_views import WithPublishedApp
 from localcosmos_server.server_control_panel.tests.test_views import GetViewMixin
 
 from localcosmos_server.tests.mixins import WithApp, WithUser, CommonSetUp
@@ -19,8 +18,9 @@ from localcosmos_server.taxonomy.forms import AddSingleTaxonForm, TypedTaxonomic
 import json
 
 
+# removed WithPublishedApp, which came from online content
 @test_settings
-class TestSeachAppTaxon(CommonSetUp, WithPublishedApp, WithApp, WithUser, TestCase):
+class TestSearchAppTaxon(CommonSetUp, WithApp, WithUser, TestCase):
 
     def test_get(self):
 
@@ -78,8 +78,9 @@ class TestSeachAppTaxon(CommonSetUp, WithPublishedApp, WithApp, WithUser, TestCa
         self.assertEqual(choices, [])
 
 
+
 @test_settings
-class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedApp, WithApp, WithUser, TestCase):
+class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithApp, WithUser, TestCase):
 
     def get_url_kwargs(self):
 
@@ -95,9 +96,13 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
     
 
     def test_get_taxon_search_url(self):
+        user_ctype = ContentType.objects.get_for_model(self.user)
 
         view, request = self.get_view(ManageTaxonomicRestrictions, 'manage_app_taxonomic_restrictions')
+        view.content_type = user_ctype
+        view.content_instance = self.user
         request.app = self.app
+        view.app = self.app
         
         url = view.get_taxon_search_url()
         expected_url = reverse('search_app_taxon', kwargs={'app_uid':self.app.uid})
@@ -111,6 +116,7 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
         view, request = self.get_view(ManageTaxonomicRestrictions, 'manage_app_taxonomic_restrictions')
         view.content_type = user_ctype
         view.content_instance = self.user
+        view.app = self.app
         
         prefix = view.get_prefix()
         
@@ -125,6 +131,7 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
         request.app = self.app
         view.content_type = user_ctype
         view.content_instance = self.user
+        view.app = self.app
         
         form_kwargs = view.get_form_kwargs()
         self.assertEqual(form_kwargs['fixed_taxon_source'], 'AppTaxa')
@@ -140,6 +147,7 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
         request.app = self.app
         view.content_type = user_ctype
         view.content_instance = self.user
+        view.app = self.app
         
         form_kwargs = view.get_required_form_kwargs()
         self.assertEqual(form_kwargs['fixed_taxon_source'], 'AppTaxa')
@@ -203,6 +211,7 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
         view.content_type = user_ctype
         view.content_instance = self.user
         request.app = self.app
+        view.app = self.app
 
         context = view.get_context_data(**{})
         self.assertTrue(context['is_available'])
@@ -217,6 +226,7 @@ class TestManageTaxonomicRestrictions(CommonSetUp, GetViewMixin, WithPublishedAp
         view.content_type = user_ctype
         view.content_instance = self.user
         request.app = self.app
+        view.app = self.app
 
         prefix = view.get_prefix()
 
