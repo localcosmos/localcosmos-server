@@ -298,7 +298,7 @@ class CreateDownloadDatasetsCSV(TemplateView):
     def get(self, request, *args, **kwargs):
         
         # this could run in a thread
-        csv_export = DatasetCSVExport(self.request.app)
+        csv_export = DatasetCSVExport(self.request, self.request.app)
         csv_export.write_csv()
 
         # couldnt get X-Sendfile to work with django, wsgi and nginx
@@ -323,7 +323,7 @@ class DownloadDatasetsCSV(TemplateView):
     template_name = 'datasets/ajax/download_datasets_csv_button.html'
     
     def get_context_data(self, **kwargs):
-        csv_export = DatasetCSVExport(self.request.app)
+        csv_export = DatasetCSVExport(self.request, self.request.app)
         
         context = super().get_context_data(**kwargs)
         context['ready'] = True

@@ -33,7 +33,8 @@
 			<div class="mt-2">
 				{% trans 'observed by' %}:
 				{% if dataset.user %}
-					{{ dataset.user }}
+					{{ dataset.user }} <br>
+					{{ dataset.user.first_name}} {{ dataset.user.last_name }}
 				{% else %}
 					{% trans 'Anonymous user' %}
 				{% endif %}

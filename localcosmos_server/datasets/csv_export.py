@@ -5,9 +5,13 @@ from localcosmos_server.utils import datetime_from_cron
 
 from localcosmos_server.datasets.models import Dataset, DatasetImages
 
+
 class DatasetCSVExport:
 
-    def __init__(self, app, filters={}):
+    def __init__(self, request, app, filters={}):
+        
+        # required for urls
+        self.request = request
 
         filters['app_uuid'] = app.uuid
         
@@ -40,7 +44,7 @@ class DatasetCSVExport:
         if os.path.isfile(self.filepath):
             os.remove(self.filepath)
 
-        columns = ['client_id', 'platform']
+        columns = ['client_id', 'username', 'name', 'platform']
 
         uuid_to_label = {
             'client_id' : 'client_id',
@@ -73,9 +77,9 @@ class DatasetCSVExport:
                     uuid_to_label[field_uuid_x] = label_x
                     uuid_to_label[field_uuid_y] = label_y
                     
-                    columns.append(label_x)
                     columns.append(label_y)
-                
+                    columns.append(label_x)
+                    
                 else:
                 
                     # merge field_uuids that have the same label
@@ -88,6 +92,8 @@ class DatasetCSVExport:
                     
 
                 field_classes[field_uuid] = field_class
+                
+            print(uuid_to_label)
 
         # write the csv header row
         with open(self.filepath, 'w', newline='') as csvfile:
@@ -95,59 +101,78 @@ class DatasetCSVExport:
             dataset_writer.writerow(columns)
 
             for dataset in self.get_queryset():
+                
+                observation_form = dataset.observation_form
 
                 reported_data = dataset.data
 
                 data_columns = [None]*len(columns)
                 
+                username = None
+                full_name = None
+                
+                if dataset.user:
+                    username = dataset.user.username
+                    full_name = '{0} {1}'.format(dataset.user.first_name, dataset.user.last_name)
+                
                 data_columns[0] = dataset.client_id
-                data_columns[1] = dataset.platform
+                data_columns[1] = username
+                data_columns[2] = full_name
+                data_columns[3] = dataset.platform
 
-                for field_uuid, value in reported_data.items():
-
+                #for field_uuid, value in reported_data.items():
+                for field in observation_form.definition['fields']:
+                    
+                    field_uuid = field['uuid']
                     field_class = field_classes[field_uuid]
-                    serialize_fn_name = 'serialize_{0}'.format(field_class)
-
-                    if hasattr(self, serialize_fn_name):
-                        serialize_fn = getattr(self, serialize_fn_name)
-                        value = serialize_fn(value)
                     
-                    if field_class == 'PointJSONField':
-                        
-                        field_uuid_x = self.get_PointJSONField_coordinate_uuid('x', field_uuid)
-                        field_uuid_y = self.get_PointJSONField_coordinate_uuid('y', field_uuid)
-                        
-                        label_x = uuid_to_label[field_uuid_x]
-                        label_y = uuid_to_label[field_uuid_y]
-                        
-                        value_x = None
-                        value_y = None
-                        
-                        if value:
-                            value_x = value[0]
-                            value_y = value[1]
-                        
-                        data_columns[columns.index(label_x)] = value_x
-                        data_columns[columns.index(label_y)] = value_y
-                    
-                    elif field_class == 'PictureField':
+                    if field_class == 'PictureField':
                         
                         label = uuid_to_label[field_uuid]
-                        
                         images = DatasetImages.objects.filter(field_uuid=field_uuid)
                         
                         if images:
                             image_urls = []
                             for image in images:
-                                image_urls.append(image.image.url)
+                                full_image_url = '{0}://{1}{2}'.format(self.request.scheme, self.request.get_host(), image.image.url)
+                                image_urls.append(full_image_url)
 
                             value = ','.join(image_urls)
                             data_columns[columns.index(label)] = value
                     
-                    else:
+                    
+                    elif field_uuid in reported_data:
+                        
+                        value = reported_data[field_uuid]
+                        
+                        serialize_fn_name = 'serialize_{0}'.format(field_class)
 
-                        label = uuid_to_label[field_uuid]
-                        data_columns[columns.index(label)] = value
+                        if hasattr(self, serialize_fn_name):
+                            serialize_fn = getattr(self, serialize_fn_name)
+                            value = serialize_fn(value)
+                        
+                        if field_class == 'PointJSONField':
+                            
+                            field_uuid_x = self.get_PointJSONField_coordinate_uuid('x', field_uuid)
+                            field_uuid_y = self.get_PointJSONField_coordinate_uuid('y', field_uuid)
+                            
+                            label_x = uuid_to_label[field_uuid_x]
+                            label_y = uuid_to_label[field_uuid_y]
+                            
+                            value_x = None
+                            value_y = None
+                            
+                            if value:
+                                value_x = value[0]
+                                value_y = value[1]
+                            
+                            data_columns[columns.index(label_x)] = value_x
+                            data_columns[columns.index(label_y)] = value_y
+                        
+                        else:
+
+                            label = uuid_to_label[field_uuid]
+                            data_columns[columns.index(label)] = value
 
                     
                 dataset_writer.writerow(data_columns)
