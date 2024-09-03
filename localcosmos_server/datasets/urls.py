@@ -33,4 +33,6 @@ urlpatterns = [
     #add image
     path('<str:app_uid>/dataset/<int:dataset_id>/add-image/<str:image_field_uuid>/',
         views.AddDatasetImage.as_view(), name='add_dataset_image'),
+    # taxon search
+    path('<str:app_uid>/search-dataset-taxon/', views.SearchDatasetTaxon.as_view(), name='search_dataset_taxon'),
 ]

@@ -106,6 +106,15 @@
 
 {% block extra_script %}
 	<script>
-		$("#id_search_user").userautocomplete("{% url 'appadmin:search_app_user' request.app.uid %}");
+		$("#id_search_user").userautocomplete({
+				"url" : "{% url 'appadmin:search_app_user' request.app.uid %}",
+				"afterSelect": function(item) {
+					$.get(item.edit_role_url, function(html){
+						$("#ModalContent").html(html);
+						ajaxify("ModalContent");
+					});
+				}
+			}
+		);
 	</script>
 {% endblock %}

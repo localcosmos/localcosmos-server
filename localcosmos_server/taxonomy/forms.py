@@ -6,9 +6,15 @@ from django.utils.translation import gettext_lazy as _
 '''
 from .fields import TaxonField
 from .widgets import TaxonAutocompleteWidget
+from .lazy import LazyAppTaxon
+
 class AddSingleTaxonForm(forms.Form):
+    
+    lazy_taxon_class = LazyAppTaxon
 
     def __init__(self, *args, **kwargs):
+        
+        lazy_taxon_class = kwargs.pop('lazy_taxon_class', self.lazy_taxon_class)
 
         #required: taxon_search_url
         taxon_search_url = kwargs.pop('taxon_search_url', None)
@@ -30,6 +36,7 @@ class AddSingleTaxonForm(forms.Form):
             'descendants_choice' : descendants_choice,
             'fixed_taxon_source' : fixed_taxon_source,
             'widget_attrs' : {},
+            'lazy_taxon_class': lazy_taxon_class,
         }
 
         self.fields['taxon'] = TaxonField(label=_('Taxon'), required=True, **field_kwargs)

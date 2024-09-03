@@ -5,24 +5,56 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import gettext as _
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
+from django.urls import reverse
 
 from localcosmos_server.decorators import ajax_required
 from localcosmos_server.generic_views import AjaxDeleteView
 
-from .forms import DatasetValidationRoutineForm, ObservationForm, AddDatasetImageForm
+from localcosmos_server.models import LocalcosmosUser
+
+from .forms import DatasetValidationRoutineForm, ObservationForm, AddDatasetImageForm, DatasetsFilterForm
 
 from .models import Dataset, DatasetValidationRoutine, DATASET_VALIDATION_CLASSES, DatasetImages
 
 from .csv_export import DatasetCSVExport
 
+import json
 
-class ListDatasets(TemplateView):
+
+class ListDatasets(FormView):
 
     template_name = 'datasets/list_datasets.html'
-
+    form_class = DatasetsFilterForm
+    
+    def dispatch(self, request, *args, **kwargs):
+        is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+        if is_ajax:
+            self.template_name = 'datasets/ajax/dataset_list.html'
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        user_id =  self.request.GET.get('user', None)
+        taxon_latname = self.request.GET.get('taxon', None)
+        
+        filters = {
+            'app_uuid': self.request.app.uuid,
+        }
+        
+        if user_id:
+            user = LocalcosmosUser.objects.filter(pk=user_id).first()
+            filters['user'] = user
+        
+        if taxon_latname:
+            filters['taxon_latname__iexact'] = taxon_latname
+            
+        queryset = Dataset.objects.filter(**filters)
+                
+        return queryset
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['datasets'] = Dataset.objects.filter(app_uuid=self.request.app.uuid)
+        context['datasets'] = self.get_queryset()
+        context['filter_url'] = reverse('datasets:list_datasets', kwargs={'app_uid':self.request.app.uid})
         return context
 
 
@@ -374,3 +406,30 @@ class AddDatasetImage(FormView):
 
         return self.render_to_response(context)
 
+
+
+class SearchDatasetTaxon(TemplateView):
+    
+    @method_decorator(ajax_required)
+    def get(self, request, *args, **kwargs):
+        limit = request.GET.get('limit',10)
+        searchtext = request.GET.get('searchtext', None)
+
+        choices = []
+
+        if searchtext:
+        
+            results = Dataset.objects.filter(taxon_latname__istartswith=searchtext).distinct('taxon_latname').order_by('taxon_latname')[:limit]
+
+            for result in results:
+                
+                taxon = {
+                    'name' : result.taxon_latname,
+                    'taxon_latname': result.taxon_latname,
+                    'id' : result.id,
+                }
+
+                choices.append(taxon)
+        
+
+        return HttpResponse(json.dumps(choices), content_type='application/json')

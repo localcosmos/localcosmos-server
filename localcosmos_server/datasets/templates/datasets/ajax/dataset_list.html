@@ -1,0 +1,32 @@
+{% load i18n el_pagination_tags %}
+{% paginate 15 datasets %}
+
+{% if datasets %}
+    <div class="row">
+        <div class="col-12">				
+            {% show_pages %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="row">
+    {% if datasets %}
+        {% for dataset in datasets %}
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                {% include 'datasets/ajax/dataset_box.html' %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            {% trans 'No observations yet.' %}
+        </div>
+    {% endif %}
+</div>
+
+{% if datasets %}
+    <div class="row">
+        <div class="col-12">				
+            {% show_pages %}
+        </div>
+    </div>
+{% endif %}

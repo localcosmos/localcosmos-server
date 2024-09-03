@@ -1,10 +1,9 @@
 {% extends 'app_admin/base.html' %}
 
-{% load i18n el_pagination_tags %}
+{% load i18n static el_pagination_tags localcosmos_tags %}
 
 {% block content %}
 
-{% paginate 12 datasets %}
 	<div class="container">
 		<div class="row">
 			<div class="col-12">
@@ -17,38 +16,126 @@
 		</div>
 		<div class="row mt-4">
 			<div class="col-12">
+				<h2>{% trans 'Filters' %}</h2>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 col-md-4">
+				{% for field in form %}
+					{% render_bootstrap_field field %}
+					<div id="{{ field.auto_id }}_no_results" class="alert alert-danger" style="display:none;">
+						{% trans 'Nothing found.' %}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="row my-4">
+			<div class="col-12">
+				<div class="d-flex flex-row flex-wrap flex-gap">
+					<div id="userfilter" class="dataset-filter text-light bg-secondary d-none">
+						<span id="dataset-filter-username">username</span>
+						<span id="remove-userfilter" class="cursor-pointer"><img src="{% static 'app_admin/img/close.svg' %}" /></span>
+					</div>
+	
+					<div id="taxonfilter" class="dataset-filter text-light bg-secondary d-none">
+						<span id="dataset-filter-taxon">taxon</span>
+						<span id="remove-taxonfilter" class="cursor-pointer"><img src="{% static 'app_admin/img/close.svg' %}" /></span>
+					</div>
+				</div>	
+			</div>
+		</div>
+		<div class="row mt-4">
+			<div class="col-12">
 				<h2>{% trans 'Observations' %}</h2>
 			</div>
 		</div>
 
-		{% if datasets %}
-			<div class="row">
-				<div class="col-12">				
-					{% show_pages %}
-				</div>
-			</div>
-		{% endif %}
-
-		<div class="row">
-			{% if datasets %}
-				{% for dataset in datasets %}
-					<div class="col-12 col-md-6 col-lg-4 mb-4">
-						{% include 'datasets/ajax/dataset_box.html' %}
-					</div>
-				{% endfor %}
-			{% else %}
-				<div class="col-12">
-					{% trans 'No observations yet.' %}
-				</div>
-			{% endif %}
+		<div id="datasets" class="endless_page_template">
+			{% include 'datasets/ajax/dataset_list.html' %}
 		</div>
-
-		{% if datasets %}
-			<div class="row">
-				<div class="col-12">				
-					{% show_pages %}
-				</div>
-			</div>
-		{% endif %}
 	</div>
+{% endblock %}
+
+{% block extra_script %}
+	<script>
+
+		const userFilterIndicator = document.getElementById('userfilter');
+		const userFilterUsername = document.getElementById('dataset-filter-username');
+		const removeUserFilterButton = document.getElementById('remove-userfilter');
+
+		const taxonFilterIndicator = document.getElementById('taxonfilter');
+		const taxonFilterName = document.getElementById('dataset-filter-taxon');
+		const removeTaxonFilterButton = document.getElementById('remove-taxonfilter');
+
+		const activeFilters = {};
+
+		const refreshDatasetList = () => {
+			let querystring = '';
+
+			for (const [key, value] of Object.entries(activeFilters)) {
+
+				if (querystring.length == 0) {
+					querystring += '?';
+				} else {
+					querystring += '&';
+				}
+				querystring = `${querystring}${key}=${value}`;
+			}
+
+			const url = '{{ filter_url }}' + querystring;
+
+			$.get(url, (html) => {
+				$('#datasets').html(html);
+			});
+		};
+
+
+		const setUserFilter = (username, userId) => {
+			userFilterUsername.textContent = username;
+			userFilterIndicator.classList.remove('d-none');
+			activeFilters.user = userId;
+			refreshDatasetList();
+		};
+
+		const removeUserFilter = () => {
+			userFilterIndicator.classList.add('d-none');
+			delete activeFilters['user'];
+			refreshDatasetList();
+		};
+
+		removeUserFilterButton.addEventListener('click', removeUserFilter);
+
+		const setTaxonFilter = (taxon_latname) => {
+			taxonFilterName.textContent = taxon_latname;
+			taxonFilterIndicator.classList.remove('d-none');
+			activeFilters.taxon = taxon_latname;
+			refreshDatasetList();
+		};
+
+		const removeTaxonFilter = () => {
+			taxonFilterIndicator.classList.add('d-none');
+			delete activeFilters['taxon'];
+			refreshDatasetList();
+		};
+
+		removeTaxonFilterButton.addEventListener('click', removeTaxonFilter);
+
+
+		$("#id_user").userautocomplete({
+			url : "{% url 'appadmin:search_app_user' request.app.uid %}",
+			afterSelect : function(item) {
+				setUserFilter(item.username, item.id);
+			}
+		});
+
+		$("#id_taxon").datasettaxonautocomplete({
+			url : "{% url 'datasets:search_dataset_taxon' request.app.uid %}",
+			afterSelect : function(item) {
+				setTaxonFilter(item.taxon_latname);
+			}
+		});
+
+
+		$('#datasets').endlessPaginate();
+	</script>
 {% endblock %}

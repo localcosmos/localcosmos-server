@@ -26,7 +26,7 @@ class AppTaxonSearch:
         app_features = self.app.get_features(app_state=app_state)
 
         app_root = app.published_version_path
-        self.latname_alphabet_folder = os.path.join(app_root, app_features['BackboneTaxonomy']['alphabet'])
+        self.latname_alphabet_folder = os.path.join(app_root, app_features['BackboneTaxonomy']['alphabet'].lstrip('/'))
         
         vernacular_relpath = app_features['BackboneTaxonomy']['vernacular'].get(language, None)
 
@@ -59,7 +59,7 @@ class AppTaxonSearch:
                 if len(latname_matches) >= self.limit:
                     break
 
-                if taxon_dic['taxon_latname'].upper().startswith(self.searchtext):
+                if taxon_dic['taxonLatname'].upper().startswith(self.searchtext):
                     lazy_taxon = LazyAppTaxon(**taxon_dic)
                     latname_matches.append(lazy_taxon.as_typeahead_choice())
 

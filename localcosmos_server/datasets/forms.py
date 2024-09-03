@@ -245,3 +245,9 @@ class AddDatasetImageForm(forms.Form):
 
     image = forms.ImageField(
         validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png'])])
+    
+    
+class DatasetsFilterForm(forms.Form):
+    
+    user = forms.CharField()
+    taxon = forms.CharField(label=_('Taxon (scientific name)'))

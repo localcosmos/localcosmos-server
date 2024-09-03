@@ -10,3 +10,18 @@ html, body {
 	line-height: 1.5;
 	border-radius: 0.2rem;
 }
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+
+.dataset-filter {
+	background: #FFF;
+	border-radius: 1em;
+	padding: 5px 15px;
+}
+
+.flex-gap {
+	gap: 10px;
+}

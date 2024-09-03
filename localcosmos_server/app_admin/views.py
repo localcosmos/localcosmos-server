@@ -133,7 +133,7 @@ class SearchAppUser(TemplateView):
 
         if searchtext:
         
-            results = User.objects.filter(username__istartswith=searchtext)[:10]
+            results = User.objects.filter(username__istartswith=searchtext)[:limit]
 
             for result in results:
                 
@@ -144,6 +144,7 @@ class SearchAppUser(TemplateView):
                 
                 user = {
                     'name' : result.username,
+                    'username': result.username,
                     'id' : result.id,
                     'edit_role_url' : reverse('appadmin:manage_app_user_role', kwargs=url_kwargs),
                 }

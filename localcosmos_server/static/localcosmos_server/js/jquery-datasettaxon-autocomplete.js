@@ -1,16 +1,21 @@
 (function($) {
-	$.fn.userautocomplete = function(options) {
+	$.fn.datasettaxonautocomplete = function(options) {
 
-		var username_input = $( this );
+		if (!options.hasOwnProperty("url")){
+			throw new Error("taxonautocomplete requires options.url");
+		}
 
-		var no_results_indicator = $("#" + username_input.attr('id') +  "_no_results");
+		var taxon_input = $( this );
 
-		username_input.focusout(function(){
+		var no_results_indicator = $("#" + taxon_input.attr('id') + "_no_results");
+		
+		taxon_input.focusout(function(){
 			no_results_indicator.hide();
-			username_input.val('');
+			taxon_input.val('');
 		});
 
-		username_input.typeahead({
+		taxon_input.typeahead({
+			autoSelect: false,
 			source: function(input_value, process){
 
 				$.ajax({
@@ -19,7 +24,10 @@
 					dataType: "json",
 					cache: false,
 					data: {
-						"searchtext": input_value
+						"searchtext": input_value,
+					},
+					beforeSend : function(){
+						no_results_indicator.hide();
 					},
 					success: function (data) {
 
@@ -41,10 +49,10 @@
 				if (options.hasOwnProperty("afterSelect") && typeof(options.afterSelect) == 'function'){
 					options.afterSelect(item);
 				}
+
 			},
-            autoSelect: false,
 			minLength: 3,
-			delay: 300
+			delay: 500
 		}); 
 	}
 }(jQuery));
