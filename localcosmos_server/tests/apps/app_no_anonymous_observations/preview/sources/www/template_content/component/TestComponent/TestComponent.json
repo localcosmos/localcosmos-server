@@ -17,7 +17,7 @@
       "helpText": "square image"
     },
     "link": {
-      "type": "text",
+      "type": "templateContentLink",
       "widget": "TextInput",
       "required": true
     }

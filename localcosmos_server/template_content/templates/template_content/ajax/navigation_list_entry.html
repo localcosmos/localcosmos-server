@@ -28,7 +28,7 @@
 						<a class="dropdown-item" href="{% url 'translate_template_content_navigation' app.uid navigation.pk language %}">{% blocktrans %}Translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
 					{% endfor %}
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item xhr" href="{% url 'delete_template_content_navigation' navigation.pk %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+					<a class="dropdown-item xhr" href="{% url 'delete_template_content_navigation' app.uid navigation.pk %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
 				</div>
 			</div>
 

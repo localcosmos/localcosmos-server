@@ -20,6 +20,13 @@ TEMPLATE_TYPES = (
     ('component', _('Component')),
 )
 
+TEMPLATE_CONTENT_TYPES = (
+    'text',
+    'image',
+    'component',
+    'templateContentLink',
+)
+
 NAVIGATION_LINK_NAME_MAX_LENGTH = 20
 TITLE_MAX_LENGTH = 255
 
@@ -215,11 +222,16 @@ class TemplateContent(PublicationMixin, models.Model):
         # use the templates on disk
         self.draft_template = Template(self.app, self.draft_template_name, self.template_type)
 
+    @property
+    def template(self):
+        template = None
+        
         if self.published_template:
             # the published template, use the template data (definition&template) stored in the db
-            self.template = Template(self.app, self.name, self.template_type,
+            template = Template(self.app, self.name, self.template_type,
                 self.published_template.path, self.published_template_definition.path)
-
+            
+        return template
 
     # return different path for published pages
     def get_component_template(self, content_key):
@@ -362,6 +374,7 @@ class TemplateContent(PublicationMixin, models.Model):
 
 
     class Meta:
+        # this constraint might be wrong. There could be more than one page with app/None assignment
         unique_together=('app', 'assignment')
 
 
@@ -461,8 +474,11 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
                     if 'required' in content_definition and content_definition['required'] == False:
                         continue
-
-                    content = self.draft_contents.get(content_key, None)
+                    
+                    content = None
+                    
+                    if self.draft_contents:
+                        content = self.draft_contents.get(content_key, None)
 
                     if not content:
                         translation_errors.append(_('The component "%(component_name)s" is required but still missing for the language %(language)s.') %{'component_name':content_key, 'language':self.language})
@@ -477,10 +493,16 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
                 translation_errors.append(_('Content is still missing for the language %(language)s.') % {'language':primary_language})
 
             else:
-                for content_key, content in primary_contents.items():
-                    if content_key not in self.draft_contents or not self.draft_contents[content_key]:
-                        translation_errors.append(_('The translation for the language %(language)s is incomplete.') % {'language':self.language})
-                        break
+                
+                error_message = _('The translation for the language %(language)s is incomplete.') % {'language':self.language}
+                if self.draft_contents:
+                    for content_key, content in primary_contents.items():
+                        if content_key not in self.draft_contents or not self.draft_contents[content_key]:
+                            translation_errors.append(error_message)
+                            break
+                        
+                else:
+                    translation_errors.append(error_message)
 
         return translation_errors
 
@@ -582,7 +604,7 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
         self.save(published=True)
 
-
+    # JSON SCHEMA VALIDATION NEEDED!
     def save(self, *args, **kwargs):
 
         # indicates, if the save() command came from self.publish
@@ -614,25 +636,28 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
     def get_component(self, component_key, component_uuid):
 
-        allow_multiple = self.template_content.draft_template.definition['contents'][component_key].get(
-            'allowMultiple', False)
-
         component = {}
+        
+        template_definition = self.template_content.draft_template.definition
+        
+        if component_key in template_definition['contents']:
+            allow_multiple = template_definition['contents'][component_key].get(
+                'allowMultiple', False)
 
-        if self.draft_contents:
+            if self.draft_contents:
 
-            if allow_multiple == True:
-                
-                components = self.draft_contents.get(component_key, [])
+                if allow_multiple == True:
+                    
+                    components = self.draft_contents.get(component_key, [])
 
-                for possible_component in components:
+                    for possible_component in components:
 
-                    if str(possible_component['uuid']) == str(component_uuid):
-                        component = possible_component
-                        break
+                        if str(possible_component['uuid']) == str(component_uuid):
+                            component = possible_component
+                            break
 
-            else:
-                component = self.draft_contents.get(component_key, {})
+                else:
+                    component = self.draft_contents.get(component_key, {})
 
         return component
 
@@ -872,10 +897,8 @@ class LocalizedNavigation(models.Model):
         
         primary_language = self.navigation.app.primary_language
 
-        if self.language == primary_language:
-            return []
-        
-        else:
+        if self.language != primary_language:
+
             navigation_entries = NavigationEntry.objects.filter(navigation=self.navigation)
 
             for navigation_entry in navigation_entries:
@@ -902,7 +925,6 @@ class LocalizedNavigation(models.Model):
 
         if self.published_version != self.draft_version:
             self.published_version = self.draft_version
-            self.published_at = timezone.now()
 
         self.save(published=True)
 

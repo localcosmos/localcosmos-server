@@ -131,14 +131,16 @@
                 "offline": true
             }
         },
-        "requiredSites": {
-            "home": {
-                "allowedTemplates": [
-                    "home"
-                ],
-                "offline": true
+        "requiredOfflineContents": {
+			"home": {
+                "templateType": "page",
+				"allowedTemplates": ["home"]
+			},
+            "footer": {
+                "templateType": "feature",
+                "allowedTemplates": ["footer"]
             }
-        }
+		}
     },
     "cordova": {
         "platforms": {

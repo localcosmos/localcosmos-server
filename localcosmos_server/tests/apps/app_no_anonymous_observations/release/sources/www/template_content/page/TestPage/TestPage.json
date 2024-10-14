@@ -9,6 +9,11 @@
       "allowMultiple": false,
       "helpText": "Landscape image, approximately 2:1 ratio"
     },
+    "images": {
+      "type": "image",
+      "allowMultiple": true,
+      "helpText": "Square image, exactly 1:1 ratio"
+    },
     "longText": {
       "type": "text",
       "allowMultiple": false,
@@ -30,6 +35,11 @@
         
       }
     },
+    "component2": {
+      "type": "component",
+      "templateName": "TestComponent",
+      "allowMultiple": false
+    },
     "text": {
       "type": "text",
       "allowMultiple": false,
@@ -38,6 +48,11 @@
       "restrictions" : {
         "maxLength": 30
       }
+    },
+    "link": {
+      "type": "templateContentLink",
+      "widget": "TextInput",
+      "required": false
     }
   }
 }

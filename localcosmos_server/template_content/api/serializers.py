@@ -74,20 +74,25 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                 image_data = serializer.data
                 return image_data
 
+            return None
     
-    def get_component_with_image_data(self, component_key, component, component_definition, component_uuid,
-        localized_template_content, image_getter):
+    def add_image_data_to_component(self, component_key, component, component_definition,
+        localized_template_content):
 
-        for component_content_key, component_content_definition in component_definition['contents'].items():
-
-            if component_content_definition['type'] == 'image':
-
-                image_type = get_component_image_type(component_key, component_uuid, component_content_key)
-
-                image_data = image_getter(component_content_definition, localized_template_content, image_type)
-
-                component[component_content_key] = image_data
+        if component:
         
+            component_uuid = component['uuid']
+
+            for component_content_key, component_content_definition in component_definition['contents'].items():
+
+                if component_content_definition['type'] == 'image':
+
+                    image_type = get_component_image_type(component_key, component_uuid, component_content_key)
+
+                    image_data = self.get_image_data(component_content_definition, localized_template_content, image_type)
+
+                    component[component_content_key] = image_data
+            
         return component
 
 
@@ -121,7 +126,8 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                 contents[content_key] = image_data
 
             elif content_definition['type'] == 'component' and content != None:
-
+                
+                # content variable can be a list or component dict
                 component_key = content_key
 
                 if component_key in contents:
@@ -140,25 +146,23 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
                         components = contents[component_key]
 
-                        for component_index, component in enumerate(components, 0):
+                        for component_index, component in enumerate(components, 0):  
 
-                            component_uuid = component['uuid']
-
-                            component_with_image_data = self.get_component_with_image_data(component_key, component,
-                                component_definition, component_uuid, localized_template_content, self.get_image_data)
+                            component_with_image_data = self.add_image_data_to_component(component_key, component,
+                                component_definition, localized_template_content)
 
                             content[component_index] = component_with_image_data
+                        
+                        contents[component_key] = content
 
                     else:
                         
                         component = contents[component_key]
 
-                        component_uuid = component['uuid']
+                        component_with_image_data = self.add_image_data_to_component(component_key, component,
+                            component_definition, localized_template_content)
 
-                        component_with_image_data = self.get_component_with_image_data(component_key, component,
-                            component_definition, component_uuid, localized_template_content, self.get_image_data)
-
-                        content[component_index] = component_with_image_data
+                        contents[component_key] = component_with_image_data
 
         return contents
 

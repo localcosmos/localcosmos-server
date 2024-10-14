@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.test import RequestFactory
+from django.test import RequestFactory, Client
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -12,7 +12,8 @@ from localcosmos_server.datasets.models import Dataset, DatasetImages, UserGeome
 
 from localcosmos_server.tests.common import (powersetdic, TEST_MEDIA_ROOT, TEST_IMAGE_PATH, TESTAPP_NAO_ABSOLUTE_PATH,
     TESTAPP_AO_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID, TEST_OBSERVATION_FORM_JSON, DataCreator,
-    TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID, TEST_TIMESTAMP, GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME)
+    TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID, TEST_TIMESTAMP, GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME,
+    test_settings)
 
 from django.utils import timezone
 
@@ -91,6 +92,7 @@ class WithApp:
 
         self.ao_app = App.objects.create(name=self.ao_app_name, primary_language=self.app_primary_language,
                                         uid=self.ao_app_uid, **ao_create_kwargs)
+        
 
 
 class WithMedia:
@@ -191,69 +193,6 @@ class WithObservationForm:
         dataset_image.save()
 
         return dataset_image
-
-
-
-
-'''
-class WithDataset:
-
-    def create_dataset(self):
-
-        dataset = Dataset(
-            app_uuid = self.app.uuid,
-            data = TEST_DATASET_DATA_WITH_ALL_REFERENCE_FIELDS,
-            created_at = timezone.now(),
-        )
-
-        dataset.save()
-
-        return dataset
-
-    def create_notaxon_dataset(self):
-
-        dataset_data = TEST_DATASET_DATA_WITH_ALL_REFERENCE_FIELDS
-        del dataset_data['dataset']['reported_values']['7e5c9390-61cf-4cb5-8b0f-9086b2f387ce']
-
-        dataset = Dataset(
-            app_uuid = self.app.uuid,
-            data = dataset_data,
-            created_at = timezone.now(),
-        )
-
-        dataset.save()
-
-        return dataset
-
-
-    def create_full_dataset(self):
-        
-        dataset = Dataset(
-            app_uuid = self.app.uuid,
-            data = TEST_DATASET_FULL_GENERIC_FORM,
-            created_at = timezone.now(),
-        )
-
-        dataset.save()
-
-        return dataset
-
-
-    def create_dataset_image(self, dataset, field_uuid):
-
-        image = SimpleUploadedFile(name='test_image.jpg', content=open(TEST_IMAGE_PATH, 'rb').read(),
-                                   content_type='image/jpeg')
-
-        dataset_image = DatasetImages(
-            dataset = dataset,
-            field_uuid = field_uuid,
-            image = image,
-        )
-
-        dataset_image.save()
-
-        return dataset_image
-'''
     
 
 from PIL import Image
@@ -461,3 +400,100 @@ class WithServerContentImage:
         content_image.save()
 
         return content_image
+
+# requires WithUser, WithApp
+class ViewTestMixin:
+    
+    ajax = False
+    
+    @test_settings
+    def test_get_admin_logged_in(self):
+        
+        url = self.get_url()
+        
+        client = Client()
+        
+        client.login(username=self.test_superuser_username, password=self.test_password)
+        
+        headers = {}
+        
+        if self.ajax == True:
+            headers = {
+                'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'
+            }
+            
+        response = client.get(url, kwargs=self.get_url_kwargs(), **headers)
+        
+        self.assertEqual(response.status_code, 200)
+        
+    @test_settings
+    def test_get_logged_out(self):
+        
+        url = self.get_url()
+        
+        client = Client()
+        
+        headers = {}
+        
+        if self.ajax == True:
+            headers = {
+                'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'
+            }
+                
+        response = client.get(url, kwargs=self.get_url_kwargs(), **headers)
+        self.assertEqual(response.status_code, 302)
+        
+        
+    @test_settings
+    def test_get_permission_denied(self):
+        
+        url = self.get_url()
+        
+        client = Client()
+        
+        client.login(username=self.test_username, password=self.test_password)
+        
+        headers = {}
+        
+        if self.ajax == True:
+            headers = {
+                'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'
+            }
+            
+        response = client.get(url, kwargs=self.get_url_kwargs(), **headers)
+        self.assertEqual(response.status_code, 403)
+        
+        
+    def get_url_kwargs(self):
+        return {}
+
+    def get_url(self):
+        url_kwargs = self.get_url_kwargs()
+        url = reverse(self.url_name, kwargs=url_kwargs)
+        return url
+
+    def get_request(self, ajax=False):
+        factory = RequestFactory()
+        url = self.get_url()
+
+        if ajax == True:
+            url_kwargs = {
+                'HTTP_X_REQUESTED_WITH':'XMLHttpRequest'
+            }
+            request = factory.get(url, **url_kwargs)
+        else:
+            request = factory.get(url)
+        request.user = self.user
+        request.session = self.client.session
+
+        return request
+
+    def get_view(self, ajax=False):
+
+        request = self.get_request(ajax=ajax)
+
+        view = self.view_class()        
+        view.request = request
+        view.kwargs = self.get_url_kwargs()
+
+        return view

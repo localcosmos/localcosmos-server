@@ -132,7 +132,11 @@
                 "maxLevels": 1
             },
             "legal": {
-                "name": "Legal Navigation"
+                "name": "Legal navigation"
+            },
+            "deepnav" : {
+                "name": "Deep navigation",
+                "maxLevels": 3
             }
         },
         "requiredOfflineContents": {
@@ -144,9 +148,7 @@
             },
             "footer": {
                 "templateType": "feature",
-                "allowedTemplates": [
-                    "footer"
-                ]
+                "allowedTemplates": ["footer"]
             }
         }
     },

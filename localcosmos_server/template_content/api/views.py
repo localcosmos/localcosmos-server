@@ -8,7 +8,7 @@ from .serializers import LocalizedTemplateContentSerializer
 
 class GetTemplateContentCommon:
 
-    queryset = LocalizedTemplateContent.objects.all()
+    
     serializer_class = LocalizedTemplateContentSerializer
     lookup_url_kwarg = 'slug'
     lookup_field = 'slug'
@@ -19,6 +19,8 @@ class GetTemplateContentCommon:
 
 class GetTemplateContent(GetTemplateContentCommon, mixins.RetrieveModelMixin, GenericAPIView):
 
+    queryset = LocalizedTemplateContent.objects.filter(published_version__isnull=False)
+
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['preview'] = False
@@ -26,6 +28,8 @@ class GetTemplateContent(GetTemplateContentCommon, mixins.RetrieveModelMixin, Ge
 
 
 class GetTemplateContentPreview(GetTemplateContentCommon, mixins.RetrieveModelMixin, GenericAPIView):
+
+    queryset = LocalizedTemplateContent.objects.all()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

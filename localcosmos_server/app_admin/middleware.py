@@ -6,8 +6,6 @@ from django.urls import set_urlconf
 
 from localcosmos_server.models import App, AppUserRole
 
-import rules
-
 
 class AppAdminMiddleware(MiddlewareMixin):
 

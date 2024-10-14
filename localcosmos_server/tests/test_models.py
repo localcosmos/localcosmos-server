@@ -15,7 +15,7 @@ from localcosmos_server.datasets.models import Dataset
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
-from localcosmos_server.tests.common import (test_settings, test_settings_commercial, TESTAPP_NAO_RELATIVE_PATH,
+from localcosmos_server.tests.common import (test_settings, test_settings_app_kit, TESTAPP_NAO_RELATIVE_PATH,
                                             TESTAPP_NAO_PREVIEW_RELATIVE_PATH, TESTAPP_NAO_ABSOLUTE_PATH)
 from localcosmos_server.tests.mixins import WithObservationForm, WithApp
 
@@ -317,7 +317,7 @@ class TestCommercialApp(WithApp, TestCase):
         self.app.published_version_path = None
         self.app.save()
         
-    @test_settings_commercial
+    @test_settings_app_kit
     def test_get_installed_app_path(self):
         self.publish_app()
         app_path = self.app.get_installed_app_path(app_state='published')
@@ -334,7 +334,7 @@ class TestCommercialApp(WithApp, TestCase):
         self.assertEqual(preview_app_path, self.app.preview_version_path)
 
 
-    @test_settings_commercial
+    @test_settings_app_kit
     def test_get_settings(self):
 
         preview_settings = self.app.get_settings()
@@ -355,7 +355,7 @@ class TestCommercialApp(WithApp, TestCase):
         self.assertIn('REVIEW', published_settings)
         self.assertEqual(published_settings['PREVIEW'], False)
 
-    @test_settings_commercial
+    @test_settings_app_kit
     def test_get_features(self):
 
         preview_features = self.app.get_features()

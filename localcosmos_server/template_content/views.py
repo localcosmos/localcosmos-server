@@ -14,7 +14,8 @@ from django.utils.decorators import method_decorator
 from .models import (TemplateContent, LocalizedTemplateContent, Navigation, LocalizedNavigation,
                      NavigationEntry, LocalizedNavigationEntry)
 from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentForm, TranslateTemplateContentForm,
-                    ManageNavigationForm, ManageNavigationEntryForm, ManageComponentForm, TranslateNavigationForm)
+                    ManageNavigationForm, ManageNavigationEntryForm, ManageComponentForm, TranslateNavigationForm,
+                    TemplateContentFormFieldManager)
 
 from .utils import get_frontend_specific_url
 
@@ -47,13 +48,15 @@ class TemplateContentList(AppMixin, TemplateView):
         context['navigations'] = navigations
 
         required_offline_contents = []
+        
+        # offline contents are always manged within the app kit
         if settings.LOCALCOSMOS_PRIVATE == False:
             app_settings = self.app.get_settings()
-
+            
             if 'templateContent' in app_settings:
 
-                pages = app_settings['templateContent'].get('requiredOfflineContents', {})
-                for assignment, definition in pages.items():
+                required_contents = app_settings['templateContent'].get('requiredOfflineContents', {})
+                for assignment, definition in required_contents.items():
 
                     template_type = definition['templateType']
 
@@ -67,7 +70,7 @@ class TemplateContentList(AppMixin, TemplateView):
                     }
 
                     required_offline_contents.append(content)
-
+        
         context['required_offline_contents'] = required_offline_contents
 
         return context
@@ -99,10 +102,9 @@ class CreateTemplateContent(AppMixin, FormView):
 
 
     def get_form(self, form_class=None):
-        """Return an instance of the form to be used in this view."""
         if form_class is None:
             form_class = self.get_form_class()
-        return form_class(self.app, self.kwargs['template_type'], **self.get_form_kwargs())
+        return form_class(self.app, **self.get_form_kwargs())
 
 
     def form_valid(self, form):
@@ -289,18 +291,8 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         self.set_template_content(**kwargs)
         self.set_component(**kwargs)
         return super().dispatch(request, *args, **kwargs)
-
-
-    def get_initial(self):
-        initial = super().get_initial()
-        if self.component:
-            initial['uuid'] = self.component['uuid']
-        else:
-            initial['uuid'] = uuid.uuid4()
-
-        return initial
-
-
+    
+    
     def set_component(self, **kwargs):
         self.app = App.objects.get(uid=kwargs['app_uid'])
         self.component_uuid = kwargs.pop('component_uuid', None)
@@ -311,6 +303,16 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
 
         if self.component_uuid:
             self.component = self.localized_template_content.get_component(self.content_key, self.component_uuid)
+
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.component:
+            initial['uuid'] = self.component['uuid']
+        else:
+            initial['uuid'] = uuid.uuid4()
+
+        return initial
 
 
     def get_context_data(self, **kwargs):
@@ -332,9 +334,9 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         if not self.localized_template_content.draft_contents:
             self.localized_template_content.draft_contents = {}
 
-        template = self.template_content.get_component_template(self.content_key)
+        component_template = self.template_content.get_component_template(self.content_key)
 
-        updated_component = self.get_updated_content_dict(template.definition, self.component, form)
+        updated_component = self.get_updated_content_dict(component_template.definition, self.component, form)
         if not form.cleaned_data['uuid']:
             raise ValueError('uuid is missing')
         updated_component['uuid'] = str(form.cleaned_data['uuid'])
@@ -398,11 +400,14 @@ class TranslateTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
     form_class = TranslateTemplateContentForm
 
     def dispatch(self, request, *args, **kwargs):
+        self.set_template_content(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def set_template_content(self, **kwargs):
         self.template_content = TemplateContent.objects.get(pk=kwargs['template_content_id'])
         self.language = kwargs['language']
         self.localized_template_content = self.template_content.get_locale(self.language)
-        return super().dispatch(request, *args, **kwargs)
-
+        
     
     def form_valid(self, form):
 
@@ -424,7 +429,6 @@ class TranslateTemplateContent(ManageTemplateContentCommon, AppMixin, FormView):
     for successful image deletions and uploads
     reloads all fields if field is multi
 '''
-from .forms import TemplateContentFormFieldManager
 class GetTemplateContentFormFields(FormView):
 
     template_name = 'template_content/ajax/reloaded_form_fields.html'
@@ -463,7 +467,7 @@ class GetTemplateContentFormFields(FormView):
 
 
 
-class ManageTemplateContentImage(ManageServerContentImage):
+class ManageTemplateContentImage(AppMixin, ManageServerContentImage):
 
     template_name = 'template_content/ajax/manage_template_content_image.html'
 
@@ -549,13 +553,14 @@ class PublishTemplateContent(AppMixin, TemplateView):
     template_name = 'template_content/template_content_list_entry.html'
 
     def dispatch(self, request, *args, **kwargs):
-
+        self.set_template_content(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def set_template_content(self, **kwargs):
         self.template_content = TemplateContent.objects.get(pk=kwargs['template_content_id'])
         self.localized_template_content = self.template_content.get_locale(
             self.template_content.app.primary_language)
         self.language = kwargs.get('language', 'all')
-
-        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -591,7 +596,7 @@ class UnpublishTemplateContent(AppMixin, TemplateView):
         return self.render_to_response(context)
 
 
-class DeleteTemplateContent(AjaxDeleteView):
+class DeleteTemplateContent(AppMixin, AjaxDeleteView):
     model = TemplateContent
     
 
@@ -686,7 +691,7 @@ class PublishNavigation(AppMixin, TemplateView):
         return context
 
 
-class DeleteNavigation(AjaxDeleteView):
+class DeleteNavigation(AppMixin, AjaxDeleteView):
     model = Navigation
 
 
@@ -798,7 +803,7 @@ class ManageNavigationEntry(AppMixin, FormLanguageMixin, FormView):
         return self.render_to_response(context)
 
 
-class DeleteNavigationEntry(AjaxDeleteView):
+class DeleteNavigationEntry(AppMixin, AjaxDeleteView):
     model = NavigationEntry
 
 
@@ -806,13 +811,11 @@ class ComponentContentView(ManageComponent):
 
     template_name = 'template_content/ajax/component_content_view.html'
 
-
     @method_decorator(ajax_required)
     def dispatch(self, request, *args, **kwargs):
         self.set_template_content(**kwargs)
         self.set_component(**kwargs)
         return super().dispatch(request, *args, **kwargs)
-
 
     def set_template_content(self, **kwargs):
         self.template_content = TemplateContent.objects.get(pk=kwargs['template_content_id'])
@@ -885,11 +888,12 @@ class TranslateNavigation(AppMixin, FormView):
                 else:
                     if not localized_navigation_entry:
                         localized_navigation_entry = LocalizedNavigationEntry(
-                            navigation_entry=navigation_entry,
-                            link_name = link_name,
+                            navigation_entry = navigation_entry,
                             language = self.language,
                         )
-                        localized_navigation_entry.save()
+                        
+                    localized_navigation_entry.link_name = link_name
+                    localized_navigation_entry.save()
     
 
     def form_valid(self, form):

@@ -4,7 +4,7 @@ from rest_framework import status
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from localcosmos_server.tests.common import (test_settings, test_settings_commercial, TEST_CLIENT_ID, TEST_PLATFORM,
+from localcosmos_server.tests.common import (test_settings, test_settings_app_kit, TEST_CLIENT_ID, TEST_PLATFORM,
      TEST_IMAGE_PATH, LARGE_TEST_IMAGE_PATH)                               
 from localcosmos_server.tests.mixins import WithMedia, WithUser, WithObservationForm, WithApp, WithServerContentImage
 

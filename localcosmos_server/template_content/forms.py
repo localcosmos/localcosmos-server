@@ -3,6 +3,7 @@ from django import forms
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 
 from .models import (NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigation, NavigationEntry,
                      LocalizedTemplateContent, NavigationEntry, LocalizedNavigationEntry)
@@ -36,11 +37,10 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
     
     template_name = forms.ChoiceField(label =_('Template'))
 
-    def __init__(self, app, template_type, *args, **kwargs):
+    def __init__(self, app, *args, **kwargs):
 
         self.app = app
-        self.template_type = template_type
-        self.assignment = kwargs.pop('assginment', None)
+        self.assignment = kwargs.pop('assignment', None)
         
         super().__init__(*args, **kwargs)
 
@@ -55,16 +55,16 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
                 choice = (template_name, template.definition['templateName'])
                 choices.append(choice)
         self.fields['template_name'].choices = choices
+        
 
     def clean(self):
-        cleaned_data = super().clean()
-        assignment = cleaned_data.get('assignment')
 
-        if assignment:
-            assigned_template_content_exists = TemplateContent.objects.filter(app=self.app, assignment=assignment).exists()
+        if self.assignment:
+            assigned_template_content_exists = TemplateContent.objects.filter(app=self.app,
+                                                                              assignment=self.assignment).exists()
 
             if assigned_template_content_exists == True:
-                raise forms.ValidationError('A Template content for "{0}" already exists'.format(assignment))
+                raise forms.ValidationError('A template content for "{0}" already exists'.format(self.assignment))
 
 
 # translations initially do not supply a localized_template_content? - change this!!
@@ -79,7 +79,22 @@ class TemplateContentFormFieldManager:
         self.localized_template_content = localized_template_content
         self.primary_locale_template_content = template_content.get_locale(app.primary_language)
 
+    # allowMultiple=False
+    def get_instance(self, content_key, content_type):
+        
+        instance = None
+        
+        if self.localized_template_content:
+            if content_type == 'image':
+                image_type = self._get_image_type(content_key)
+                instance = self.localized_template_content.image(image_type=image_type)
 
+            elif content_type in ['component', 'text', 'templateContentLink'] and self.localized_template_content.draft_contents:
+                instance = self.localized_template_content.draft_contents.get(content_key, None)
+        
+        return instance
+    
+    # allowMultiple=True
     def get_instances(self, content_key, content_type):
 
         instances = []
@@ -96,7 +111,10 @@ class TemplateContentFormFieldManager:
 
 
     def get_primary_locale_content(self, content_key):
-        return self.primary_locale_template_content.draft_contents.get(content_key, None)
+        content = None
+        if self.primary_locale_template_content.draft_contents:
+            content = self.primary_locale_template_content.draft_contents.get(content_key, None)
+        return content
 
 
     def _add_primary_locale_content_to_form_field(self, form_field, content_key):
@@ -109,10 +127,7 @@ class TemplateContentFormFieldManager:
         return form_field
 
 
-
     def get_form_fields(self, content_key, content_definition):
-
-        instances = self.get_instances(content_key, content_definition['type'])
 
         form_fields = []
 
@@ -123,6 +138,7 @@ class TemplateContentFormFieldManager:
         field_getter = getattr(self, field_getter_name)
 
         if allow_multiple == True:
+            instances = self.get_instances(content_key, content_definition['type'])
             max_number = content_definition.get('maxNumber', None)
 
             is_first = True
@@ -174,8 +190,9 @@ class TemplateContentFormFieldManager:
 
         else:
             
-            instance = instances
+            instance = self.get_instance(content_key, content_definition['type'])
 
+            # how could it be a list?
             if isinstance(instance, list) and len(instance) > 0:
                 instance = instance[0]
 
@@ -248,12 +265,14 @@ class TemplateContentFormFieldManager:
         if current_image:
 
             data_url_kwargs = {
+                'app_uid' : self.app.uid,
                 'content_image_id' : current_image.id,
             }
 
             data_url = reverse(self.manage_content_image_url_name, kwargs=data_url_kwargs)
             
             delete_kwargs = {
+                'app_uid': self.app.uid,
                 'pk' : current_image.pk,
             }
 
@@ -265,6 +284,7 @@ class TemplateContentFormFieldManager:
                 ltc_content_type = ContentType.objects.get_for_model(self.localized_template_content)
 
                 data_url_kwargs = {
+                    'app_uid' : self.app.uid,
                     'content_type_id' : ltc_content_type.id,
                     'object_id' : self.localized_template_content.id,
                     'image_type' : image_type
@@ -273,7 +293,8 @@ class TemplateContentFormFieldManager:
                 data_url = reverse(self.manage_content_image_url_name, kwargs=data_url_kwargs)
             
         widget_attrs['data_url'] = data_url
-        widget_attrs['delete_url'] = delete_url  
+        widget_attrs['delete_url'] = delete_url
+        widget_attrs['accept'] = 'image/png, image/webp, image/jpeg'
 
         widget = FileContentWidget(widget_attrs)
         form_field = forms.ImageField(widget=widget, **field_kwargs)
@@ -394,6 +415,7 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
     delete_content_image_url_name = 'delete_component_image'
 
     def __init__(self, app, template_content, localized_template_content, component_key, component_uuid, component={}):
+        self.app = app
         self.template_content = template_content
         self.localized_template_content = localized_template_content
         self.primary_locale_template_content = template_content.get_locale(app.primary_language)
@@ -406,6 +428,22 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
         return get_component_image_type(self.component_key, self.component_uuid, content_key)
 
 
+    def get_instance(self, content_key, content_type):
+        
+        instance = None
+
+        if self.component:
+            
+            if content_type == 'image':
+                image_type = self._get_image_type(content_key)
+                instance = self.localized_template_content.image(image_type=image_type)
+
+            elif content_type in ['component', 'text', 'templateContentLink']:
+                instance = self.component.get(content_key, None)
+
+        return instance
+    
+        
     def get_instances(self, content_key, content_type):
 
         instances = []
@@ -433,11 +471,11 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
 
     def __init__(self, app, template_content, localized_template_content=None, *args, **kwargs):
 
+        super().__init__(*args, **kwargs)
+        
         self.language = kwargs.get('language', None)
         if localized_template_content:
             self.language = localized_template_content.language
-
-        super().__init__(*args, **kwargs)
 
         self.app = app
         self.template_content = template_content
@@ -470,19 +508,21 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
             form_fields = field_manager.get_form_fields(content_key, content_definition)
 
             # get form fields for each content_id
-            for field in form_fields:
-
-                field['field'].content_definition = content_definition
-                field['field'].content_key = content_key
+            for field_definition in form_fields:
                 
-                self.fields[field['name']] = field['field']
+                field = field_definition['field']
+                field_name = field_definition['name']
 
-                self.fields[field['name']].language = self.language
+                field.content_definition = content_definition
+                field.content_key = content_key
+                field.language = self.language
+                
+                self.fields[field_name] = field
                 
                 if content_definition.get('format', None) == 'layoutable-simple':
-                    self.layoutable_simple_fields.add(field['name'])
+                    self.layoutable_simple_fields.add(field_name)
                 elif content_definition.get('format', None) == 'layoutable-full':
-                    self.layoutable_full_fields.add(field['name'])
+                    self.layoutable_full_fields.add(field_name)
 
 
 class ManageComponentForm(ManageLocalizedTemplateContentForm):
@@ -492,6 +532,11 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
     localizeable_fields = []
 
     def __init__(self, app, template_content, localized_template_content, content_key, component=None, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        
+        if 'uuid' not in initial:
+            raise ValueError("initial['uuid] is required")
+        
         self.content_key = content_key
         self.component = component
         
@@ -542,7 +587,7 @@ class ManageNavigationForm(LocalizeableForm):
 
         for navigation_type, definition in navigations.items():
 
-            if settings.LOCALCOSMOS_PRIVATE == True and definition['offline'] == True:
+            if settings.LOCALCOSMOS_PRIVATE == True and definition.get('offline', False) == True:
                 continue
 
             choice = (navigation_type, definition['name'])
@@ -586,11 +631,14 @@ class ManageNavigationEntryForm(LocalizeableForm):
 
         if self.max_levels == 1:
             parent_queryset = NavigationEntry.objects.none()
-
+            
         elif self.max_levels == 2:
             parent_queryset = NavigationEntry.objects.filter(navigation=navigation, parent=None)
+            
         else:
-            parent_queryset = NavigationEntry.objects.filter(navigation=navigation, parent__parent=None)
+            parent_q = Q(parent=None)
+            grandparent_q = Q(parent__parent=None)
+            parent_queryset = NavigationEntry.objects.filter(Q(navigation=navigation), parent_q | grandparent_q)
 
         if self.navigation_entry:
             exclude_pks = [self.navigation_entry.pk]
