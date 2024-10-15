@@ -35,4 +35,8 @@ urlpatterns = [
         views.AddDatasetImage.as_view(), name='add_dataset_image'),
     # taxon search
     path('<str:app_uid>/search-dataset-taxon/', views.SearchDatasetTaxon.as_view(), name='search_dataset_taxon'),
+    # darwin core
+    path('<str:app_uid>/gbif/', views.ManageDarwinCoreView.as_view(), name='manage_darwin_core'),
+    path('<str:app_uid>/gbif/enable/', views.EnableDarwinCoreView.as_view(), name='enable_darwin_core'),
+    path('<str:app_uid>/gbif/disable/', views.DisableDarwinCoreView.as_view(), name='disable_darwin_core'),
 ]

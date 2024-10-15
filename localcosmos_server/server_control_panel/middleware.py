@@ -26,7 +26,7 @@ class ServerControlPanelMiddleware:
 
                 login_path = reverse('log_in')
 
-                if login_path not in request.path:                
+                if login_path not in request.path:
                     url = '{0}?next={1}'.format(reverse('log_in'), request.path)
                     return redirect(url)
         

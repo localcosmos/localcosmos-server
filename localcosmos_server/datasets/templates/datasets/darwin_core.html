@@ -1,0 +1,18 @@
+{% extends 'app_admin/base.html' %}
+{% load i18n static localcosmos_tags %}
+
+{% block content %}
+	<div class="container mb-5">
+        <div class="row mb-3">
+			<div class="col-12">
+				<h1>{% trans 'GBIF' %}</h1>
+			</div>
+			<div class="col-12 p-3">
+				{% trans 'If you want to publish your observations on GBIF, a database table in the Darwin Core format has to be enabled.' %}
+			</div>
+		</div>
+        <div id="darwin-core-state">
+            {% include 'datasets/ajax/darwin_core_state.html'  %}
+        </div>
+    </div>
+{% endblock %}

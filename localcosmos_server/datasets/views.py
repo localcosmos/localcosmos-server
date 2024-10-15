@@ -1,4 +1,4 @@
-from typing import Any
+from django.conf import settings
 from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -6,6 +6,9 @@ from django.utils.translation import gettext as _
 from django.http import HttpResponse
 from django.utils.encoding import smart_str
 from django.urls import reverse
+from django.db import connection
+
+from localcosmos_server.app_admin.view_mixins import AdminOnlyMixin
 
 from localcosmos_server.decorators import ajax_required
 from localcosmos_server.generic_views import AjaxDeleteView
@@ -17,6 +20,9 @@ from .forms import DatasetValidationRoutineForm, ObservationForm, AddDatasetImag
 from .models import Dataset, DatasetValidationRoutine, DATASET_VALIDATION_CLASSES, DatasetImages
 
 from .csv_export import DatasetCSVExport
+
+from .darwin_core_sql import (get_darwin_core_view_create_sql, get_darwin_core_view_drop_sql,
+                              get_darwin_core_view_exists_sql, get_darwin_core_view_name)
 
 import json
 
@@ -433,3 +439,87 @@ class SearchDatasetTaxon(TemplateView):
         
 
         return HttpResponse(json.dumps(choices), content_type='application/json')
+    
+    
+# a view to enable and disable a darwin core database view, usable for GBIF IPT and such
+class ManageDarwinCoreView(AdminOnlyMixin, TemplateView):
+
+    template_name = 'datasets/darwin_core.html'
+    
+    def darwin_core_view_exists(self):
+        schema_name = self.get_db_schema_name()
+        exists_sql = get_darwin_core_view_exists_sql(self.request.app, schema_name)
+        with connection.cursor() as cursor:
+            cursor.execute(exists_sql)
+            result = cursor.fetchone()
+            if result[0] == True:
+                return True
+        return False
+    
+    def get_db_schema_name(self):
+        if settings.LOCALCOSMOS_PRIVATE == True:
+            schema_name = 'public'
+        else:
+            schema_name = self.request.tenant.schema_name
+            
+        return schema_name
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs) 
+        context['darwin_core_view_exists'] = self.darwin_core_view_exists()
+        context['darwin_core_view_name'] = get_darwin_core_view_name(self.request.app)
+        context['db_schema_name'] = self.get_db_schema_name() 
+        return context
+
+
+# asynchroneously create a darwin core database view
+class EnableDarwinCoreView(ManageDarwinCoreView):
+    
+    template_name = 'datasets/ajax/darwin_core_state.html'
+    
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def create_database_view(self):
+        create_sql = get_darwin_core_view_create_sql(self.request.app)
+        with connection.cursor() as cursor:
+            cursor.execute(create_sql)
+            
+            
+    def get_context_data(self, **kwargs):
+        if self.request.method == 'POST':
+            self.create_database_view()
+        context = super().get_context_data(**kwargs) 
+        return context
+    
+    def post(self,request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+
+# asynchroneously drop darin core database view
+class DisableDarwinCoreView(ManageDarwinCoreView):
+    
+    template_name = 'datasets/ajax/darwin_core_state.html'
+    
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+    
+    def drop_database_view(self):
+        drop_sql = get_darwin_core_view_drop_sql(self.request.app)
+        with connection.cursor() as cursor:
+            cursor.execute(drop_sql)
+            
+    def get_context_data(self, **kwargs):
+        if self.request.method == 'POST':
+            self.drop_database_view()
+        context = super().get_context_data(**kwargs)
+        return context
+    
+    def post(self,request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+            
+    

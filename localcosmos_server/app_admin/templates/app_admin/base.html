@@ -66,6 +66,7 @@
 						<div class="dropdown-menu" aria-labelledby="dropdown01">
 							<a class="dropdown-item" href="{% url 'datasets:list_datasets' request.app.uid %}">{% trans 'Manage observations' %}</a>
 							<a class="dropdown-item" href="{% url 'datasets:dataset_validation_routine' request.app.uid %}">{% trans 'Manage validation routine' %}</a>
+							<a class="dropdown-item" href="{% url 'datasets:manage_darwin_core' request.app.uid %}">GBIF</a>
 						</div>
 					</li>
 				</ul>

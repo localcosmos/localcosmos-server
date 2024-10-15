@@ -1,0 +1,50 @@
+{% load i18n %}
+<div class="card">
+    <div class="card-body">
+        <div>
+            <b>{% trans 'Darwin Core status' %}:</b>
+            {% if darwin_core_view_exists %}
+                <span class="badge badge-success">{% trans 'enabled' %}</span>
+            {% else %}
+                <span class="badge badge-danger">{% trans 'disabled' %}</span>
+            {% endif %}
+        </div>
+        {% if darwin_core_view_exists %}
+            <div>
+                <b>{% trans 'Darwin Core database view' %}:</b> <code>{{ db_schema_name }}.{{ darwin_core_view_name }}</code>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<hr>
+<div class="my-3">
+    {% if darwin_core_view_exists %}
+        <button id="disable_dwc" class="btn btn-danger">{% trans 'Disable Darwin Core' %}</button>
+    {% else %}
+        <button id="enable_dwc" class="btn btn-success">{% trans 'Enable Darwin Core' %}</button>
+    {% endif %}
+</div>
+
+<script>
+    (function(){
+        {% if darwin_core_view_exists %}
+            let button = document.getElementById('disable_dwc');
+
+            button.addEventListener('click', function(event){
+                button.disabled = true;
+                button.classList.add('disabled');
+                $.post("{% url 'datasets:disable_darwin_core' request.app.uid %}", function(html){
+                    $('#darwin-core-state').html(html);
+                });
+            });
+        {% else %}
+            let button = document.getElementById('enable_dwc');
+
+            button.addEventListener('click', function(event){
+                $.post("{% url 'datasets:enable_darwin_core' request.app.uid %}", function(html){
+                    $('#darwin-core-state').html(html);
+                });
+            });
+        {% endif %}
+    })();
+</script>
