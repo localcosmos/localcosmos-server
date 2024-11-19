@@ -194,6 +194,8 @@ class ContentImageViewMixin(LicencingFormViewMixin):
 
         requires_translation = form.cleaned_data.get('requires_translation', False)
         self.content_image.requires_translation = requires_translation
+        
+        self.content_image.is_primary = form.cleaned_data.get('is_primary', False)
 
         # there might be text
         if form.cleaned_data.get('text', None):
@@ -229,6 +231,7 @@ class ContentImageViewMixin(LicencingFormViewMixin):
             initial['image_type'] = self.content_image.image_type
             initial['text'] = self.content_image.text
             initial['requires_translation'] = self.content_image.requires_translation
+            initial['is_primary'] = self.content_image.is_primary
 
             licencing_initial = self.get_licencing_initial()
             initial.update(licencing_initial)

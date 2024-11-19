@@ -1,13 +1,14 @@
 from django.test import TestCase
 
 
-from localcosmos_server.template_content.tests.mixins import WithTemplateContent, TEST_TEMPLATE_NAME, PAGE_TEMPLATE_TYPE
+from localcosmos_server.template_content.tests.mixins import (WithTemplateContent, TEST_TEMPLATE_NAME,
+    PAGE_TEMPLATE_TYPE, WithNavigation)
 
 from localcosmos_server.tests.common import (test_settings,)
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithMedia, WithServerContentImage
 
 from localcosmos_server.template_content.api.serializers import (LocalizedTemplateContentSerializer,
-                ContentLicenceSerializer, ContentImageSerializer)
+                ContentLicenceSerializer, ContentImageSerializer, LocalizedNavigationSerializer)
 
 
 from localcosmos_server.template_content.utils import get_component_image_type
@@ -970,3 +971,60 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         }
         
         self.assertEqual(serializer.data, expected_data)
+        
+
+class TestLocalizedNavigationSerializer(WithNavigation, WithUser, WithApp, TestCase):
+    
+    @test_settings
+    def test_deserialize(self):
+        
+        context = {
+            'preview' : True
+        }
+        serializer = LocalizedNavigationSerializer(self.localized_navigation, context=context)
+        
+        
+        expected_data = {
+            'navigation': [
+                {
+                    'linkName': 'nav entry 1 draft',
+                    'link_name': 'nav entry 1 draft',
+                    'url': None,
+                    'children': []
+                },
+                {
+                    'linkName': 'nav entry 2 draft',
+                    'link_name': 'nav entry 2 draft',
+                    'url': None,
+                    'children': []
+                }
+            ]
+        }
+        
+        self.assertEqual(serializer.data, expected_data)
+        
+        # published nav
+        context = {
+            'preview' : False
+        }
+        serializer_published = LocalizedNavigationSerializer(self.localized_navigation, context=context)
+        
+        
+        expected_data_2 = {
+            'navigation': [
+                {
+                    'linkName': 'nav entry 1',
+                    'link_name': 'nav entry 1',
+                    'url': None,
+                    'children': []
+                },
+                {
+                    'linkName': 'nav entry 2',
+                    'link_name': 'nav entry 2',
+                    'url': None,
+                    'children': []
+                }
+            ]
+        }
+        
+        self.assertEqual(serializer_published.data, expected_data_2)

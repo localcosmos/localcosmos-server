@@ -1,5 +1,5 @@
 from localcosmos_server.template_content.models import (TemplateContent, LocalizedTemplateContent, Navigation,
-    )
+    LocalizedNavigation, NavigationEntry, LocalizedNavigationEntry)
 
 import uuid
 
@@ -92,4 +92,56 @@ class WithTemplateContent:
         }
         
         localized_template_content.save()
+
+
+class WithNavigation:
+    
+    navigation_type = 'main'
+    
+    def setUp(self):
+        super().setUp()
+        language = self.app.primary_language
+        self.navigation = Navigation.objects.create(self.app, self.navigation_type, language,
+                                                    'Main Navigation')
+        self.localized_navigation = self.navigation.get_locale(language)
+        
+        self.nav_entry_1 = NavigationEntry(
+            navigation=self.navigation,
+        )
+        
+        self.nav_entry_1.save()
+        
+        self.localized_nav_entry_1 = LocalizedNavigationEntry(
+            navigation_entry=self.nav_entry_1,
+            language = language,
+            link_name = 'nav entry 1',
+        )
+        
+        self.localized_nav_entry_1.save()
+        
+        self.nav_entry_2 = NavigationEntry(
+            navigation=self.navigation,
+        )
+        
+        self.nav_entry_2.save()
+        
+        self.localized_nav_entry_2 = LocalizedNavigationEntry(
+            navigation_entry=self.nav_entry_2,
+            language = language,
+            link_name = 'nav entry 2',
+        )
+        
+        self.localized_nav_entry_2.save()
+        
+        errors = self.navigation.publish(language=language)
+        
+        self.assertEqual(errors, [])
+        
+        self.localized_navigation.refresh_from_db()
+        
+        self.localized_nav_entry_1.link_name = 'nav entry 1 draft'
+        self.localized_nav_entry_1.save()
+        
+        self.localized_nav_entry_2.link_name = 'nav entry 2 draft'
+        self.localized_nav_entry_2.save()
         

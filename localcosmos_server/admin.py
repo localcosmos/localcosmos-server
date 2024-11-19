@@ -4,6 +4,6 @@ from .models import LocalcosmosUser
 
 
 class UserAdmin(admin.ModelAdmin):
-    pass
+    exclude = ('last_login', 'password', 'date_joined')
 
 admin.site.register(LocalcosmosUser, UserAdmin)

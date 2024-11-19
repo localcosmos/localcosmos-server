@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-28 10:54+0100\n"
+"POT-Creation-Date: 2024-11-18 11:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,19 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: api/serializers.py:72
+#: api/serializers.py:79
 msgid "This email address is already registered."
 msgstr "Diese E-Mail Addresse ist bereits registriert"
 
-#: api/serializers.py:78
+#: api/serializers.py:85
 msgid "The email addresses did not match."
 msgstr "Die beiden E-Mail Addressen stimmten nicht überein."
 
-#: api/serializers.py:81
+#: api/serializers.py:88
 msgid "The passwords did not match."
 msgstr "Die Passwörter stimmten nicht überein"
 
-#: api/views.py:331
+#: api/views.py:332
 msgid "No matching user found."
 msgstr "Kein passender Benutzer gefunden."
 
@@ -39,7 +39,7 @@ msgid "user"
 msgstr "Nutzer"
 
 #: app_admin/forms.py:15
-msgid "Search users"
+msgid "Search user"
 msgstr "Nutzer suchen"
 
 #: app_admin/templates/app_admin/ajax/userbox.html:7
@@ -61,8 +61,8 @@ msgstr "Neue Rolle zuweisen"
 #: app_admin/templates/app_admin/ajax/userbox.html:17
 #: datasets/templates/datasets/dataset_validation_routine.html:70
 #: datasets/templates/datasets/validation/ajax/picture_field_images.html:17
-#: template_content/templates/template_content/ajax/navigation_entries_tree.html:16
-#: template_content/templates/template_content/ajax/navigation_list_entry.html:26
+#: template_content/templates/template_content/ajax/navigation_entries_tree.html:17
+#: template_content/templates/template_content/ajax/navigation_list_entry.html:31
 #: template_content/templates/template_content/template_content_list_entry.html:31
 #: template_content/templates/template_content/widgets/content_with_preview.html:21
 #: templates/localcosmos_server/ajax/server_content_image_form.html:25
@@ -72,30 +72,30 @@ msgstr "Neue Rolle zuweisen"
 msgid "Delete"
 msgstr "Löschen"
 
-#: app_admin/templates/app_admin/base.html:55
+#: app_admin/templates/app_admin/base.html:58
 #: app_admin/templates/app_admin/userlist.html:10
 #: app_admin/templates/app_admin/userlist.html:80
 msgid "Users"
 msgstr "Benutzer"
 
-#: app_admin/templates/app_admin/base.html:59
+#: app_admin/templates/app_admin/base.html:62
 msgid "Template content"
 msgstr "Template Inhalte"
 
-#: app_admin/templates/app_admin/base.html:62
-#: datasets/templates/datasets/list_datasets.html:20
+#: app_admin/templates/app_admin/base.html:65
+#: datasets/templates/datasets/list_datasets.html:49
 msgid "Observations"
 msgstr "Beobachtungen"
 
-#: app_admin/templates/app_admin/base.html:64
+#: app_admin/templates/app_admin/base.html:67
 msgid "Manage observations"
 msgstr "Beobachtungen verwalten"
 
-#: app_admin/templates/app_admin/base.html:65
+#: app_admin/templates/app_admin/base.html:68
 msgid "Manage validation routine"
 msgstr "Validierungsroutine verwalten"
 
-#: app_admin/templates/app_admin/base.html:76
+#: app_admin/templates/app_admin/base.html:80
 #: server_control_panel/templates/server_control_panel/base.html:52
 msgid "Sign out"
 msgstr "abmelden"
@@ -211,41 +211,105 @@ msgstr "Maximaler Wert für %(field_name)s ist %(max)s."
 msgid "Invalid choice for %(field_name)s: %(value)s"
 msgstr "Ungültige Auswahl für %(field_name)s: %(value)s"
 
-#: datasets/forms.py:56
+#: datasets/forms.py:57
 msgid "This step already exists in your Validation Routine"
 msgstr "Dieser Schritt existiert bereits in deiner Validierungsroutine"
 
-#: datasets/models.py:386 datasets/tests/test_models.py:421
+#: datasets/forms.py:253
+msgid "Taxon (scientific name)"
+msgstr "Taxon (wissenschaftlicher Name)"
+
+#: datasets/models.py:387 datasets/tests/test_models.py:421
 msgid "Unidentified"
 msgstr "Nicht identifiziert"
+
+#: datasets/templates/datasets/ajax/darwin_core_state.html:5
+msgid "Darwin Core status"
+msgstr "Darwin Core status"
+
+#: datasets/templates/datasets/ajax/darwin_core_state.html:7
+msgid "enabled"
+msgstr "aktiv"
+
+#: datasets/templates/datasets/ajax/darwin_core_state.html:9
+msgid "disabled"
+msgstr "inaktiv"
+
+#: datasets/templates/datasets/ajax/darwin_core_state.html:14
+msgid "Darwin Core database view"
+msgstr "Darvin Core Datenbank View"
+
+#: datasets/templates/datasets/ajax/darwin_core_state.html:22
+msgid "Disable Darwin Core"
+msgstr "Darwin Core deaktivieren"
+
+#: datasets/templates/datasets/ajax/darwin_core_state.html:24
+msgid "Enable Darwin Core"
+msgstr "Darwin Core aktivieren"
 
 #: datasets/templates/datasets/ajax/dataset_box.html:13
 msgid "Observation without taxon"
 msgstr "Beobachtung ohne Taxon"
 
+#: datasets/templates/datasets/ajax/dataset_box.html:17
+msgid "observed at"
+msgstr "hier beobachtet"
+
 #: datasets/templates/datasets/ajax/dataset_box.html:20
+msgid "submitted at"
+msgstr "gesendet am"
+
+#: datasets/templates/datasets/ajax/dataset_box.html:26
 msgid "valid"
 msgstr "valide"
 
-#: datasets/templates/datasets/ajax/dataset_box.html:22
+#: datasets/templates/datasets/ajax/dataset_box.html:28
 msgid "invalid"
 msgstr "nicht valide"
 
-#: datasets/templates/datasets/ajax/dataset_box.html:28
+#: datasets/templates/datasets/ajax/dataset_box.html:34
 msgid "observed by"
 msgstr "beobachtet von"
 
-#: datasets/templates/datasets/ajax/dataset_box.html:32
+#: datasets/templates/datasets/ajax/dataset_box.html:39
 msgid "Anonymous user"
 msgstr "anonymer Nutzer"
 
-#: datasets/templates/datasets/ajax/dataset_box.html:37
+#: datasets/templates/datasets/ajax/dataset_box.html:44
 msgid "Show"
 msgstr "Anzeigen"
+
+#: datasets/templates/datasets/ajax/dataset_list.html:21
+msgid "No observations yet."
+msgstr "Noch keine Beobachtungen."
 
 #: datasets/templates/datasets/ajax/dataset_review_box.html:6
 msgid "Review now"
 msgstr "Jetzt prüfen"
+
+#: datasets/templates/datasets/ajax/download_datasets_csv.html:5
+msgid "Download csv"
+msgstr "csv herunterladen"
+
+#: datasets/templates/datasets/ajax/download_datasets_csv_button.html:4
+msgid "Download data"
+msgstr "Daten herunterladen"
+
+#: datasets/templates/datasets/ajax/download_datasets_csv_button.html:9
+msgid "creating csv"
+msgstr "erstelle csv"
+
+#: datasets/templates/datasets/darwin_core.html:8
+msgid "GBIF"
+msgstr "GBIF"
+
+#: datasets/templates/datasets/darwin_core.html:11
+msgid ""
+"If you want to publish your observations on GBIF, a database table in the "
+"Darwin Core format has to be enabled."
+msgstr ""
+"Falls du Beobachtungen an GBIF senden möchtest, muss dafür ein Datenbank "
+"View im Darwin Core Format aktiviert werden."
 
 #: datasets/templates/datasets/dataset_validation_routine.html:8
 msgid "Observation validation routine"
@@ -291,12 +355,12 @@ msgid "manage taxonomic restrictions"
 msgstr "Taxonomische Restriktionen verwalten"
 
 #: datasets/templates/datasets/dataset_validation_routine.html:66
-#: template_content/templates/template_content/ajax/navigation_entries_tree.html:18
+#: template_content/templates/template_content/ajax/navigation_entries_tree.html:19
 msgid "Move up"
 msgstr "nach oben"
 
 #: datasets/templates/datasets/dataset_validation_routine.html:68
-#: template_content/templates/template_content/ajax/navigation_entries_tree.html:20
+#: template_content/templates/template_content/ajax/navigation_entries_tree.html:21
 msgid "Move down"
 msgstr "nach unten"
 
@@ -326,27 +390,35 @@ msgstr "Beobachtung"
 msgid "by"
 msgstr "von"
 
-#: datasets/templates/datasets/edit_dataset.html:16
+#: datasets/templates/datasets/edit_dataset.html:20
 msgid "anonymous user"
 msgstr "anonymer Nutzer"
 
-#: datasets/templates/datasets/list_datasets.html:11
+#: datasets/templates/datasets/edit_dataset.html:36
+msgid "contact user"
+msgstr "Nutzer kontaktieren"
+
+#: datasets/templates/datasets/list_datasets.html:10
 msgid "Export"
 msgstr "Export"
 
-#: datasets/templates/datasets/list_datasets.html:14
+#: datasets/templates/datasets/list_datasets.html:13
 msgid "Download all observations as .csv"
 msgstr "Alle Beobachtungen als .csv herunterladen"
 
-#: datasets/templates/datasets/list_datasets.html:15
+#: datasets/templates/datasets/list_datasets.html:14
 #: server_control_panel/templates/server_control_panel/home.html:80
 #: server_control_panel/templates/server_control_panel/home.html:88
 msgid "Download"
 msgstr "herunterladen"
 
-#: datasets/templates/datasets/list_datasets.html:41
-msgid "No observations yet."
-msgstr "Noch keine Beobachtungen."
+#: datasets/templates/datasets/list_datasets.html:19
+msgid "Filters"
+msgstr "Filter"
+
+#: datasets/templates/datasets/list_datasets.html:27
+msgid "Nothing found."
+msgstr "Nichts gefunden."
 
 #: datasets/templates/datasets/manage_dataset_validation_routine_step.html:6
 msgid "Manage validation step"
@@ -356,15 +428,20 @@ msgstr "Validierungsschritt verwalten"
 msgid "Successfully saved your validation step."
 msgstr "Validierungsschritt erfolgreich gespeichert."
 
+#: datasets/templates/datasets/validation/ajax/add_dataset_image.html:4
+#: templates/localcosmos_server/widgets/two_step_file_input.html:19
+msgid "Add image"
+msgstr "Bild hinzufügen"
+
 #: datasets/templates/datasets/validation/ajax/dataset_form.html:8
 msgid "Changes have been saved successfully."
 msgstr "Änderungen wurden erfolgreich gespeichert."
 
-#: datasets/templates/datasets/validation/ajax/dataset_form.html:13
+#: datasets/templates/datasets/validation/ajax/dataset_form.html:16
 msgid "Update dataset"
 msgstr "Datensatz aktualisieren"
 
-#: datasets/templates/datasets/validation/ajax/dataset_form.html:14
+#: datasets/templates/datasets/validation/ajax/dataset_form.html:17
 msgid "Delete dataset"
 msgstr "Datensatz löschen"
 
@@ -373,7 +450,7 @@ msgid "Observation has been deleted."
 msgstr "Beobachtung würde gelöscht."
 
 #: datasets/templates/datasets/validation/ajax/delete_dataset_image.html:6
-#: datasets/views.py:280
+#: datasets/views.py:321
 #: templates/localcosmos_server/ajax/delete_server_content_image.html:20
 msgid "Do you really want to delete this image?"
 msgstr "Willst du dieses Bild wirklich löschen?"
@@ -382,9 +459,13 @@ msgstr "Willst du dieses Bild wirklich löschen?"
 msgid "Image"
 msgstr "Bild"
 
-#: datasets/templates/datasets/validation/ajax/picture_field_images.html:26
+#: datasets/templates/datasets/validation/ajax/picture_field_images.html:27
 msgid "No images found."
 msgstr "keine Bilder gefunden"
+
+#: datasets/templates/datasets/validation/ajax/picture_field_images.html:34
+msgid "add image"
+msgstr "Bild hinzufügen"
 
 #: datasets/templates/datasets/validation/expert_review.html:12
 #: datasets/validation/validators.py:26
@@ -481,12 +562,12 @@ msgstr ""
 "Ein Experte prüft den Datensatz. Diese Validierung kann die Analyse von "
 "Bildern beinhalten."
 
-#: datasets/views.py:259
+#: datasets/views.py:300
 #, python-brace-format
 msgid "Do you really want to remove {0}?"
 msgstr "Willst du wirklich {0} entfernen?"
 
-#: datasets/views.py:270
+#: datasets/views.py:311
 msgid "Do you really want to delete this obsersavtion?"
 msgstr "Willst du wirklich diese Beobachtung löschen?"
 
@@ -502,49 +583,54 @@ msgstr "Nutzername oder E-Mail"
 msgid "Invalid username or email address"
 msgstr "Nutername oder E-Mail ungültig"
 
-#: forms.py:216
+#: forms.py:217
 msgid "You selected an invalid area of the image."
 msgstr "Du hast einen ungültigen Bereich des Bildes ausgewählt."
 
-#: forms.py:236
+#: forms.py:237
 msgid "Invalid features drawn on canvas."
 msgstr "Ungültiges Element gezeichnet"
 
-#: forms.py:258
+#: forms.py:259
 msgid "The image upload was not successful. Please try again."
 msgstr ""
 "Das Hochladen des Bildes war nicht erfolgreich. Bitte nochmal versuchen."
 
-#: forms.py:299
+#: forms.py:283
+msgid "Primary image"
+msgstr "Primäres Bild"
+
+#: forms.py:301
 msgid "Text that will be shown together with this image."
 msgstr "Text, der zusammen mit diesem Bild gezeigt wird"
 
-#: forms.py:336
+#: forms.py:338
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
-#: mails.py:24 templates/email/registration_confirmation.html:8
+#: mails.py:30 templates/email/contact_user.html:8
+#: templates/email/registration_confirmation.html:8
 #: templates/email/registration_confirmation.txt:4
 msgid "Registration confirmation"
 msgstr "Registrierungsbestätigung"
 
-#: models.py:541
+#: models.py:564
 msgid "admin"
 msgstr "Admin"
 
-#: models.py:542
+#: models.py:565
 msgid "expert"
 msgstr "Experte"
 
-#: models.py:561
+#: models.py:584
 msgid "exists"
 msgstr "existiert"
 
-#: models.py:562
+#: models.py:585
 msgid "required"
 msgstr "benötigt"
 
-#: models.py:563 templates/localcosmos_server/bootstrap_field.html:43
+#: models.py:586 templates/localcosmos_server/bootstrap_field.html:43
 #: templates/localcosmos_server/bootstrap_field.html:68
 msgid "optional"
 msgstr "optional"
@@ -629,8 +715,8 @@ msgid "App"
 msgstr "App"
 
 #: server_control_panel/templates/server_control_panel/home.html:37
-#: template_content/templates/template_content/ajax/navigation_entries_tree.html:15
-#: template_content/templates/template_content/ajax/navigation_list_entry.html:21
+#: template_content/templates/template_content/ajax/navigation_entries_tree.html:16
+#: template_content/templates/template_content/ajax/navigation_list_entry.html:23
 #: template_content/templates/template_content/template_content_list_entry.html:21
 msgid "Edit"
 msgstr "bearbeiten"
@@ -784,42 +870,47 @@ msgstr "E-Mail (nochmal)"
 msgid "Include descendants"
 msgstr "Nachkommen mit einschließen"
 
-#: taxonomy/forms.py:35
+#: taxonomy/forms.py:42
 msgid "Taxon"
 msgstr "Taxon"
 
-#: taxonomy/views.py:162
+#: taxonomy/views.py:163
 #, python-format
 msgid "Do you really want to remove %s?"
 msgstr "Willst du %s wirklich entfernen ?"
 
-#: template_content/forms.py:27
+#: template_content/forms.py:31
 msgid "Title"
 msgstr "Titel"
 
-#: template_content/forms.py:34
+#: template_content/forms.py:38
 msgid "Template"
 msgstr "Template"
 
-#: template_content/forms.py:548
+#: template_content/forms.py:605
 #, python-format
 msgid "A navigation of type %(navigation_type)s already exists"
 msgstr "Eine Navigation vom Typ %(navigation_type)s existiert bereits"
 
-#: template_content/forms.py:561 template_content/models.py:19
+#: template_content/forms.py:618 template_content/models.py:19
 msgid "Page"
 msgstr "Seite"
+
+#: template_content/forms.py:661
+msgid "Name of the navigation"
+msgstr "Name der Navigation"
 
 #: template_content/models.py:20
 msgid "Component"
 msgstr "Komponente"
 
-#: template_content/models.py:68
+#: template_content/models.py:76
 #, python-format
 msgid "Translation for the language %(language)s is missing"
 msgstr "Übersetzung in die Sprache %(language)s fehlt"
 
-#: template_content/models.py:466
+#: template_content/models.py:484
+#, python-format
 msgid ""
 "The component \"%(component_name)s\" is required but still missing for the "
 "language %(language)s."
@@ -827,13 +918,19 @@ msgstr ""
 "Die Komponenente \"%(component_name)s\" ist Pflicht, fehlt aber in der "
 "Sprache %(language)s"
 
-#: template_content/models.py:475
+#: template_content/models.py:493
+#, python-format
 msgid "Content is still missing for the language %(language)s."
 msgstr "Der Inhalt fehlt in der Sprache %(language)s"
 
-#: template_content/models.py:480
+#: template_content/models.py:497 template_content/models.py:908
+#, python-format
 msgid "The translation for the language %(language)s is incomplete."
 msgstr "Übersetzung in die Sprache %(language)s ist unvollständig"
+
+#: template_content/templates/template_content/ajax/component_content_view.html:34
+msgid "No image supplied."
+msgstr "Keine Bilder vorhanden."
 
 #: template_content/templates/template_content/ajax/delete_component.html:4
 msgid "Delete component"
@@ -845,10 +942,12 @@ msgid "Delete component %(component_template_name)s"
 msgstr "Komponente %(component_template_name)s löschen"
 
 #: template_content/templates/template_content/ajax/manage_component.html:4
+#, python-format
 msgid "Manage %(name)s"
 msgstr "%(name)s verwalten"
 
 #: template_content/templates/template_content/ajax/manage_component.html:4
+#, python-format
 msgid "Create %(name)s"
 msgstr "%(name)s erstellen"
 
@@ -863,6 +962,7 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: template_content/templates/template_content/ajax/manage_navigation.html:4
+#, python-format
 msgid "Manage %(navigation)s"
 msgstr "%(navigation)s verwalten"
 
@@ -871,6 +971,7 @@ msgid "Create navigation"
 msgstr "Navigation erstellen"
 
 #: template_content/templates/template_content/ajax/manage_navigation_entry.html:4
+#, python-format
 msgid "Manage %(navigation_entry)s"
 msgstr "%(navigation_entry)s verwalten"
 
@@ -878,21 +979,39 @@ msgstr "%(navigation_entry)s verwalten"
 msgid "Create navigation entry"
 msgstr "Navigationseintrag erstellen"
 
-#: template_content/templates/template_content/ajax/navigation_entries_tree.html:12
-#: template_content/templates/template_content/ajax/navigation_list_entry.html:18
-#: template_content/templates/template_content/template_content_base.html:107
+#: template_content/templates/template_content/ajax/navigation_entries_tree.html:13
+#: template_content/templates/template_content/ajax/navigation_list_entry.html:20
+#: template_content/templates/template_content/template_content_base.html:113
 #: template_content/templates/template_content/template_content_list_entry.html:18
 msgid "Manage"
 msgstr "verwalten"
 
-#: template_content/templates/template_content/ajax/navigation_list_entry.html:22
+#: template_content/templates/template_content/ajax/navigation_list_entry.html:24
 msgid "Edit navigation type"
 msgstr "Art der Navigatoin ändern"
 
-#: template_content/templates/template_content/ajax/navigation_list_entry.html:24
+#: template_content/templates/template_content/ajax/navigation_list_entry.html:26
 #: template_content/templates/template_content/template_content_list_entry.html:22
 msgid "Publish"
 msgstr "veröffentlichen"
+
+#: template_content/templates/template_content/ajax/navigation_list_entry.html:28
+#: template_content/templates/template_content/template_content_list_entry.html:24
+#, python-format
+msgid "Translate into %(language)s "
+msgstr "nach %(language)s übersetzen "
+
+#: template_content/templates/template_content/ajax/primary_localization.html:11
+msgid "There is no image that needs to be translated."
+msgstr ""
+
+#: template_content/templates/template_content/ajax/primary_localization.html:25
+msgid "show"
+msgstr "zeigen"
+
+#: template_content/templates/template_content/ajax/primary_localization.html:31
+msgid "There is no component that needs to be translated."
+msgstr "Es ist keine Komponente vorhanden, die übersetzt werden muss."
 
 #: template_content/templates/template_content/ajax/publication_feedback.html:8
 msgid "Publication failed:"
@@ -902,35 +1021,36 @@ msgstr "Veröffentlichung fehlgeschlagen:"
 msgid "Publication successful."
 msgstr "Veröffentlichung erfolgreich"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:14
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:15
 #, python-format
 msgid "published version: %(version)s"
 msgstr "veröffentlichte Version: %(version)s"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:16
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:17
 #: template_content/templates/template_content/manage_localized_template_content.html:24
+#: template_content/templates/template_content/translate_localized_navigation.html:24
 msgid "not published"
 msgstr "nicht veröffentlicht"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:20
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:21
 #, python-format
 msgid "current version: %(version)s"
 msgstr "aktuelle Version: %(version)s"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:26
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:27
 msgid "old version"
 msgstr "alte Version"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:28
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:29
 msgid "translation complete"
 msgstr "Übersetzung vollständig"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:31
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:32
 msgid "translation incomplete"
 msgstr "Übersetzung unvollständig"
 
-#: template_content/templates/template_content/ajax/translation_status_matrix.html:35
-#: template_content/templates/template_content/template_content_base.html:100
+#: template_content/templates/template_content/ajax/translation_status_matrix.html:36
+#: template_content/templates/template_content/template_content_base.html:106
 msgid "missing"
 msgstr "fehlt"
 
@@ -988,18 +1108,22 @@ msgid "Upload custom template"
 msgstr "Custom Template hochladen"
 
 #: template_content/templates/template_content/manage_localized_template_content.html:19
+#: template_content/templates/template_content/translate_localized_navigation.html:19
 msgid "published"
 msgstr "veröffentlicht"
 
 #: template_content/templates/template_content/manage_localized_template_content.html:22
+#: template_content/templates/template_content/translate_localized_navigation.html:22
 msgid "unpublished changes"
 msgstr "unveröffentlichte Änderungen"
 
 #: template_content/templates/template_content/manage_localized_template_content.html:33
+#: template_content/templates/template_content/translate_localized_navigation.html:35
 msgid "ready for translation"
 msgstr "bereit für die Übersetzung"
 
 #: template_content/templates/template_content/manage_localized_template_content.html:35
+#: template_content/templates/template_content/translate_localized_navigation.html:37
 msgid "not ready for translation"
 msgstr "nicht für die Übersetzung bereit"
 
@@ -1007,19 +1131,19 @@ msgstr "nicht für die Übersetzung bereit"
 msgid "Successfully saved your content."
 msgstr "Der Inhalt wurde erfolgreich gespeichert."
 
-#: template_content/templates/template_content/manage_localized_template_content.html:74
+#: template_content/templates/template_content/manage_localized_template_content.html:75
 msgid "Components"
 msgstr "Komponenten"
 
-#: template_content/templates/template_content/manage_localized_template_content.html:84
+#: template_content/templates/template_content/manage_localized_template_content.html:85
 msgid "save content"
 msgstr "Inhalte speichern"
 
-#: template_content/templates/template_content/manage_localized_template_content.html:90
+#: template_content/templates/template_content/manage_localized_template_content.html:91
 msgid "Preview"
 msgstr "Vorschau"
 
-#: template_content/templates/template_content/manage_localized_template_content.html:90
+#: template_content/templates/template_content/manage_localized_template_content.html:91
 msgid "Show in separate window"
 msgstr "in separatem Fenster anzeigen"
 
@@ -1039,48 +1163,70 @@ msgstr "Template Inhalte"
 msgid "Navigations"
 msgstr "Navigationen"
 
-#: template_content/templates/template_content/template_content_base.html:40
+#: template_content/templates/template_content/template_content_base.html:41
 msgid "You do not have any navigations for this app yet."
 msgstr "Du hast noch keine Navigationen für diese App."
 
-#: template_content/templates/template_content/template_content_base.html:44
+#: template_content/templates/template_content/template_content_base.html:45
 msgid "Add new navigation"
 msgstr "Neue Navigation hinzufügen"
 
-#: template_content/templates/template_content/template_content_base.html:52
+#: template_content/templates/template_content/template_content_base.html:50
+msgid "Your frontend does not support navigations."
+msgstr "Dein Frontend enthält keine Navigationen"
+
+#: template_content/templates/template_content/template_content_base.html:58
 msgid "Pages"
 msgstr "Seiten"
 
-#: template_content/templates/template_content/template_content_base.html:64
+#: template_content/templates/template_content/template_content_base.html:70
 msgid "You do not have any online pages for this app yet."
 msgstr "Du hast noch keine Seiten für diese App."
 
-#: template_content/templates/template_content/template_content_base.html:69
+#: template_content/templates/template_content/template_content_base.html:75
 msgid "Add new page"
 msgstr "Neue Seite hinzufügen"
 
-#: template_content/templates/template_content/template_content_base.html:78
+#: template_content/templates/template_content/template_content_base.html:84
 msgid "Frontend requirements"
 msgstr "Frontend-Anforderungen"
 
-#: template_content/templates/template_content/template_content_base.html:110
+#: template_content/templates/template_content/template_content_base.html:116
 msgid "create"
 msgstr "erstellen"
 
-#: template_content/templates/template_content/template_content_list_entry.html:24
-#, python-format
-msgid "Translate into %(language)s "
-msgstr "nach %(language)s übersetzen "
+#: template_content/templates/template_content/translate_localized_navigation.html:49
+msgid "Successfully saved your translation."
+msgstr "Übersetzung erfolgreich gespeichert."
 
-#: template_content/templates/template_content/translate_localized_template_content.html:56
+#: template_content/templates/template_content/translate_localized_navigation.html:95
+#: template_content/templates/template_content/translate_localized_template_content.html:97
 msgid "save translation"
 msgstr "Übersetzung speichern"
 
+#: template_content/templates/template_content/translate_localized_template_content.html:12
+msgid "Before translating the components, you have to translate the title."
+msgstr "Bevor Komponenten übersetzt werden können, muss zuerst der Titel übsersetzt werden."
+
+#: template_content/templates/template_content/translate_localized_template_content.html:39
+msgid "There is no content that needs to be translated."
+msgstr "Es gibt keine zu übersetzenden Inhalte."
+
+#: template_content/templates/template_content/translate_localized_template_content.html:71
+msgid ""
+"This image does not require a translation. The image above (if any) will be "
+"used for all languages."
+msgstr ""
+"Dieses Bild benötigt keine Übsersetzung. Das angezeigt Bild wird, falls vorhanden, "
+"für alle Sprachen benutzt."
+
 #: template_content/templates/template_content/widgets/content_with_preview.html:20
+#, python-format
 msgid "Change %(name)s"
 msgstr "%(name)s ändern"
 
 #: template_content/templates/template_content/widgets/content_with_preview.html:24
+#, python-format
 msgid "Add %(name)s"
 msgstr "%(name)s hinzufügen"
 
@@ -1108,6 +1254,34 @@ msgstr "Server Control Panel"
 msgid "more"
 msgstr "mehr"
 
+#: templates/email/contact_user.html:315 templates/email/contact_user.txt:4
+msgid "Message from %(username)s"
+msgstr "Nachrichten von %(username)s"
+
+#: templates/email/contact_user.html:327 templates/email/contact_user.txt:14
+msgid "Reply to %(username)s: %(email)s"
+msgstr "%(username)s antworten: %(email)s"
+
+#: templates/email/contact_user.html:340
+#: templates/email/registration_confirmation.html:338
+msgid "Questions?"
+msgstr "Fragen?"
+
+#: templates/email/contact_user.html:346 templates/email/contact_user.txt:19
+#: templates/email/registration_confirmation.html:344
+#: templates/email/registration_confirmation.txt:17
+#: templates/localcosmos_server/legal/legal_notice.html:4
+#: templates/localcosmos_server/legal/legal_notice.html:10
+msgid "Legal notice"
+msgstr "Impressum"
+
+#: templates/email/contact_user.html:347 templates/email/contact_user.txt:20
+#: templates/email/registration_confirmation.html:345
+#: templates/email/registration_confirmation.txt:18
+#: templates/localcosmos_server/legal/privacy_statement.html:8
+msgid "Privacy statement"
+msgstr "Datenschutzerklärung"
+
 #: templates/email/registration_confirmation.html:315
 msgid "Registration confirmation."
 msgstr "Registrierungsbestätigung."
@@ -1120,6 +1294,7 @@ msgstr "Hallo %(name)s!"
 
 #: templates/email/registration_confirmation.html:324
 #: templates/email/registration_confirmation.txt:9
+#, python-format
 msgid "Thank you for registering on %(name)s."
 msgstr "Vielen Dank für die Registrierung auf %(name)s."
 
@@ -1128,23 +1303,6 @@ msgstr "Vielen Dank für die Registrierung auf %(name)s."
 #, python-format
 msgid "Your username is: %(username)s"
 msgstr "Dein Nutzername ist: %(username)s"
-
-#: templates/email/registration_confirmation.html:336
-msgid "Questions?"
-msgstr "Fragen?"
-
-#: templates/email/registration_confirmation.html:340
-#: templates/email/registration_confirmation.txt:17
-#: templates/localcosmos_server/legal/legal_notice.html:4
-#: templates/localcosmos_server/legal/legal_notice.html:10
-msgid "Legal notice"
-msgstr "Impressum"
-
-#: templates/email/registration_confirmation.html:341
-#: templates/email/registration_confirmation.txt:18
-#: templates/localcosmos_server/legal/privacy_statement.html:8
-msgid "Privacy statement"
-msgstr "Datenschutzerklärung"
 
 #: templates/error_base.html:30
 msgid "Go back to website"
@@ -1195,8 +1353,7 @@ msgstr ""
 #: templates/localcosmos_server/app/registration/password_reset_complete.html:19
 msgid ""
 "Your password has been set. You may go ahead and sign in to the app now."
-msgstr ""
-"Dein Passwort wurde gesetzt. Du kannst dich jetzt anmelden."
+msgstr "Dein Passwort wurde gesetzt. Du kannst dich jetzt anmelden."
 
 #: templates/localcosmos_server/app/registration/password_reset_email.html:2
 #, python-format
@@ -1204,8 +1361,8 @@ msgid ""
 "You're receiving this email because you requested a password reset for your "
 "user account for the app %(name)s."
 msgstr ""
-"Du erhältst diese E-Mail, weil du ein neues Passwort für deinen Account bei der App "
-"%(name)s angefordert hast."
+"Du erhältst diese E-Mail, weil du ein neues Passwort für deinen Account bei "
+"der App %(name)s angefordert hast."
 
 #: templates/localcosmos_server/app/registration/password_reset_email.html:4
 #: templates/localcosmos_server/registration/password_reset_email.html:4
@@ -1228,6 +1385,7 @@ msgid "The %(site_name)s team"
 msgstr "Das Team von %(site_name)s"
 
 #: templates/localcosmos_server/app/registration/password_reset_subject.txt:2
+#, python-format
 msgid "%(name)s: Reset Password"
 msgstr "%(name)s: Passwort zurücksetzen"
 
@@ -1386,6 +1544,10 @@ msgstr "Taxon zur Restriktion hinzufügen"
 msgid "delete"
 msgstr "löschen"
 
+#: templates/localcosmos_server/widgets/crop_image_input.html:13
+msgid "current image"
+msgstr "aktuelles Bild"
+
 #: templates/localcosmos_server/widgets/taxonomy/taxon_autocomplete_widget_base.html:11
 msgid "include descendants"
 msgstr "Nachkommen mit einschließen"
@@ -1401,10 +1563,6 @@ msgstr "Kein Taxon gefunden"
 #: templates/localcosmos_server/widgets/two_step_file_input.html:19
 msgid "Change image"
 msgstr "Bild ändern"
-
-#: templates/localcosmos_server/widgets/two_step_file_input.html:19
-msgid "Add image"
-msgstr "Bild hinzufügen"
 
 #: validators.py:15
 msgid "Invalid SVG file: could not detect SVG in XML tree of the file."
@@ -1531,38 +1689,35 @@ msgstr "bereit für die Übersetzung"
 msgid "Publish changes"
 msgstr "Änderungen veröffentlichen"
 
-#~ msgid "Features"
-#~ msgstr "Features"
+msgid "Features"
+msgstr "Features"
 
-#~ msgid "You do not have any online feature content for this app yet."
-#~ msgstr "Du hast noch keinen Feature Content für diese App."
+msgid "You do not have any online feature content for this app yet."
+msgstr "Du hast noch keinen Feature Content für diese App."
 
-#~ msgid "Add new feature"
-#~ msgstr "Neues Feature hinzufügen"
+msgid "Add new feature"
+msgstr "Neues Feature hinzufügen"
 
-#~ msgid "This translation is marked as complete. "
-#~ msgstr "Diese Übersetzung wurde als vollständig markiert. "
+msgid "This translation is marked as complete. "
+msgstr "Diese Übersetzung wurde als vollständig markiert. "
 
-#~ msgid "This translation is not yet complete."
-#~ msgstr "Diese Übersetzung ist noch nicht vollständig."
+msgid "This translation is not yet complete."
+msgstr "Diese Übersetzung ist noch nicht vollständig."
 
-#~ msgid "save"
-#~ msgstr "speichern"
+msgid "save"
+msgstr "speichern"
 
-#~ msgid "translation is complete"
-#~ msgstr "Übersetzung ist vollständig"
+msgid "translation is complete"
+msgstr "Übersetzung ist vollständig"
 
-#~ msgid ""
-#~ "This content is still being edited in the primary language. It will be "
-#~ "translatable as soon as the editor is finished creating the content in "
-#~ "the primary language."
-#~ msgstr ""
-#~ "Dieser Inhalt wird noch in der Primärsprache bearbeitet. Sobald der "
-#~ "Ersteller mit der Primärsprache fertig ist, kann der Text übersetzt "
-#~ "werden."
-
-msgid "GBIF"
-msgstr "GBIF"
+msgid ""
+"This content is still being edited in the primary language. It will be "
+"translatable as soon as the editor is finished creating the content in "
+"the primary language."
+msgstr ""
+"Dieser Inhalt wird noch in der Primärsprache bearbeitet. Sobald der "
+"Ersteller mit der Primärsprache fertig ist, kann der Text übersetzt "
+"werden."
 
 msgid "Read more"
 msgstr "Mehr lesen"

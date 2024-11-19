@@ -139,9 +139,9 @@ class LocalcosmosUser(ServerContentImageMixin, AbstractUser):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     slug = models.SlugField(unique=True)
 
-    details = models.JSONField(null=True)
+    details = models.JSONField(null=True, blank=True)
     
-    follows = models.ManyToManyField('self')
+    follows = models.ManyToManyField('self', blank=True)
 
     is_banned = models.BooleanField(default=False)
 
@@ -708,6 +708,20 @@ class ContentImageAbstract(models.Model):
     # flag if a translation is needed
     requires_translation = models.BooleanField(
         default=False)  # not all images require a translation
+    
+    
+    def save(self, *args, **kwargs):
+        
+        if self.is_primary == True:
+            
+            old_primaries = self.__class__.objects.filter(content_type=self.content_type, object_id=self.object_id, image_type=self.image_type, is_primary=True)
+            
+            if self.pk:
+                old_primaries.exclude(pk=self.pk)
+                
+            old_primaries.update(is_primary=False)
+        
+        super().save(*args, **kwargs)
 
 
     class Meta:

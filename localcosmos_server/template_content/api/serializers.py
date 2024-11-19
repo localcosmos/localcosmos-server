@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from localcosmos_server.template_content.models import LocalizedTemplateContent, PUBLISHED_IMAGE_TYPE_PREFIX
+from localcosmos_server.template_content.models import (LocalizedTemplateContent, LocalizedNavigation,
+    PUBLISHED_IMAGE_TYPE_PREFIX)
 
 from content_licencing.models import ContentLicenceRegistry
 
@@ -200,3 +201,21 @@ class ContentImageSerializer(serializers.Serializer):
         serializer = ContentLicenceSerializer(licence)
 
         return serializer.data
+    
+    
+class LocalizedNavigationSerializer(serializers.ModelSerializer):
+    
+    navigation = serializers.SerializerMethodField()
+    
+    def get_navigation(self, localized_navigation):
+        preview = self.context.get('preview', True)
+        
+        if preview == True:
+            return localized_navigation.serialize()
+
+        return localized_navigation.published_navigation
+    
+    class Meta:
+        model = LocalizedNavigation
+        fields = ('navigation',)
+        

@@ -111,6 +111,7 @@ class ManageContentImageFormCommon:
             'creator_link',
             'source_link',
             'licence',
+            'is_primary',
             'requires_translation',
         ]
 
@@ -279,6 +280,7 @@ class ManageContentImageForm(ManageContentImageFormCommon, LicencingFormMixin):
     # md5
     md5 = forms.CharField(widget=forms.HiddenInput, required=False)
 
+    is_primary = forms.BooleanField(required=False, label=_('Primary image'))
     requires_translation = forms.BooleanField(required=False)
     
 

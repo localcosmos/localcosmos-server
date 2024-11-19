@@ -3,7 +3,7 @@ from rest_framework import status
 
 from localcosmos_server.datasets.api.tests.test_views import CreatedUsersMixin
 
-from localcosmos_server.template_content.tests.mixins import WithTemplateContent
+from localcosmos_server.template_content.tests.mixins import WithTemplateContent, WithNavigation
 
 from localcosmos_server.tests.common import (test_settings,)
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithMedia, WithServerContentImage
@@ -25,6 +25,7 @@ class TestGetTemplateContentPreview(WithTemplateContent, WithServerContentImage,
     def test_get(self):
         
         url_kwargs = {
+            'app_uuid': str(self.app.uuid),
             'slug': self.primary_ltc.slug,
         }
 
@@ -101,6 +102,7 @@ class TestGetTemplateContent(WithTemplateContent, WithServerContentImage, WithMe
     def test_get(self):
         
         url_kwargs = {
+            'app_uuid': str(self.app.uuid),
             'slug': self.primary_ltc.slug,
         }
 
@@ -115,3 +117,105 @@ class TestGetTemplateContent(WithTemplateContent, WithServerContentImage, WithMe
         response = self.client.get(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+  
+class TestGetNavigation(CreatedUsersMixin, WithNavigation, WithApp, WithUser, APITestCase):
+    
+    @test_settings
+    def test_get(self):
+        
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'navigation_type': 'main',
+            'language': self.app.primary_language,
+        }
+        
+        url = reverse('get_template_content_navigation', kwargs=url_kwargs)
+        
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        content = json.loads(response.content)
+        
+        expected_content = {
+            'navigation': [
+                {
+                    'url': None,
+                    'children': [],
+                    'linkName': 'nav entry 1'
+                },
+                {
+                    'url': None,
+                    'children': [],
+                    'linkName': 'nav entry 2'
+                }
+            ]
+        }
+        
+        self.assertEqual(content, expected_content)
+        
+        
+    @test_settings
+    def test_get_404(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'navigation_type': 'something',
+            'language': self.app.primary_language,
+        }
+        
+        url = reverse('get_template_content_navigation', kwargs=url_kwargs)
+        
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    
+    
+class TestGetNavigationPreview(CreatedUsersMixin, WithNavigation, WithApp, WithUser, APITestCase):
+    
+    @test_settings
+    def test_get(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'navigation_type': 'main',
+            'language': self.app.primary_language,
+        }
+        
+        url = reverse('get_template_content_navigation_preview', kwargs=url_kwargs)
+        
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        content = json.loads(response.content)
+        
+        expected_content = {
+            'navigation': [
+                {
+                    'url': None,
+                    'children': [],
+                    'linkName': 'nav entry 1 draft'
+                },
+                {
+                    'url': None,
+                    'children': [],
+                    'linkName': 'nav entry 2 draft'
+                }
+            ]
+        }
+        
+        self.assertEqual(content, expected_content)
+    
+    @test_settings
+    def test_get_404(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'navigation_type': 'something',
+            'language': self.app.primary_language,
+        }
+        
+        url = reverse('get_template_content_navigation_preview', kwargs=url_kwargs)
+        
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
