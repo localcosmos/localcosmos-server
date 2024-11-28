@@ -120,6 +120,10 @@
 				});
 			}, 
 			afterSelect : function(item){
+
+				// set visible value
+				const verbose_value = `${item.taxon_latname} ${item.taxon_author}`;
+				taxon_verbose_input.val(verbose_value);
 				
 				// set hidden input values
 				taxon_source_input.val(item.taxon_source);
@@ -127,6 +131,8 @@
 				taxon_author_input.val(item.taxon_author);
 				name_uuid_input.val(item.name_uuid);
 				taxon_nuid_input.val(item.taxon_nuid);
+
+				
 
 				// fire event on uuid input
 				var event = new Event("change");
