@@ -52,6 +52,7 @@
 			$("#{{ widget.attrs.id }}_verbose").taxonautocomplete({"base_id":"{{ widget.attrs.id }}", "url":"{{ taxon_search_url }}" });
 
 			{% if final_attrs.value %}
+
 				$.get("{% url 'get_taxon' widget.attrs.value language %}", function(taxon){
 				
 					if (taxon.vernacular){

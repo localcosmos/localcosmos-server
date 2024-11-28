@@ -8,6 +8,11 @@ SUPPORTED_LAZY_TAXONOMY_SOURCES = []
 if hasattr(settings, 'LAZY_TAXONOMY_SOURCES'):
     SUPPORTED_LAZY_TAXONOMY_SOURCES = [db[0] for db in settings.LAZY_TAXONOMY_SOURCES]
 
+
+TAXON_SOURCE_VERBOSE_NAME_MAP = {
+    'taxonomy.sources.col' : 'Catalogue of Life',
+    'taxonomy.sources.custom' : 'Custom Taxonomy',
+}
 ##################################################################################################################
 #
 # LazyTaxon
@@ -131,6 +136,8 @@ class LazyTaxonBase:
         if label is None:
             label = '{0} {1}'.format(self.taxon_latname, self.taxon_author or '')
         
+        verbose_taxon_source_name = TAXON_SOURCE_VERBOSE_NAME_MAP.get(self.taxon_source, None)
+        
         obj = {
             'label': label,
             'taxon_latname': self.taxon_latname,
@@ -138,6 +145,7 @@ class LazyTaxonBase:
             'taxon_nuid': self.taxon_nuid,
             'taxon_source' : self.taxon_source,
             'name_uuid': str(self.name_uuid),
+            'verbose_taxon_source_name': verbose_taxon_source_name,
         }
         return obj
 

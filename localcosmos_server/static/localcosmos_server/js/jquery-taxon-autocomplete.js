@@ -45,7 +45,7 @@
 		
 		// manage taxon_verbose input visual styles
 		taxon_verbose_input.focusout(function(){
-
+			
 			no_results_indicator.hide();
 
 			if (name_uuid_input.val().length == 0){
@@ -95,8 +95,14 @@
 						else {
 							process($.map(data, function (item) {
 
+								let label = item.label;
+
+								if (item.verbose_taxon_source_name) {
+									label = `${label} <span class="badge badge-light">${item.verbose_taxon_source_name}</span>`
+								}
+
 								var taxon_object = {
-									"name": item.label,
+									"name": label,
 									"taxon_nuid": item.taxon_nuid,
 									"taxon_latname": item.taxon_latname,
 									"taxon_author": item.taxon_author,
@@ -114,7 +120,7 @@
 				});
 			}, 
 			afterSelect : function(item){
-
+				
 				// set hidden input values
 				taxon_source_input.val(item.taxon_source);
 				taxon_latname_input.val(item.taxon_latname);
