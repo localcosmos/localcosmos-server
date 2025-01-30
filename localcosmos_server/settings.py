@@ -108,8 +108,3 @@ LOGIN_REDIRECT_URL = '/server/control-panel/'
 
 
 LOCALCOSMOS_SERVER_PUBLISH_INVALID_DATA = True
-
-# temporary el_pagination fix
-import django
-from django.utils.encoding import force_str
-django.utils.encoding.force_text = force_str

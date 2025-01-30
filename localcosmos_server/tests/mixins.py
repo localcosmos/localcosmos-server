@@ -10,10 +10,10 @@ from localcosmos_server.models import (LocalcosmosUser, App, SecondaryAppLanguag
 
 from localcosmos_server.datasets.models import Dataset, DatasetImages, UserGeometry
 
-from localcosmos_server.tests.common import (powersetdic, TEST_MEDIA_ROOT, TEST_IMAGE_PATH, TESTAPP_NAO_ABSOLUTE_PATH,
-    TESTAPP_AO_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID, TEST_OBSERVATION_FORM_JSON, DataCreator,
-    TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID, TEST_TIMESTAMP, GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME,
-    test_settings)
+from localcosmos_server.tests.common import (powersetdic, TEST_MEDIA_ROOT, TEST_IMAGE_PATH,
+    TESTAPP_NAO_PUBLISHED_ABSOLUTE_PATH, TESTAPP_AO_PUBLISHED_ABSOLUTE_PATH, TESTAPP_NAO_UID, TESTAPP_AO_UID,
+    TEST_OBSERVATION_FORM_JSON, DataCreator, TEST_OBSERVATION_FORM_POINT_JSON, TEST_CLIENT_ID,
+    TEST_TIMESTAMP, GEOJSON_POLYGON, TEST_USER_GEOMETRY_NAME, test_settings)
 
 from django.utils import timezone
 
@@ -71,7 +71,7 @@ class WithApp:
         super().setUp()
 
         nao_create_kwargs = {
-            'published_version_path' : TESTAPP_NAO_ABSOLUTE_PATH
+            'published_version_path' : TESTAPP_NAO_PUBLISHED_ABSOLUTE_PATH
         }
 
         self.app = App.objects.create(name=self.nao_app_name, primary_language=self.app_primary_language,
@@ -87,7 +87,7 @@ class WithApp:
 
 
         ao_create_kwargs = {
-            'published_version_path' : TESTAPP_AO_ABSOLUTE_PATH
+            'published_version_path' : TESTAPP_AO_PUBLISHED_ABSOLUTE_PATH
         }
 
         self.ao_app = App.objects.create(name=self.ao_app_name, primary_language=self.app_primary_language,

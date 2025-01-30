@@ -1,0 +1,15 @@
+[
+    {
+        "taxonSource": "taxonomy.sources.col",
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonNuid": "006008007001005001001",
+        "imageUrl": {
+            "1x": "/localcosmos/user_content/content_images/image-299-250.webp",
+            "2x": "/localcosmos/user_content/content_images/image-299-500.webp",
+            "4x": "/localcosmos/user_content/content_images/image-299-1000.webp"
+        },
+        "gbifNubKey": 2685484
+    }
+]

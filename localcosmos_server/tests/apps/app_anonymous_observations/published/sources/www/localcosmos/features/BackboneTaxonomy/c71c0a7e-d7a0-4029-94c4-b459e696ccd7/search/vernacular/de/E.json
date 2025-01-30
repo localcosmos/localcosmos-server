@@ -1,0 +1,226 @@
+[
+    {
+        "taxonLatname": "Fraxinus excelsior",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+        "taxonNuid": "00600800600w00c00a00j",
+        "gbifNubkey": 3172358,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-38-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-38-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-38-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Esche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonNuid": "006008007001005005002",
+        "gbifNubkey": 2686212,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-63-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-63-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-63-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Europäische Lärche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Quercus robur",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2878688,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-35-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-35-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-35-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Eiche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Sorbus aucuparia",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "2f40a63f-aade-4003-9430-447270fe6abf",
+        "taxonNuid": "00600800601b00702u00a",
+        "gbifNubkey": 3012167,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-40-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-40-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-40-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Eberesche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "2f40a63f-aade-4003-9430-447270fe6abf",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Fraxinus excelsior",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+        "taxonNuid": "00600800600w00c00a00j",
+        "gbifNubkey": 3172358,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-38-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-38-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-38-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Esche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonNuid": "006008007001005005002",
+        "gbifNubkey": 2686212,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-63-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-63-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-63-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Europäische Lärche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Sorbus aucuparia",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "2f40a63f-aade-4003-9430-447270fe6abf",
+        "taxonNuid": "00600800601b00702u00a",
+        "gbifNubkey": 3012167,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-40-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-40-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-40-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Eberesche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "2f40a63f-aade-4003-9430-447270fe6abf",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Quercus robur",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2878688,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-35-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-35-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-35-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Eiche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": true
+    }
+]

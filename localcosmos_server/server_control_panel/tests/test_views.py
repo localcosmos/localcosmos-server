@@ -33,7 +33,7 @@ class TestAppsContextMixin(CommonSetUp, WithUser, WithApp, TestCase):
 
         context = view.get_context_data(**{})
 
-        self.assertEqual(len(context['apps']), 1)
+        self.assertEqual(len(context['apps']), 2)
 
 
 @test_settings

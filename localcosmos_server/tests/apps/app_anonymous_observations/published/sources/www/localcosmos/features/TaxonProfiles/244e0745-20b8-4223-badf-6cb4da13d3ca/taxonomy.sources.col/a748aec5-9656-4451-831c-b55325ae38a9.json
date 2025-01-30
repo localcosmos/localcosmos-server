@@ -1,0 +1,327 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Betula pendula",
+    "taxonAuthor": "Roth",
+    "nameUuid": "a748aec5-9656-4451-831c-b55325ae38a9",
+    "taxonNuid": "00600800600p00100201n",
+    "vernacular": {
+        "de": "Birke"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Birke"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                "name": "Textfilter",
+                "type": "TextOnlyFilter",
+                "position": 1,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [
+                    "visual"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                        "encodedSpace": "<p>Text 2 1</p>"
+                    },
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                        "encodedSpace": "<p>Text 1</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                        "encodedSpace": "<p>Text/mit shcräg</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                "name": "Blattanordnung/TEst",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                        "encodedSpace": "wechselständig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-239-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-239-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-239-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                "name": "Form des Blattes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:92",
+                        "encodedSpace": "herzförmig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-254-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-254-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-254-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                "name": "Form des Blattendes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                        "encodedSpace": "mit Spitze",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                "name": "Form des Blattanfangs",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                        "encodedSpace": "gebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-242-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-242-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-242-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                "name": "Form des Blattrandes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                        "encodedSpace": "gezackt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-248-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-248-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-248-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                        "encodedSpace": "glatt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-252-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-252-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-252-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                "name": "Farbe des Stammes",
+                "type": "ColorFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:93",
+                        "encodedSpace": [
+                            222,
+                            221,
+                            218,
+                            1
+                        ],
+                        "html": "rgba(222,221,218,1)",
+                        "gradient": false,
+                        "description": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Das Wort Birke ist auf einen Begriff im Indogermanischen zurückzuführen (*bherHg̑o) und bedeutet in Anspielung auf die helle Rinde so viel wie „glänzend, schimmernd“. Die Birke als Symbol der Fruchtbarkeit galt früher als Helfer in Liebesnöten. Dieser Verwendungszweck ist heute fast vergessen. Ihre Zweige, Rinde und die Blätter mussten für allerlei Mittel und Bräuche herhalten, von denen man sich eine Besserung in sexuellen Nöten erhoffte.",
+            "shortTextKey": "taxon_text_1_13",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Die beiden einheimischen, baumförmigen Birkenarten, die Sandbirke (Betula pendula) und die Moorbirke (Betula pubescens), tragen wesentlich zur Erhöhung der biologischen Vielfalt in unseren Wäldern bei. Allgemein ist bekannt, dass unsere beiden Birkenarten zu den von Insektenarten beliebtesten Baumarten zählen.\n\nSo kommen über 160 Insektenarten an Sand- und Moorbirke vor. Die Birken gehören damit nach den Weidenarten und den beiden Eichen zu den von Insekten am stärksten genutzten einheimischen Baumarten.\n\nEine auf die Birke spezialisierte Käferart ist z.B. der Birken-Blattroller (Deporaus betulae, Rhynchitidae), der den vorderen Teil der Blattspreite in einen kunstvolles, tütenförmiges „Päckchen“ umbaut, in das er seine Eier ablegt. Eine auffallende spezialisierte Art ist die Große Birkenblattwespe.",
+            "shortTextKey": "taxon_text_3_14",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-232-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-232-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-232-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Betula alba pendula",
+            "taxonAuthor": "(Roth) W.T.Aiton"
+        }
+    ],
+    "gbifNubKey": 5331916,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

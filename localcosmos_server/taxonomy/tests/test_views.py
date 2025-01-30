@@ -3,7 +3,10 @@ from django.urls import reverse
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 
-from localcosmos_server.tests.common import test_settings, MockPost
+from localcosmos_server.tests.common import (test_settings, 
+    TESTAPP_NAO_PUBLISHED_ABSOLUTE_PATH, TESTAPP_NAO_PREVIEW_ABSOLUTE_PATH, TESTAPP_NAO_REVIEW_ABSOLUTE_PATH,
+    TESTAPP_AO_PUBLISHED_ABSOLUTE_PATH, TESTAPP_AO_PREVIEW_ABSOLUTE_PATH, TESTAPP_AO_REVIEW_ABSOLUTE_PATH,)
+
 
 from localcosmos_server.taxonomy.views import (SearchAppTaxon, ManageTaxonomicRestrictions,
                                                RemoveAppTaxonomicRestriction)
@@ -14,15 +17,34 @@ from localcosmos_server.tests.mixins import WithApp, WithUser, CommonSetUp
 
 from localcosmos_server.taxonomy.forms import AddSingleTaxonForm, TypedTaxonomicRestrictionForm
 
-
 import json
 
 
 # removed WithPublishedApp, which came from online content
 @test_settings
 class TestSearchAppTaxon(CommonSetUp, WithApp, WithUser, TestCase):
+    
+    def set_apps(self):
+        self.app.preview_version_path = TESTAPP_NAO_PREVIEW_ABSOLUTE_PATH
+        self.ao_app.preview_version_path = TESTAPP_AO_PREVIEW_ABSOLUTE_PATH
+        
+        self.app.save()
+        self.ao_app.save()
+        
+    def publish_apps(self):
+        self.app.published_version_path = TESTAPP_NAO_PUBLISHED_ABSOLUTE_PATH
+        self.ao_app.published_version_path = TESTAPP_AO_PUBLISHED_ABSOLUTE_PATH
+        
+        self.app.published_version = 1
+        self.ao_app.published_version = 1
+        
+        self.app.save()
+        self.ao_app.save()
+
 
     def test_get(self):
+        self.set_apps()
+        self.publish_apps()
 
         url_kwargs = {
             'app_uid' : self.app.uid,
@@ -31,21 +53,23 @@ class TestSearchAppTaxon(CommonSetUp, WithApp, WithUser, TestCase):
         get_parameters = {
             'taxon_source': 'taxonomy.sources.col',
             'searchtext' : 'Eich',
-            'language' : 'en',
+            'language' : 'de',
         }
 
         response = self.client.get(reverse('search_app_taxon', kwargs=url_kwargs), get_parameters)
 
         self.assertEqual(response.status_code, 200)
         choices = json.loads(response.content)
+        
 
         expected_choices = [{
             'label': 'Eiche',
             'taxon_latname': 'Quercus robur',
-            'taxon_author' : 'Linnaeus',
-            'taxon_nuid': '00600200700q0030070cx',
+            'taxon_author': 'L.',
+            'taxon_nuid': '00600800600p0030070db',
             'taxon_source': 'taxonomy.sources.col',
-            'name_uuid': 'fc542c23-258f-4013-bad5-7f9c6a9cfb0d'
+            'name_uuid': '8561de7e-0a43-4550-9dc6-f0401c986a2d',
+            'verbose_taxon_source_name': 'Catalogue of Life',
         }]
         self.assertEqual(choices, expected_choices)
 
@@ -53,13 +77,74 @@ class TestSearchAppTaxon(CommonSetUp, WithApp, WithUser, TestCase):
         get_parameters['searchtext'] = 'Quercu'
 
         expected_choices_2 = [{
-            'label': 'Quercus robur',
-            'taxon_latname': 'Quercus robur',
-            'taxon_author' : 'Linnaeus',
-            'taxon_nuid': '00600200700q0030070cx',
+            'label': 'Quercus ',
+            'taxon_latname': 'Quercus',
+            'taxon_author': '',
+            'taxon_nuid': '00600800600p003007',
             'taxon_source': 'taxonomy.sources.col',
-            'name_uuid': 'fc542c23-258f-4013-bad5-7f9c6a9cfb0d'
+            'name_uuid': 'a8fb9529-9794-46ea-9d42-6a67577f5bde',
+            'verbose_taxon_source_name': 'Catalogue of Life'
+        },
+        {
+            'label': 'Quercus robur L.',
+            'taxon_latname': 'Quercus robur',
+            'taxon_author': 'L.',
+            'taxon_nuid': '00600800600p0030070db',
+            'taxon_source': 'taxonomy.sources.col',
+            'name_uuid': '8561de7e-0a43-4550-9dc6-f0401c986a2d',
+            'verbose_taxon_source_name': 'Catalogue of Life'
         }]
+
+        response = self.client.get(reverse('search_app_taxon', kwargs=url_kwargs), get_parameters)
+
+        self.assertEqual(response.status_code, 200)
+        choices = json.loads(response.content)
+        
+
+        self.assertEqual(choices, expected_choices_2)
+
+        # test no searchtext
+        del get_parameters['searchtext']
+
+        response = self.client.get(reverse('search_app_taxon', kwargs=url_kwargs), get_parameters)
+        self.assertEqual(response.status_code, 200)
+        choices = json.loads(response.content)
+
+        self.assertEqual(choices, [])
+    
+    
+    def test_get_new(self):
+        self.set_apps()
+        self.publish_apps()
+
+        url_kwargs = {
+            'app_uid' : self.ao_app.uid,
+        }
+
+        get_parameters = {
+            'taxon_source': 'taxonomy.sources.col',
+            'searchtext' : 'Eich',
+            'language' : 'de',
+        }
+
+        response = self.client.get(reverse('search_app_taxon', kwargs=url_kwargs), get_parameters)
+
+        self.assertEqual(response.status_code, 200)
+        choices = json.loads(response.content)
+        
+        expected_choices = [{'label': 'Eiche', 'taxon_latname': 'Quercus robur', 'taxon_author': 'L.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '8561de7e-0a43-4550-9dc6-f0401c986a2d', 'verbose_taxon_source_name': 'Catalogue of Life'}, {'label': 'Eiche', 'taxon_latname': 'Quercus robur', 'taxon_author': 'L.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '8561de7e-0a43-4550-9dc6-f0401c986a2d', 'verbose_taxon_source_name': 'Catalogue of Life'}]
+        self.assertEqual(choices, expected_choices)
+
+        # test latname
+        get_parameters['searchtext'] = 'Quercu'
+
+        expected_choices_2 = [
+            {'label': 'Quercus robur L.', 'taxon_latname': 'Quercus robur', 'taxon_author': 'L.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '8561de7e-0a43-4550-9dc6-f0401c986a2d', 'verbose_taxon_source_name': 'Catalogue of Life'},
+            {'label': 'Quercus longaeva Salisb., nom. superfl.', 'taxon_latname': 'Quercus longaeva', 'taxon_author': 'Salisb., nom. superfl.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': 'f81297a5-feaf-4364-8066-171e42e6be73', 'verbose_taxon_source_name': 'Catalogue of Life'},
+            {'label': 'Quercus robur eurobur A.Camus, not validly publ.', 'taxon_latname': 'Quercus robur eurobur', 'taxon_author': 'A.Camus, not validly publ.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '8971170b-9d65-489b-8f8d-59631316aeaa', 'verbose_taxon_source_name': 'Catalogue of Life'},
+            {'label': 'Quercus robur typica Beck, not validly publ.', 'taxon_latname': 'Quercus robur typica', 'taxon_author': 'Beck, not validly publ.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '93c3ebe6-8bfe-4949-a6f6-275be534c2c7', 'verbose_taxon_source_name': 'Catalogue of Life'}, {'label': 'Quercus robur vulgaris A.DC., not validly publ.', 'taxon_latname': 'Quercus robur vulgaris', 'taxon_author': 'A.DC., not validly publ.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '192b1e2b-0002-4f84-9619-95cb9cdf418f', 'verbose_taxon_source_name': 'Catalogue of Life'},
+            {'label': 'Quercus robur longipeduncula Ehrh., not validly publ.', 'taxon_latname': 'Quercus robur longipeduncula', 'taxon_author': 'Ehrh., not validly publ.', 'taxon_nuid': '00600800600p0030070db', 'taxon_source': 'taxonomy.sources.col', 'name_uuid': '1cb032c9-5cb0-4101-8818-49829925cc98', 'verbose_taxon_source_name': 'Catalogue of Life'}
+        ]
 
         response = self.client.get(reverse('search_app_taxon', kwargs=url_kwargs), get_parameters)
 

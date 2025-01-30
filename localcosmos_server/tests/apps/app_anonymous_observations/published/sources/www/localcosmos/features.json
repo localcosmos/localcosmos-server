@@ -1,0 +1,152 @@
+{
+    "PUBLISHED": true,
+    "REVIEW": false,
+    "PREVIEW": false,
+    "slugs": {
+        "8-frontend": "27e26b18-9daa-4d96-86f7-724cfbf2f87f",
+        "13-glossar": "faf1414c-fd67-4904-b9d7-81824f669060",
+        "9-backbone-taxonomy": "c71c0a7e-d7a0-4029-94c4-b459e696ccd7",
+        "48-waldbaume-bestimmen": "f1674130-a6f7-4e61-972f-4748c8e447fb",
+        "47-baummeldung": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+        "10-baumportrats": "244e0745-20b8-4223-badf-6cb4da13d3ca"
+    },
+    "Frontend": {
+        "genericContentType": "Frontend",
+        "uuid": "27e26b18-9daa-4d96-86f7-724cfbf2f87f",
+        "name": "Frontend",
+        "slug": "8-frontend",
+        "version": 1,
+        "path": "/localcosmos/features/Frontend/27e26b18-9daa-4d96-86f7-724cfbf2f87f/27e26b18-9daa-4d96-86f7-724cfbf2f87f.json",
+        "folder": "/localcosmos/features/Frontend/27e26b18-9daa-4d96-86f7-724cfbf2f87f"
+    },
+    "Glossary": {
+        "genericContentType": "Glossary",
+        "uuid": "faf1414c-fd67-4904-b9d7-81824f669060",
+        "name": "Glossar",
+        "slug": "13-glossar",
+        "version": 1,
+        "path": "/localcosmos/features/Glossary/faf1414c-fd67-4904-b9d7-81824f669060/faf1414c-fd67-4904-b9d7-81824f669060.json",
+        "folder": "/localcosmos/features/Glossary/faf1414c-fd67-4904-b9d7-81824f669060",
+        "localized": {
+            "de": {
+                "usedTerms": "/localcosmos/features/Glossary/faf1414c-fd67-4904-b9d7-81824f669060/de/used_terms_glossary.json",
+                "usedTermsCsv": "/localcosmos/features/Glossary/faf1414c-fd67-4904-b9d7-81824f669060/de/used_terms_glossary.csv",
+                "allTerms": "/localcosmos/features/Glossary/faf1414c-fd67-4904-b9d7-81824f669060/de/glossary.json",
+                "allTermsCsv": "/localcosmos/features/Glossary/faf1414c-fd67-4904-b9d7-81824f669060/de/glossary.csv"
+            }
+        }
+    },
+    "BackboneTaxonomy": {
+        "genericContentType": "BackboneTaxonomy",
+        "uuid": "c71c0a7e-d7a0-4029-94c4-b459e696ccd7",
+        "name": "Backbone taxonomy",
+        "slug": "9-backbone-taxonomy",
+        "version": 1,
+        "path": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/c71c0a7e-d7a0-4029-94c4-b459e696ccd7.json",
+        "folder": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7",
+        "alphabet": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/alphabet",
+        "vernacular": {
+            "de": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/vernacular/de.json"
+        },
+        "search": {
+            "taxonLatname": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/search/taxon_latname",
+            "vernacular": {
+                "de": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/search/vernacular/de"
+            }
+        },
+        "lookup": {
+            "vernacular": {
+                "de": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/lookup/vernacular/de.json"
+            }
+        },
+        "slugs": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/slugs.json",
+        "localizedSlugs": {
+            "de": "/localcosmos/features/BackboneTaxonomy/c71c0a7e-d7a0-4029-94c4-b459e696ccd7/slugs/de.json"
+        }
+    },
+    "NatureGuide": {
+        "list": [
+            {
+                "genericContentType": "NatureGuide",
+                "uuid": "f1674130-a6f7-4e61-972f-4748c8e447fb",
+                "name": "Waldbäume bestimmen",
+                "slug": "48-waldbaume-bestimmen",
+                "version": 1,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-297-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-297-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-297-1000.webp"
+                },
+                "startNodeUuid": "699bfb39-7f11-4607-9783-b7931e668a42",
+                "startNodeSlug": "1-waldbaume-bestimmen",
+                "path": "/localcosmos/features/NatureGuide/f1674130-a6f7-4e61-972f-4748c8e447fb/f1674130-a6f7-4e61-972f-4748c8e447fb.json",
+                "folder": "/localcosmos/features/NatureGuide/f1674130-a6f7-4e61-972f-4748c8e447fb"
+            }
+        ],
+        "lookup": {
+            "f1674130-a6f7-4e61-972f-4748c8e447fb": "/localcosmos/features/NatureGuide/f1674130-a6f7-4e61-972f-4748c8e447fb/f1674130-a6f7-4e61-972f-4748c8e447fb.json"
+        }
+    },
+    "GenericForm": {
+        "list": [
+            {
+                "genericContentType": "GenericForm",
+                "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+                "name": "Baummeldung",
+                "slug": "47-baummeldung",
+                "version": 1,
+                "taxonomicRestrictions": [
+                    {
+                        "taxonSource": "taxonomy.sources.col",
+                        "taxonLatname": "Plantae",
+                        "taxonAuthor": "",
+                        "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                        "taxonNuid": "006",
+                        "restrictionType": "exists"
+                    }
+                ],
+                "path": "/localcosmos/features/GenericForm/c357ae4d-2760-4152-8374-15dcfebcfa90/c357ae4d-2760-4152-8374-15dcfebcfa90.json",
+                "folder": "/localcosmos/features/GenericForm/c357ae4d-2760-4152-8374-15dcfebcfa90",
+                "isDefault": true
+            }
+        ],
+        "lookup": {
+            "c357ae4d-2760-4152-8374-15dcfebcfa90": "/localcosmos/features/GenericForm/c357ae4d-2760-4152-8374-15dcfebcfa90/c357ae4d-2760-4152-8374-15dcfebcfa90.json"
+        },
+        "default": {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung"
+        }
+    },
+    "TaxonProfiles": {
+        "genericContentType": "TaxonProfiles",
+        "uuid": "244e0745-20b8-4223-badf-6cb4da13d3ca",
+        "name": "Baumporträts",
+        "slug": "10-baumportrats",
+        "version": 1,
+        "folder": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca",
+        "options": {
+            "enableWikipediaButton": true,
+            "enableGbifOccurrenceMapButton": true
+        },
+        "globalOptions": {},
+        "files": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca",
+        "registry": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/registry.json",
+        "search": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/search.json"
+    },
+    "TemplateContent": {
+        "uuid": "c0c9f26f-5209-4914-8ad3-ee19533e33d6",
+        "version": 1,
+        "options": {},
+        "globalOptions": {},
+        "name": "TemplateContent",
+        "slug": "template-content",
+        "list": [],
+        "lookup": {
+            "a6e20617-8fa3-47e6-919c-2e7950cbab36": "/localcosmos/features/TemplateContent/Neobiota/neobiota.json"
+        },
+        "slugs": {
+            "neobiota": "/localcosmos/features/TemplateContent/Neobiota/neobiota.json"
+        }
+    }
+}

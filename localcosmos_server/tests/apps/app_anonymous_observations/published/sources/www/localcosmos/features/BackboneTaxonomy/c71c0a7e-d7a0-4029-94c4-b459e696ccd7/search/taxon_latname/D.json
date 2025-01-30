@@ -1,0 +1,16 @@
+[
+    {
+        "taxonLatname": "Diadema setosum",
+        "taxonAuthor": "(Leske, 1778)",
+        "taxonSource": "taxonomy.sources.custom",
+        "nameUuid": "1da14d63-950e-4d2a-ae0e-2cd2c5766a52",
+        "taxonNuid": "001001001001001001001",
+        "gbifNubkey": 5721108,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Diadema setosum (Leske, 1778)",
+        "isPreferredName": true,
+        "acceptedNameUuid": "1da14d63-950e-4d2a-ae0e-2cd2c5766a52",
+        "hasTaxonProfile": true
+    }
+]

@@ -1,0 +1,427 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Prunus avium",
+    "taxonAuthor": "(L.) L.",
+    "nameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+    "taxonNuid": "00600800601b00702c00l",
+    "vernacular": {
+        "de": "Wildkirsche"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Wildkirsche"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                "name": "Textfilter",
+                "type": "TextOnlyFilter",
+                "position": 1,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [
+                    "visual"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                        "encodedSpace": "<p>Text 2 1</p>"
+                    },
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                        "encodedSpace": "<p>Text 1</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                        "encodedSpace": "<p>Text/mit shcräg</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                "name": "Blattanordnung/TEst",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                        "encodedSpace": "wechselständig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-239-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-239-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-239-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                "name": "Form des Blattes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:88",
+                        "encodedSpace": "oval",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-250-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-250-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-250-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                "name": "Form des Blattendes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                        "encodedSpace": "mit Spitze",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                "name": "Form des Blattanfangs",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                        "encodedSpace": "ungebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-243-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-243-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-243-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                "name": "Form des Blattrandes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                        "encodedSpace": "gezackt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-248-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-248-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-248-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                        "encodedSpace": "glatt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-252-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-252-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-252-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                "name": "Farbe des Stammes",
+                "type": "ColorFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                        "encodedSpace": [
+                            104,
+                            71,
+                            3,
+                            1.0
+                        ],
+                        "html": "rgba(104,71,3,1.0)",
+                        "gradient": false,
+                        "description": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "Vogelkirschen sind in erheblichem Umfang von Bakterien- und Pilzkrankheiten betroffen. Bei Aufforstungen mit Wildkirsche stellt der Bakterienbrand (Pseudomonas syringae) eine der Hauptgefahren für den Bestand dar. Ebenso gefährdet der Feuerbrand (Erwinia amylovora) die Kirsche",
+            "shortTextKey": "taxon_text_2_37",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Nach Literaturangaben verzehren 48 Vogelarten die bis einen Zentimeter dicken Steinfrüchte der Wildkirsche. Die wichtigsten Nutznießer sind Amsel, Singdrossel, Misteldrossel und Star. Insbesondere Ringeltaube, Eichelhäher und Pirol verbreiten die Wildkirsche über die mit dem Vogelkot wieder ausgeschiedenen Kirschkerne über Entfernungen von mehr als einem Kilometer. An der Vogelkirsche leben über 100 holzbesiedelnde Käfer, darunter außergewöhnlich farbenprächtige Arten, deren Heimat man eher in den Tropen vermuten würde.",
+            "shortTextKey": "taxon_text_3_38",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-238-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-238-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-238-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Prunus nigra",
+            "taxonAuthor": "Mill."
+        },
+        {
+            "taxonLatname": "Prunus avium erythrocarpa",
+            "taxonAuthor": "Dierb."
+        },
+        {
+            "taxonLatname": "Prunus avicularis",
+            "taxonAuthor": "Dulac"
+        },
+        {
+            "taxonLatname": "Prunus avium",
+            "taxonAuthor": "(L.) Moench"
+        },
+        {
+            "taxonLatname": "Prunus avium duracina",
+            "taxonAuthor": "(L.) J. Holub"
+        },
+        {
+            "taxonLatname": "Prunus avium juliana",
+            "taxonAuthor": "(L.) J. Holub"
+        },
+        {
+            "taxonLatname": "Prunus avium albida",
+            "taxonAuthor": "(Ehrh.) Soo"
+        },
+        {
+            "taxonLatname": "Prunus avium amara",
+            "taxonAuthor": "Sosn."
+        },
+        {
+            "taxonLatname": "Prunus avium dulcis",
+            "taxonAuthor": "Sosn."
+        },
+        {
+            "taxonLatname": "Prunus avium melanocarpa",
+            "taxonAuthor": "Dierb."
+        },
+        {
+            "taxonLatname": "Prunus avium sativa",
+            "taxonAuthor": "Dierb."
+        },
+        {
+            "taxonLatname": "Prunus avium sylvestris",
+            "taxonAuthor": "Dierb."
+        },
+        {
+            "taxonLatname": "Prunus cerasus",
+            "taxonAuthor": "(L.) Eaton & Wright"
+        },
+        {
+            "taxonLatname": "Prunus dulcis",
+            "taxonAuthor": "(L.) Gaertn. Mey. & Scherb."
+        },
+        {
+            "taxonLatname": "Prunus duracina",
+            "taxonAuthor": "(L.) DC."
+        },
+        {
+            "taxonLatname": "Prunus hortensis",
+            "taxonAuthor": "Mill."
+        },
+        {
+            "taxonLatname": "Prunus juliana",
+            "taxonAuthor": "(L.) Delarbre"
+        },
+        {
+            "taxonLatname": "Prunus nigricans",
+            "taxonAuthor": "(Ehrh.) Borkh."
+        },
+        {
+            "taxonLatname": "Prunus silvestris",
+            "taxonAuthor": "Garsault"
+        },
+        {
+            "taxonLatname": "Prunus varia",
+            "taxonAuthor": "(Ehrh.) Borkh."
+        },
+        {
+            "taxonLatname": "Prunus avium nigricans",
+            "taxonAuthor": "(Ehrh.) P. D. Sell"
+        },
+        {
+            "taxonLatname": "Prunus avium silvestris",
+            "taxonAuthor": "(Kirschl.) P. D. Sell"
+        },
+        {
+            "taxonLatname": "Prunus avium microcarpa",
+            "taxonAuthor": "Mart."
+        },
+        {
+            "taxonLatname": "Prunus cerasus avium",
+            "taxonAuthor": "(L.) Hook. fil."
+        },
+        {
+            "taxonLatname": "Prunus cerasus duracina",
+            "taxonAuthor": "L."
+        },
+        {
+            "taxonLatname": "Prunus cerasus juliana",
+            "taxonAuthor": "L."
+        }
+    ],
+    "gbifNubKey": 3020791,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

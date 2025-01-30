@@ -1,0 +1,398 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Acer pseudoplatanus",
+    "taxonAuthor": "L.",
+    "nameUuid": "7b5d2554-7db4-46b1-b1c5-8908126a14d0",
+    "taxonNuid": "00600800601d00800102r",
+    "vernacular": {
+        "de": "Bergahorn"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Bergahorn"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                "name": "Textfilter",
+                "type": "TextOnlyFilter",
+                "position": 1,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [
+                    "visual"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                        "encodedSpace": "<p>Text 2 1</p>"
+                    },
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                        "encodedSpace": "<p>Text 1</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                        "encodedSpace": "<p>Text/mit shcräg</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                "name": "Blattanordnung/TEst",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:84",
+                        "encodedSpace": "gegenständig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-246-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-246-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-246-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                "name": "Form des Blattes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:76",
+                        "encodedSpace": "gelappt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-240-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-240-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-240-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                "name": "Form des Blattendes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                        "encodedSpace": "mit Spitze",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                "name": "Form des Blattanfangs",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                        "encodedSpace": "gebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-242-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-242-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-242-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                "name": "Form des Blattrandes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                        "encodedSpace": "gezackt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-248-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-248-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-248-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:87",
+                        "encodedSpace": "schuppig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-249-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-249-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-249-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                "name": "Farbe des Stammes",
+                "type": "ColorFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                        "encodedSpace": [
+                            107,
+                            100,
+                            0,
+                            1.0
+                        ],
+                        "html": "rgba(107,100,0,1.0)",
+                        "gradient": false,
+                        "description": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Unsere Vorfahren zählten den Bergahorn zu den 'heiteren' Bäumen. Er stand unter anderem für Ruhe, Gelassenheit und Harmonie. Türschwellen aus Ahornholz boten Schutz vor Hexen und Zauberern. Für die Kelten symbolisierte das weiße Holz eine besondere innere Reinheit. Bei den Griechen war der Bergahorn dem Kriegsgott Ares geweiht. Der botanische Gattungsname Acer ist lateinisch und bedeutet spitz, scharf. Das Wort bezieht sich auf die spitzen Blätter.\n\nDer Bergahorn wurde früher ebenso wie der amerikanische Zuckerahorn zur Zuckerherstellung verwendet. Wirtschaftliche Bedeutung erhielt der Ahornsirup vor allem in Not- und Kriegszeiten. 100 Liter Baumsaft waren nötig um etwa ein Kilogramm Zucker zu gewinnen. Dabei musste sehr sorgsam vorgegangen werden, um ein Verbluten des Baumes zu verhindern.",
+            "shortTextKey": "taxon_text_1_10",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "Vor allem im Jugendstadium treten Gefährdungen auf. Neben einer mäßigen Spätfrostgefährdung ist Wildverbiss der wichtigste Gefährdungsfaktor. Auch Fege- und Schälschäden machen dem Bergahorn zu schaffen. Auf vergrasten Flächen leiden die jungen Pflanzen häufig unter Mäusefraß.",
+            "shortTextKey": "taxon_text_2_11",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Bergahorne sind Lebensraum für viele Vogelarten, Insekten, Pilze und Misteln. Besonders Blattläuse mögen den Baum wegen seines hohen Zuckergehaltes, und dementsprechend auch die Ameisen, die die Blattläuse melken. Auch Vögel und Mäuse ritzen gelegentlich die Rinde an, um an den zuckerhaltigen Frühjahrssaft zu gelangen. Die Samen werden von zahlreichen Tieren gefressen.",
+            "shortTextKey": "taxon_text_3_12",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-229-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-229-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-229-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Acer erythrocarpum",
+            "taxonAuthor": "Hort. ex Dippel"
+        },
+        {
+            "taxonLatname": "Acer montanum",
+            "taxonAuthor": "Garsault"
+        },
+        {
+            "taxonLatname": "Acer opulifolium",
+            "taxonAuthor": "Thuill. ex Loud."
+        },
+        {
+            "taxonLatname": "Acer quinquelobum",
+            "taxonAuthor": "Gilib."
+        },
+        {
+            "taxonLatname": "Acer villosum",
+            "taxonAuthor": "C. Presl"
+        },
+        {
+            "taxonLatname": "Acer majus",
+            "taxonAuthor": "S. F. Gray"
+        },
+        {
+            "taxonLatname": "Acer melliodorum",
+            "taxonAuthor": "Opiz"
+        },
+        {
+            "taxonLatname": "Acer atropurpureum",
+            "taxonAuthor": "Hort. ex Dippel"
+        },
+        {
+            "taxonLatname": "Acer dittrichii",
+            "taxonAuthor": "Opiz"
+        },
+        {
+            "taxonLatname": "Acer euchlorum",
+            "taxonAuthor": "Hort. ex Dippel"
+        },
+        {
+            "taxonLatname": "Acer leopoldii",
+            "taxonAuthor": "Hort. ex K. Koch"
+        },
+        {
+            "taxonLatname": "Acer nebrodense",
+            "taxonAuthor": "Tineo ex Pax"
+        },
+        {
+            "taxonLatname": "Acer procerum",
+            "taxonAuthor": "Salisb."
+        },
+        {
+            "taxonLatname": "Acer purpureum",
+            "taxonAuthor": "Hort. ex Dippel"
+        },
+        {
+            "taxonLatname": "Acer rafinesquianum",
+            "taxonAuthor": "Hort. ex Dippel"
+        },
+        {
+            "taxonLatname": "Acer ramosum",
+            "taxonAuthor": "Schwerin"
+        },
+        {
+            "taxonLatname": "Acer worleei",
+            "taxonAuthor": "Hort. ex Dippel"
+        }
+    ],
+    "gbifNubKey": 3189870,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

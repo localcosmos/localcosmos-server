@@ -1,0 +1,308 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Picea abies",
+    "taxonAuthor": "(L.) H. Karst.",
+    "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+    "taxonNuid": "006008007001005007001",
+    "vernacular": {
+        "de": "Rotfichte"
+    },
+    "allVernacularNames": {
+        "de": [
+            "Rotfichte",
+            "Gemeine Fichte"
+        ]
+    },
+    "nodeNames": [
+        "Fichte"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
+                        "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "135a384b-eba5-468b-8ae7-b65d3e38bb43",
+                "name": "Länge der Nadeln",
+                "type": "RangeFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "encodedSpace": [
+                            1.0,
+                            2.0
+                        ],
+                        "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzEuMCwyLjBd"
+                    }
+                ],
+                "definition": {
+                    "min": null,
+                    "max": null,
+                    "step": 0.5,
+                    "unit": "cm",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e",
+                "name": "Länge der Zapfen",
+                "type": "RangeFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "encodedSpace": [
+                            10.0,
+                            18.0
+                        ],
+                        "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzEwLjAsMTguMF0="
+                    }
+                ],
+                "definition": {
+                    "min": null,
+                    "max": null,
+                    "step": 1.0,
+                    "unit": "cm",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78",
+                "name": "Anordnung der Nadeln",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:94",
+                        "encodedSpace": "rings um den Zweig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-260-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-260-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-260-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "33818dbe-99be-4912-bf8e-e05616951fa1",
+                "name": "Form der Nadeln",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:95",
+                        "encodedSpace": "spitz, stechend",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-261-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-261-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-261-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863",
+                "name": "Wuchsrichtung der Zapfen",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:97",
+                        "encodedSpace": "hängend",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-262-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-262-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-262-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "3a27fa01-c769-4f10-8e39-9d0d0effca03",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
+                        "encodedSpace": "glatt, im Alter schuppig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-263-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-263-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-263-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "f7931849-eb55-45df-b016-a8ff7221f3da",
+                "name": "Zahlenfilter",
+                "type": "NumberFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:3.0",
+                        "encodedSpace": 3.0
+                    }
+                ],
+                "definition": {
+                    "unit": "",
+                    "unit_verbose": ""
+                }
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Im Jahre 2008 haben Wissenschaftler in Schweden in der Provinz Dalarna eine Fichte entdeckt, die sie auf ein Alter von 9.550 Jahren datiert haben. Sie ist damit der älteste lebende Baum der Welt. Sie hat selbst widrige klimatische Umstände überlebt, weil sie aus einem Wurzelstock immer neue Stämme austreiben konnte.",
+            "shortTextKey": "taxon_text_1_18",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "Die Fichte ist als boreale Nadelbaumart anfällig gegenüber Wärme und Trockenheit. Windwurfgefahr droht in Reinbeständen, vor allem auf staunassen und grundfeuchten Standorten oder, wenn sie undifferenziert und ungepflegt dicht aufwachsen. In der Jugend ist sie auf ungeschützten Freiflächen empfindlich gegenüber Spätfrösten. Außerhalb ihres Optimumgebietes sind Fichtenbestände stärker durch Insekten und Pilze bedroht.",
+            "shortTextKey": "taxon_text_2_19",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Fichtenwälder bieten gut gedeckte und geschützte Strukturen, die viele verschiedene Vogelarten zum Brüten und zur Nahrungssuche benötigen. Dazu zählen beispielsweise der Fichtenkreuzschnabel (Loxia curvirostra) oder der Waldbaumläufer (Certhia familiaris).\n\nIn natürlichen Fichtenwäldern dringt wenig Licht auf den Waldboden. Daher bietet er vor allem Pflanzen, deren Versorgung von der Photosynthese weitgehend unabhängig ist, ein geeignetes Biotop. An diese Verhältnisse besonders angepasst ist der Fichtenspargel (Monotropa hypopitys), der eine Symbiose mit der Fichte eingeht.",
+            "shortTextKey": "taxon_text_3_20",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-255-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-255-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-255-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [],
+    "gbifNubKey": 5284884,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

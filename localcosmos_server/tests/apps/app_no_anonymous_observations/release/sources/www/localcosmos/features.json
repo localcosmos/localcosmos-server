@@ -1,4 +1,7 @@
 {
+    "REVIEW": true,
+    "PREVIEW": false,
+    "PUBLISHED": false,
     "slugs": {
         "8-frontend": "27e26b18-9daa-4d96-86f7-724cfbf2f87f",
         "13-glossar": "faf1414c-fd67-4904-b9d7-81824f669060",

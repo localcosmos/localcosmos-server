@@ -1,0 +1,58 @@
+[
+    {
+        "taxonLatname": "Corylus avellana",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "d4410c4d-8b56-4561-a22a-2e94cfe2873e",
+        "taxonNuid": "00600800600p001004002",
+        "gbifNubkey": 2875979,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-82-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-82-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-82-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": "",
+                "sourceLink": ""
+            }
+        },
+        "nameType": "scientific",
+        "name": "Corylus avellana L.",
+        "isPreferredName": true,
+        "acceptedNameUuid": "d4410c4d-8b56-4561-a22a-2e94cfe2873e",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Corylus sylvestris",
+        "taxonAuthor": "Salisb., nom. superfl.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "36a86b4d-e882-46d3-8fb3-91e5033fcd38",
+        "taxonNuid": "00600800600p001004002",
+        "gbifNubkey": 2875993,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Corylus sylvestris Salisb., nom. superfl.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "d4410c4d-8b56-4561-a22a-2e94cfe2873e",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Corylus avellana sylvestris",
+        "taxonAuthor": "Aiton, not validly publ.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "f6eaf1c5-04f7-4ffa-9746-b7162fb9bf12",
+        "taxonNuid": "00600800600p001004002",
+        "gbifNubkey": 7852917,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Corylus avellana sylvestris Aiton, not validly publ.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "d4410c4d-8b56-4561-a22a-2e94cfe2873e",
+        "hasTaxonProfile": false
+    }
+]

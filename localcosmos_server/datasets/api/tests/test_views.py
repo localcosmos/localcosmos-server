@@ -1196,8 +1196,8 @@ class TestComplexAnyclusterRequests(WithObservationForm, WithUser, WithApp, Crea
         filters = []
         modulations = {
             'Observation form' : {
-                'column' : 'observation_form_id',
-                'value': self.observation_form.id,
+                'column' : 'observation_form__uuid',
+                'value': str(self.observation_form.uuid),
                 'operator': '=',
             }
         }

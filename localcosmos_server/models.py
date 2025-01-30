@@ -406,7 +406,7 @@ class App(models.Model):
     # used eg by AppTaxonSearch.py
     def get_features(self, app_state='preview'):
 
-        if app_state == 'preview':
+        if settings.LOCALCOSMOS_PRIVATE == False and app_state == 'preview':
             features = {}
 
         else:
@@ -526,7 +526,7 @@ class App(models.Model):
             relpath = features['BackboneTaxonomy']['vernacularLookup'][language].lstrip('/')
 
             vernacular_lookup_path = os.path.join(self.published_version_path, relpath)
-            print(vernacular_lookup_path)
+
             if os.path.isfile(vernacular_lookup_path):
                 with open(vernacular_lookup_path, 'r') as f:
                     vernacular_lookup = json.loads(f.read())

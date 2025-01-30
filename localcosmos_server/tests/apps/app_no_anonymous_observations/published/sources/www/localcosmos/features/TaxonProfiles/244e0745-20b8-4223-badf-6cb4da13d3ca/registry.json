@@ -1,0 +1,427 @@
+{
+    "01ad3dc7-e744-499f-9097-abb4760fdbc4": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "taxonNuid": "006008007001005001001",
+        "vernacularNames": {
+            "de": "Weisstanne"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-299-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-299-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-299-1000.webp"
+                    }
+                }
+            ],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-257-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-257-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-257-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "dcb4db1b-d1b7-4135-b997-72d080a59ccb": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "taxonLatname": "Acer campestre",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800601d00800100d",
+        "vernacularNames": {
+            "de": "Feldahorn"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-237-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-237-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-237-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "7b5d2554-7db4-46b1-b1c5-8908126a14d0": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "7b5d2554-7db4-46b1-b1c5-8908126a14d0",
+        "taxonLatname": "Acer pseudoplatanus",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800601d00800102r",
+        "vernacularNames": {
+            "de": "Bergahorn"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-229-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-229-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-229-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "e3a76a3d-44bc-47b9-bb7f-4b0b544c2f6f": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "e3a76a3d-44bc-47b9-bb7f-4b0b544c2f6f",
+        "taxonLatname": "Alnus glutinosa",
+        "taxonAuthor": "(L.) Gaertn.",
+        "taxonNuid": "00600800600p00100100e",
+        "vernacularNames": {
+            "de": "Schwarzerle"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-234-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-234-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-234-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "a748aec5-9656-4451-831c-b55325ae38a9": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "a748aec5-9656-4451-831c-b55325ae38a9",
+        "taxonLatname": "Betula pendula",
+        "taxonAuthor": "Roth",
+        "taxonNuid": "00600800600p00100201n",
+        "vernacularNames": {
+            "de": "Birke"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-232-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-232-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-232-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "a251756f-3209-4160-bdc3-bed491629d1e": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+        "taxonLatname": "Fagus sylvatica",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800600p00300400b",
+        "vernacularNames": {
+            "de": "Rotbuche"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-230-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-230-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-230-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "7fa38327-7b07-430e-a385-fe0a8a049233": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233",
+        "taxonLatname": "Fraxinus excelsior",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800600w00c00a00j",
+        "vernacularNames": {
+            "de": "Esche"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-231-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-231-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-231-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "e738b266-e13d-47bc-ac28-0b9bf88432c5": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+        "taxonLatname": "Juglans regia",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800600p00400600p",
+        "vernacularNames": {
+            "de": "Walnuss"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-236-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-236-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-236-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "c8089bf0-7401-4434-98f1-1be9a39118d2": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "taxonNuid": "006008007001005005002",
+        "vernacularNames": {
+            "de": "Europäische Lärche"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-256-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-256-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-256-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "90129dcc-f33e-43d4-88f7-6dfdc704f443": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "90129dcc-f33e-43d4-88f7-6dfdc704f443",
+        "taxonLatname": "Lithobates catesbeianus",
+        "taxonAuthor": "(Shaw, 1802)",
+        "taxonNuid": "001008002001016008007",
+        "vernacularNames": {
+            "de": "Eintrag für Unmöglichen Wert"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [],
+            "taxonImages": []
+        }
+    },
+    "948f5b3f-8789-4900-8022-d586dbf88071": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonNuid": "006008007001005007001",
+        "vernacularNames": {
+            "de": "Rotfichte"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-255-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-255-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-255-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "30d9bad8-2d96-4fed-a732-30e08b071572": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800700100500802s",
+        "vernacularNames": {
+            "de": "Föhre"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-258-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-258-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-258-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "bc4aa5c6-4384-413e-ae08-97fafe6d2b00": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "bc4aa5c6-4384-413e-ae08-97fafe6d2b00",
+        "taxonLatname": "Populus nigra",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800600z01101901q",
+        "vernacularNames": {
+            "de": "Schwarzpappel"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-235-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-235-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-235-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "3869ccdb-d917-4f07-b506-90597fb057c9": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+        "taxonLatname": "Prunus avium",
+        "taxonAuthor": "(L.) L.",
+        "taxonNuid": "00600800601b00702c00l",
+        "vernacularNames": {
+            "de": "Wildkirsche"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-238-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-238-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-238-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "9f1efd3c-6d3e-4241-adba-62489fccc247": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "9f1efd3c-6d3e-4241-adba-62489fccc247",
+        "taxonLatname": "Pseudotsuga menziesii",
+        "taxonAuthor": "(Mirb.) Franco",
+        "taxonNuid": "00600800700100500a003",
+        "vernacularNames": {
+            "de": "Douglasfichte"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-259-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-259-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-259-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "8561de7e-0a43-4550-9dc6-f0401c986a2d": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "taxonLatname": "Quercus robur",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800600p0030070db",
+        "vernacularNames": {
+            "de": "Eiche"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-228-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-228-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-228-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    },
+    "2f40a63f-aade-4003-9430-447270fe6abf": {
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "2f40a63f-aade-4003-9430-447270fe6abf",
+        "taxonLatname": "Sorbus aucuparia",
+        "taxonAuthor": "L.",
+        "taxonNuid": "00600800601b00702u00a",
+        "vernacularNames": {
+            "de": "Eberesche"
+        },
+        "alternativeVernacularNames": {},
+        "images": {
+            "taxonProfileImages": [],
+            "nodeImages": [
+                {
+                    "text": null,
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-233-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-233-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-233-1000.webp"
+                    }
+                }
+            ],
+            "taxonImages": []
+        }
+    }
+}

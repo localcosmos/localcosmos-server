@@ -1,0 +1,396 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Abies alba",
+    "taxonAuthor": "Mill.",
+    "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+    "taxonNuid": "006008007001005001001",
+    "vernacular": {
+        "de": "Weisstanne"
+    },
+    "allVernacularNames": {
+        "de": [
+            "Weisstanne"
+        ]
+    },
+    "nodeNames": [
+        "Weißtanne"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
+                        "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "135a384b-eba5-468b-8ae7-b65d3e38bb43",
+                "name": "Länge der Nadeln",
+                "type": "RangeFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "encodedSpace": [
+                            2.0,
+                            3.0
+                        ],
+                        "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzIuMCwzLjBd"
+                    }
+                ],
+                "definition": {
+                    "min": null,
+                    "max": null,
+                    "step": 0.5,
+                    "unit": "cm",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e",
+                "name": "Länge der Zapfen",
+                "type": "RangeFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "encodedSpace": [
+                            10.0,
+                            16.0
+                        ],
+                        "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzEwLjAsMTYuMF0="
+                    }
+                ],
+                "definition": {
+                    "min": null,
+                    "max": null,
+                    "step": 1.0,
+                    "unit": "cm",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "f7931849-eb55-45df-b016-a8ff7221f3da",
+                "name": "Zahlenfilter",
+                "type": "NumberFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:9.0",
+                        "encodedSpace": 9.0
+                    }
+                ],
+                "definition": {
+                    "unit": "",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78",
+                "name": "Anordnung der Nadeln",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:103",
+                        "encodedSpace": "nebeneinander",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-267-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-267-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-267-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "33818dbe-99be-4912-bf8e-e05616951fa1",
+                "name": "Form der Nadeln",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:101",
+                        "encodedSpace": "abgerundet, nicht stechend",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-265-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-265-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-265-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863",
+                "name": "Wuchsrichtung der Zapfen",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:102",
+                        "encodedSpace": "aufrecht stehend",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-266-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-266-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-266-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "3a27fa01-c769-4f10-8e39-9d0d0effca03",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
+                        "encodedSpace": "glatt, im Alter schuppig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-263-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-263-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-263-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "<p>Der finstere und gefürchtete Wald vieler Märchen und Sagen ist untrennbar mit der Tanne verbunden. Nicht von ungefähr kommt dieser Zusammenhang, zählt die heimische Weißtanne mit der Buche zu den schattentolerantesten Baumarten.</p>",
+            "shortTextKey": "taxon_text_1_21",
+            "longText": "<p>interessantes langtext</p>",
+            "longTextKey": "taxon_text_1_21_long"
+        },
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "<p>Die größte Gefährdung geht von zu hohen Reh-, Rot- und Gamswildbeständen aus. Gegenüber Schadorganismen wie Pilzen oder Insekten ist die Weißtanne robust. Es gibt einige auf Tanne spezialisierte Borkenkäfer, großflächige Schäden sind aber selten. Der Befall von Weißtanne mit Stamm- oder Triebläusen kann gefährlich werden. Ebenso besteht bei der Tanne eine Gefährdung gegenüber Spätfrost und Frosttrockenheit. Die Tanne ist anfälliger gegenüber Luftschadstoffen, insbesondere Schwefelverbindungen, als andere Baumarten. Mit der Verbesserung der Luftreinheit der vergangen Jahrzehnte sind die Belastungen jedoch zurückgegangen.</p>",
+            "shortTextKey": "taxon_text_2_22",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "<p>Die Weißtanne spielt aus tierökologischer Sicht eine besondere Rolle unter den Nadelbäumen. Mit ihrer weiten ökologischen Amplitude bietet sie Tierarten mit Präferenz für Nadelbäume Habitate in unterschiedlichsten Waldgesellschaften.</p>",
+            "shortTextKey": "taxon_text_3_23",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-299-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-299-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-299-1000.webp"
+                }
+            }
+        ],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-257-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-257-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-257-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Abies abies leioclada",
+            "taxonAuthor": "Steven ex Endl."
+        },
+        {
+            "taxonLatname": "Abies heterophylla",
+            "taxonAuthor": "K. Koch"
+        },
+        {
+            "taxonLatname": "Abies chlorocarpa",
+            "taxonAuthor": "Purk. ex Nyman"
+        },
+        {
+            "taxonLatname": "Abies excelsa",
+            "taxonAuthor": "Link"
+        },
+        {
+            "taxonLatname": "Abies nobilis",
+            "taxonAuthor": "A. Dietr."
+        },
+        {
+            "taxonLatname": "Abies pardei",
+            "taxonAuthor": "Gaussen"
+        },
+        {
+            "taxonLatname": "Abies argentea",
+            "taxonAuthor": "Chambray"
+        },
+        {
+            "taxonLatname": "Abies taxifolia",
+            "taxonAuthor": "Desf."
+        },
+        {
+            "taxonLatname": "Abies vulgaris",
+            "taxonAuthor": "Poir."
+        },
+        {
+            "taxonLatname": "Abies abies",
+            "taxonAuthor": "Du Roi"
+        },
+        {
+            "taxonLatname": "Abies baldensis",
+            "taxonAuthor": "Zuccagni"
+        },
+        {
+            "taxonLatname": "Abies pectinata",
+            "taxonAuthor": "Lam."
+        },
+        {
+            "taxonLatname": "Abies picea",
+            "taxonAuthor": "L."
+        },
+        {
+            "taxonLatname": "Abies alba podolica",
+            "taxonAuthor": "R.I. Schröd."
+        },
+        {
+            "taxonLatname": "Abies alba apennina",
+            "taxonAuthor": "Brullo, Scelsi & Spampinato"
+        },
+        {
+            "taxonLatname": "Abies alba pardei",
+            "taxonAuthor": "(Gaussen) Silba"
+        },
+        {
+            "taxonLatname": "Abies lucida",
+            "taxonAuthor": "Salisb."
+        },
+        {
+            "taxonLatname": "Abies abies pectinata",
+            "taxonAuthor": "(Lam.) H. Christ"
+        }
+    ],
+    "gbifNubKey": 2685484,
+    "templateContents": [
+        {
+            "templateName": "Neobiota",
+            "slug": "neobiota"
+        }
+    ],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": [
+        "neobiota"
+    ]
+}

@@ -1,0 +1,428 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Populus nigra",
+    "taxonAuthor": "L.",
+    "nameUuid": "bc4aa5c6-4384-413e-ae08-97fafe6d2b00",
+    "taxonNuid": "00600800600z01101901q",
+    "vernacular": {
+        "de": "Schwarzpappel"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Schwarzpappel"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                "name": "Textfilter",
+                "type": "TextOnlyFilter",
+                "position": 1,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [
+                    "visual"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                        "encodedSpace": "<p>Text 2 1</p>"
+                    },
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                        "encodedSpace": "<p>Text 1</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                        "encodedSpace": "<p>Text/mit shcräg</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                "name": "Blattanordnung/TEst",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                        "encodedSpace": "wechselständig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-239-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-239-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-239-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                "name": "Form des Blattes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:92",
+                        "encodedSpace": "herzförmig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-254-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-254-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-254-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                "name": "Form des Blattendes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                        "encodedSpace": "mit Spitze",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                "name": "Form des Blattanfangs",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                        "encodedSpace": "gebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-242-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-242-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-242-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                "name": "Form des Blattrandes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                        "encodedSpace": "gezackt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-248-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-248-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-248-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                        "encodedSpace": "gefurcht",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-245-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-245-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-245-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                "name": "Farbe des Stammes",
+                "type": "ColorFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                        "encodedSpace": [
+                            104,
+                            71,
+                            3,
+                            1.0
+                        ],
+                        "html": "rgba(104,71,3,1.0)",
+                        "gradient": false,
+                        "description": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Gerade noch 3000 Altbäume soll es in Deutschland geben. Gründe für den starken Rückgang der Art sind v.a. der Verlust ihres Lebensraumes entlang der Flüsse sowie der Anbau von wuchs- und konkurrenzstarken Pappel-Hybriden.\n\n2006 wurde die Schwarzpappel nun vom Kuratorium Baum des Jahres zum Baum des Jahres gewählt. Mit dieser Wahl soll nicht nur auf die Baumart selbst, sondern auch auf den in Mitteleuropa am meisten gefährdeten Waldstandort - die Weichholzaue - aufmerksam gemacht werden.",
+            "shortTextKey": "taxon_text_1_29",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-235-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-235-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-235-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Populus canadensis",
+            "taxonAuthor": "Fouger."
+        },
+        {
+            "taxonLatname": "Populus fastigiata",
+            "taxonAuthor": "Fouger."
+        },
+        {
+            "taxonLatname": "Populus nigra afghanica",
+            "taxonAuthor": "Aitch. & Hemsl."
+        },
+        {
+            "taxonLatname": "Populus salicifolia",
+            "taxonAuthor": "Lodd. ex Loud."
+        },
+        {
+            "taxonLatname": "Populus viminea",
+            "taxonAuthor": "Dum.-Cours."
+        },
+        {
+            "taxonLatname": "Populus nigra",
+            "taxonAuthor": "(L.) Nieuwland"
+        },
+        {
+            "taxonLatname": "Populus betulifolia",
+            "taxonAuthor": "Pursh"
+        },
+        {
+            "taxonLatname": "Populus croatica",
+            "taxonAuthor": "Waldst. & Kit. ex Bess."
+        },
+        {
+            "taxonLatname": "Populus flexibilis",
+            "taxonAuthor": "Roz."
+        },
+        {
+            "taxonLatname": "Populus hudsoniana",
+            "taxonAuthor": "Desf."
+        },
+        {
+            "taxonLatname": "Populus hudsonica",
+            "taxonAuthor": "Michx. fil."
+        },
+        {
+            "taxonLatname": "Populus lombardica",
+            "taxonAuthor": "Hort. ex Link"
+        },
+        {
+            "taxonLatname": "Populus neapolitana",
+            "taxonAuthor": "Tenore"
+        },
+        {
+            "taxonLatname": "Populus nigra betulifolia",
+            "taxonAuthor": "(Pursh) W. Wettst. ex Buttler & Hand"
+        },
+        {
+            "taxonLatname": "Populus nigra flexibilis",
+            "taxonAuthor": "(Roz.) R. Kam."
+        },
+        {
+            "taxonLatname": "Populus nigra neapolitana",
+            "taxonAuthor": "(Ten.) Asch. & Graebn."
+        },
+        {
+            "taxonLatname": "Populus nigra grandifolia",
+            "taxonAuthor": "N. Janjic"
+        },
+        {
+            "taxonLatname": "Populus nigra narentana",
+            "taxonAuthor": "N. Janjic"
+        },
+        {
+            "taxonLatname": "Populus nigra pendula",
+            "taxonAuthor": "(Mil.) B. Jovanovic & Tucovic"
+        },
+        {
+            "taxonLatname": "Populus nigra vistulensis",
+            "taxonAuthor": "(Dode) B. Jovanovic & Tucovic"
+        },
+        {
+            "taxonLatname": "Populus nolestii",
+            "taxonAuthor": "Hort. ex Dippel"
+        },
+        {
+            "taxonLatname": "Populus pannonica",
+            "taxonAuthor": "Kit. ex Bess."
+        },
+        {
+            "taxonLatname": "Populus polonica",
+            "taxonAuthor": "Hort. ex Loud."
+        },
+        {
+            "taxonLatname": "Populus pyramidata",
+            "taxonAuthor": "Moench"
+        },
+        {
+            "taxonLatname": "Populus rubra",
+            "taxonAuthor": "Hort. ex Poir."
+        },
+        {
+            "taxonLatname": "Populus versicolor",
+            "taxonAuthor": "Salisb."
+        },
+        {
+            "taxonLatname": "Populus viridis",
+            "taxonAuthor": "Lodd. ex Loud."
+        },
+        {
+            "taxonLatname": "Populus vistulensis",
+            "taxonAuthor": "Dode"
+        }
+    ],
+    "gbifNubKey": 3040227,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

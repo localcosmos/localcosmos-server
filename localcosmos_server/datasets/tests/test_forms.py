@@ -157,7 +157,11 @@ class TestObservationForm(WithObservationForm, WithApp, TestCase):
             if field_class in choice_fields:
 
                 definition_choices = json_field['definition']['choices']
-                self.assertEqual(definition_choices, field.field.choices)
+                
+                for index, choice in enumerate(definition_choices):
+                    
+                    field_choice = field.field.choices[index]
+                    self.assertEqual(list(choice), list(field_choice))
                 
     @test_settings
     def test_get_initial_from_dataset(self):

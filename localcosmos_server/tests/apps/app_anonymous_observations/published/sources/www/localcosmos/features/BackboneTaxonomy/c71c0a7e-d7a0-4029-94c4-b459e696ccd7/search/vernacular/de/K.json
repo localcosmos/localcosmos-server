@@ -1,0 +1,58 @@
+[
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Kiefer",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Kiefer",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    }
+]

@@ -1,0 +1,314 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Pinus sylvestris",
+    "taxonAuthor": "L.",
+    "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+    "taxonNuid": "00600800700100500802s",
+    "vernacular": {
+        "de": "Föhre"
+    },
+    "allVernacularNames": {
+        "de": [
+            "Föhre",
+            "Gemeine Kiefer",
+            "Waldkiefer",
+            "Waldföhre"
+        ]
+    },
+    "nodeNames": [
+        "Kiefer"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
+                        "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "135a384b-eba5-468b-8ae7-b65d3e38bb43",
+                "name": "Länge der Nadeln",
+                "type": "RangeFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "encodedSpace": [
+                            3.0,
+                            7.0
+                        ],
+                        "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzMuMCw3LjBd"
+                    }
+                ],
+                "definition": {
+                    "min": null,
+                    "max": null,
+                    "step": 0.5,
+                    "unit": "cm",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e",
+                "name": "Länge der Zapfen",
+                "type": "RangeFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "encodedSpace": [
+                            3.0,
+                            6.0
+                        ],
+                        "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzMuMCw2LjBd"
+                    }
+                ],
+                "definition": {
+                    "min": null,
+                    "max": null,
+                    "step": 1.0,
+                    "unit": "cm",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "f7931849-eb55-45df-b016-a8ff7221f3da",
+                "name": "Zahlenfilter",
+                "type": "NumberFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:5.0",
+                        "encodedSpace": 5.0
+                    },
+                    {
+                        "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:7.0",
+                        "encodedSpace": 7.0
+                    }
+                ],
+                "definition": {
+                    "unit": "",
+                    "unit_verbose": ""
+                }
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78",
+                "name": "Anordnung der Nadeln",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [],
+                "space": [
+                    {
+                        "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:94",
+                        "encodedSpace": "rings um den Zweig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-260-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-260-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-260-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "33818dbe-99be-4912-bf8e-e05616951fa1",
+                "name": "Form der Nadeln",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:95",
+                        "encodedSpace": "spitz, stechend",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-261-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-261-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-261-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863",
+                "name": "Wuchsrichtung der Zapfen",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:97",
+                        "encodedSpace": "hängend",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-262-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-262-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-262-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "3a27fa01-c769-4f10-8e39-9d0d0effca03",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:104",
+                        "encodedSpace": "plattig, tief zerfurcht",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-268-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-268-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-268-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Die heimische Kiefer besitzt viele volkstümliche Namen: Gemeine Kiefer, Sand- oder Rotkiefer, Föhre, Forche, Fuhre, Forle, Kienbaum, Waldföhre oder Weißföhre. Etymologisch stammt die Bezeichnung Kiefer vermutlich von der mittelhochdeutschen Wortschöpfung „Kien“ für harzreiches Holz und „Föhre“.",
+            "shortTextKey": "taxon_text_1_15",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "Besonders in Reinbeständen ist die Waldkiefer stark durch Insekten wie Nonne, Kiefernspinner, Kiefernspanner und Forleule gefährdet.\nAber auch zahlreiche Pilzarten kommen an der Waldkiefer vor. Dabei können vor allem die Kiefernschütte, Hallimasch oder Blasenrost zu Schäden führen.\n\nDurch die breite Kronenform und die langen Nadeln der Waldkiefer kommt es gehäuft zu Kronenbrüchen verursacht durch Nassschnee.",
+            "shortTextKey": "taxon_text_2_16",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Von den in Kiefernwäldern verbreiteten Arten werden 35 Arten als Zeigerarten für autochtone Kiefernstandorte in Bayern eingestuft. Sie fehlen in sekundären (d.h. nutzungsbedingten) Kiefernwäldern. Nur wenige Arten sind streng monophag an die Baumart Kiefer oder ausschließlich an Kiefernstandorte gebunden. Werden sie jedoch in Kiefernwäldern angetroffen, so ist von einem natürlichen Vorkommen der Kiefer auszugehen.",
+            "shortTextKey": "taxon_text_3_17",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-258-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-258-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-258-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [],
+    "gbifNubKey": 5285637,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}

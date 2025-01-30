@@ -1,0 +1,100 @@
+[
+    {
+        "taxonLatname": "Quercus robur",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2878688,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-35-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-35-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-35-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "scientific",
+        "name": "Quercus robur L.",
+        "isPreferredName": true,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Quercus longaeva",
+        "taxonAuthor": "Salisb., nom. superfl.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "f81297a5-feaf-4364-8066-171e42e6be73",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2878805,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Quercus longaeva Salisb., nom. superfl.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Quercus robur eurobur",
+        "taxonAuthor": "A.Camus, not validly publ.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "8971170b-9d65-489b-8f8d-59631316aeaa",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2879007,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Quercus robur eurobur A.Camus, not validly publ.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Quercus robur typica",
+        "taxonAuthor": "Beck, not validly publ.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "93c3ebe6-8bfe-4949-a6f6-275be534c2c7",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2878689,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Quercus robur typica Beck, not validly publ.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Quercus robur vulgaris",
+        "taxonAuthor": "A.DC., not validly publ.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "192b1e2b-0002-4f84-9619-95cb9cdf418f",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 2879008,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Quercus robur vulgaris A.DC., not validly publ.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Quercus robur longipeduncula",
+        "taxonAuthor": "Ehrh., not validly publ.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "1cb032c9-5cb0-4101-8818-49829925cc98",
+        "taxonNuid": "00600800600p0030070db",
+        "gbifNubkey": 9238499,
+        "image": null,
+        "nameType": "scientific",
+        "name": "Quercus robur longipeduncula Ehrh., not validly publ.",
+        "isPreferredName": false,
+        "acceptedNameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d",
+        "hasTaxonProfile": false
+    }
+]

@@ -1,0 +1,11 @@
+[
+    {
+        "taxonSource": "taxonomy.sources.custom",
+        "taxonLatname": "Rana alina",
+        "taxonAuthor": "Thomas Uher",
+        "nameUuid": "6044a584-83c0-4227-b88f-d0ffe6cc44f1",
+        "taxonNuid": "001001",
+        "imageUrl": null,
+        "gbifNubKey": null
+    }
+]

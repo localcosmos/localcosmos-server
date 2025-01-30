@@ -1,0 +1,366 @@
+[
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Weißforelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Waldforelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonNuid": "006008007001005001001",
+        "gbifNubkey": 2685484,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-64-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-64-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-64-1000.webp"
+            },
+            "licence": {
+                "licence": "CC BY",
+                "licenceVersion": "4.0",
+                "creatorName": "Jan van der Straaten, Rutger Barendse",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Weißtanne",
+        "isPreferredName": false,
+        "acceptedNameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonNuid": "006008007001005001001",
+        "gbifNubkey": 2685484,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-64-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-64-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-64-1000.webp"
+            },
+            "licence": {
+                "licence": "CC BY",
+                "licenceVersion": "4.0",
+                "creatorName": "Jan van der Straaten, Rutger Barendse",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Weisstanne",
+        "isPreferredName": false,
+        "acceptedNameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Juglans regia",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+        "taxonNuid": "00600800600p00400600p",
+        "gbifNubkey": 3054368,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-43-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-43-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-43-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Walnuss",
+        "isPreferredName": false,
+        "acceptedNameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Waldkiefer",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Waldföhre",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Prunus avium",
+        "taxonAuthor": "(L.) L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+        "taxonNuid": "00600800601b00702c00l",
+        "gbifNubkey": 3020791,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-45-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-45-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-45-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Wildkirsche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Waldkiefer",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Waldföhre",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonNuid": "006008007001005001001",
+        "gbifNubkey": 2685484,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-64-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-64-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-64-1000.webp"
+            },
+            "licence": {
+                "licence": "CC BY",
+                "licenceVersion": "4.0",
+                "creatorName": "Jan van der Straaten, Rutger Barendse",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Weißtanne",
+        "isPreferredName": false,
+        "acceptedNameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Abies alba",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "taxonNuid": "006008007001005001001",
+        "gbifNubkey": 2685484,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-64-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-64-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-64-1000.webp"
+            },
+            "licence": {
+                "licence": "CC BY",
+                "licenceVersion": "4.0",
+                "creatorName": "Jan van der Straaten, Rutger Barendse",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Weisstanne",
+        "isPreferredName": false,
+        "acceptedNameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Juglans regia",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+        "taxonNuid": "00600800600p00400600p",
+        "gbifNubkey": 3054368,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-43-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-43-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-43-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Walnuss",
+        "isPreferredName": false,
+        "acceptedNameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Prunus avium",
+        "taxonAuthor": "(L.) L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+        "taxonNuid": "00600800601b00702c00l",
+        "gbifNubkey": 3020791,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-45-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-45-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-45-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Wildkirsche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9",
+        "hasTaxonProfile": true
+    }
+]

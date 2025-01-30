@@ -10,6 +10,8 @@
     "APP_VERSION": 5,
     "API_URL": "https://treesofbavaria.tomwork.sisol/api/",
     "PREVIEW": false,
+    "REVIEW": true,
+    "PUBLISHED": false,
     "OPTIONS": {
         "allowAnonymousObservations": false
     },

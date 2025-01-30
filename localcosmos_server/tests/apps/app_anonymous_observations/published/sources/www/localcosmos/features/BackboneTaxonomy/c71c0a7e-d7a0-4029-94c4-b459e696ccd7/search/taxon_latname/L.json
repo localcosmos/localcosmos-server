@@ -1,0 +1,30 @@
+[
+    {
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonNuid": "006008007001005005002",
+        "gbifNubkey": 2686212,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-63-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-63-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-63-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "scientific",
+        "name": "Larix decidua Mill.",
+        "isPreferredName": true,
+        "acceptedNameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "hasTaxonProfile": true
+    }
+]

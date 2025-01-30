@@ -1,0 +1,30 @@
+[
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Trump",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Teichforelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    }
+]

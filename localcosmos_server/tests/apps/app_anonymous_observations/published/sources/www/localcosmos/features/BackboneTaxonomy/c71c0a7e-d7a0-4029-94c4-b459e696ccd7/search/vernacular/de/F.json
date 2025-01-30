@@ -1,0 +1,198 @@
+[
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Föhre",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Flußforelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Ferchen",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Forelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Acer campestre",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "taxonNuid": "00600800601d00800100d",
+        "gbifNubkey": 3189863,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-44-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-44-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-44-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Feldahorn",
+        "isPreferredName": false,
+        "acceptedNameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "gbifNubkey": 5284884,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-62-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-62-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-62-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Fichte",
+        "isPreferredName": true,
+        "acceptedNameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Föhre",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Föhre",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "gbifNubkey": 5284884,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-62-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-62-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-62-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Fichte",
+        "isPreferredName": true,
+        "acceptedNameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Acer campestre",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "taxonNuid": "00600800601d00800100d",
+        "gbifNubkey": 3189863,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-44-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-44-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-44-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Feldahorn",
+        "isPreferredName": false,
+        "acceptedNameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb",
+        "hasTaxonProfile": true
+    }
+]

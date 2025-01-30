@@ -1,0 +1,142 @@
+[
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Rheinanke",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Rheinlanken",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Fagus sylvatica",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+        "taxonNuid": "00600800600p00300400b",
+        "gbifNubkey": 2882316,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-37-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-37-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-37-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Rotbuche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "gbifNubkey": 5284884,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-62-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-62-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-62-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Rotfichte",
+        "isPreferredName": false,
+        "acceptedNameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Fagus sylvatica",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+        "taxonNuid": "00600800600p00300400b",
+        "gbifNubkey": 2882316,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-37-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-37-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-37-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Rotbuche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "gbifNubkey": 5284884,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-62-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-62-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-62-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Rotfichte",
+        "isPreferredName": false,
+        "acceptedNameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "hasTaxonProfile": true
+    }
+]

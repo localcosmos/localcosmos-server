@@ -1,0 +1,2119 @@
+{
+    "uuid": "f1674130-a6f7-4e61-972f-4748c8e447fb",
+    "version": 1,
+    "options": {
+        "resultAction": {
+            "feature": "TaxonProfiles",
+            "uuid": "244e0745-20b8-4223-badf-6cb4da13d3ca"
+        }
+    },
+    "globalOptions": {},
+    "name": "Waldbäume bestimmen",
+    "slug": "48-waldbaume-bestimmen",
+    "tree": {
+        "699bfb39-7f11-4607-9783-b7931e668a42": {
+            "uuid": "699bfb39-7f11-4607-9783-b7931e668a42",
+            "name": "Waldbäume bestimmen",
+            "taxon": null,
+            "children": [
+                {
+                    "uuid": "534e0566-0cae-415b-bc45-7b0645ad5e93",
+                    "nodeType": "node",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-227-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-227-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-227-1000.webp"
+                    },
+                    "space": {
+                        "36e6e035-c37c-4e8c-98c8-5ddbf189f200": [
+                            {
+                                "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
+                                "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>"
+                            }
+                        ]
+                    },
+                    "maxPoints": 1,
+                    "isPossible": true,
+                    "name": "Nadelbäume",
+                    "decisionRule": "mit Nadeln",
+                    "taxon": null,
+                    "slug": "208-nadelbaume"
+                },
+                {
+                    "uuid": "52be43d4-c5f5-4376-a335-d35b2cc85fbd",
+                    "nodeType": "node",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-226-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-226-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-226-1000.webp"
+                    },
+                    "space": {
+                        "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158": [
+                            {
+                                "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                                "encodedSpace": "<p>Text 2 1</p>"
+                            },
+                            {
+                                "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                                "encodedSpace": "<p>Text 1</p>"
+                            }
+                        ],
+                        "36e6e035-c37c-4e8c-98c8-5ddbf189f200": [
+                            {
+                                "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                                "encodedSpace": "<p>Text/mit shcräg</p>"
+                            }
+                        ]
+                    },
+                    "maxPoints": 2,
+                    "isPossible": true,
+                    "name": "Laubbäume",
+                    "decisionRule": "mit Blättern, im Winter kahl",
+                    "taxon": null,
+                    "slug": "207-laubbaume"
+                },
+                {
+                    "uuid": "caa8e18d-fcaa-4285-b3f6-738f60c65310",
+                    "nodeType": "result",
+                    "imageUrl": null,
+                    "space": {
+                        "8cf28702-d7d5-443f-b3a0-1373b27012e3": [
+                            {
+                                "spaceIdentifier": "8cf28702-d7d5-443f-b3a0-1373b27012e3:108",
+                                "encodedSpace": "<p>text 2</p>"
+                            }
+                        ]
+                    },
+                    "maxPoints": 1,
+                    "isPossible": true,
+                    "name": "Eintrag für Unmöglichen Wert",
+                    "decisionRule": "",
+                    "taxon": {
+                        "taxonLatname": "Lithobates catesbeianus",
+                        "taxonAuthor": "(Shaw, 1802)",
+                        "taxonNuid": "001008002001016008007",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "90129dcc-f33e-43d4-88f7-6dfdc704f443"
+                    },
+                    "slug": "226-eintrag-fur-unmoglichen-wert"
+                }
+            ],
+            "matrixFilters": {
+                "36e6e035-c37c-4e8c-98c8-5ddbf189f200": {
+                    "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                    "name": "Test/mint",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 0,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": true,
+                    "identificationMeans": [
+                        "visual",
+                        "tactile",
+                        "auditory",
+                        "microscope",
+                        "scalpel",
+                        "gustatory",
+                        "olfactory"
+                    ],
+                    "space": [
+                        {
+                            "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                            "encodedSpace": "<p>Text/mit shcräg</p>",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
+                            "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158": {
+                    "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                    "name": "Textfilter",
+                    "type": "TextOnlyFilter",
+                    "position": 1,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {
+                        "36e6e035-c37c-4e8c-98c8-5ddbf189f200": [
+                            {
+                                "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
+                                "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>"
+                            }
+                        ]
+                    },
+                    "isRestricted": true,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [
+                        "visual"
+                    ],
+                    "space": [
+                        {
+                            "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                            "encodedSpace": "<p>Text 2 1</p>"
+                        },
+                        {
+                            "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                            "encodedSpace": "<p>Text 1</p>"
+                        }
+                    ],
+                    "definition": {}
+                },
+                "8cf28702-d7d5-443f-b3a0-1373b27012e3": {
+                    "uuid": "8cf28702-d7d5-443f-b3a0-1373b27012e3",
+                    "name": "Unmöglich",
+                    "type": "TextOnlyFilter",
+                    "position": 2,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [],
+                    "space": [
+                        {
+                            "spaceIdentifier": "8cf28702-d7d5-443f-b3a0-1373b27012e3:108",
+                            "encodedSpace": "<p>text 2</p>"
+                        }
+                    ],
+                    "definition": {}
+                }
+            },
+            "identificationMode": "strict",
+            "slug": "1-waldbaume-bestimmen",
+            "overviewImage": null,
+            "description": null,
+            "childrenCount": 4
+        },
+        "52be43d4-c5f5-4376-a335-d35b2cc85fbd": {
+            "uuid": "52be43d4-c5f5-4376-a335-d35b2cc85fbd",
+            "name": "Laubbäume",
+            "taxon": null,
+            "children": [
+                {
+                    "uuid": "ecca34e7-cf01-4e56-b2a6-5f706e1a0acf",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-228-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-228-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-228-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:76",
+                                "encodedSpace": "gelappt"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:77",
+                                "encodedSpace": "ohne Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                                "encodedSpace": "gebuchtet"
+                            },
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:80",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                                "encodedSpace": "gefurcht"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                                "encodedSpace": [
+                                    104,
+                                    71,
+                                    3,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                                "encodedSpace": [
+                                    107,
+                                    100,
+                                    0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagaceae",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiI2NzIwY2NkZi00YjQ2LTQ1YTEtYjRiOS1mZDQzZTdjYzMzMDciLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwMDAzIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhY2VhZSJ9XSwibGF0bmFtZSI6IkZhZ2FjZWFlIiwiaXNfY3VzdG9tIjp0cnVlfQ=="
+                            },
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiJlYzZhOTVkNC05MDUwLTQ1MjMtYjkwYi0yMjRlNjU1MWU3MGUiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhbGVzIn1dLCJsYXRuYW1lIjoiRmFnYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Eiche",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Quercus robur",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800600p0030070db",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "8561de7e-0a43-4550-9dc6-f0401c986a2d"
+                    },
+                    "slug": "209-eiche"
+                },
+                {
+                    "uuid": "8a717a9e-1010-48b5-bfb5-79a7e863adf5",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-229-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-229-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-229-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:84",
+                                "encodedSpace": "gegenständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:76",
+                                "encodedSpace": "gelappt"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                                "encodedSpace": "gebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:87",
+                                "encodedSpace": "schuppig"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                                "encodedSpace": [
+                                    107,
+                                    100,
+                                    0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Sapindales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiIzOWVhMTE3Zi01YTBmLTQ3YjMtYmQzNi05YTI3ZjViM2UyZjYiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDFkIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJTYXBpbmRhbGVzIn1dLCJsYXRuYW1lIjoiU2FwaW5kYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Bergahorn",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Acer pseudoplatanus",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800601d00800102r",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "7b5d2554-7db4-46b1-b1c5-8908126a14d0"
+                    },
+                    "slug": "210-bergahorn"
+                },
+                {
+                    "uuid": "fa12e0ad-8512-4678-99fe-d2cd49581865",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-230-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-230-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-230-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:88",
+                                "encodedSpace": "oval"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                                "encodedSpace": "gebuchtet"
+                            },
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:80",
+                                "encodedSpace": "glatt"
+                            },
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:89",
+                                "encodedSpace": "<p>wellig</p>"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                                "encodedSpace": [
+                                    107,
+                                    100,
+                                    0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagaceae",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiI2NzIwY2NkZi00YjQ2LTQ1YTEtYjRiOS1mZDQzZTdjYzMzMDciLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwMDAzIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhY2VhZSJ9XSwibGF0bmFtZSI6IkZhZ2FjZWFlIiwiaXNfY3VzdG9tIjp0cnVlfQ=="
+                            },
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiJlYzZhOTVkNC05MDUwLTQ1MjMtYjkwYi0yMjRlNjU1MWU3MGUiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhbGVzIn1dLCJsYXRuYW1lIjoiRmFnYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Rotbuche",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Fagus sylvatica",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800600p00300400b",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "a251756f-3209-4160-bdc3-bed491629d1e"
+                    },
+                    "slug": "211-rotbuche"
+                },
+                {
+                    "uuid": "559c3464-5b74-4f07-a27e-44f2b4175844",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-231-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-231-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-231-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:84",
+                                "encodedSpace": "gegenständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:91",
+                                "encodedSpace": "gefiedert"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                                "encodedSpace": "gefurcht"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                                "encodedSpace": [
+                                    107,
+                                    100,
+                                    0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Oleaceae",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiI2Y2I5ZTE2Ny01YzQzLTRjMGUtOTVlOC0wZTI1NTg2YmRhYjgiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDB3MDBjIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJPbGVhY2VhZSJ9XSwibGF0bmFtZSI6Ik9sZWFjZWFlIiwiaXNfY3VzdG9tIjp0cnVlfQ=="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Esche",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Fraxinus excelsior",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800600w00c00a00j",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "7fa38327-7b07-430e-a385-fe0a8a049233"
+                    },
+                    "slug": "212-esche"
+                },
+                {
+                    "uuid": "235b91b4-a16b-40e4-9d44-647e1afd0f69",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-232-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-232-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-232-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:92",
+                                "encodedSpace": "herzförmig"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                                "encodedSpace": "gebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:93",
+                                "encodedSpace": [
+                                    222,
+                                    221,
+                                    218,
+                                    1
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiJlYzZhOTVkNC05MDUwLTQ1MjMtYjkwYi0yMjRlNjU1MWU3MGUiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhbGVzIn1dLCJsYXRuYW1lIjoiRmFnYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Birke",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Betula pendula",
+                        "taxonAuthor": "Roth",
+                        "taxonNuid": "00600800600p00100201n",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "a748aec5-9656-4451-831c-b55325ae38a9"
+                    },
+                    "slug": "213-birke"
+                },
+                {
+                    "uuid": "ddc6df0d-1b79-4783-87f3-1c0de78e0e53",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-233-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-233-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-233-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:91",
+                                "encodedSpace": "gefiedert"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                                "encodedSpace": [
+                                    107,
+                                    100,
+                                    0,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": []
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Eberesche",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Sorbus aucuparia",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800601b00702u00a",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "2f40a63f-aade-4003-9430-447270fe6abf"
+                    },
+                    "slug": "214-eberesche"
+                },
+                {
+                    "uuid": "53b20d45-5a74-43d0-8158-c0f4e0373aed",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-234-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-234-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-234-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:88",
+                                "encodedSpace": "oval"
+                            },
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:92",
+                                "encodedSpace": "herzförmig"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:77",
+                                "encodedSpace": "ohne Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                                "encodedSpace": "gefurcht"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                                "encodedSpace": [
+                                    104,
+                                    71,
+                                    3,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiJlYzZhOTVkNC05MDUwLTQ1MjMtYjkwYi0yMjRlNjU1MWU3MGUiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhbGVzIn1dLCJsYXRuYW1lIjoiRmFnYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Schwarzerle",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Alnus glutinosa",
+                        "taxonAuthor": "(L.) Gaertn.",
+                        "taxonNuid": "00600800600p00100100e",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "e3a76a3d-44bc-47b9-bb7f-4b0b544c2f6f"
+                    },
+                    "slug": "215-schwarzerle"
+                },
+                {
+                    "uuid": "35decf29-b470-40f4-a2df-8a6c604c8399",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-235-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-235-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-235-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:92",
+                                "encodedSpace": "herzförmig"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                                "encodedSpace": "gebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                                "encodedSpace": "gefurcht"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                                "encodedSpace": [
+                                    104,
+                                    71,
+                                    3,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": []
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Schwarzpappel",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Populus nigra",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800600z01101901q",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "bc4aa5c6-4384-413e-ae08-97fafe6d2b00"
+                    },
+                    "slug": "216-schwarzpappel"
+                },
+                {
+                    "uuid": "1fa2cc74-11fc-4153-bd18-2667c0761721",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-236-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-236-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-236-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:91",
+                                "encodedSpace": "gefiedert"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:80",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                                "encodedSpace": "gefurcht"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                                "encodedSpace": [
+                                    104,
+                                    71,
+                                    3,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiJlYzZhOTVkNC05MDUwLTQ1MjMtYjkwYi0yMjRlNjU1MWU3MGUiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhbGVzIn1dLCJsYXRuYW1lIjoiRmFnYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Walnuss",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Juglans regia",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800600p00400600p",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "e738b266-e13d-47bc-ac28-0b9bf88432c5"
+                    },
+                    "slug": "217-walnuss"
+                },
+                {
+                    "uuid": "8c85e450-5ef2-4302-a4a1-b1c760906f5c",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-237-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-237-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-237-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:84",
+                                "encodedSpace": "gegenständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:76",
+                                "encodedSpace": "gelappt"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:77",
+                                "encodedSpace": "ohne Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                                "encodedSpace": "gebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:80",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:87",
+                                "encodedSpace": "schuppig"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                                "encodedSpace": [
+                                    104,
+                                    71,
+                                    3,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": [
+                            {
+                                "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Sapindales",
+                                "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiIzOWVhMTE3Zi01YTBmLTQ3YjMtYmQzNi05YTI3ZjViM2UyZjYiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDFkIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJTYXBpbmRhbGVzIn1dLCJsYXRuYW1lIjoiU2FwaW5kYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0="
+                            }
+                        ]
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Feldahorn",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Acer campestre",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800601d00800100d",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "dcb4db1b-d1b7-4135-b997-72d080a59ccb"
+                    },
+                    "slug": "218-feldahorn"
+                },
+                {
+                    "uuid": "f1251c2f-50c9-475d-8e61-026eb8a23ebb",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-238-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-238-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-238-1000.webp"
+                    },
+                    "space": {
+                        "b970a6fb-54ea-4b22-a013-208450bdfc5a": [
+                            {
+                                "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                                "encodedSpace": "wechselständig"
+                            }
+                        ],
+                        "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": [
+                            {
+                                "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:88",
+                                "encodedSpace": "oval"
+                            }
+                        ],
+                        "08481da4-e202-41ea-bebf-0b25cc504439": [
+                            {
+                                "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                                "encodedSpace": "mit Spitze"
+                            }
+                        ],
+                        "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": [
+                            {
+                                "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                                "encodedSpace": "ungebuchtet"
+                            }
+                        ],
+                        "4e85ed86-a34a-40f0-96d0-4e28e0099151": [
+                            {
+                                "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                                "encodedSpace": "gezackt"
+                            }
+                        ],
+                        "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": [
+                            {
+                                "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                                "encodedSpace": "glatt"
+                            }
+                        ],
+                        "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": [
+                            {
+                                "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                                "encodedSpace": [
+                                    104,
+                                    71,
+                                    3,
+                                    1.0
+                                ]
+                            }
+                        ],
+                        "1408db72-faa1-419a-a910-a73c4591ad13": []
+                    },
+                    "maxPoints": 8,
+                    "isPossible": true,
+                    "name": "Wildkirsche",
+                    "decisionRule": null,
+                    "taxon": {
+                        "taxonLatname": "Prunus avium",
+                        "taxonAuthor": "(L.) L.",
+                        "taxonNuid": "00600800601b00702c00l",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "3869ccdb-d917-4f07-b506-90597fb057c9"
+                    },
+                    "slug": "219-wildkirsche"
+                }
+            ],
+            "matrixFilters": {
+                "b970a6fb-54ea-4b22-a013-208450bdfc5a": {
+                    "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                    "name": "Blattanordnung/TEst",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 2,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                            "encodedSpace": "wechselständig",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-239-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-239-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-239-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:84",
+                            "encodedSpace": "gegenständig",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-246-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-246-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-246-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "0c272e8b-c1c8-488b-8299-bf3f8d3559fb": {
+                    "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                    "name": "Form des Blattes",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 3,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:76",
+                            "encodedSpace": "gelappt",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-240-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-240-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-240-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:88",
+                            "encodedSpace": "oval",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-250-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-250-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-250-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:91",
+                            "encodedSpace": "gefiedert",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-253-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-253-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-253-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:92",
+                            "encodedSpace": "herzförmig",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-254-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-254-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-254-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "08481da4-e202-41ea-bebf-0b25cc504439": {
+                    "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                    "name": "Form des Blattendes",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 4,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:77",
+                            "encodedSpace": "ohne Spitze",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-241-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-241-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-241-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                            "encodedSpace": "mit Spitze",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2": {
+                    "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                    "name": "Form des Blattanfangs",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 5,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                            "encodedSpace": "gebuchtet",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-242-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-242-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-242-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                            "encodedSpace": "ungebuchtet",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-243-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-243-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-243-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "4e85ed86-a34a-40f0-96d0-4e28e0099151": {
+                    "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                    "name": "Form des Blattrandes",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 6,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:80",
+                            "encodedSpace": "glatt",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-244-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-244-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-244-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:86",
+                            "encodedSpace": "gezackt",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-248-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-248-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-248-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:89",
+                            "encodedSpace": "<p>wellig</p>",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-251-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-251-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-251-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "0c0897de-4ee3-4564-8dda-6fc76f32b5b2": {
+                    "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                    "name": "Form der Rinde",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 7,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:81",
+                            "encodedSpace": "gefurcht",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-245-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-245-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-245-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:87",
+                            "encodedSpace": "schuppig",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-249-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-249-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-249-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                            "encodedSpace": "glatt",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-252-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-252-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-252-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "95543b2a-8bd8-4b82-b40a-7f51c22e9c35": {
+                    "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                    "name": "Farbe des Stammes",
+                    "type": "ColorFilter",
+                    "position": 8,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:82",
+                            "encodedSpace": [
+                                104,
+                                71,
+                                3,
+                                1.0
+                            ],
+                            "html": "rgba(104,71,3,1.0)",
+                            "gradient": false,
+                            "description": null
+                        },
+                        {
+                            "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                            "encodedSpace": [
+                                107,
+                                100,
+                                0,
+                                1.0
+                            ],
+                            "html": "rgba(107,100,0,1.0)",
+                            "gradient": false,
+                            "description": null
+                        },
+                        {
+                            "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:93",
+                            "encodedSpace": [
+                                222,
+                                221,
+                                218,
+                                1
+                            ],
+                            "html": "rgba(222,221,218,1)",
+                            "gradient": false,
+                            "description": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "1408db72-faa1-419a-a910-a73c4591ad13": {
+                    "uuid": "1408db72-faa1-419a-a910-a73c4591ad13",
+                    "name": "Taxonomie",
+                    "type": "TaxonFilter",
+                    "position": 9,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagaceae",
+                            "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiI2NzIwY2NkZi00YjQ2LTQ1YTEtYjRiOS1mZDQzZTdjYzMzMDciLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwMDAzIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhY2VhZSJ9XSwibGF0bmFtZSI6IkZhZ2FjZWFlIiwiaXNfY3VzdG9tIjp0cnVlfQ==",
+                            "shortName": "Fag",
+                            "latname": "Fagaceae",
+                            "isCustom": true
+                        },
+                        {
+                            "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Sapindales",
+                            "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiIzOWVhMTE3Zi01YTBmLTQ3YjMtYmQzNi05YTI3ZjViM2UyZjYiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDFkIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJTYXBpbmRhbGVzIn1dLCJsYXRuYW1lIjoiU2FwaW5kYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0=",
+                            "shortName": "Sap",
+                            "latname": "Sapindales",
+                            "isCustom": true
+                        },
+                        {
+                            "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Oleaceae",
+                            "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiI2Y2I5ZTE2Ny01YzQzLTRjMGUtOTVlOC0wZTI1NTg2YmRhYjgiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDB3MDBjIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJPbGVhY2VhZSJ9XSwibGF0bmFtZSI6Ik9sZWFjZWFlIiwiaXNfY3VzdG9tIjp0cnVlfQ==",
+                            "shortName": "Ole",
+                            "latname": "Oleaceae",
+                            "isCustom": true
+                        },
+                        {
+                            "spaceIdentifier": "1408db72-faa1-419a-a910-a73c4591ad13:Fagales",
+                            "encodedSpace": "eyJ0YXhhIjpbeyJuYW1lX3V1aWQiOiJlYzZhOTVkNC05MDUwLTQ1MjMtYjkwYi0yMjRlNjU1MWU3MGUiLCJ0YXhvbl9udWlkIjoiMDA2MDA4MDA2MDBwIiwidGF4b25fYXV0aG9yIjpudWxsLCJ0YXhvbl9zb3VyY2UiOiJ0YXhvbm9teS5zb3VyY2VzLmNvbCIsInRheG9uX2xhdG5hbWUiOiJGYWdhbGVzIn1dLCJsYXRuYW1lIjoiRmFnYWxlcyIsImlzX2N1c3RvbSI6dHJ1ZX0=",
+                            "shortName": "Fag",
+                            "latname": "Fagales",
+                            "isCustom": true
+                        }
+                    ],
+                    "definition": {}
+                }
+            },
+            "identificationMode": "strict",
+            "slug": "207-laubbaume",
+            "overviewImage": null,
+            "description": null,
+            "childrenCount": 11
+        },
+        "534e0566-0cae-415b-bc45-7b0645ad5e93": {
+            "uuid": "534e0566-0cae-415b-bc45-7b0645ad5e93",
+            "name": "Nadelbäume",
+            "taxon": null,
+            "children": [
+                {
+                    "uuid": "01675b61-a25b-4974-a72e-ad7e57daaf5d",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-256-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-256-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-256-1000.webp"
+                    },
+                    "space": {
+                        "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": [
+                            {
+                                "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:100",
+                                "encodedSpace": "<p>Büschel</p>"
+                            }
+                        ],
+                        "33818dbe-99be-4912-bf8e-e05616951fa1": [
+                            {
+                                "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:101",
+                                "encodedSpace": "abgerundet, nicht stechend"
+                            }
+                        ],
+                        "135a384b-eba5-468b-8ae7-b65d3e38bb43": [
+                            {
+                                "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzEuNSwzLjBd",
+                                "encodedSpace": [
+                                    1.5,
+                                    3.0
+                                ]
+                            }
+                        ],
+                        "30ab1b7c-647c-4b64-bb67-67bcc5189c3e": [
+                            {
+                                "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzMuMCw0LjBd",
+                                "encodedSpace": [
+                                    3.0,
+                                    4.0
+                                ]
+                            }
+                        ],
+                        "f7931849-eb55-45df-b016-a8ff7221f3da": [
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:1.0",
+                                "encodedSpace": 1.0
+                            }
+                        ],
+                        "34d6dabc-91d2-4b0e-ac11-fc7ff0847863": [
+                            {
+                                "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:102",
+                                "encodedSpace": "aufrecht stehend"
+                            }
+                        ],
+                        "3a27fa01-c769-4f10-8e39-9d0d0effca03": [
+                            {
+                                "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
+                                "encodedSpace": "glatt, im Alter schuppig"
+                            }
+                        ]
+                    },
+                    "maxPoints": 7,
+                    "isPossible": true,
+                    "name": "Lärche",
+                    "decisionRule": "",
+                    "taxon": {
+                        "taxonLatname": "Larix decidua",
+                        "taxonAuthor": "Mill.",
+                        "taxonNuid": "006008007001005005002",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2"
+                    },
+                    "slug": "221-larche"
+                },
+                {
+                    "uuid": "052d9885-e6eb-4de4-a9b0-3e346fe17f22",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-257-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-257-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-257-1000.webp"
+                    },
+                    "space": {
+                        "135a384b-eba5-468b-8ae7-b65d3e38bb43": [
+                            {
+                                "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzIuMCwzLjBd",
+                                "encodedSpace": [
+                                    2.0,
+                                    3.0
+                                ]
+                            }
+                        ],
+                        "30ab1b7c-647c-4b64-bb67-67bcc5189c3e": [
+                            {
+                                "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzEwLjAsMTYuMF0=",
+                                "encodedSpace": [
+                                    10.0,
+                                    16.0
+                                ]
+                            }
+                        ],
+                        "f7931849-eb55-45df-b016-a8ff7221f3da": [
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:9.0",
+                                "encodedSpace": 9.0
+                            }
+                        ],
+                        "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": [
+                            {
+                                "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:103",
+                                "encodedSpace": "nebeneinander"
+                            }
+                        ],
+                        "33818dbe-99be-4912-bf8e-e05616951fa1": [
+                            {
+                                "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:101",
+                                "encodedSpace": "abgerundet, nicht stechend"
+                            }
+                        ],
+                        "34d6dabc-91d2-4b0e-ac11-fc7ff0847863": [
+                            {
+                                "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:102",
+                                "encodedSpace": "aufrecht stehend"
+                            }
+                        ],
+                        "3a27fa01-c769-4f10-8e39-9d0d0effca03": [
+                            {
+                                "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
+                                "encodedSpace": "glatt, im Alter schuppig"
+                            }
+                        ]
+                    },
+                    "maxPoints": 7,
+                    "isPossible": true,
+                    "name": "Weißtanne",
+                    "decisionRule": "",
+                    "taxon": {
+                        "taxonLatname": "Abies alba",
+                        "taxonAuthor": "Mill.",
+                        "taxonNuid": "006008007001005001001",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4"
+                    },
+                    "slug": "222-weitanne"
+                },
+                {
+                    "uuid": "cf1f1531-ba56-4273-8ac1-e39307675aaf",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-258-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-258-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-258-1000.webp"
+                    },
+                    "space": {
+                        "135a384b-eba5-468b-8ae7-b65d3e38bb43": [
+                            {
+                                "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzMuMCw3LjBd",
+                                "encodedSpace": [
+                                    3.0,
+                                    7.0
+                                ]
+                            }
+                        ],
+                        "30ab1b7c-647c-4b64-bb67-67bcc5189c3e": [
+                            {
+                                "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzMuMCw2LjBd",
+                                "encodedSpace": [
+                                    3.0,
+                                    6.0
+                                ]
+                            }
+                        ],
+                        "f7931849-eb55-45df-b016-a8ff7221f3da": [
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:5.0",
+                                "encodedSpace": 5.0
+                            },
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:7.0",
+                                "encodedSpace": 7.0
+                            }
+                        ],
+                        "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": [
+                            {
+                                "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:94",
+                                "encodedSpace": "rings um den Zweig"
+                            }
+                        ],
+                        "33818dbe-99be-4912-bf8e-e05616951fa1": [
+                            {
+                                "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:95",
+                                "encodedSpace": "spitz, stechend"
+                            }
+                        ],
+                        "34d6dabc-91d2-4b0e-ac11-fc7ff0847863": [
+                            {
+                                "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:97",
+                                "encodedSpace": "hängend"
+                            }
+                        ],
+                        "3a27fa01-c769-4f10-8e39-9d0d0effca03": [
+                            {
+                                "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:104",
+                                "encodedSpace": "plattig, tief zerfurcht"
+                            }
+                        ]
+                    },
+                    "maxPoints": 7,
+                    "isPossible": true,
+                    "name": "Kiefer",
+                    "decisionRule": "",
+                    "taxon": {
+                        "taxonLatname": "Pinus sylvestris",
+                        "taxonAuthor": "L.",
+                        "taxonNuid": "00600800700100500802s",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572"
+                    },
+                    "slug": "223-kiefer"
+                },
+                {
+                    "uuid": "2658387f-2acc-4401-8ef5-12c0f680becb",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-259-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-259-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-259-1000.webp"
+                    },
+                    "space": {
+                        "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": [
+                            {
+                                "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:106",
+                                "encodedSpace": "<p>test</p>"
+                            }
+                        ],
+                        "33818dbe-99be-4912-bf8e-e05616951fa1": [
+                            {
+                                "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:101",
+                                "encodedSpace": "abgerundet, nicht stechend"
+                            }
+                        ],
+                        "34d6dabc-91d2-4b0e-ac11-fc7ff0847863": [
+                            {
+                                "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:97",
+                                "encodedSpace": "hängend"
+                            }
+                        ],
+                        "3a27fa01-c769-4f10-8e39-9d0d0effca03": [
+                            {
+                                "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:104",
+                                "encodedSpace": "plattig, tief zerfurcht"
+                            }
+                        ],
+                        "f7931849-eb55-45df-b016-a8ff7221f3da": [
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:1.0",
+                                "encodedSpace": 1.0
+                            },
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:3.0",
+                                "encodedSpace": 3.0
+                            },
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:5.0",
+                                "encodedSpace": 5.0
+                            },
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:7.0",
+                                "encodedSpace": 7.0
+                            },
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:9.0",
+                                "encodedSpace": 9.0
+                            }
+                        ]
+                    },
+                    "maxPoints": 5,
+                    "isPossible": true,
+                    "name": "Douglasie",
+                    "decisionRule": "",
+                    "taxon": {
+                        "taxonLatname": "Pseudotsuga menziesii",
+                        "taxonAuthor": "(Mirb.) Franco",
+                        "taxonNuid": "00600800700100500a003",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "9f1efd3c-6d3e-4241-adba-62489fccc247"
+                    },
+                    "slug": "224-douglasie"
+                },
+                {
+                    "uuid": "1fb8fc0e-c546-43b6-8ab0-d526bfc915a5",
+                    "nodeType": "result",
+                    "imageUrl": {
+                        "1x": "/localcosmos/user_content/content_images/image-255-250.webp",
+                        "2x": "/localcosmos/user_content/content_images/image-255-500.webp",
+                        "4x": "/localcosmos/user_content/content_images/image-255-1000.webp"
+                    },
+                    "space": {
+                        "135a384b-eba5-468b-8ae7-b65d3e38bb43": [
+                            {
+                                "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzEuMCwyLjBd",
+                                "encodedSpace": [
+                                    1.0,
+                                    2.0
+                                ]
+                            }
+                        ],
+                        "30ab1b7c-647c-4b64-bb67-67bcc5189c3e": [
+                            {
+                                "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzEwLjAsMTguMF0=",
+                                "encodedSpace": [
+                                    10.0,
+                                    18.0
+                                ]
+                            }
+                        ],
+                        "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": [
+                            {
+                                "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:94",
+                                "encodedSpace": "rings um den Zweig"
+                            }
+                        ],
+                        "33818dbe-99be-4912-bf8e-e05616951fa1": [
+                            {
+                                "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:95",
+                                "encodedSpace": "spitz, stechend"
+                            }
+                        ],
+                        "34d6dabc-91d2-4b0e-ac11-fc7ff0847863": [
+                            {
+                                "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:97",
+                                "encodedSpace": "hängend"
+                            }
+                        ],
+                        "3a27fa01-c769-4f10-8e39-9d0d0effca03": [
+                            {
+                                "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
+                                "encodedSpace": "glatt, im Alter schuppig"
+                            }
+                        ],
+                        "f7931849-eb55-45df-b016-a8ff7221f3da": [
+                            {
+                                "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:3.0",
+                                "encodedSpace": 3.0
+                            }
+                        ]
+                    },
+                    "maxPoints": 7,
+                    "isPossible": true,
+                    "name": "Fichte",
+                    "decisionRule": "",
+                    "taxon": {
+                        "taxonLatname": "Picea abies",
+                        "taxonAuthor": "(L.) H. Karst.",
+                        "taxonNuid": "006008007001005007001",
+                        "taxonSource": "taxonomy.sources.col",
+                        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071"
+                    },
+                    "slug": "220-fichte"
+                }
+            ],
+            "matrixFilters": {
+                "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": {
+                    "uuid": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78",
+                    "name": "Anordnung der Nadeln",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 2,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [],
+                    "space": [
+                        {
+                            "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:94",
+                            "encodedSpace": "rings um den Zweig",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-260-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-260-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-260-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:106",
+                            "encodedSpace": "<p>test</p>",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-276-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-276-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-276-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:100",
+                            "encodedSpace": "<p>Büschel</p>",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-264-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-264-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-264-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:103",
+                            "encodedSpace": "nebeneinander",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-267-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-267-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-267-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "33818dbe-99be-4912-bf8e-e05616951fa1": {
+                    "uuid": "33818dbe-99be-4912-bf8e-e05616951fa1",
+                    "name": "Form der Nadeln",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 3,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {
+                        "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78": [
+                            {
+                                "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:94",
+                                "encodedSpace": "rings um den Zweig"
+                            }
+                        ]
+                    },
+                    "isRestricted": true,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:95",
+                            "encodedSpace": "spitz, stechend",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-261-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-261-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-261-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:101",
+                            "encodedSpace": "abgerundet, nicht stechend",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-265-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-265-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-265-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "135a384b-eba5-468b-8ae7-b65d3e38bb43": {
+                    "uuid": "135a384b-eba5-468b-8ae7-b65d3e38bb43",
+                    "name": "Länge der Nadeln",
+                    "type": "RangeFilter",
+                    "position": 4,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [],
+                    "space": [
+                        {
+                            "encodedSpace": [
+                                1.0,
+                                7.0
+                            ],
+                            "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzEuMCw3LjBd"
+                        }
+                    ],
+                    "definition": {
+                        "min": null,
+                        "max": null,
+                        "step": 0.5,
+                        "unit": "cm",
+                        "unit_verbose": ""
+                    }
+                },
+                "34d6dabc-91d2-4b0e-ac11-fc7ff0847863": {
+                    "uuid": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863",
+                    "name": "Wuchsrichtung der Zapfen",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 5,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {
+                        "135a384b-eba5-468b-8ae7-b65d3e38bb43": [
+                            {
+                                "encodedSpace": [
+                                    2.0,
+                                    5.0
+                                ],
+                                "spaceIdentifier": "135a384b-eba5-468b-8ae7-b65d3e38bb43:WzIuMCw1LjBd"
+                            }
+                        ]
+                    },
+                    "isRestricted": true,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:97",
+                            "encodedSpace": "hängend",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-262-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-262-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-262-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:102",
+                            "encodedSpace": "aufrecht stehend",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-266-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-266-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-266-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "30ab1b7c-647c-4b64-bb67-67bcc5189c3e": {
+                    "uuid": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e",
+                    "name": "Länge der Zapfen",
+                    "type": "RangeFilter",
+                    "position": 6,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [],
+                    "space": [
+                        {
+                            "encodedSpace": [
+                                3.0,
+                                18.0
+                            ],
+                            "spaceIdentifier": "30ab1b7c-647c-4b64-bb67-67bcc5189c3e:WzMuMCwxOC4wXQ=="
+                        }
+                    ],
+                    "definition": {
+                        "min": null,
+                        "max": null,
+                        "step": 1.0,
+                        "unit": "cm",
+                        "unit_verbose": ""
+                    }
+                },
+                "3a27fa01-c769-4f10-8e39-9d0d0effca03": {
+                    "uuid": "3a27fa01-c769-4f10-8e39-9d0d0effca03",
+                    "name": "Form der Rinde",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 7,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": null,
+                    "space": [
+                        {
+                            "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
+                            "encodedSpace": "glatt, im Alter schuppig",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-263-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-263-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-263-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        },
+                        {
+                            "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:104",
+                            "encodedSpace": "plattig, tief zerfurcht",
+                            "imageUrl": {
+                                "1x": "/localcosmos/user_content/content_images/image-268-250.webp",
+                                "2x": "/localcosmos/user_content/content_images/image-268-500.webp",
+                                "4x": "/localcosmos/user_content/content_images/image-268-1000.webp"
+                            },
+                            "secondaryImageUrl": null
+                        }
+                    ],
+                    "definition": {}
+                },
+                "f7931849-eb55-45df-b016-a8ff7221f3da": {
+                    "uuid": "f7931849-eb55-45df-b016-a8ff7221f3da",
+                    "name": "Zahlenfilter",
+                    "type": "NumberFilter",
+                    "position": 8,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [],
+                    "space": [
+                        {
+                            "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:1.0",
+                            "encodedSpace": 1.0
+                        },
+                        {
+                            "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:3.0",
+                            "encodedSpace": 3.0
+                        },
+                        {
+                            "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:5.0",
+                            "encodedSpace": 5.0
+                        },
+                        {
+                            "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:7.0",
+                            "encodedSpace": 7.0
+                        },
+                        {
+                            "spaceIdentifier": "f7931849-eb55-45df-b016-a8ff7221f3da:9.0",
+                            "encodedSpace": 9.0
+                        }
+                    ],
+                    "definition": {
+                        "unit": "",
+                        "unit_verbose": ""
+                    }
+                }
+            },
+            "identificationMode": "strict",
+            "slug": "208-nadelbaume",
+            "overviewImage": {
+                "4x": "/localcosmos/user_content/content_images/overview-284-1000.webp",
+                "8x": "/localcosmos/user_content/content_images/overview-284-2000.webp"
+            },
+            "description": "<p>Nadelbäume <strong>Beschreibung</strong></p>",
+            "childrenCount": 5
+        },
+        "62d2ebc9-12ee-4756-82f1-81c44652706e": {
+            "uuid": "62d2ebc9-12ee-4756-82f1-81c44652706e",
+            "name": "Gruppe mit leerem Filter E 3",
+            "taxon": null,
+            "children": [],
+            "matrixFilters": {
+                "4154a26c-be83-4cf9-ab46-6e33aaa934c0": {
+                    "uuid": "4154a26c-be83-4cf9-ab46-6e33aaa934c0",
+                    "name": "Leerer Filter E3",
+                    "type": "DescriptiveTextAndImagesFilter",
+                    "position": 0,
+                    "description": null,
+                    "weight": 1,
+                    "restrictions": {},
+                    "isRestricted": false,
+                    "allowMultipleValues": false,
+                    "identificationMeans": [],
+                    "space": [],
+                    "definition": {}
+                }
+            },
+            "identificationMode": "strict",
+            "slug": "228-gruppe-mit-leerem-filter-e-3",
+            "overviewImage": null,
+            "description": null,
+            "childrenCount": 0
+        }
+    },
+    "crosslinks": {},
+    "startNodeUuid": "699bfb39-7f11-4607-9783-b7931e668a42",
+    "slugs": {
+        "1-waldbaume-bestimmen": "699bfb39-7f11-4607-9783-b7931e668a42",
+        "208-nadelbaume": "534e0566-0cae-415b-bc45-7b0645ad5e93",
+        "207-laubbaume": "52be43d4-c5f5-4376-a335-d35b2cc85fbd",
+        "226-eintrag-fur-unmoglichen-wert": "caa8e18d-fcaa-4285-b3f6-738f60c65310",
+        "209-eiche": "ecca34e7-cf01-4e56-b2a6-5f706e1a0acf",
+        "210-bergahorn": "8a717a9e-1010-48b5-bfb5-79a7e863adf5",
+        "211-rotbuche": "fa12e0ad-8512-4678-99fe-d2cd49581865",
+        "212-esche": "559c3464-5b74-4f07-a27e-44f2b4175844",
+        "213-birke": "235b91b4-a16b-40e4-9d44-647e1afd0f69",
+        "214-eberesche": "ddc6df0d-1b79-4783-87f3-1c0de78e0e53",
+        "215-schwarzerle": "53b20d45-5a74-43d0-8158-c0f4e0373aed",
+        "216-schwarzpappel": "35decf29-b470-40f4-a2df-8a6c604c8399",
+        "217-walnuss": "1fa2cc74-11fc-4153-bd18-2667c0761721",
+        "218-feldahorn": "8c85e450-5ef2-4302-a4a1-b1c760906f5c",
+        "219-wildkirsche": "f1251c2f-50c9-475d-8e61-026eb8a23ebb",
+        "221-larche": "01675b61-a25b-4974-a72e-ad7e57daaf5d",
+        "222-weitanne": "052d9885-e6eb-4de4-a9b0-3e346fe17f22",
+        "223-kiefer": "cf1f1531-ba56-4273-8ac1-e39307675aaf",
+        "224-douglasie": "2658387f-2acc-4401-8ef5-12c0f680becb",
+        "220-fichte": "1fb8fc0e-c546-43b6-8ab0-d526bfc915a5",
+        "228-gruppe-mit-leerem-filter-e-3": "62d2ebc9-12ee-4756-82f1-81c44652706e"
+    },
+    "imageUrl": {
+        "1x": "/localcosmos/user_content/content_images/image-297-250.webp",
+        "2x": "/localcosmos/user_content/content_images/image-297-500.webp",
+        "4x": "/localcosmos/user_content/content_images/image-297-1000.webp"
+    },
+    "isMulticontent": true
+}

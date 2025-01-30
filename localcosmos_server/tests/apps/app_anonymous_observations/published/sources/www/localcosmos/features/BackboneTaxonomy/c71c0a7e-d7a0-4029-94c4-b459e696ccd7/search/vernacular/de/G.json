@@ -1,0 +1,226 @@
+[
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Goldlachs",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Grundforelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Grundföhre",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Salmo trutta",
+        "taxonAuthor": "Linnaeus, 1758",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "taxonNuid": "00100800101200100701a",
+        "gbifNubkey": 8215487,
+        "image": null,
+        "nameType": "vernacular",
+        "name": "Goldforelle",
+        "isPreferredName": false,
+        "acceptedNameUuid": "fb1421f2-2ab1-4cc6-867f-bad2afaf8b3a",
+        "hasTaxonProfile": false
+    },
+    {
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonNuid": "006008007001005005002",
+        "gbifNubkey": 2686212,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-63-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-63-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-63-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Gemeine Lärche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "gbifNubkey": 5284884,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-62-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-62-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-62-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Gemeine Fichte",
+        "isPreferredName": false,
+        "acceptedNameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Gemeine Kiefer",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Pinus sylvestris",
+        "taxonAuthor": "L.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "taxonNuid": "00600800700100500802s",
+        "gbifNubkey": 5285637,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-65-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-65-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-65-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Gemeine Kiefer",
+        "isPreferredName": false,
+        "acceptedNameUuid": "30d9bad8-2d96-4fed-a732-30e08b071572",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Picea abies",
+        "taxonAuthor": "(L.) H. Karst.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "taxonNuid": "006008007001005007001",
+        "gbifNubkey": 5284884,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-62-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-62-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-62-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Gemeine Fichte",
+        "isPreferredName": false,
+        "acceptedNameUuid": "948f5b3f-8789-4900-8022-d586dbf88071",
+        "hasTaxonProfile": true
+    },
+    {
+        "taxonLatname": "Larix decidua",
+        "taxonAuthor": "Mill.",
+        "taxonSource": "taxonomy.sources.col",
+        "nameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "taxonNuid": "006008007001005005002",
+        "gbifNubkey": 2686212,
+        "image": {
+            "text": null,
+            "imageUrl": {
+                "1x": "/localcosmos/user_content/content_images/image-63-250.webp",
+                "2x": "/localcosmos/user_content/content_images/image-63-500.webp",
+                "4x": "/localcosmos/user_content/content_images/image-63-1000.webp"
+            },
+            "licence": {
+                "licence": "CC0",
+                "licenceVersion": "1.0",
+                "creatorName": "Thomas Uher",
+                "creatorLink": null,
+                "sourceLink": null
+            }
+        },
+        "nameType": "vernacular",
+        "name": "Gemeine Lärche",
+        "isPreferredName": false,
+        "acceptedNameUuid": "c8089bf0-7401-4434-98f1-1be9a39118d2",
+        "hasTaxonProfile": true
+    }
+]

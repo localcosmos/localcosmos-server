@@ -1,0 +1,558 @@
+{
+    "taxonSource": "taxonomy.sources.col",
+    "taxonLatname": "Fagus sylvatica",
+    "taxonAuthor": "L.",
+    "nameUuid": "a251756f-3209-4160-bdc3-bed491629d1e",
+    "taxonNuid": "00600800600p00300400b",
+    "vernacular": {
+        "de": "Rotbuche"
+    },
+    "allVernacularNames": {},
+    "nodeNames": [
+        "Rotbuche"
+    ],
+    "nodeDecisionRules": [],
+    "traits": [
+        {
+            "matrixFilter": {
+                "uuid": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158",
+                "name": "Textfilter",
+                "type": "TextOnlyFilter",
+                "position": 1,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": [
+                    "visual"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:110",
+                        "encodedSpace": "<p>Text 2 1</p>"
+                    },
+                    {
+                        "spaceIdentifier": "3fa5c535-6c17-4e0a-aedd-78c8a1f2c158:107",
+                        "encodedSpace": "<p>Text 1</p>"
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "36e6e035-c37c-4e8c-98c8-5ddbf189f200",
+                "name": "Test/mint",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 0,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": true,
+                "identificationMeans": [
+                    "visual",
+                    "tactile",
+                    "auditory",
+                    "microscope",
+                    "scalpel",
+                    "gustatory",
+                    "olfactory"
+                ],
+                "space": [
+                    {
+                        "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:105",
+                        "encodedSpace": "<p>Text/mit shcräg</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "b970a6fb-54ea-4b22-a013-208450bdfc5a",
+                "name": "Blattanordnung/TEst",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 2,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "b970a6fb-54ea-4b22-a013-208450bdfc5a:75",
+                        "encodedSpace": "wechselständig",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-239-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-239-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-239-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb",
+                "name": "Form des Blattes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 3,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c272e8b-c1c8-488b-8299-bf3f8d3559fb:88",
+                        "encodedSpace": "oval",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-250-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-250-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-250-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "08481da4-e202-41ea-bebf-0b25cc504439",
+                "name": "Form des Blattendes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 4,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "08481da4-e202-41ea-bebf-0b25cc504439:85",
+                        "encodedSpace": "mit Spitze",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-247-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-247-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-247-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2",
+                "name": "Form des Blattanfangs",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 5,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:78",
+                        "encodedSpace": "gebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-242-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-242-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-242-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    },
+                    {
+                        "spaceIdentifier": "dc5b7d06-00cb-4e0d-b8ea-bcb0cd5579e2:79",
+                        "encodedSpace": "ungebuchtet",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-243-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-243-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-243-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "4e85ed86-a34a-40f0-96d0-4e28e0099151",
+                "name": "Form des Blattrandes",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 6,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:80",
+                        "encodedSpace": "glatt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-244-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-244-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-244-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    },
+                    {
+                        "spaceIdentifier": "4e85ed86-a34a-40f0-96d0-4e28e0099151:89",
+                        "encodedSpace": "<p>wellig</p>",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-251-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-251-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-251-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2",
+                "name": "Form der Rinde",
+                "type": "DescriptiveTextAndImagesFilter",
+                "position": 7,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "0c0897de-4ee3-4564-8dda-6fc76f32b5b2:90",
+                        "encodedSpace": "glatt",
+                        "imageUrl": {
+                            "1x": "/localcosmos/user_content/content_images/image-252-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-252-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-252-1000.webp"
+                        },
+                        "secondaryImageUrl": null
+                    }
+                ],
+                "definition": {}
+            }
+        },
+        {
+            "matrixFilter": {
+                "uuid": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35",
+                "name": "Farbe des Stammes",
+                "type": "ColorFilter",
+                "position": 8,
+                "description": null,
+                "weight": 1,
+                "restrictions": {},
+                "isRestricted": false,
+                "allowMultipleValues": false,
+                "identificationMeans": null,
+                "space": [
+                    {
+                        "spaceIdentifier": "95543b2a-8bd8-4b82-b40a-7f51c22e9c35:83",
+                        "encodedSpace": [
+                            107,
+                            100,
+                            0,
+                            1.0
+                        ],
+                        "html": "rgba(107,100,0,1.0)",
+                        "gradient": false,
+                        "description": null
+                    }
+                ],
+                "definition": {}
+            }
+        }
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Der Begriff für unsere Buchstaben leitet sich von Buchen-Holzstäben ab. Sie wurden zum Deuten der auf ihnen eingeritzten Runen vom Boden auf-'gelesen'. Die althochdeutsche 'buoh', eine Holzschreibtafel aus Buche, ist der Namensgeber für unsere Bücher.\n\nEin über ganz Deutschland hinaus bekanntes Baumexemplar war die Bavaria-Buche. Sie stand nahe dem Ortsteil Pondorf der Gemeinde Altmannstein im oberbayerischen Landkreis Eichstätt im Naturpark Altmühltal. Ihr Alter wurde auf 500 bis 800 Jahre geschätzt, ihr Stammumfang betrug neun Meter, die Krone wies einen Durchmesser von über 30 Metern auf. Durch Sturmschäden in den Jahren 1995, 2006 und 2013 brachen nach und nach alle Hauptäste der ehemals halbkugelförmigen Krone. Das Bruchholz verblieb als Totholzbiotop an Ort und Stelle.",
+            "shortTextKey": "taxon_text_1_7",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Waldschutz",
+            "shortText": "Die Buche ist eine vergleichsweise risikoarme Baumart. Buchen- und Buchenmischbestände bilden stabile Wälder.\nJunge Buchen sind vor allem gegenüber Spätfrösten empfindlich. Für Mäuse und Schalenwild sind die Samen – die Bucheckern – besondere Leckerbissen. Wildverbiss und Schälschäden treten ebenfalls an der Buche auf.\n\nAn der Buche treten auch eine Reihe von Insekten wie der Buchenwickler, der Buchenspringrüssler, der Buchenprachtkäfer und der Kleine Buchenborkenkäfer auf. Auch Pilze befallen das Buchenholz. Bedeutsam sind vor allem Weißfäuleerreger, wie zum Beispiel der Zunderschwamm oder der Brandkrustenpilz, die das Holz zersetzen.",
+            "shortTextKey": "taxon_text_2_8",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Typische Buchenwaldbewohner sind Frühblüher wie Buschwindröschen, Waldbingelkraut, Waldmeister und Zwiebelzahnwurz. Sie nutzen das Licht, das im unbelaubten Frühjahrswald bis auf den Waldboden fallen kann.\n\nEin Charaktervogel buchenreicher Wälder ist der Schwarzspecht. Er meißelt seine Brut- und Schlafhöhlen in starke Stämme.\n\nHohltaube und Rauhfußkauz nutzen diese Baumhöhlen als 'Nachmieter'. Abgestorbenes Buchenholz ist für viele holzbewohnende Käferarten ein wichtiger Lebensraum.",
+            "shortTextKey": "taxon_text_3_9",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "images": {
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "imageUrl": {
+                    "1x": "/localcosmos/user_content/content_images/image-230-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-230-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-230-1000.webp"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Fagus fagus",
+            "taxonAuthor": "Scop., nom. superfl."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica aenea",
+            "taxonAuthor": "Dum.Cours."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica asplenifolia",
+            "taxonAuthor": "Dum.Cours."
+        },
+        {
+            "taxonLatname": "Fagus cochleata",
+            "taxonAuthor": "(Dippel) Domin"
+        },
+        {
+            "taxonLatname": "Fagus comptoniifolia",
+            "taxonAuthor": "Desf., nom. nud."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica roseomarginatis",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica cristata",
+            "taxonAuthor": "Dum.Cours."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica tricolor",
+            "taxonAuthor": "Simon-Louis ex K.Koch"
+        },
+        {
+            "taxonLatname": "Fagus cuprea",
+            "taxonAuthor": "Hurter ex A.DC., pro syn."
+        },
+        {
+            "taxonLatname": "Fagus echinata",
+            "taxonAuthor": "Gilib., opus utique oppr."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica atropunicea",
+            "taxonAuthor": "Weston"
+        },
+        {
+            "taxonLatname": "Fagus incisa",
+            "taxonAuthor": "Dippel, pro syn."
+        },
+        {
+            "taxonLatname": "Fagus laciniata",
+            "taxonAuthor": "A.DC., pro syn."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica pendula",
+            "taxonAuthor": "Dum.Cours."
+        },
+        {
+            "taxonLatname": "Fagus purpurea",
+            "taxonAuthor": "(Aiton) Dum.Cours."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica salicifolia",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica cochleata",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica colorata",
+            "taxonAuthor": "A.DC."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica heterophylla",
+            "taxonAuthor": "Loudon"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica laciniata",
+            "taxonAuthor": "(Vignet) Domin"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica foliis-striatis",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica quercoides",
+            "taxonAuthor": "Pers."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica tortuosa",
+            "taxonAuthor": "Pépin"
+        },
+        {
+            "taxonLatname": "Fagus sylvestris",
+            "taxonAuthor": "Gaertn."
+        },
+        {
+            "taxonLatname": "Fagus tortuosa",
+            "taxonAuthor": "(Dippel) F.Boden"
+        },
+        {
+            "taxonLatname": "Fagus purpurea roseomarginata",
+            "taxonAuthor": "Cripps"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica aureovariegata",
+            "taxonAuthor": "C.K.Schneid."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica bornyensis",
+            "taxonAuthor": "Simon-Louis ex Beissn."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica fastigiata",
+            "taxonAuthor": "Simon-Louis ex K.Koch"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica quercifolia",
+            "taxonAuthor": "(C.K.Schneid.) Geerinck"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica roseomarginata",
+            "taxonAuthor": "(Cripps) Domin"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica zlatia",
+            "taxonAuthor": "Späth ex E.Goeze"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica coriacea",
+            "taxonAuthor": "Wallr."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica luteovariegata",
+            "taxonAuthor": "Weston"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica albovariegata",
+            "taxonAuthor": "Weston"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica pyramidalis",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica retroflexa",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica grandidentata",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica variegata",
+            "taxonAuthor": "Dippel"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica vulgaris",
+            "taxonAuthor": "Aiton"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica purpurea",
+            "taxonAuthor": "Aiton"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica purpurea-pendula",
+            "taxonAuthor": "Van Geert, nom. nud."
+        },
+        {
+            "taxonLatname": "Fagus purpurea tricolor",
+            "taxonAuthor": "(Simon-Louis ex K.Koch) Pynaert"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica rohanii",
+            "taxonAuthor": "(Körb.) C.K.Schneid."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica rotundifolia",
+            "taxonAuthor": "Jackman"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica latifolia",
+            "taxonAuthor": "G.Kirchn."
+        },
+        {
+            "taxonLatname": "Fagus sylvatica purpureopendula",
+            "taxonAuthor": "H.Jaeger"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica pendula-purpurea",
+            "taxonAuthor": "Graebener"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica remillyensis",
+            "taxonAuthor": "Simon-Louis"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica miltonensis",
+            "taxonAuthor": "A.Henry"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica suentelensis",
+            "taxonAuthor": "Schelle"
+        },
+        {
+            "taxonLatname": "Fagus sylvatica suntalensis",
+            "taxonAuthor": "Beissn."
+        }
+    ],
+    "gbifNubKey": 2882316,
+    "templateContents": [],
+    "genericForms": [
+        {
+            "uuid": "c357ae4d-2760-4152-8374-15dcfebcfa90",
+            "name": "Baummeldung",
+            "slug": "47-baummeldung",
+            "isDefault": true,
+            "taxonomicRestrictions": [
+                {
+                    "taxonSource": "taxonomy.sources.col",
+                    "taxonLatname": "Plantae",
+                    "taxonAuthor": "",
+                    "nameUuid": "151d41f5-5941-4169-b77b-175ab0876ca6",
+                    "taxonNuid": "006",
+                    "restrictionType": "exists"
+                }
+            ]
+        }
+    ],
+    "tags": []
+}
