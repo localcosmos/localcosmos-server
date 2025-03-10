@@ -18,3 +18,4 @@ urlpatterns = [
         name='schema_get_grouped_map_contents'),
 ]
 
+

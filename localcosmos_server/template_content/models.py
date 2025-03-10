@@ -279,8 +279,11 @@ class TemplateContent(PublicationMixin, models.Model):
 
     @property
     def name (self):
+        if not self.draft_template.template_exists:
+            return self.draft_template_name
+        
         return self.draft_template.definition['templateName']
-
+        
     def get_locale(self, language_code):
         return LocalizedTemplateContent.objects.filter(template_content=self, language=language_code).first()
 

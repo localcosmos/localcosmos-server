@@ -19,6 +19,27 @@ from content_licencing.models import ContentLicenceRegistry
 
 import uuid, os, json, shutil
 
+# also used by app_kit
+IMAGE_SIZES = {
+    'regular' : {
+        '1x' : 250,
+        '2x' : 500,
+        #'4x' : 1000,
+    },
+    'large' : {
+        '4x' : 1000,
+    },
+    'xlarge' : {
+        '8x' : 2000,
+    },
+    'all' : {
+        '1x' : 250,
+        '2x' : 500,
+        '4x' : 1000,
+        '8x' : 2000,
+    }
+}
+
 
 
 '''
@@ -873,6 +894,20 @@ class ContentImageProcessing:
                 self.image_store.source_image.url), 'thumbnails', thumbname)
 
         return thumburl
+    
+    
+    def image_urls(self, image_sizes=['regular', 'large']):
+        
+        image_urls = {}
+        
+        for image_sizes_key in image_sizes:
+            for size_name, size in IMAGE_SIZES[image_sizes_key].items():
+                
+                image_url = self.image_url(size)
+                
+                image_urls[size_name] = image_url
+        
+        return image_urls
 
 
     def srcset(self, request=None, force=False):

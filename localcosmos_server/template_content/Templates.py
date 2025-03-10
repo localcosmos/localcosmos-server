@@ -62,6 +62,8 @@ class Template(TemplatePaths):
 
         self.template_filepath = None
         self.template_definition_filepath = None
+        
+        self.template_exists = True
 
         if template_filepath and template_definition_filepath:
             self.template_filepath = template_filepath
@@ -71,8 +73,11 @@ class Template(TemplatePaths):
                 self.template_definition_filepath)
         
         else:
-            self.load_template_and_definition_from_files()
-
+            try:
+                self.load_template_and_definition_from_files()
+            except FileNotFoundError:
+                self.template_exists = False
+                
     @property
     def frontend_template_folder(self):
         return os.path.join(self.frontend_templates_path, self.name)

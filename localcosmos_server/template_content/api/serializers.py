@@ -66,6 +66,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                 image_data.append(serializer.data)
 
             return image_data
+        
         else:
             content_image = localized_template_content.image(image_type=image_type)
 
@@ -191,7 +192,7 @@ class ContentImageSerializer(serializers.Serializer):
     licence = serializers.SerializerMethodField()
 
     def get_imageUrl(self, content_image):
-        return content_image.image_url()
+        return content_image.image_urls()
 
     def get_licence(self, content_image):
 

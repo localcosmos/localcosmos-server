@@ -10,6 +10,8 @@ class AppMixin:
 
         self.app = App.objects.get(uid=kwargs['app_uid'])
         
+        request.app = self.app
+        
         return super().dispatch(request, *args, **kwargs)
 
 

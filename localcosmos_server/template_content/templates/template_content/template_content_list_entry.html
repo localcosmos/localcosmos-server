@@ -6,32 +6,43 @@
 		</div>
 		<div class="card-body">
 			<h5 class="card-title">
-				<a href="{% url 'manage_localized_template_content' app.uid localized_template_content.id %}">{{ localized_template_content.draft_title }}</a>
+				{% if template_content.draft_template.template_exists %}
+					<a href="{% url 'manage_localized_template_content' app.uid localized_template_content.id %}">{{ localized_template_content.draft_title }}</a>
+				{% else %}
+					{{ localized_template_content.draft_title }}
+				{% endif %}
 			</h5>
 			{% with localizeable_instance=template_content %}
 				{% include 'template_content/ajax/translation_status_matrix.html' %}
 			{% endwith %}
 			<hr>
 			{% include 'template_content/ajax/publication_feedback.html' %}
-			<div class="btn-group dropup">
-				<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					{% trans 'Manage' %}
-				</button>
-				<div class="dropdown-menu">
-					<a class="dropdown-item" href="{% url 'manage_localized_template_content' app.uid localized_template_content.pk %}">{% trans 'Edit' %}</a>
-					<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="template-content-{{ template_content.id }}">{% trans 'Publish' %}</a>
-					{% for language in app.secondary_languages %}
-						<a class="dropdown-item" href="{% url 'translate_template_content' app.uid template_content.id language %}">{% blocktrans %}Translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
-					{% endfor %}
-					<div class="dropdown-divider"></div>
-					{% if template_content.is_published %}
-						<a class="dropdown-item xhr" href="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Unpublish' %}</a>
-						<div class="dropdown-divider"></div>
-					{% endif %}
-					<a class="dropdown-item xhr" href="{% url 'delete_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+			
+				<div class="btn-group dropup">
+					<button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{% trans 'Manage' %}
+					</button>
+					<div class="dropdown-menu">
+						{% if template_content.draft_template.template_exists %}
+							<a class="dropdown-item" href="{% url 'manage_localized_template_content' app.uid localized_template_content.pk %}">{% trans 'Edit' %}</a>
+							<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="template-content-{{ template_content.id }}">{% trans 'Publish' %}</a>
+							{% for language in app.secondary_languages %}
+								<a class="dropdown-item" href="{% url 'translate_template_content' app.uid template_content.id language %}">{% blocktrans %}Translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
+							{% endfor %}
+							<div class="dropdown-divider"></div>
+							{% if template_content.is_published %}
+								<a class="dropdown-item xhr" href="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Unpublish' %}</a>
+								<div class="dropdown-divider"></div>
+							{% endif %}
+						{% endif %}
+						<a class="dropdown-item xhr" href="{% url 'delete_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+					</div>
 				</div>
-			</div>
-
+			{% if not template_content.draft_template.template_exists %}
+				<div class="alert alert-danger mt-2">
+					{% trans 'Template files not found.' %}
+				</div>
+			{% endif %}
 		</div>
 	</div>
 
