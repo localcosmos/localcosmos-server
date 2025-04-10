@@ -14,6 +14,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
 from localcosmos_server.slugifier import create_unique_slug
+from localcosmos_server.utils import generate_md5
 
 from content_licencing.models import ContentLicenceRegistry
 
@@ -670,9 +671,11 @@ def get_image_store_path(instance, filename):
     md5 = instance.md5
 
     if not md5:
-        md5 = hashlib.md5(instance.source_image.read()).hexdigest()
+        md5 = generate_md5(instance.source_image)
+        #hashlib.md5(instance.source_image.read()).hexdigest()
         # this line is extremely required. do not delete it. otherwise the file will not be read correctly
-        instance.source_image.seek(0)
+        # this now done by generate_md5
+        #instance.source_image.seek(0)
 
     new_filename = '{0}{1}'.format(md5, ext)
     path = '/'.join(['localcosmos-server', 'imagestore', '{0}'.format(instance.uploaded_by.pk),
@@ -723,12 +726,16 @@ class ContentImageAbstract(models.Model):
     position = models.IntegerField(default=0)
     is_primary = models.BooleanField(default=False)
 
-    # only primary language
+    # caption, text below image
     text = models.CharField(max_length=355, null=True)
 
     # flag if a translation is needed
     requires_translation = models.BooleanField(
         default=False)  # not all images require a translation
+    
+    # SEO
+    title = models.CharField(max_length=355, null=True, blank=True)
+    alt_text = models.TextField(null=True, blank=True)
     
     
     def save(self, *args, **kwargs):
@@ -933,3 +940,32 @@ class ContentImageProcessing:
 class ServerContentImage(ContentImageProcessing, ContentImageAbstract):
 
     image_store = models.ForeignKey(ServerImageStore, on_delete=models.CASCADE)
+    
+
+'''--------------------------------------------------------------------------------------------------------------
+    SEO
+    - seo parameters for pages (not images)
+    - as it should be reusable for multiple models without modifying the database schema of those models
+      GenericRelation is used instead of ForeignKey
+--------------------------------------------------------------------------------------------------------------'''
+class SeoParametersAbstract(models.Model):
+
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    
+    title = models.CharField(max_length=355, null=True, blank=True)
+    meta_description = models.TextField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.title or 'SEO Parameters'} for {self.content_object}"
+    
+    class Meta:
+        unique_together = ('content_type', 'object_id')
+        verbose_name = "SEO Parameter"
+        verbose_name_plural = "SEO Parameters"
+        abstract = True
+
+
+class ServerSeoParameters(SeoParametersAbstract):
+    pass

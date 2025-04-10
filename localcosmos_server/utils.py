@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from datetime import datetime, timezone, timedelta
 
+import hashlib
 
 def get_domain_name(request):
     setup_domain_name = request.get_host().split(request.get_port())[0].split(':')[0]
@@ -79,3 +80,13 @@ def get_taxon_search_url(app, content=None):
         taxon_search_url = reverse('search_app_taxon', kwargs={'app_uid':app.uid})
 
     return taxon_search_url
+
+
+def generate_md5(file):
+    """Generate an MD5 hash for the given file."""
+    hash_func = hashlib.md5()
+    file.seek(0)  # Ensure the file pointer is at the beginning
+    while chunk := file.read(8192):  # Read the file in chunks
+        hash_func.update(chunk)
+    file.seek(0)  # Reset the file pointer for further use
+    return hash_func.hexdigest()
