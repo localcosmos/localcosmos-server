@@ -1,4 +1,4 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.urls import reverse
 from django import forms
 from django.contrib.contenttypes.models import ContentType
@@ -6,7 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from localcosmos_server.tests.common import test_settings
 from localcosmos_server.tests.mixins import WithUser
 
-from localcosmos_server.views import LogIn, LoggedOut
 from localcosmos_server.view_mixins import TaxonomicRestrictionMixin
 
 from localcosmos_server.models import TaxonomicRestriction
@@ -125,5 +124,3 @@ class TestTaxonomicRestrictionMixin(WithUser, TestCase):
         content_type = ContentType.objects.get_for_model(user)
         created_restriction = TaxonomicRestriction.objects.filter(content_type=content_type, object_id=user.id)
         self.assertFalse(created_restriction.exists())
-
-        

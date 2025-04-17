@@ -1,10 +1,11 @@
 from django.test import TestCase
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.forms import (LocalizeableForm, LocalizeableModelForm, EmailOrUsernameAuthenticationForm,
-                                      ManageContentImageFormCommon)
+                                      ManageContentImageFormCommon, SeoParametersForm)
 
-from localcosmos_server.models import LocalcosmosUser
+from localcosmos_server.models import LocalcosmosUser, ServerSeoParameters
 
 from content_licencing.mixins import LicencingFormMixin
 
@@ -344,9 +345,35 @@ class TestManageContentImageFormCommon(WithImageForForm, TestCase):
         self.assertFalse(form.is_valid())
 
 
-        
+class TestSeoParametersForm(WithUser, TestCase):
+    
+    form_class = SeoParametersForm
 
+    def test_clean(self):
         
+        language = 'en'
 
+        kwargs = {
+            'language' : language
+        }
 
-        
+        data = {
+            'title' : 'Test title',
+            'meta_description' : 'Test description',
+            'input_language' : 'en',
+        }
+
+        form = SeoParametersForm(data=data, **kwargs)
+
+        self.assertTrue(form.is_valid())
+
+        # test empty fields
+        data = {
+            'title' : '',
+            'meta_description' : '',
+            'input_language' : 'en',
+        }
+
+        form = SeoParametersForm(data=data, **kwargs)
+
+        self.assertTrue(form.is_valid())

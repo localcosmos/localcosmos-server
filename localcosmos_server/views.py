@@ -173,3 +173,4 @@ class DeleteServerContentImage(AjaxDeleteView):
         context['image_type'] = self.object.image_type
         context['content_instance'] = self.object.content
         return context
+    

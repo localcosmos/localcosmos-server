@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView, FormView
 
 from django.contrib.auth import get_user_model
@@ -10,7 +9,8 @@ User = get_user_model()
 from localcosmos_server.decorators import ajax_required
 from django.utils.decorators import method_decorator
 
-from localcosmos_server.models import AppUserRole
+from localcosmos_server.models import AppUserRole, ServerSeoParameters
+
 
 from localcosmos_server.datasets.models import DATASET_VALIDATION_DICT, Dataset
 
@@ -22,6 +22,8 @@ from .forms import AppUserRoleForm, SearchAppUserForm
 # middleware only grants acces to experts and admins
 # AdminOnly is done via Mixin
 from .view_mixins import AdminOnlyMixin, ExpertOnlyMixin
+from localcosmos_server.generic_views import ManageSeoParameters
+from localcosmos_server.view_mixins import AppMixin
 
 import json
 
@@ -154,3 +156,9 @@ class SearchAppUser(TemplateView):
 
         return HttpResponse(json.dumps(choices), content_type='application/json')
     
+
+class ManageServerSeoParameters(AdminOnlyMixin, AppMixin, ManageSeoParameters):
+    
+    template_name = 'app_admin/ajax/manage_seo_parameters.html'
+    
+    seo_model_class = ServerSeoParameters

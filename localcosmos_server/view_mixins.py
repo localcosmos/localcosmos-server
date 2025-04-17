@@ -200,8 +200,14 @@ class ContentImageViewMixin(LicencingFormViewMixin):
         self.content_image.is_primary = form.cleaned_data.get('is_primary', False)
 
         # there might be text
-        if form.cleaned_data.get('text', None):
-            self.content_image.text = form.cleaned_data['text']
+        caption = form.cleaned_data.get('text', None)
+        self.content_image.text = caption
+            
+        # SEO stuff
+        title = form.cleaned_data.get('title', None)
+        self.content_image.title = title
+        alt_text = form.cleaned_data.get('alt_text', None)
+        self.content_image.alt_text = alt_text
         
         self.content_image.save()
 
@@ -232,6 +238,8 @@ class ContentImageViewMixin(LicencingFormViewMixin):
             initial['source_image'] = self.content_image.image_store.source_image
             initial['image_type'] = self.content_image.image_type
             initial['text'] = self.content_image.text
+            initial['title'] = self.content_image.title
+            initial['alt_text'] = self.content_image.alt_text
             initial['requires_translation'] = self.content_image.requires_translation
             initial['is_primary'] = self.content_image.is_primary
 

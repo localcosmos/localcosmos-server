@@ -32,7 +32,6 @@ urlpatterns = [
         extra_context={'base_template': 'base.html'},
         template_name='localcosmos_server/registration/password_reset_complete.html'),
         name='password_reset_complete'),
-
     # password reset with app specific look
     path('<str:app_uid>/app-password-reset/', views.AppPasswordResetView.as_view(),
         name='app_password_reset'),
@@ -42,7 +41,6 @@ urlpatterns = [
         name='app_password_reset_done'),
     path('<str:app_uid>/app-password-reset/complete/', views.AppPasswordResetCompleteView.as_view(),
         name='app_password_reset_complete'),
-    
     # server content images
     path('manage-server-content-image/<int:content_type_id>/<int:object_id>/',
         views.ManageServerContentImage.as_view(), name='manage_server_content_image'),
@@ -54,10 +52,8 @@ urlpatterns = [
         views.DeleteServerContentImage.as_view(), name='delete_server_content_image'),
     # SETUP GUI
     path('', include('localcosmos_server.setup_urls')),
-    
     # SERVER CONTROL PANEL
     path('control-panel/', include('localcosmos_server.server_control_panel.urls', namespace='scp')),
-
     # LEGAL
     path('legal-notice/<str:app_uid>/', views.LegalNotice.as_view(), name='legal_notice'),
     path('privacy-statement/<str:app_uid>/', views.PrivacyStatement.as_view(), name='privacy_statement'),

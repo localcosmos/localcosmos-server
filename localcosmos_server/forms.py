@@ -1,8 +1,10 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 
 from .widgets import CropImageInput, ImageInputWithPreview
+
+from .models import ServerSeoParameters
 
 VALID_IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png']#, 'svg']
 from django.core.validators import FileExtensionValidator
@@ -297,8 +299,11 @@ class ManageContentImageWithTextForm(FormLocalizationMixin, ManageContentImageFo
 
     input_language = forms.CharField(widget=forms.HiddenInput)
 
-    text = forms.CharField(max_length=355, required=False, widget=forms.Textarea,
-                           help_text=_('Text that will be shown together with this image.'))
+    text = forms.CharField(max_length=355, required=False, widget=forms.Textarea, label=_('Caption'),
+                           help_text=_('Text that will be shown together with this image. This is also relevant for SEO.'))
+    
+    title = forms.CharField(max_length=255, required=False, help_text=_('Title of the image. This is relevant for SEO.'))
+    alt_text = forms.CharField(max_length=255, required=False, help_text=_('Alternative text of the image. This is only relevant for SEO.'))
 
     localizeable_fields = ['text']
     layoutable_simple_fields = ['text']
@@ -349,3 +354,13 @@ class OptionalContentImageForm(ManageContentImageFormCommon, OptionalLicencingFo
             
         
         return cleaned_data
+    
+    
+class SeoParametersForm(LocalizeableForm):
+
+    title = forms.CharField(max_length=255, required=False)
+    meta_description = forms.CharField(label=_('Description'), max_length=255, required=False)
+    
+    localizeable_fields = ['title', 'meta_description']
+        
+    

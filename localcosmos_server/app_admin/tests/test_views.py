@@ -1,11 +1,12 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
+from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.app_admin.views import (AdminHome, UserList, ManageAppUserRole, SearchAppUser,
-                                                HUMAN_INTERACTION_CLASSES)
+                                                HUMAN_INTERACTION_CLASSES, ManageServerSeoParameters)
 
 from localcosmos_server.tests.common import test_settings
-from localcosmos_server.tests.mixins import WithApp, WithUser, WithObservationForm
+from localcosmos_server.tests.mixins import WithApp, WithUser, WithObservationForm, ViewTestMixin
 
 from localcosmos_server.models import AppUserRole
 
@@ -376,3 +377,188 @@ class TestSearchAppUser(WithApp, WithUser, TestCase):
 
         content = json.loads(response.content)
         self.assertEqual(content[0]['name'], self.user.username)
+
+    
+class TestManageServerSeoParameters(WithApp, WithUser, ViewTestMixin, TestCase):
+    
+    url_name = 'appadmin:manage_server_seo_parameters'
+    view_class = ManageServerSeoParameters
+    
+    ajax = True
+    
+    def setUp(self):
+        self.superuser = self.create_superuser()
+        self.user = self.create_user()
+        
+        self.content_type = ContentType.objects.get_for_model(self.user)
+        self.object = self.user
+        super().setUp()
+        
+    
+    def get_url_kwargs(self):
+        
+        url_kwargs = {
+            'app_uid' : self.app.uid,
+            'content_type_id' : self.content_type.id,
+            'object_id' : self.object.id,
+        }
+        
+        return url_kwargs
+    
+    
+    def get_view(self):
+        view = super().get_view()
+        view.app = self.app
+        return view
+    
+    @test_settings
+    def test_set_instances(self):
+        view = self.get_view()
+        view.set_instances(**self.get_url_kwargs())
+        self.assertEqual(view.content_type, self.content_type)
+        self.assertEqual(view.object_id, self.object.id)
+        self.assertEqual(view.instance, self.object)
+        self.assertEqual(view.model_class, self.content_type.model_class())
+        self.assertEqual(view.seo_parameters, None)
+        
+        
+    @test_settings
+    def test_get_initial(self):
+        view = self.get_view()
+        view.set_instances(**self.get_url_kwargs())
+        initial = view.get_initial()
+        
+        self.assertEqual(initial, {})
+        
+        # Test with existing SEO parameters
+        seo_parameters = ManageServerSeoParameters.seo_model_class(
+            content_type=self.content_type,
+            object_id=self.object.id,
+            title='Test Title',
+            meta_description='Test Description'
+        )
+        seo_parameters.save()
+        
+        view.seo_parameters = seo_parameters
+        initial = view.get_initial()
+        
+        self.assertEqual(initial, {'title': 'Test Title', 'meta_description': 'Test Description'})
+        
+    @test_settings
+    def test_get_context_data(self):
+        view = self.get_view()
+        view.set_instances(**self.get_url_kwargs())
+        context = view.get_context_data()
+        
+        self.assertEqual(context['content_type'], self.content_type)
+        self.assertEqual(context['app'], self.app)
+        self.assertEqual(context['instance'], self.object)
+        self.assertEqual(context['seo_parameters'], None)
+        self.assertEqual(context['success'], False)
+        
+        # Test with existing SEO parameters
+        seo_parameters = ManageServerSeoParameters.seo_model_class(
+            content_type=self.content_type,
+            object_id=self.object.id,
+            title='Test Title',
+            meta_description='Test Description'
+        )
+        seo_parameters.save()
+        
+        view.seo_parameters = seo_parameters
+        context = view.get_context_data()
+        
+        self.assertEqual(context['instance'], self.object)
+        self.assertEqual(context['seo_parameters'], seo_parameters)
+        
+    @test_settings
+    def test_form_valid(self):
+        view = self.get_view()
+        view.set_instances(**self.get_url_kwargs())
+        
+        form_data = {
+            'title': 'Test Title',
+            'meta_description': 'Test Description'
+        }
+        
+        form = ManageServerSeoParameters.form_class(form_data)
+        form.is_valid()
+        
+        response = view.form_valid(form)
+        
+        self.assertEqual(response.status_code, 200)
+        
+        # Check if the SEO parameters were created/updated
+        seo_parameters = ManageServerSeoParameters.seo_model_class.objects.get(
+            content_type=self.content_type,
+            object_id=self.object.id
+        )
+        
+        self.assertEqual(seo_parameters.title, 'Test Title')
+        self.assertEqual(seo_parameters.meta_description, 'Test Description')
+
+    
+    @test_settings
+    def test_create_update_delete(self):
+
+        user_content_type = ContentType.objects.get_for_model(self.user)
+        
+        view = self.get_view()
+        view.set_instances(**view.kwargs)
+        
+        kwargs = {
+            'language' : 'en'
+        }
+        
+        post_data = {
+            'title' : 'Test title',
+            'meta_description' : 'Test description',
+            'input_language' : 'en',
+        }
+        
+        form = view.form_class(data=post_data, **kwargs)
+        
+        form.is_valid()
+        
+        self.assertEqual(form.errors, {})
+        
+        # create
+        seo_instance = view.create_update_delete(form.cleaned_data)
+        self.assertEqual(seo_instance.title, post_data['title'])
+        self.assertEqual(seo_instance.meta_description, post_data['meta_description'])
+        self.assertEqual(seo_instance.object_id, self.user.id)
+        self.assertEqual(seo_instance.content_type, user_content_type)
+        
+        # update
+        post_data['title'] = 'Updated title'
+        post_data['meta_description'] = 'Updated description'
+        form = view.form_class(data=post_data, **kwargs)
+        form.is_valid()
+        
+        self.assertEqual(form.errors, {})
+        
+        updated_seo_instance = view.create_update_delete(form.cleaned_data)
+        
+        self.assertEqual(updated_seo_instance.title, post_data['title'])
+        self.assertEqual(updated_seo_instance.meta_description, post_data['meta_description'])
+        self.assertEqual(updated_seo_instance.object_id, self.user.id)
+        self.assertEqual(updated_seo_instance.content_type, user_content_type)
+        self.assertEqual(updated_seo_instance.pk, seo_instance.pk)
+        
+        # delete
+        post_data = {
+            'input_language' : 'en',
+        }
+        
+        form = view.form_class(data=post_data, **kwargs)
+        form.is_valid()
+        
+        self.assertEqual(form.errors, {})
+        
+        deleted_seo_instance = view.create_update_delete(form.cleaned_data)
+        self.assertEqual(deleted_seo_instance, None)
+        exists = ManageServerSeoParameters.seo_model_class.objects.filter(
+            content_type=user_content_type,
+            object_id=self.user.id
+        ).exists()
+        self.assertFalse(exists)
