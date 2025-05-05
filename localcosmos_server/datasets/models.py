@@ -379,6 +379,11 @@ class Dataset(ModelWithTaxon):
 
         if created == True:
             self.validate()
+            
+            
+    def get_app(self):
+        app = App.objects.filter(uuid=self.app_uuid).first()
+        return app
      
 
     def __str__(self):
@@ -389,6 +394,7 @@ class Dataset(ModelWithTaxon):
 
     class Meta:
         ordering = ['-pk']
+        verbose_name = _('Dataset')
 
 
 
@@ -423,6 +429,7 @@ class DatasetValidationRoutine(ModelWithTaxon):
     class Meta:
         unique_together = ('app', 'validation_class')
         ordering = ['position']
+        verbose_name = _('Dataset Validation Routine')
 
 
 

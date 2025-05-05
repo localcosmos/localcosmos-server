@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.urls import reverse
-from django.contrib.contenttypes.models import ContentType
 
 from datetime import datetime, timezone, timedelta
 
@@ -90,3 +89,47 @@ def generate_md5(file):
         hash_func.update(chunk)
     file.seek(0)  # Reset the file pointer for further use
     return hash_func.hexdigest()
+
+
+def get_subclasses(cls):
+    result = []
+    classes_to_inspect = [cls]
+    
+    while classes_to_inspect:
+        class_to_inspect = classes_to_inspect.pop()
+        
+        for subclass in class_to_inspect.__subclasses__():
+
+            if subclass._meta.abstract == True:
+                classes_to_inspect.append(subclass)
+                
+            elif subclass not in result:
+                result.append(subclass)
+                classes_to_inspect.append(subclass)
+                
+    return result
+
+
+'''
+    given a model instance, check which app it belongs to
+    - ModelWithRequiredTaxon
+        - TaxonomicRestriction
+            - TemplateContent
+            - DatasetValidationRoutine
+    - ModelWithTaxon
+        - Dataset
+        - DatasetValidationRoutine
+        - ServerImageStore
+'''
+def get_content_instance_app(instance):
+    
+    if instance.__class__.__name__ == 'DatasetValidationRoutine':
+        return instance.app
+    elif instance.__class__.__name__ == 'Dataset':
+        return instance.get_app()
+    elif instance.__class__.__name__ == 'TemplateContent':
+        return instance.app
+    
+    else:
+        # raise error
+        raise NotImplementedError(f'get_generic_content_app not implemented for {instance.__class__.__name__}')

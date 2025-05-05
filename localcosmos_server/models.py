@@ -14,7 +14,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 
 from localcosmos_server.slugifier import create_unique_slug
-from localcosmos_server.utils import generate_md5
+from localcosmos_server.utils import generate_md5, get_content_instance_app
 
 from content_licencing.models import ContentLicenceRegistry
 
@@ -704,7 +704,6 @@ class ImageStoreAbstract(ModelWithTaxon):
 class ServerImageStore(ImageStoreAbstract):
     
     source_image = models.ImageField(upload_to=get_image_store_path)
-
 
 
 class ContentImageAbstract(models.Model):
