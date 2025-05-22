@@ -272,6 +272,17 @@ class ManageLocalizedTemplateContent(ManageTemplateContentCommon, AppMixin, With
     def dispatch(self, request, *args, **kwargs):
         self.set_template_content(**kwargs)    
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_in_app_url(self):
+        app_settings = self.app.get_settings()
+        url_pattern = app_settings['templateContent']['urlPattern']
+        url = url_pattern.replace('{slug}', self.localized_template_content.slug).replace('{templateName}', self.template_content.draft_template_name)
+        return url
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['url_in_app'] = self.get_in_app_url()
+        return context
 
     def form_valid(self, form):
         
