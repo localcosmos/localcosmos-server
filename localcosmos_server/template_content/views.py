@@ -307,12 +307,12 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
 
 
     def get_initial(self):
-        initial = super().get_initial()
+        # do not use super() because it would add contents of localized_template_content to initial
+        initial = {}
         if self.component:
             initial['uuid'] = self.component['uuid']
         else:
             initial['uuid'] = uuid.uuid4()
-
         return initial
 
 

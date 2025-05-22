@@ -489,7 +489,6 @@ class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
         if self.localized_template_content:
             self.set_form_fields()
 
-
     def set_template_definition(self):
         self.template_definition = self.template_content.draft_template.definition
 
@@ -540,7 +539,6 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
         self.content_key = content_key
         self.component = component
         
-        kwargs['auto_id'] = 'id_{0}_%s'.format(content_key)
         super().__init__(app, template_content, localized_template_content, *args, **kwargs)
 
         self.fields.pop('draft_title')
@@ -558,6 +556,11 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
         component_uuid = self.initial['uuid']
         return ComponentFormFieldManager(self.app, self.template_content, self.localized_template_content, self.content_key,
                                         component_uuid, self.component)
+        
+    def add_prefix(self, field_name):
+        # look up field name; return original if not found
+        field_name = '{0}_{1}'.format(self.content_key, field_name)
+        return super().add_prefix(field_name)
 
 
 
