@@ -25,5 +25,9 @@ def get_preview_text(component_template, instance):
 
         if isinstance(preview_text, dict):
             preview_text = preview_text.get('title', None)
+            
+    if not preview_text:
+        preview_text = component_template.definition['templateName']
+
     
     return preview_text

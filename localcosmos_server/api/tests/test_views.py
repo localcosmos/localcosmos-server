@@ -861,3 +861,70 @@ class TestContactUser(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         authed_response = authed_client.post(url, post_data, format='json')
         
         self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+
+
+class TestTaxonProfileDetail(GetJWTokenMixin, WithUser, WithApp, APITestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        su = self.create_superuser()
+        self.authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+        self.test_pk = 1
+        self.test_taxon = {
+            "taxon_source": "taxonomy.sources.col",
+            "name_uuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4"
+        }
+        
+        self.app.url = 'http://testserver'
+        self.app.save()
+
+    @test_settings
+    def test_get_taxon_profile_detail_404(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'pk': 9999  # Nonexistent pk
+        }
+        url = reverse('api_taxon_profile', kwargs=url_kwargs)
+        response = self.authed_client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @test_settings
+    def test_get_taxon_profile_detail_success(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+            'pk': self.test_pk
+        }
+        url = reverse('api_taxon_profile', kwargs=url_kwargs)
+        response = self.authed_client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['nameUuid'], self.test_taxon['name_uuid'])
+
+
+class TestTaxonProfileList(GetJWTokenMixin, WithUser, WithApp, APITestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        su = self.create_superuser()
+        self.authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+        self.app.url = 'http://testserver'
+        self.app.save()
+
+    @test_settings
+    def test_get_taxon_profile_list_success(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+        }
+        url = reverse('api_taxon_profile_list', kwargs=url_kwargs)
+        response = self.authed_client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('results', response.data)
+        self.assertIsInstance(response.data['results'], list)
+        # Optionally check for expected fields in the first result if any exist
+        if response.data['results']:
+            first_profile = response.data['results'][0]
+            self.assertIn('nameUuid', first_profile)
+            self.assertIn('taxonLatname', first_profile)
+

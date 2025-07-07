@@ -43,6 +43,8 @@ class TemplateContentList(AppMixin, TemplateView):
         localized_template_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
             template_content__template_type='page', language=self.app.primary_language, template_content__assignment=None).order_by('pk')
         
+        found_template_content_ids = localized_template_contents.values_list('template_content__pk', flat=True)
+        
         context['localized_template_contents'] = localized_template_contents
 
         navigations = Navigation.objects.filter(app=self.app)
@@ -52,6 +54,7 @@ class TemplateContentList(AppMixin, TemplateView):
         
         # offline contents are always manged within the app kit
         if settings.LOCALCOSMOS_PRIVATE == False:
+                        
             app_settings = self.app.get_settings()
             
             if 'templateContent' in app_settings:
@@ -63,6 +66,9 @@ class TemplateContentList(AppMixin, TemplateView):
 
                     template_content = TemplateContent.objects.filter(app=self.app, template_type=template_type,
                         assignment=assignment).first()
+                    
+                    if template_content:
+                        found_template_content_ids.append(template_content.pk)
 
                     content = {
                         'assignment': assignment,
@@ -71,8 +77,15 @@ class TemplateContentList(AppMixin, TemplateView):
                     }
 
                     required_offline_contents.append(content)
+            
         
         context['required_offline_contents'] = required_offline_contents
+
+        # unsupported template contents
+        unsupported_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app, template_content__template_type='page',
+            language=self.app.primary_language).exclude(template_content__pk__in=found_template_content_ids).order_by('pk')
+            
+        context['unsupported_contents'] = unsupported_contents
 
         return context
 

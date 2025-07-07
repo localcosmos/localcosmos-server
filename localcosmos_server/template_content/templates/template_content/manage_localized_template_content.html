@@ -55,7 +55,7 @@
 		<div class="row my-3">
 			<div class="col-12 text-muted">
 				{% if localized_template_content %}
-					<strong>{% trans 'Template' %}: </strong>{{ localized_template_content.template_content.template.name }}<br>
+					<strong>{% trans 'Template' %}: </strong>{{ localized_template_content.template_content.draft_template.name }}<br>
 					<strong>{% trans 'Slug' %}:</strong> {{ localized_template_content.slug }} <br>
 					<strong>{% trans 'URL in App' %}:</strong> {{ url_in_app}}
 				{% endif %}

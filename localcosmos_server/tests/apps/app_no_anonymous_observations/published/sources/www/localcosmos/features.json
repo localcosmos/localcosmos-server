@@ -117,7 +117,11 @@
         "globalOptions": {},
         "files": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca",
         "registry": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/registry.json",
-        "search": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/search.json"
+        "search": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/search.json",
+        "localizedFiles": {
+            "de": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/de"
+        },
+        "idToTaxonMap": "/localcosmos/features/TaxonProfiles/244e0745-20b8-4223-badf-6cb4da13d3ca/id_to_taxon_map.json"
     },
     "TemplateContent": {
         "uuid": "c0c9f26f-5209-4914-8ad3-ee19533e33d6",

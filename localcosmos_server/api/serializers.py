@@ -10,7 +10,7 @@ from localcosmos_server.models import ServerImageStore, ServerContentImage
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-import hashlib, json
+import hashlib, json, os
 
 class TokenObtainPairSerializerWithClientID(TokenObtainPairSerializer):
 
@@ -205,3 +205,174 @@ class ContactUserSerializer(serializers.Serializer):
     
     subject = serializers.CharField()
     message = serializers.CharField(min_length=10)
+    
+
+#################################################################################################
+#
+# Taxon Profile Serializers
+#
+#################################################################################################
+
+class ImageUrlSerializer(serializers.Serializer):
+    _1x = serializers.CharField(source='1x', read_only=True)
+    _2x = serializers.CharField(source='2x', read_only=True)
+    _4x = serializers.CharField(source='4x', read_only=True)
+    
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+        self.app_url = None
+        if self.app:
+            self.app_url = app.get_url()
+
+    def to_representation(self, instance):
+        data = instance.copy()
+        if self.app_url:
+            for image_size, url in data.items():
+                if url:
+                    absolute_url = os.path.join(self.app_url, url.lstrip('/'))
+                    data[image_size] = absolute_url
+        else:
+            # error
+            raise ValueError("App url is not set. Cannot resolve image URLs.")
+        return data
+
+class LicenceSerializer(serializers.Serializer):
+    licence = serializers.CharField(allow_null=True, required=False)
+    licenceVersion = serializers.CharField(allow_null=True, required=False)
+    creatorName = serializers.CharField(allow_null=True, required=False)
+    creatorLink = serializers.CharField(allow_null=True, required=False)
+    sourceLink = serializers.CharField(allow_null=True, required=False)
+
+class ImageSerializer(serializers.Serializer):
+    text = serializers.CharField(allow_null=True, required=False, read_only=True)
+    alt_text = serializers.CharField(allow_null=True, required=False, read_only=True)
+    title = serializers.CharField(allow_null=True, required=False, read_only=True)
+    imageUrl = ImageUrlSerializer(read_only=True)
+    licence = LicenceSerializer(read_only=True)
+
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+        
+    def get_licence(self, instance):
+        
+        registry = self.app.get_licence_registry()
+        
+        licence = None
+        
+        if registry:
+            licences = registry['licences']
+            licence = licences.get(instance['imageUrl']['1x'], None)
+            
+        if not licence:
+            raise ValueError("Licence not found for the image URL: {}".format(instance['imageUrl']['1x']))
+        
+        return licence
+
+    def to_representation(self, instance):
+        data = instance.copy()  # Create a copy of the instance to avoid modifying it directly
+        data['imageUrl'] = ImageUrlSerializer(instance['imageUrl'], app=self.app).data
+        data['licence'] = self.get_licence(instance)
+        return data
+
+class TextSerializer(serializers.Serializer):
+    taxonTextType = serializers.CharField(read_only=True)
+    shortText = serializers.CharField(allow_null=True, required=False, read_only=True)
+    shortTextKey = serializers.CharField(allow_null=True, required=False, read_only=True)
+    longText = serializers.CharField(allow_null=True, required=False, read_only=True)
+    longTextKey = serializers.CharField(allow_null=True, required=False, read_only=True)
+    
+class CategorizedTextSerializer(serializers.Serializer):
+    category = serializers.CharField(read_only=True)
+    texts = TextSerializer(many=True, read_only=True)
+    
+class ImagesSerializer(serializers.Serializer):
+    primary = ImageSerializer(read_only=True)
+    taxonProfileImages = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
+    nodeImages = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
+    taxonImages = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
+
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+
+    def to_representation(self, instance):
+        data = {}
+        if instance.get('primary'):
+            data['primary'] = ImageSerializer(instance['primary'], app=self.app).data
+        else:
+            data['primary'] = None
+
+        for field in ['taxonProfileImages', 'nodeImages', 'taxonImages']:
+            images = instance.get(field, [])
+            data[field] = [ImageSerializer(img, app=self.app).data for img in images]
+        return data
+
+class SynonymSerializer(serializers.Serializer):
+    taxonLatname = serializers.CharField(read_only=True)
+    taxonAuthor = serializers.CharField(read_only=True)
+    
+class SeoSerializer(serializers.Serializer):
+    title = serializers.CharField(allow_null=True, required=False, read_only=True)
+    meta_description = serializers.CharField(allow_null=True, required=False, read_only=True)
+
+class TaxonProfileSerializer(serializers.Serializer):
+    taxonLatname = serializers.CharField(read_only=True)
+    taxonAuthor = serializers.CharField(read_only=True)
+    taxonSource = serializers.CharField(read_only=True)
+    nameUuid = serializers.CharField(read_only=True)
+    taxonNuid = serializers.CharField(read_only=True)
+    gbifNubkey = serializers.IntegerField(read_only=True, allow_null=True)
+    image = ImageSerializer(read_only=True)
+    shortProfile = serializers.CharField(allow_null=True, required=False, read_only=True)
+    taxonProfileId = serializers.IntegerField(read_only=True)
+    vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
+    allVernacularNames = serializers.DictField(child=serializers.ListField(child=serializers.CharField(read_only=True), read_only=True), read_only=True)
+    texts = TextSerializer(many=True, read_only=True)
+    categorized_texts = CategorizedTextSerializer(many=True, read_only=True)
+    images = ImagesSerializer(read_only=True)
+    synonyms = SynonymSerializer(many=True, read_only=True)
+    tags = serializers.ListField(child=serializers.CharField(read_only=True), required=False, read_only=True)
+    seo = SeoSerializer(read_only=True)
+    is_featured = serializers.BooleanField(read_only=True)
+
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+
+    def to_representation(self, instance):
+        
+        if not self.app:
+            raise ValueError("App instance is required for TaxonProfileSerializer.")
+        
+        image = None
+        if instance.get('image'):
+            image = ImageSerializer(instance['image'], app=self.app).data
+            
+        images = None
+        if instance.get('images'):
+            images = ImagesSerializer(instance['images'], app=self.app).data
+
+        data = {
+            'taxonLatname': instance['taxonLatname'],
+            'taxonAuthor': instance['taxonAuthor'],
+            'taxonSource': instance['taxonSource'],
+            'nameUuid': instance['nameUuid'],
+            'taxonNuid': instance['taxonNuid'],
+            'gbifNubkey': instance.get('gbifNubkey', None),
+            'image': image,
+            'shortProfile': instance['shortProfile'],
+            'taxonProfileId': instance['taxonProfileId'],
+            'vernacular': instance['vernacular'],
+            'allVernacularNames': instance['allVernacularNames'],
+            'texts': instance['texts'],
+            'categorized_texts': instance['categorizedTexts'],
+            'images': images,
+            'synonyms': instance['synonyms'],
+            'tags': instance['tags'],
+            'seo': instance['seo'],
+            'is_featured': instance['is_featured'],
+        }
+
+        return data

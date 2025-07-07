@@ -140,7 +140,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                     else:
                         component_template = primary_locale_template_content.template_content.get_published_component_template(
                             component_key)
-
+                    
                     component_definition = component_template.definition
 
                     # one or more components?

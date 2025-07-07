@@ -1,4 +1,4 @@
-import os, json, localcosmos_server
+import os, json
 from localcosmos_server.tests.common import DataCreator
 
 observation_form_json_path = os.path.join(os.path.dirname(__file__), 'example_files/observation_form.json')

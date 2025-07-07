@@ -4,6 +4,7 @@
     "taxonAuthor": "Mill.",
     "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
     "taxonNuid": "006008007001005001001",
+    "shortProfile": null,
     "taxonProfileId": 1,
     "vernacular": {
         "de": "Weisstanne"
@@ -43,9 +44,9 @@
                         "spaceIdentifier": "36e6e035-c37c-4e8c-98c8-5ddbf189f200:111",
                         "encodedSpace": "<p>Lorem ipsum dolor sit amet</p>",
                         "imageUrl": {
-                            "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
-                            "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
-                            "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
+                            "1x": "/localcosmos/user_content/content_images/image-289-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-289-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-289-1000.webp"
                         },
                         "secondaryImageUrl": null
                     }
@@ -154,9 +155,9 @@
                         "spaceIdentifier": "b6fd0d1f-c2f2-4058-b1bb-24c2ff530e78:103",
                         "encodedSpace": "nebeneinander",
                         "imageUrl": {
-                            "1x": "/localcosmos/user_content/content_images/image-267-250.webp",
-                            "2x": "/localcosmos/user_content/content_images/image-267-500.webp",
-                            "4x": "/localcosmos/user_content/content_images/image-267-1000.webp"
+                            "1x": "/localcosmos/user_content/content_images/image-299-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-299-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-299-1000.webp"
                         },
                         "secondaryImageUrl": null
                     }
@@ -181,9 +182,9 @@
                         "spaceIdentifier": "33818dbe-99be-4912-bf8e-e05616951fa1:101",
                         "encodedSpace": "abgerundet, nicht stechend",
                         "imageUrl": {
-                            "1x": "/localcosmos/user_content/content_images/image-265-250.webp",
-                            "2x": "/localcosmos/user_content/content_images/image-265-500.webp",
-                            "4x": "/localcosmos/user_content/content_images/image-265-1000.webp"
+                            "1x": "/localcosmos/user_content/content_images/image-285-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-285-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-285-1000.webp"
                         },
                         "secondaryImageUrl": null
                     }
@@ -208,9 +209,9 @@
                         "spaceIdentifier": "34d6dabc-91d2-4b0e-ac11-fc7ff0847863:102",
                         "encodedSpace": "aufrecht stehend",
                         "imageUrl": {
-                            "1x": "/localcosmos/user_content/content_images/image-266-250.webp",
-                            "2x": "/localcosmos/user_content/content_images/image-266-500.webp",
-                            "4x": "/localcosmos/user_content/content_images/image-266-1000.webp"
+                            "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
                         },
                         "secondaryImageUrl": null
                     }
@@ -235,9 +236,9 @@
                         "spaceIdentifier": "3a27fa01-c769-4f10-8e39-9d0d0effca03:99",
                         "encodedSpace": "glatt, im Alter schuppig",
                         "imageUrl": {
-                            "1x": "/localcosmos/user_content/content_images/image-263-250.webp",
-                            "2x": "/localcosmos/user_content/content_images/image-263-500.webp",
-                            "4x": "/localcosmos/user_content/content_images/image-263-1000.webp"
+                            "1x": "/localcosmos/user_content/content_images/image-286-250.webp",
+                            "2x": "/localcosmos/user_content/content_images/image-286-500.webp",
+                            "4x": "/localcosmos/user_content/content_images/image-286-1000.webp"
                         },
                         "secondaryImageUrl": null
                     }
@@ -269,14 +270,15 @@
             "longTextKey": null
         }
     ],
+    "categorizedTexts": {},
     "images": {
         "taxonProfileImages": [
             {
                 "text": null,
                 "imageUrl": {
-                    "1x": "/localcosmos/user_content/content_images/image-299-250.webp",
-                    "2x": "/localcosmos/user_content/content_images/image-299-500.webp",
-                    "4x": "/localcosmos/user_content/content_images/image-299-1000.webp"
+                    "1x": "/localcosmos/user_content/content_images/image-227-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-227-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-227-1000.webp"
                 }
             }
         ],
@@ -284,9 +286,9 @@
             {
                 "text": null,
                 "imageUrl": {
-                    "1x": "/localcosmos/user_content/content_images/image-257-250.webp",
-                    "2x": "/localcosmos/user_content/content_images/image-257-500.webp",
-                    "4x": "/localcosmos/user_content/content_images/image-257-1000.webp"
+                    "1x": "/localcosmos/user_content/content_images/image-226-250.webp",
+                    "2x": "/localcosmos/user_content/content_images/image-226-500.webp",
+                    "4x": "/localcosmos/user_content/content_images/image-226-1000.webp"
                 }
             }
         ],
@@ -393,5 +395,10 @@
     ],
     "tags": [
         "neobiota"
-    ]
+    ],
+    "seo": {
+        "title": null,
+        "meta_description": null
+    },
+    "is_featured": false
 }

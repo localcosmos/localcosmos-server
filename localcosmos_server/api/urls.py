@@ -28,6 +28,9 @@ urlpatterns = [
         name='api_server_content_image'),
     path('<uuid:app_uuid>/content-image/<int:pk>/', views.ManageServerContentImage.as_view(),
         name='api_server_content_image'),
+    # taxon profiles
+    path('<uuid:app_uuid>/taxon-profile/<int:pk>/', views.TaxonProfileDetail.as_view(), name='api_taxon_profile'),
+    path('<uuid:app_uuid>/taxon-profiles/', views.TaxonProfileList.as_view(), name='api_taxon_profile_list'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])

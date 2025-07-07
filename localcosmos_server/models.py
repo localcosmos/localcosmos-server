@@ -421,6 +421,24 @@ class App(models.Model):
             app_settings = json.loads(settings_file.read())
 
         return app_settings
+    
+    
+    def get_licence_registry(self, app_state='preview'):
+        
+        if settings.LOCALCOSMOS_PRIVATE == True:
+            app_state = 'published'
+
+        if app_state == 'published':
+            root = self.get_installed_app_path(app_state)
+            
+            registry_json_path = os.path.join(root, 'localcosmos/licence_registry.json')
+
+            with open(registry_json_path, 'r') as registry_file:
+                app_settings = json.loads(registry_file.read())
+
+            return app_settings
+
+        return {}
 
 
     # read app features from disk, only published apps

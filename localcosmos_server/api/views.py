@@ -27,10 +27,12 @@ from rest_framework import status
 
 from localcosmos_server.models import App, ServerContentImage, LocalcosmosUser
 
+from localcosmos_server.taxonomy.lazy import LazyAppTaxon
+
 
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
                             TokenObtainPairSerializerWithClientID, ServerContentImageSerializer,
-                            LocalcosmosPublicUserSerializer, ContactUserSerializer)
+                            LocalcosmosPublicUserSerializer, ContactUserSerializer, TaxonProfileSerializer)
 
 from .permissions import OwnerOnly, AppMustExist, ServerContentImageOwnerOrReadOnly
 
@@ -42,8 +44,14 @@ from localcosmos_server.models import UserClients
 from djangorestframework_camel_case.parser import CamelCaseJSONParser, CamelCaseMultiPartParser
 from djangorestframework_camel_case.render import CamelCaseJSONRenderer, CamelCaseBrowsableAPIRenderer
 
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, inline_serializer, extend_schema_view, OpenApiExample, OpenApiParameter
 
+
+from .examples import get_taxon_profile_example
+
+import os
+import json
 
 SERVER_CONTENT_IMAGE_MODEL_MAP = {
     'LocalcosmosUser': LocalcosmosUser
@@ -450,6 +458,202 @@ class AppAPIHome(APIView):
         }
         return Response(context)
 
+###################################################################################################################
+#
+#   Taxon Profile API ENDPOINTS
+#   - app specific
+#   - authenticatoin required
+#   - taxon profiles are read from json files in the app's data directory
+####################################################################################################################
+class AppAPIViewMixin:
+    
+    def get_on_disk_path(self, relative_path):
+        """
+        Returns the absolute path to a file or directory within the app's root directory.
+        """
+        if not hasattr(self, 'app_root'):
+            raise ValueError("App root is not set. Call load_app() first.")
+        return os.path.join(self.app_root, relative_path.lstrip('/'))
+    
+    def load_app(self, app_uuid):
+        try:
+            app = App.objects.get(uuid=app_uuid)
+        except App.DoesNotExist:
+            raise Http404(_('App not found.'))
+
+        self.app = app
+        self.app_settings = app.get_settings('published')
+        self.app_features = app.get_features('published')
+        self.app_root = app.get_installed_app_path('published')
+    
+    def dispatch(self, request, *args, **kwargs):
+        app_uuid = kwargs.get('app_uuid')
+        if not app_uuid:
+            raise Http404(_('App UUID is required.'))
+        self.load_app(app_uuid)
+        self.request_language = request.GET.get('language', self.app.primary_language)
+        response = super().dispatch(request, *args, **kwargs)
+        return response
+
+
+class TaxonProfilesAPIViewMixin(AppAPIViewMixin):
+    
+    def get_id_to_taxon_map(self):
+        
+        taxon_profiles_feature = self.app_features['TaxonProfiles']
+        id_to_taxon_map_relative_path = taxon_profiles_feature['idToTaxonMap']
+        id_to_taxon_map_path = self.get_on_disk_path(id_to_taxon_map_relative_path)
+
+        with open(id_to_taxon_map_path, 'r') as f:
+            id_to_taxon_map = json.load(f)
+            
+        return id_to_taxon_map
+    
+    def get_app_taxon_profile_json_from_taxon(self, lazy_taxon):
+        
+        taxon_profiles_feature = self.app_features['TaxonProfiles']
+        localized_files = taxon_profiles_feature['localizedFiles']
+        
+        localized_folder = localized_files.get(self.request_language)
+        if localized_folder:
+            localized_folder_path = self.get_on_disk_path(localized_folder)
+            taxon_profiles_json_path = os.path.join(localized_folder_path, lazy_taxon.taxon_source, '{0}.json'.format(lazy_taxon.name_uuid))
+            
+            if os.path.isfile(taxon_profiles_json_path):
+                try:
+                    with open(taxon_profiles_json_path, 'r') as f:
+                        taxon_profile = json.load(f)
+                    return taxon_profile
+                except FileNotFoundError:
+                    return None
+                except json.JSONDecodeError:
+                    return None
+        return None
+
+    def get_app_taxon_profile_from_id(self, pk):
+        
+        id_to_taxon_map = self.get_id_to_taxon_map()
+        
+        taxon = id_to_taxon_map.get(str(pk))
+        if not taxon:
+            return None
+        
+        lazy_taxon = LazyAppTaxon(**taxon)
+        
+        taxon_profile = self.get_app_taxon_profile_json_from_taxon(lazy_taxon)
+        
+        if taxon_profile is None:
+            return None
+        
+        return taxon_profile
+
+
+@extend_schema_view(
+    get=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name='page',
+                type=int,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description='Page number (starts at 1)'
+            ),
+            OpenApiParameter(
+                name='page_size',
+                type=int,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description='Number of items per page (default 20, max 50)'
+            ),
+        ],
+        responses=TaxonProfileSerializer,
+        examples=[
+            OpenApiExample(
+                'Taxon Profile List',
+                description='A paginated list of taxon profiles',
+                value={
+                    'count': 1,
+                    'page': 1,
+                    'page_size': 20,
+                    'results': [get_taxon_profile_example()]
+                }
+            )
+        ]
+    )
+)
+class TaxonProfileList(TaxonProfilesAPIViewMixin, APIView):
+    permission_classes = (AppMustExist,)
+    serializer_class = TaxonProfileSerializer
+    
+    DEFAULT_PAGE_SIZE = 20
+    MAX_PAGE_SIZE = 50
+
+    def get(self, request, *args, **kwargs):
+        
+        id_to_taxon_map = self.get_id_to_taxon_map()
+        
+        # sort the dictionary by key
+        sorted_taxa = sorted(id_to_taxon_map.items(), key=lambda item: item[0])
+        
+        sorted_taxon_profile_ids = [t[0] for t in sorted_taxa]
+        
+        # Pagination logic
+        try:
+            page_size = int(request.GET.get('page_size', self.DEFAULT_PAGE_SIZE))
+        except ValueError:
+            page_size = self.DEFAULT_PAGE_SIZE
+        page_size = min(page_size, self.MAX_PAGE_SIZE)
+
+        try:
+            page = int(request.GET.get('page', 1))
+        except ValueError:
+            page = 1
+        page = max(page, 1)
+        
+        # get the id batch according to the page
+        start_index = (page - 1) * page_size
+        end_index = start_index + page_size
+        paged_taxon_profile_ids = sorted_taxon_profile_ids[start_index:end_index]
+        
+        taxon_profiles = []
+        for taxon_profile_id in paged_taxon_profile_ids:
+            taxon_profile = self.get_app_taxon_profile_from_id(taxon_profile_id)
+            if taxon_profile is not None:
+                serializer = self.serializer_class(taxon_profile, app=self.app)
+                taxon_profiles.append(serializer.data)
+
+        response_data = {
+            'count': len(taxon_profiles),
+            'page': page,
+            'page_size': page_size,
+            'results': taxon_profiles,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+
+
+@extend_schema_view(
+    get=extend_schema(
+        responses = TaxonProfileSerializer,
+        examples = [
+            OpenApiExample(
+                'Taxon Profile',
+                description='taxon profile example',
+                value=get_taxon_profile_example(),
+            )
+        ]
+    )
+)
+class TaxonProfileDetail(TaxonProfilesAPIViewMixin, APIView):
+    permission_classes = (AppMustExist,)
+    serializer_class = TaxonProfileSerializer
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs['pk']
+        profile = self.get_app_taxon_profile_from_id(pk)
+        if profile is None:
+            return Response({'detail': 'Taxon profile not found.'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(profile, app=self.app)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 ##################################################################################################################
 #

@@ -1,0 +1,189 @@
+{
+    "taxonLatname": "Abies alba",
+    "taxonAuthor": "Mill.",
+    "taxonSource": "taxonomy.sources.col",
+    "nameUuid": "01ad3dc7-e744-499f-9097-abb4760fdbc4",
+    "taxonNuid": "006008007001005001001",
+    "gbifNubkey": 2685484,
+    "image": {
+        "text": null,
+        "alt_text": null,
+        "title": null,
+        "imageUrl": {
+            "1x": "http://testserver/localcosmos/user_content/content_images/image-64-250.webp",
+            "2x": "http://testserver/localcosmos/user_content/content_images/image-64-500.webp",
+            "4x": "http://testserver/localcosmos/user_content/content_images/image-64-1000.webp"
+        },
+        "licence": {
+            "creatorName": "Thomas Uher",
+            "creatorLink": "",
+            "sourceLink": "",
+            "licence": "CC0",
+            "licenceVersion": "1.0"
+        }
+    },
+    "shortProfile": null,
+    "taxonProfileId": 12,
+    "vernacular": {
+        "de": "Weißtanne"
+    },
+    "allVernacularNames": {
+        "de": [
+            "Weißtanne",
+            "Weisstanne"
+        ]
+    },
+    "nodeNames": [
+        "Weißtanne"
+    ],
+    "texts": [
+        {
+            "taxonTextType": "Interessantes",
+            "shortText": "Der finstere und gefürchtete Wald vieler Märchen und Sagen ist untrennbar mit der Tanne verbunden. Nicht von ungefähr kommt dieser Zusammenhang, zählt die heimische Weißtanne mit der Buche zu den schattentolerantesten Baumarten.",
+            "shortTextKey": "taxon_text_1_21",
+            "longText": null,
+            "longTextKey": null
+        },
+        {
+            "taxonTextType": "Baum als Lebensraum",
+            "shortText": "Die Weißtanne spielt aus tierökologischer Sicht eine besondere Rolle unter den Nadelbäumen. Mit ihrer weiten ökologischen Amplitude bietet sie Tierarten mit Präferenz für Nadelbäume Habitate in unterschiedlichsten Waldgesellschaften.",
+            "shortTextKey": "taxon_text_3_23",
+            "longText": null,
+            "longTextKey": null
+        }
+    ],
+    "categorized_texts": [
+        {
+            "category": "Schutz",
+            "texts": [
+                {
+                    "taxonTextType": "Waldschutz",
+                    "shortText": "Die größte Gefährdung geht von zu hohen Reh-, Rot- und Gamswildbeständen aus.\nGegenüber Schadorganismen wie Pilzen oder Insekten ist die Weißtanne robust. Es gibt einige auf Tanne spezialisierte Borkenkäfer, großflächige Schäden sind aber selten. Der Befall von Weißtanne mit Stamm- oder Triebläusen kann gefährlich werden.\nEbenso besteht bei der Tanne eine Gefährdung gegenüber Spätfrost und Frosttrockenheit.\nDie Tanne ist anfälliger gegenüber Luftschadstoffen, insbesondere Schwefelverbindungen, als andere Baumarten. Mit der Verbesserung der Luftreinheit der vergangen Jahrzehnte sind die Belastungen jedoch zurückgegangen.",
+                    "shortTextKey": "taxon_text_2_22",
+                    "longText": null,
+                    "longTextKey": null
+                }
+            ]
+        }
+    ],
+    "images": {
+        "primary": {
+            "text": null,
+            "alt_text": null,
+            "title": null,
+            "imageUrl": {
+                "1x": "http://testserver/localcosmos/user_content/content_images/image-64-250.webp",
+                "2x": "http://testserver/localcosmos/user_content/content_images/image-64-500.webp",
+                "4x": "http://testserver/localcosmos/user_content/content_images/image-64-1000.webp"
+            },
+            "licence": {
+                "creatorName": "Thomas Uher",
+                "creatorLink": "",
+                "sourceLink": "",
+                "licence": "CC0",
+                "licenceVersion": "1.0"
+            }
+        },
+        "taxonProfileImages": [],
+        "nodeImages": [
+            {
+                "text": null,
+                "alt_text": null,
+                "title": null,
+                "imageUrl": {
+                    "1x": "http://testserver/localcosmos/user_content/content_images/image-64-250.webp",
+                    "2x": "http://testserver/localcosmos/user_content/content_images/image-64-500.webp",
+                    "4x": "http://testserver/localcosmos/user_content/content_images/image-64-1000.webp"
+                },
+                "licence": {
+                    "creatorName": "Thomas Uher",
+                    "creatorLink": "",
+                    "sourceLink": "",
+                    "licence": "CC0",
+                    "licenceVersion": "1.0"
+                }
+            }
+        ],
+        "taxonImages": []
+    },
+    "synonyms": [
+        {
+            "taxonLatname": "Abies abies leioclada",
+            "taxonAuthor": "Steven ex Endl."
+        },
+        {
+            "taxonLatname": "Abies heterophylla",
+            "taxonAuthor": "K. Koch"
+        },
+        {
+            "taxonLatname": "Abies chlorocarpa",
+            "taxonAuthor": "Purk. ex Nyman"
+        },
+        {
+            "taxonLatname": "Abies excelsa",
+            "taxonAuthor": "Link"
+        },
+        {
+            "taxonLatname": "Abies nobilis",
+            "taxonAuthor": "A. Dietr."
+        },
+        {
+            "taxonLatname": "Abies pardei",
+            "taxonAuthor": "Gaussen"
+        },
+        {
+            "taxonLatname": "Abies argentea",
+            "taxonAuthor": "Chambray"
+        },
+        {
+            "taxonLatname": "Abies taxifolia",
+            "taxonAuthor": "Desf."
+        },
+        {
+            "taxonLatname": "Abies vulgaris",
+            "taxonAuthor": "Poir."
+        },
+        {
+            "taxonLatname": "Abies abies",
+            "taxonAuthor": "Du Roi"
+        },
+        {
+            "taxonLatname": "Abies baldensis",
+            "taxonAuthor": "Zuccagni"
+        },
+        {
+            "taxonLatname": "Abies pectinata",
+            "taxonAuthor": "Lam."
+        },
+        {
+            "taxonLatname": "Abies picea",
+            "taxonAuthor": "L."
+        },
+        {
+            "taxonLatname": "Abies alba podolica",
+            "taxonAuthor": "R.I. Schröd."
+        },
+        {
+            "taxonLatname": "Abies alba apennina",
+            "taxonAuthor": "Brullo, Scelsi & Spampinato"
+        },
+        {
+            "taxonLatname": "Abies alba pardei",
+            "taxonAuthor": "(Gaussen) Silba"
+        },
+        {
+            "taxonLatname": "Abies lucida",
+            "taxonAuthor": "Salisb."
+        },
+        {
+            "taxonLatname": "Abies abies pectinata",
+            "taxonAuthor": "(Lam.) H. Christ"
+        }
+    ],
+    "tags": [],
+    "seo": {
+        "title": null,
+        "meta_description": null
+    },
+    "is_featured": false
+}

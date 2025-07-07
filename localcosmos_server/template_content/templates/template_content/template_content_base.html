@@ -126,7 +126,27 @@
 							
 						</div>
 					</div>
-				{% endif %}	
+				{% endif %}
+
+				{% if unsupported_contents %}
+					<div class="row mt-5">
+						<div class="col-12">
+							<h4>{% trans 'Unsupported pages' %}</h4>
+							<div class="alert alert-danger">
+								{% trans 'These pages are not supported by your current frontend.' %}
+							</div>
+							<div class="row">
+								{% for localized_template_content in unsupported_contents %}
+									{% with template_content=localized_template_content.template_content %}
+										<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4 mb-4">
+											{% include 'template_content/template_content_list_entry.html' %}
+										</div>
+									{% endwith %}
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+				{% endif %}
 					
 			{% endblock %}
 		</div>
