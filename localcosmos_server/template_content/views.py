@@ -43,7 +43,7 @@ class TemplateContentList(AppMixin, TemplateView):
         localized_template_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
             template_content__template_type='page', language=self.app.primary_language, template_content__assignment=None).order_by('pk')
         
-        found_template_content_ids = localized_template_contents.values_list('template_content__pk', flat=True)
+        found_template_content_ids = list(localized_template_contents.values_list('template_content__pk', flat=True))
         
         context['localized_template_contents'] = localized_template_contents
 

@@ -398,6 +398,9 @@ class App(models.Model):
 
         elif app_state == 'preview':
             root = self.preview_version_path
+            
+            if not root:
+                root = os.path.join(settings.LOCALCOSMOS_APPS_ROOT, self.uid, 'preview', 'www')      
 
         elif app_state == 'review':
             root= self.review_version_path
