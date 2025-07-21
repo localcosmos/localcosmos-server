@@ -246,7 +246,7 @@ class LicenceSerializer(serializers.Serializer):
 
 class ImageSerializer(serializers.Serializer):
     text = serializers.CharField(allow_null=True, required=False, read_only=True)
-    alt_text = serializers.CharField(allow_null=True, required=False, read_only=True)
+    altText = serializers.CharField(allow_null=True, required=False, read_only=True)
     title = serializers.CharField(allow_null=True, required=False, read_only=True)
     imageUrl = ImageUrlSerializer(read_only=True)
     licence = LicenceSerializer(read_only=True)
@@ -257,13 +257,13 @@ class ImageSerializer(serializers.Serializer):
         
     def get_licence(self, instance):
         
-        registry = self.app.get_licence_registry()
+        registry = self.app.get_licence_registry(app_state='published')
         
-        licence = None
-        
-        if registry:
-            licences = registry['licences']
-            licence = licences.get(instance['imageUrl']['1x'], None)
+        if not registry:
+            raise ValueError("Licence registry is not available in the app instance.")
+
+        licences = registry['licences']
+        licence = licences.get(instance['imageUrl']['1x'], None)
             
         if not licence:
             raise ValueError("Licence not found for the image URL: {}".format(instance['imageUrl']['1x']))
@@ -330,12 +330,12 @@ class TaxonProfileSerializer(serializers.Serializer):
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
     allVernacularNames = serializers.DictField(child=serializers.ListField(child=serializers.CharField(read_only=True), read_only=True), read_only=True)
     texts = TextSerializer(many=True, read_only=True)
-    categorized_texts = CategorizedTextSerializer(many=True, read_only=True)
+    categorizedTexts = CategorizedTextSerializer(many=True, read_only=True)
     images = ImagesSerializer(read_only=True)
     synonyms = SynonymSerializer(many=True, read_only=True)
     tags = serializers.ListField(child=serializers.CharField(read_only=True), required=False, read_only=True)
     seo = SeoSerializer(read_only=True)
-    is_featured = serializers.BooleanField(read_only=True)
+    isFeatured = serializers.BooleanField(read_only=True)
 
     def __init__(self, *args, app=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -367,12 +367,12 @@ class TaxonProfileSerializer(serializers.Serializer):
             'vernacular': instance['vernacular'],
             'allVernacularNames': instance['allVernacularNames'],
             'texts': instance['texts'],
-            'categorized_texts': instance['categorizedTexts'],
+            'categorizedTexts': instance['categorizedTexts'],
             'images': images,
             'synonyms': instance['synonyms'],
             'tags': instance['tags'],
             'seo': instance['seo'],
-            'is_featured': instance['is_featured'],
+            'isFeatured': instance['isFeatured'],
         }
 
         return data

@@ -400,5 +400,5 @@
         "title": null,
         "meta_description": null
     },
-    "is_featured": false
+    "isFeatured": false
 }

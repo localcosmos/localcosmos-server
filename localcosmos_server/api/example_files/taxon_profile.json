@@ -52,7 +52,7 @@
             "longTextKey": null
         }
     ],
-    "categorized_texts": [
+    "categorizedTexts": [
         {
             "category": "Schutz",
             "texts": [
@@ -185,5 +185,5 @@
         "title": null,
         "meta_description": null
     },
-    "is_featured": false
+    "isFeatured": false
 }
