@@ -928,3 +928,36 @@ class TestTaxonProfileList(GetJWTokenMixin, WithUser, WithApp, APITestCase):
             self.assertIn('nameUuid', first_profile)
             self.assertIn('taxonLatname', first_profile)
 
+
+
+class TestAllTaxonProfiles(GetJWTokenMixin, WithUser, WithApp, APITestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        su = self.create_superuser()
+        self.authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+        self.app.url = 'http://testserver'
+        self.app.save()
+
+    @test_settings
+    def test_get_taxon_profile_list_success(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+        }
+        url = reverse('api_all_taxon_profiles', kwargs=url_kwargs)
+        response = self.authed_client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        expected_respoinse = [
+            {
+                'taxonProfileId': 1,
+                'taxonLatname': 'Abies alba',
+                'taxonAuthor': 'Mill.',
+                'vernacular': {
+                    'de': 'Weisstanne'
+                }
+            }
+        ]
+
+        self.assertEqual(response.data, expected_respoinse)

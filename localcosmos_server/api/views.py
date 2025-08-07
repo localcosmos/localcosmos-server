@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework import serializers
 
 #from drf_spectacular.utils import inline_serializer, extend_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -32,7 +33,8 @@ from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
                             TokenObtainPairSerializerWithClientID, ServerContentImageSerializer,
-                            LocalcosmosPublicUserSerializer, ContactUserSerializer, TaxonProfileSerializer)
+                            LocalcosmosPublicUserSerializer, ContactUserSerializer, TaxonProfileSerializer,
+                            TaxonProfileMinimalSerializer)
 
 from .permissions import OwnerOnly, AppMustExist, ServerContentImageOwnerOrReadOnly
 
@@ -566,7 +568,15 @@ class TaxonProfilesAPIViewMixin(AppAPIViewMixin):
                 description='Number of items per page (default 20, max 50)'
             ),
         ],
-        responses=TaxonProfileSerializer,
+        responses=inline_serializer(
+            name='PaginatedTaxonProfileList',
+            fields={
+                'count': serializers.IntegerField(),
+                'page': serializers.IntegerField(),
+                'page_size': serializers.IntegerField(),
+                'results': TaxonProfileSerializer(many=True),
+            }
+        ),
         examples=[
             OpenApiExample(
                 'Taxon Profile List',
@@ -637,7 +647,7 @@ class TaxonProfileList(TaxonProfilesAPIViewMixin, APIView):
         examples = [
             OpenApiExample(
                 'Taxon Profile',
-                description='taxon profile example',
+                description='A Taxon Profile',
                 value=get_taxon_profile_example(),
             )
         ]
@@ -654,6 +664,54 @@ class TaxonProfileDetail(TaxonProfilesAPIViewMixin, APIView):
             return Response({'detail': 'Taxon profile not found.'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(profile, app=self.app)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+@extend_schema_view(
+    get=extend_schema(
+        responses = TaxonProfileMinimalSerializer(many=True),
+        examples = [
+            OpenApiExample(
+                'All Taxon Profiles',
+                description='A list of all Taxon Profiles',
+                value=[
+                    {
+                        'taxonProfileId': 1,
+                        'taxonLatname': 'Abies alba',
+                        'taxonAuthor': 'Mill.',
+                        'vernacular': {
+                            'de': 'Weisstanne'
+                        }
+                    }
+                ]
+            )
+        ]
+    )
+)
+class AllTaxonProfiles(TaxonProfilesAPIViewMixin, APIView):
+    
+    permission_classes = (AppMustExist,)
+    serializer_class = TaxonProfileMinimalSerializer
+    
+    def get(self, request, *args, **kwargs):
+        
+        id_to_taxon_map = self.get_id_to_taxon_map()
+        
+        # sort the dictionary by key
+        sorted_taxa = sorted(id_to_taxon_map.items(), key=lambda item: item[0])
+        
+        sorted_taxon_profile_ids = [t[0] for t in sorted_taxa]
+        
+        taxon_profiles = []
+        for taxon_profile_id in sorted_taxon_profile_ids:
+            taxon_profile = self.get_app_taxon_profile_from_id(taxon_profile_id)
+            if taxon_profile is not None:
+                serializer = self.serializer_class(taxon_profile, app=self.app)
+                taxon_profiles.append(serializer.data)
+
+        response_data = taxon_profiles
+        
+        return Response(response_data, status=status.HTTP_200_OK)
+    
 
 ##################################################################################################################
 #

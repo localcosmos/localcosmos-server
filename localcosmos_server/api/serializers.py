@@ -376,3 +376,29 @@ class TaxonProfileSerializer(serializers.Serializer):
         }
 
         return data
+
+
+class TaxonProfileMinimalSerializer(serializers.Serializer):
+    
+    taxonProfileId = serializers.IntegerField(read_only=True)
+    taxonLatname = serializers.CharField(read_only=True)
+    taxonAuthor = serializers.CharField(read_only=True)
+    vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
+    
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+
+    def to_representation(self, instance):
+        
+        if not self.app:
+            raise ValueError("App instance is required for TaxonProfileSerializer.")
+        
+        data = {
+            'taxonProfileId': instance['taxonProfileId'],
+            'taxonLatname': instance['taxonLatname'],
+            'taxonAuthor': instance['taxonAuthor'],
+            'vernacular': instance['vernacular'],
+        }
+
+        return data
