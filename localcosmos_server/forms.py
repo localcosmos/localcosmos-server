@@ -305,7 +305,7 @@ class ManageContentImageWithTextForm(FormLocalizationMixin, ManageContentImageFo
     title = forms.CharField(max_length=255, required=False, help_text=_('Title of the image. This is relevant for SEO.'))
     alt_text = forms.CharField(max_length=255, required=False, help_text=_('Alternative text of the image. This is only relevant for SEO.'))
 
-    localizeable_fields = ['text']
+    localizeable_fields = ['text', 'title', 'alt_text']
     layoutable_simple_fields = ['text']
 
 
@@ -363,4 +363,15 @@ class SeoParametersForm(LocalizeableForm):
     
     localizeable_fields = ['title', 'meta_description']
         
+
+
+class ExternalMediaForm(LocalizeableForm):
+
+    url = forms.URLField(label=_('URL'), required=True, help_text=_('The URL of the external media, e.g. a YouTube video.'))
+    title = forms.CharField(max_length=255, required=True, label=_('Title'))
+    description = forms.CharField(widget=forms.Textarea, required=False)
     
+    author = forms.CharField(max_length=255, required=False, label=_('Author'))
+    licence = forms.CharField(widget=forms.Textarea, required=False, label=_('Licence'))
+
+    localizeable_fields = ['title', 'description']

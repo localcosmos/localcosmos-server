@@ -5,7 +5,7 @@ from django import forms
 
 from localcosmos_server.models import App
 from localcosmos_server.generic_views import AjaxDeleteView
-from localcosmos_server.views import ManageServerContentImage, DeleteServerContentImage
+from localcosmos_server.views import ManageServerContentImageWithText, DeleteServerContentImage
 from localcosmos_server.view_mixins import AppMixin, FormLanguageMixin
 
 from localcosmos_server.decorators import ajax_required
@@ -375,7 +375,7 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         return self.render_to_response(context)
 
 
-class DeleteComponent(TemplateView):
+class DeleteComponent(AppMixin, TemplateView):
 
     template_name = 'template_content/ajax/delete_component.html'
 
@@ -385,7 +385,7 @@ class DeleteComponent(TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def set_component(self, **kwargs):
-        self.app = App.objects.get(uid=kwargs['app_uid'])
+        #self.app = App.objects.get(uid=kwargs['app_uid'])
         self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
         
         self.content_key = kwargs['content_key']
@@ -398,7 +398,7 @@ class DeleteComponent(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['app'] = self.app
+        #context['app'] = self.app
         context['localized_template_content'] = self.localized_template_content
         context['content_key'] = self.content_key
         context['component_uuid'] = self.component_uuid
@@ -492,7 +492,7 @@ class GetTemplateContentFormFields(FormView):
 
 
 
-class ManageTemplateContentImage(AppMixin, ManageServerContentImage):
+class ManageTemplateContentImage(AppMixin, ManageServerContentImageWithText):
 
     template_name = 'template_content/ajax/manage_template_content_image.html'
 
@@ -563,7 +563,7 @@ class ManageComponentImage(ContextFromComponentIdentifier, ManageTemplateContent
         super().save_image(form)
 
 
-class DeleteComponentImage(ContextFromComponentIdentifier, DeleteTemplateContentImage):
+class DeleteComponentImage(AppMixin, ContextFromComponentIdentifier, DeleteTemplateContentImage):
     template_name = 'template_content/ajax/delete_component_image.html'
 
     def get_image_type(self):

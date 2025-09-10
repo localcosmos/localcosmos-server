@@ -2,6 +2,8 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
+from django.utils import timezone
 from django.urls import reverse
 from django.db import transaction
 
@@ -17,6 +19,9 @@ from localcosmos_server.slugifier import create_unique_slug
 from localcosmos_server.utils import generate_md5, get_content_instance_app
 
 from content_licencing.models import ContentLicenceRegistry
+
+from datetime import timedelta
+import requests
 
 import uuid, os, json, shutil
 
@@ -988,4 +993,207 @@ class SeoParametersAbstract(models.Model):
 
 
 class ServerSeoParameters(SeoParametersAbstract):
+    pass
+
+
+'''--------------------------------------------------------------------------------------------------------------
+    EXTERNAL MEDIA
+--------------------------------------------------------------------------------------------------------------'''
+EXTERNAL_MEDIA_TYPES = (
+    ('image', _('Image')),
+    ('youtube', _('Youtube')),
+    ('mp3', _('MP3 File')),
+    ('wav', _('WAV File')),
+    ('pdf', _('PDF Document')),
+    ('website', _('Website')),
+    ('file', _('File')), # generic file, download links
+)
+
+EXTERNAL_MEDIA_CATEGORIES = (
+    ('video', _('Video')),
+    ('audio', _('Audio')),
+    ('document', _('Document')),
+)
+
+# Mapping from media types to categories
+# Only map types that have meaningful categories (multiple subtypes)
+MEDIA_TYPE_TO_CATEGORY = {
+    'youtube': 'video',
+    'mp3': 'audio',
+    'wav': 'audio',
+    'pdf': 'document',
+    # image and website don't map to categories - they stand alone
+}
+
+class ExternalMediaManager(models.Manager):
+    
+    def needs_checking(self, days=30):
+        cutoff = timezone.now() - timedelta(days=days)
+        return self.filter(
+            Q(last_checked_at__lt=cutoff) | Q(last_checked_at__isnull=True)
+        )
+        
+class ExternalMediaAbstract(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+    url = models.URLField(max_length=2000)
+    title = models.CharField(max_length=255)
+    caption = models.CharField(max_length=255, null=True, blank=True)
+    alt_text = models.CharField(max_length=355, null=True, blank=True)
+    media_type = models.CharField(max_length=50, choices=EXTERNAL_MEDIA_TYPES)
+    media_category = models.CharField(max_length=50, choices=EXTERNAL_MEDIA_CATEGORIES, null=True, blank=True)
+    author = models.CharField(max_length=255, null=True, blank=True)
+    licence = models.TextField(null=True, blank=True)
+    position = models.IntegerField(default=0)
+    file_size = models.BigIntegerField(null=True, blank=True, help_text=_('File size in bytes'))
+    last_checked_at = models.DateTimeField(null=True, blank=True)
+    is_accessible = models.BooleanField(default=True)
+
+    objects = ExternalMediaManager()
+    
+    def __str__(self):
+        return f"{self.title or self.url} ({self.media_type})"
+    
+    def save(self, *args, **kwargs):
+        # Auto-fill media_category based on media_type if not already set
+        # Only set category if the media_type has meaningful categorization
+        if not self.media_category and self.media_type:
+            self.media_category = MEDIA_TYPE_TO_CATEGORY.get(self.media_type)
+        
+        # Check if this is a new object or if URL has changed
+        url_changed = False
+        if self.pk is None:  # New object
+            url_changed = True
+        else:
+            # Check if URL changed
+            try:
+                old_instance = self.__class__.objects.get(pk=self.pk)
+                url_changed = old_instance.url != self.url
+            except self.__class__.DoesNotExist:
+                url_changed = True
+        
+        # If URL changed and we don't have file size, try to fetch it
+        if url_changed and not self.file_size and self.url:
+            self.update_file_size(save=False)
+            
+        super().save(*args, **kwargs)
+    
+    def get_media_category_display_name(self):
+        """Get the human-readable category name"""
+        if self.media_category:
+            category_dict = dict(EXTERNAL_MEDIA_CATEGORIES)
+            return category_dict.get(self.media_category, self.media_category)
+        else:
+            # For standalone types, return the media type display name
+            media_type_dict = dict(EXTERNAL_MEDIA_TYPES)
+            return media_type_dict.get(self.media_type, self.media_type)
+    
+    def get_file_size_display(self):
+        """Return human-readable file size"""
+        if not self.file_size:
+            return _('Unknown size')
+        
+        # Convert bytes to human readable format
+        size = self.file_size
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"
+    
+    def is_large_file(self, threshold_mb=5):
+        """Check if file is considered large (default: 5MB)"""
+        if not self.file_size:
+            return False
+        threshold_bytes = threshold_mb * 1024 * 1024
+        return self.file_size > threshold_bytes
+    
+    def fetch_file_size(self):
+        """Fetch file size from URL without downloading the entire file"""
+        
+        if not self.url:
+            return None
+            
+        try:
+            # For YouTube and other platform URLs, size determination is complex
+            if self.media_type == 'youtube':
+                # YouTube file sizes vary by quality, can't determine easily
+                return None
+            
+            # For direct file URLs, use HEAD request to get Content-Length
+            response = requests.head(self.url, timeout=10, allow_redirects=True)
+            
+            if response.status_code == 200:
+                content_length = response.headers.get('Content-Length')
+                if content_length:
+                    return int(content_length)
+            
+            # If HEAD doesn't work, try GET with range header
+            headers = {'Range': 'bytes=0-0'}
+            response = requests.get(self.url, headers=headers, timeout=10, stream=True)
+            
+            if response.status_code == 206:  # Partial Content
+                content_range = response.headers.get('Content-Range')
+                if content_range:
+                    # Content-Range: bytes 0-0/12345 (total size is 12345)
+                    total_size = content_range.split('/')[-1]
+                    if total_size.isdigit():
+                        return int(total_size)
+                        
+        except Exception as e:
+            # Log the error in production
+            # logger.warning(f"Could not fetch file size for {self.url}: {e}")
+            pass
+            
+        return None
+    
+    def update_file_size(self, save=True):
+        """Update the file_size field by fetching it from the URL"""
+        size = self.fetch_file_size()
+        if size is not None:
+            self.file_size = size
+            if save:
+                self.save(update_fields=['file_size'])
+            return True
+        return False
+    
+    def check_url_and_update_metadata(self):
+        """Check URL accessibility and update metadata including file size"""
+
+        
+        if not self.url:
+            return False
+            
+        try:
+            # Update file size
+            size_updated = self.update_file_size(save=False)
+            
+            # Check accessibility
+            response = requests.head(self.url, timeout=10, allow_redirects=True)
+            self.is_accessible = response.status_code == 200
+            self.last_checked_at = timezone.now()
+            
+            # Save all changes at once
+            update_fields = ['is_accessible', 'last_checked_at']
+            if size_updated:
+                update_fields.append('file_size')
+                
+            self.save(update_fields=update_fields)
+            return True
+            
+        except Exception as e:
+            self.is_accessible = False
+            self.last_checked_at = timezone.now()
+            self.save(update_fields=['is_accessible', 'last_checked_at'])
+            return False
+
+    class Meta:
+        verbose_name = _('External Media')
+        verbose_name_plural = _('External Media')
+        ordering = ['position', 'id']
+        unique_together = ('content_type', 'object_id', 'url')
+        abstract = True
+        
+class ServerExternalMedia(ExternalMediaAbstract):
     pass

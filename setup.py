@@ -20,6 +20,7 @@ install_requires = [
     'Pillow',
     'matplotlib',
     'django-taggit==6.1.0',
+    'requests',
 ]
 
 setup(

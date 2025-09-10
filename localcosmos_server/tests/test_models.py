@@ -9,7 +9,8 @@ from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 
 
-from localcosmos_server.models import (LocalcosmosUser, UserClients, App, AppUserRole, TaxonomicRestriction)
+from localcosmos_server.models import (LocalcosmosUser, UserClients, App, AppUserRole, TaxonomicRestriction,
+                                       ServerExternalMedia)
 
 from localcosmos_server.datasets.models import Dataset
 
@@ -26,6 +27,7 @@ from localcosmos_server.tests.mixins import WithObservationForm, WithApp
 from .mixins import WithUser, WithApp
 
 from django.utils import timezone
+from datetime import timedelta
 import uuid, os, shutil
 
 
@@ -629,3 +631,364 @@ class TestTaxonomicRestrictionManager(WithApp, TestCase):
         self.assertEqual(links[0], restriction)
 
     
+    
+            
+TEST_EXTERNAL_IMAGE_URL = 'https://code-for-nature.com/images/Biodiversity-illustration-screen-sm.png'
+class TestServerExternalMedia(WithApp, TestCase):
+
+    @test_settings
+    def test_create_external_media(self):
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            title='Test Image',
+            description='A test image description',
+            media_type='image',
+            author='Test Author',
+            license='CC BY 4.0',
+            position=1,
+        )
+        media.save()
+        
+        self.assertEqual(media.content_object, self.app)
+        self.assertEqual(media.url, 'https://example.com/image.jpg')
+        self.assertEqual(media.title, 'Test Image')
+        self.assertEqual(media.media_type, 'image')
+        self.assertEqual(media.media_category, None)  # image doesn't auto-categorize
+        self.assertEqual(media.author, 'Test Author')
+        self.assertTrue(media.is_accessible)  # default True
+
+    @test_settings
+    def test_auto_categorization(self):
+        # Test video categorization
+        youtube_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://youtube.com/watch?v=test',
+            media_type='youtube',
+        )
+        youtube_media.save()
+        self.assertEqual(youtube_media.media_category, 'video')
+        
+        # Test audio categorization
+        audio_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/sound.mp3',
+            media_type='mp3',
+        )
+        audio_media.save()
+        self.assertEqual(audio_media.media_category, 'audio')
+        
+        # Test document categorization
+        doc_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/doc.pdf',
+            media_type='pdf',
+        )
+        doc_media.save()
+        self.assertEqual(doc_media.media_category, 'document')
+        
+        # Test standalone types (no categorization)
+        image_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            media_type='image',
+        )
+        image_media.save()
+        self.assertEqual(image_media.media_category, None)
+        
+        website_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com',
+            media_type='website',
+        )
+        website_media.save()
+        self.assertEqual(website_media.media_category, None)
+
+    @test_settings
+    def test_str_method(self):
+        # Test with title
+        media_with_title = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            title='Test Image',
+            media_type='image',
+        )
+        media_with_title.save()
+        self.assertEqual(str(media_with_title), 'Test Image (image)')
+        
+        # Test without title (uses URL)
+        media_without_title = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            media_type='image',
+        )
+        media_without_title.save()
+        self.assertEqual(str(media_without_title), 'https://example.com/image.jpg (image)')
+
+    @test_settings
+    def test_get_media_category_display_name(self):
+        # Test categorized media
+        youtube_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://youtube.com/watch?v=test',
+            media_type='youtube',
+        )
+        youtube_media.save()
+        self.assertEqual(youtube_media.get_media_category_display_name(), 'Video')
+        
+        # Test standalone media
+        image_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            media_type='image',
+        )
+        image_media.save()
+        self.assertEqual(image_media.get_media_category_display_name(), 'Image')
+
+    @test_settings
+    def test_get_file_size_display(self):
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            media_type='image',
+        )
+        media.save()
+        
+        # Test unknown size
+        self.assertEqual(media.get_file_size_display(), 'Unknown size')
+        
+        # Test various sizes
+        media.file_size = 500
+        self.assertEqual(media.get_file_size_display(), '500.0 B')
+        
+        media.file_size = 1500
+        self.assertEqual(media.get_file_size_display(), '1.5 KB')
+        
+        media.file_size = 1500000
+        self.assertEqual(media.get_file_size_display(), '1.4 MB')
+        
+        media.file_size = 1500000000
+        self.assertEqual(media.get_file_size_display(), '1.4 GB')
+
+    @test_settings
+    def test_is_large_file(self):
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image.jpg',
+            media_type='image',
+        )
+        media.save()
+        
+        # Test unknown size
+        self.assertFalse(media.is_large_file())
+        
+        # Test small file (1MB)
+        media.file_size = 1024 * 1024
+        self.assertFalse(media.is_large_file())  # default threshold is 5MB
+        
+        # Test large file (6MB)
+        media.file_size = 6 * 1024 * 1024
+        self.assertTrue(media.is_large_file())
+        
+        # Test custom threshold
+        media.file_size = 3 * 1024 * 1024  # 3MB
+        self.assertFalse(media.is_large_file(threshold_mb=5))
+        self.assertTrue(media.is_large_file(threshold_mb=2))
+
+    @test_settings
+    def test_fetch_file_size_basic(self):
+        # Test YouTube URL (should return None)
+        youtube_media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://youtube.com/watch?v=test',
+            media_type='youtube',
+        )
+        youtube_media.save()
+        size = youtube_media.fetch_file_size()
+        self.assertIsNone(size)
+        
+        # Test with no URL
+        no_url_media = ServerExternalMedia(
+            content_object=self.app,
+            url='',
+            media_type='image',
+        )
+        no_url_media.save()
+        size = no_url_media.fetch_file_size()
+        self.assertIsNone(size)
+        
+        # Note: Testing actual HTTP requests would require mocking
+        # or a test server, which is beyond this unit test scope
+
+    @test_settings
+    def test_url_change_triggers_size_fetch(self):
+        # Create media with initial URL
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://example.com/image1.jpg',
+            media_type='image',
+        )
+        media.save()
+        
+        # Change URL - this should trigger size fetch attempt
+        # (though it will fail in test environment)
+        media.url = 'https://example.com/image2.jpg'
+        media.save()
+        
+        # The save method should have attempted to fetch size
+        # In real environment with valid URLs, this would work
+
+    @test_settings
+    def test_manual_categorization_override(self):
+        # Create YouTube media but manually set different category
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url='https://youtube.com/watch?v=test',
+            media_type='youtube',
+            media_category='document',  # Manual override
+        )
+        media.save()
+        
+        # Should preserve manual categorization
+        self.assertEqual(media.media_category, 'document')
+        
+        # Change media type but keep manual category
+        media.media_type = 'mp3'
+        media.save()
+        
+        # Should still preserve manual categorization
+        self.assertEqual(media.media_category, 'document')
+
+    @test_settings
+    def test_position_ordering(self):
+        media1 = ServerExternalMedia.objects.create(
+            content_object=self.app,
+            url='https://example.com/1.jpg',
+            media_type='image',
+            position=2,
+        )
+        
+        media2 = ServerExternalMedia.objects.create(
+            content_object=self.app,
+            url='https://example.com/2.jpg',
+            media_type='image',
+            position=1,
+        )
+        
+        media3 = ServerExternalMedia.objects.create(
+            content_object=self.app,
+            url='https://example.com/3.jpg',
+            media_type='image',
+            position=3,
+        )
+        
+        # Should be ordered by position when retrieved
+        content_type = ContentType.objects.get_for_model(self.app)
+        all_media = list(ServerExternalMedia.objects.filter(
+            content_type=content_type, 
+            object_id=self.app.id
+        ).order_by('position'))
+        self.assertEqual(all_media, [media2, media1, media3])
+        
+    @test_settings
+    def test_fetch_file_size_real_url(self):
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url=TEST_EXTERNAL_IMAGE_URL,
+            media_type='image',
+        )
+        media.save()
+        
+        size = media.fetch_file_size()
+        
+        expected_size = 658114
+
+        self.assertEqual(size, expected_size)
+
+        # The actual size may vary if the image changes, so just check it's a positive integer
+        self.assertIsInstance(size, int)
+        self.assertGreater(size, 0)
+        
+        # Also check that the file_size field is updated
+        media.refresh_from_db()
+        self.assertEqual(media.file_size, expected_size)
+        
+    @test_settings
+    def test_update_file_size(self):
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url=TEST_EXTERNAL_IMAGE_URL,
+            media_type='image',
+        )
+        media.save()
+        
+        # set a wrong file size
+        media.file_size = 12345
+        media.save()
+        
+        self.assertEqual(media.file_size, 12345)
+        
+        # Update file size
+        result = media.update_file_size()
+        
+        self.assertTrue(result)
+        
+        expected_size = 658114
+        
+        self.assertEqual(media.file_size, expected_size)
+        
+    @test_settings
+    def test_needs_checking(self):
+        media = ServerExternalMedia(
+            content_object=self.app,
+            url=TEST_EXTERNAL_IMAGE_URL,
+            media_type='image',
+        )
+        media.save()
+        
+        # the needs checking is a manager method
+        needs_checking = ServerExternalMedia.objects.needs_checking()
+        self.assertEqual(list(needs_checking), [media])
+        
+        media.check_url_and_update_metadata()
+        media.refresh_from_db()
+        
+        needs_checking = ServerExternalMedia.objects.needs_checking()
+        self.assertEqual(list(needs_checking), [])
+        
+        # set last_checked_at to 31 days in the past
+        media.last_checked_at = timezone.now() - timedelta(days=31)
+        media.save()
+
+        needs_checking = ServerExternalMedia.objects.needs_checking()
+        self.assertEqual(list(needs_checking), [media])
+
+    @test_settings
+    def test_generic_relation_access(self):
+        """Test that we can access external media through the generic relation"""
+        media1 = ServerExternalMedia.objects.create(
+            content_object=self.app,
+            url='https://example.com/1.jpg',
+            media_type='image',
+        )
+        
+        media2 = ServerExternalMedia.objects.create(
+            content_object=self.app,
+            url='https://example.com/2.jpg',
+            media_type='image',
+        )
+        
+        # Access through generic relation (if set up on MetaApp)
+        # If MetaApp has: external_media = GenericRelation(ServerExternalMedia)
+        # Then this would work: app_media = list(self.app.external_media.all())
+        
+        # For now, test direct query
+        content_type = ContentType.objects.get_for_model(self.app)
+        app_media = list(ServerExternalMedia.objects.filter(
+            content_type=content_type,
+            object_id=self.app.id
+        ))
+        
+        self.assertEqual(len(app_media), 2)
+        self.assertIn(media1, app_media)
+        self.assertIn(media2, app_media)

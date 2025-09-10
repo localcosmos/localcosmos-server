@@ -5,10 +5,10 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.http import Http404
 from django.urls import reverse
 
-from localcosmos_server.forms import EmailOrUsernameAuthenticationForm, ManageContentImageForm
+from localcosmos_server.forms import EmailOrUsernameAuthenticationForm, ManageContentImageForm, ManageContentImageWithTextForm
 from localcosmos_server.generic_views import AjaxDeleteView
 from localcosmos_server.models import ServerContentImage
-from localcosmos_server.view_mixins import AppMixin
+from localcosmos_server.view_mixins import AppMixin, FormLanguageMixin
 
 # activate permission rules
 from .permission_rules import *
@@ -161,6 +161,9 @@ class ManageContentImageBase:
 
 class ManageServerContentImage(ContentImageViewMixin, ManageContentImageBase, FormView):
     pass
+
+class ManageServerContentImageWithText(FormLanguageMixin, ContentImageViewMixin, ManageContentImageBase, FormView):
+    form_class = ManageContentImageWithTextForm
 
 
 class DeleteServerContentImage(AjaxDeleteView):

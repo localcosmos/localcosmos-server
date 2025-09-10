@@ -3,11 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.decorators import ajax_required
-from localcosmos_server.forms import SeoParametersForm
+from localcosmos_server.forms import SeoParametersForm, ExternalMediaForm
+from localcosmos_server.models import EXTERNAL_MEDIA_TYPES
 
 from django.views.generic.edit import DeleteView
 from django.views.generic import TemplateView, FormView
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 import json
 
@@ -168,6 +169,93 @@ class ManageSeoParameters(FormView):
     def form_valid(self, form):
         
         self.seo_parameters = self.create_update_delete(form.cleaned_data)
+        
+        context = self.get_context_data(**self.kwargs)
+        context['success'] = True
+        context['form'] = form
+        
+        return self.render_to_response(context)
+    
+# the media type if fetched from url or instance
+class ManageExternalMedia(FormView):
+    
+    external_media_model_class = None
+    
+    @method_decorator(ajax_required)
+    def dispatch(self, request, *args, **kwargs):
+        self.set_instances(**kwargs)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def set_instances(self, **kwargs):
+        self.content_type = ContentType.objects.get(pk=kwargs['content_type_id'])
+        self.model_class = self.content_type.model_class()
+        self.object_id = kwargs['object_id']
+        self.instance = self.model_class.objects.get(pk=self.object_id)
+        
+        self.external_media = None
+        self.external_media_type = kwargs.get('external_media_type', None)
+        
+        allowed_media_types = [mt[0] for mt in EXTERNAL_MEDIA_TYPES]
+
+        if self.external_media_type and self.external_media_type not in allowed_media_types:
+            raise Http404('Invalid external media type')
+        
+        if 'external_media_id' in kwargs:
+            self.external_media = self.external_media_model_class.objects.filter(
+                pk=kwargs['external_media_id']
+            ).first()
+            
+            self.external_media_type = self.external_media.media_type
+            
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.external_media:
+            initial['url'] = self.external_media.url
+            initial['title'] = self.external_media.title
+            initial['description'] = self.external_media.description
+            initial['author'] = self.external_media.author
+            initial['licence'] = self.external_media.licence
+        return initial
+    
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['content_type'] = self.content_type
+        context['instance'] = self.instance
+        context['external_media'] = self.external_media
+        context['external_media_type'] = self.external_media_type
+        context['success'] = False
+        return context
+    
+    
+    def create_update(self, cleaned_data):
+        
+        if not self.external_media:
+            self.external_media = self.external_media_model_class(
+                content_type=self.content_type,
+                object_id=self.object_id,
+                media_type=self.external_media_type
+            )
+            
+        url = cleaned_data['url']
+        title = cleaned_data['title']
+        description = cleaned_data['description']
+        author = cleaned_data['author']
+        licence = cleaned_data['licence']
+
+        self.external_media.url = url
+        self.external_media.title = title
+        self.external_media.description = description
+        self.external_media.author = author
+        self.external_media.licence = licence
+        self.external_media.save()
+        
+        return self.external_media
+    
+    
+    def form_valid(self, form):
+        
+        self.external_media = self.create_update(form.cleaned_data)
         
         context = self.get_context_data(**self.kwargs)
         context['success'] = True

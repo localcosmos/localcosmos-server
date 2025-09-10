@@ -231,6 +231,8 @@ class ImageUrlSerializer(serializers.Serializer):
             for image_size, url in data.items():
                 if url:
                     absolute_url = os.path.join(self.app_url, url.lstrip('/'))
+                    if not absolute_url.startswith('https://') and not absolute_url.startswith('http://'):
+                        absolute_url = 'https://' + absolute_url
                     data[image_size] = absolute_url
         else:
             # error
@@ -316,6 +318,15 @@ class SynonymSerializer(serializers.Serializer):
 class SeoSerializer(serializers.Serializer):
     title = serializers.CharField(allow_null=True, required=False, read_only=True)
     meta_description = serializers.CharField(allow_null=True, required=False, read_only=True)
+    
+class ExternalMediaSerializer(serializers.Serializer):
+    mediaType = serializers.CharField(read_only=True)
+    url = serializers.CharField(read_only=True)
+    title = serializers.CharField(read_only=True)
+    author = serializers.CharField(allow_null=True, required=False, read_only=True)
+    licence = serializers.CharField(allow_null=True, required=False, read_only=True)
+    caption = serializers.CharField(allow_null=True, required=False, read_only=True)
+    altText = serializers.CharField(allow_null=True, required=False, read_only=True)
 
 class TaxonProfileSerializer(serializers.Serializer):
     taxonLatname = serializers.CharField(read_only=True)
@@ -335,6 +346,7 @@ class TaxonProfileSerializer(serializers.Serializer):
     synonyms = SynonymSerializer(many=True, read_only=True)
     tags = serializers.ListField(child=serializers.CharField(read_only=True), required=False, read_only=True)
     seo = SeoSerializer(read_only=True)
+    externalMedia = serializers.ListField(child=ExternalMediaSerializer(read_only=True), required=False, read_only=True)
     isFeatured = serializers.BooleanField(read_only=True)
 
     def __init__(self, *args, app=None, **kwargs):
@@ -372,6 +384,7 @@ class TaxonProfileSerializer(serializers.Serializer):
             'synonyms': instance['synonyms'],
             'tags': instance['tags'],
             'seo': instance['seo'],
+            'externalMedia': instance['externalMedia'],
             'isFeatured': instance['isFeatured'],
         }
 
