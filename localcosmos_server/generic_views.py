@@ -1,6 +1,7 @@
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
+from django.db import transaction, connection
 
 from localcosmos_server.decorators import ajax_required
 from localcosmos_server.forms import SeoParametersForm, ExternalMediaForm
@@ -53,7 +54,6 @@ class AjaxDeleteView(DeleteView):
 '''
     generic view for storing the order of elements, using the position attribute
 '''
-from django.db import transaction, connection
 class StoreObjectOrder(TemplateView):
 
     def _on_success(self):
@@ -176,9 +176,11 @@ class ManageSeoParameters(FormView):
         
         return self.render_to_response(context)
     
+    
 # the media type if fetched from url or instance
 class ManageExternalMedia(FormView):
     
+    form_class = ExternalMediaForm
     external_media_model_class = None
     
     @method_decorator(ajax_required)
@@ -190,29 +192,30 @@ class ManageExternalMedia(FormView):
         self.content_type = ContentType.objects.get(pk=kwargs['content_type_id'])
         self.model_class = self.content_type.model_class()
         self.object_id = kwargs['object_id']
-        self.instance = self.model_class.objects.get(pk=self.object_id)
+        self.external_media_object = self.model_class.objects.get(pk=self.object_id)
         
         self.external_media = None
-        self.external_media_type = kwargs.get('external_media_type', None)
+        self.media_type = kwargs.get('media_type', None)
         
         allowed_media_types = [mt[0] for mt in EXTERNAL_MEDIA_TYPES]
 
-        if self.external_media_type and self.external_media_type not in allowed_media_types:
+        if self.media_type and self.media_type not in allowed_media_types:
             raise Http404('Invalid external media type')
         
         if 'external_media_id' in kwargs:
             self.external_media = self.external_media_model_class.objects.filter(
                 pk=kwargs['external_media_id']
             ).first()
-            
-            self.external_media_type = self.external_media.media_type
-            
+
+            self.media_type = self.external_media.media_type
+
     def get_initial(self):
         initial = super().get_initial()
         if self.external_media:
             initial['url'] = self.external_media.url
             initial['title'] = self.external_media.title
-            initial['description'] = self.external_media.description
+            initial['caption'] = self.external_media.caption
+            initial['alt_text'] = self.external_media.alt_text
             initial['author'] = self.external_media.author
             initial['licence'] = self.external_media.licence
         return initial
@@ -221,33 +224,39 @@ class ManageExternalMedia(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['content_type'] = self.content_type
-        context['instance'] = self.instance
+        context['external_media_object'] = self.external_media_object
         context['external_media'] = self.external_media
-        context['external_media_type'] = self.external_media_type
+        context['media_type'] = self.media_type
         context['success'] = False
         return context
     
     
     def create_update(self, cleaned_data):
         
+        # check if the instance already has an external media of this type
         if not self.external_media:
-            self.external_media = self.external_media_model_class(
+            
+            self.external_media = self.external_media_model_class.objects.filter(
                 content_type=self.content_type,
                 object_id=self.object_id,
-                media_type=self.external_media_type
-            )
-            
-        url = cleaned_data['url']
-        title = cleaned_data['title']
-        description = cleaned_data['description']
-        author = cleaned_data['author']
-        licence = cleaned_data['licence']
+                url=cleaned_data['url']
+            ).first()
 
-        self.external_media.url = url
-        self.external_media.title = title
-        self.external_media.description = description
-        self.external_media.author = author
-        self.external_media.licence = licence
+            if not self.external_media:
+                
+                self.external_media = self.external_media_model_class(
+                    content_type=self.content_type,
+                    object_id=self.object_id,
+                )
+            
+
+        self.external_media.media_type = self.media_type
+        self.external_media.url = cleaned_data['url']
+        self.external_media.title = cleaned_data['title']
+        self.external_media.caption = cleaned_data['caption']
+        self.external_media.alt_text = cleaned_data['alt_text']
+        self.external_media.author = cleaned_data['author']
+        self.external_media.licence = cleaned_data['licence']
         self.external_media.save()
         
         return self.external_media

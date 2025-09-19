@@ -7,7 +7,6 @@ anycluster
 rules==3.3
 google-cloud-vision
 django-el-pagination==3.3.0
-django-octicons==1.0.2
 django-countries==7.5
 django-cors-headers==3.13.0
 drf-spectacular==0.24.*

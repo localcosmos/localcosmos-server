@@ -369,9 +369,10 @@ class ExternalMediaForm(LocalizeableForm):
 
     url = forms.URLField(label=_('URL'), required=True, help_text=_('The URL of the external media, e.g. a YouTube video.'))
     title = forms.CharField(max_length=255, required=True, label=_('Title'))
-    description = forms.CharField(widget=forms.Textarea, required=False)
+    caption = forms.CharField(widget=forms.Textarea, required=False)
+    alt_text = forms.CharField(max_length=255, required=False, label=_('Alternative text'))
     
     author = forms.CharField(max_length=255, required=False, label=_('Author'))
     licence = forms.CharField(widget=forms.Textarea, required=False, label=_('Licence'))
 
-    localizeable_fields = ['title', 'description']
+    localizeable_fields = ['title', 'caption', 'alt_text']

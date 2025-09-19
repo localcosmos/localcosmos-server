@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-from localcosmos_server.models import ServerImageStore, ServerContentImage
+from localcosmos_server.models import ServerImageStore, ServerContentImage, EXTERNAL_MEDIA_TYPES
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -320,7 +320,7 @@ class SeoSerializer(serializers.Serializer):
     meta_description = serializers.CharField(allow_null=True, required=False, read_only=True)
     
 class ExternalMediaSerializer(serializers.Serializer):
-    mediaType = serializers.CharField(read_only=True)
+    mediaType = serializers.ChoiceField(choices=EXTERNAL_MEDIA_TYPES, read_only=True)
     url = serializers.CharField(read_only=True)
     title = serializers.CharField(read_only=True)
     author = serializers.CharField(allow_null=True, required=False, read_only=True)

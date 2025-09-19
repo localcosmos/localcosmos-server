@@ -97,13 +97,15 @@ body {
 	padding: 0.5rem;
 }
 
-.octicon {
+.phicon {
   display: inline-block;
-  vertical-align: text-top;
-  fill: currentColor;
+  vertical-align: middle;
+  width: 24px;
+  height: 24px;
 }
 
-.octicon-white {
-  fill: white;
-  stroke: white;
+
+.phicon.phicon-20 {
+  width: 20px;
+  height: 20px;
 }
