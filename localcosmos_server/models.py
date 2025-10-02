@@ -1002,6 +1002,7 @@ class ServerSeoParameters(SeoParametersAbstract):
 EXTERNAL_MEDIA_TYPES = (
     ('image', _('Image')),
     ('youtube', _('Youtube')),
+    ('vimeo', _('Vimeo')),
     ('mp3', _('MP3 File')),
     ('wav', _('WAV File')),
     ('pdf', _('PDF Document')),
@@ -1019,6 +1020,7 @@ EXTERNAL_MEDIA_CATEGORIES = (
 # Only map types that have meaningful categories (multiple subtypes)
 MEDIA_TYPE_TO_CATEGORY = {
     'youtube': 'video',
+    'vimeo': 'video',
     'mp3': 'audio',
     'wav': 'audio',
     'pdf': 'document',

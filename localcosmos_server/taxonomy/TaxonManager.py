@@ -76,7 +76,7 @@ class TaxonManager:
             # to get the correct occurrence entry
             method_name = f'_get_{model.__name__}_occurrences'
             if hasattr(self, method_name):
-                model_occurrences = getattr(self, method_name)(occurrence_qry)
+                model_occurrences = getattr(self, method_name)(occurrence_qry, lazy_taxon)
                 
                 if model_occurrences:
                     
@@ -95,19 +95,19 @@ class TaxonManager:
     '''
     
     # has a field app_uuid
-    def _get_Dataset_occurrences(self, occurrence_qry):
+    def _get_Dataset_occurrences(self, occurrence_qry, lazy_taxon):
         occurrence_qry = occurrence_qry.filter(app_uuid=self.app.uuid)
         return occurrence_qry
     
     # has a OnetoOne field to App
-    def _get_DatasetValidationRoutine_occurrences(self, occurrence_qry):
+    def _get_DatasetValidationRoutine_occurrences(self, occurrence_qry, lazy_taxon):
         occurrence_qry = occurrence_qry.filter(app=self.app)
         return occurrence_qry
     
     # has no reference to App
     # currently, only TemplateContent and DatasetValidationRoutine can have
     # a taxonomic restriction
-    def _get_TaxonomicRestriction_occurrences(self, occurrence_qry):
+    def _get_TaxonomicRestriction_occurrences(self, occurrence_qry, lazy_taxon):
         matching_occurrences = []
         for occurrence in occurrence_qry:
             content_instance = occurrence.content
@@ -119,9 +119,30 @@ class TaxonManager:
     
     
     # has no reference to App, currently unsupported
-    def _get_ServerImageStore_occurrences(self, occurrence_qry):
+    def _get_ServerImageStore_occurrences(self, occurrence_qry, lazy_taxon):
         return []
     
+    
+    def perform_swap(self, model, lazy_taxon, new_lazy_taxon):
+        
+        occurrences = model.objects.filter(taxon_source=lazy_taxon.taxon_source,taxon_latname=lazy_taxon.taxon_latname)
+                
+        # model specific query
+        query_method = f'_get_{model.__name__}_occurrences'
+        if hasattr(self, query_method):
+            occurrences = getattr(self, query_method)(occurrences, lazy_taxon)
+        else:
+            # raise an error
+            raise NotImplementedError(f'Method {query_method} not implemented for model {model.__name__}')
+        
+        for occurrence in occurrences:
+            
+            is_swappable = self.check_swappability([occurrence], new_lazy_taxon)
+            
+            if is_swappable == True:
+                occurrence.set_taxon(new_lazy_taxon)
+                occurrence.save()
+        
     # swap a taxon across all models
     def swap_taxon(self, lazy_taxon, new_lazy_taxon):
         
@@ -129,24 +150,14 @@ class TaxonManager:
         
         for model in models:
             if model in self.supported_swap_models:
-                occurrences = model.objects.filter(taxon_source=lazy_taxon.taxon_source,taxon_latname=lazy_taxon.taxon_latname)
                 
-                # model specific query
-                query_method = f'_get_{model.__name__}_occurrences'
-                if hasattr(self, query_method):
-                    occurrences = getattr(self, query_method)(occurrences)
+                custom_swap_method = '_swap_taxon_{0}'.format(model.__name__)
+
+                if hasattr(self, custom_swap_method):
+                    getattr(self, custom_swap_method)(lazy_taxon, new_lazy_taxon)
                 else:
-                    # raise an error
-                    raise NotImplementedError(f'Method {query_method} not implemented for model {model.__name__}')
-                
-                for occurrence in occurrences:
-                    
-                    is_swappable = self.check_swappability([occurrence], new_lazy_taxon)
-                    
-                    if is_swappable == True:
-                        occurrence.set_taxon(new_lazy_taxon)
-                        occurrence.save()
-                    
+                    self.perform_swap(model, lazy_taxon, new_lazy_taxon)
+
             # if the model is not supported, skip it
             elif model in self.unsupported_swap_models:
                 #print(f'Skipping model {model.__name__} for taxon swap')
