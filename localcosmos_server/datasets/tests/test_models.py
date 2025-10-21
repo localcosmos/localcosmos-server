@@ -12,6 +12,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
+from localcosmos_server.datasets.validation.base import DatasetValidatorBase
+from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
 from localcosmos_server.datasets.models import (Dataset, DatasetValidationRoutine, DatasetImages, IMAGE_SIZES,
     DATASET_VALIDATION_CHOICES, DATASET_VALIDATION_DICT, UserGeometry)
@@ -455,9 +457,6 @@ class TestDatasetWithMedia(WithMedia, WithObservationForm, WithApp, WithUser, Te
         image = Image.open(path)
         self.assertEqual(image.size, (250, 250))
     
-
-from localcosmos_server.datasets.validation.base import DatasetValidatorBase
-from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
 class TestDatasetValidationRoutine(WithValidationRoutine, WithApp, TestCase):
 

@@ -66,7 +66,7 @@
 			<div class="col-12 col-md-6">
 				
 				{% block taxonomic_restriction %}
-					<!--
+					
 					<div class="row">
 						<div class="col-12">
 						
@@ -79,7 +79,7 @@
 					</div>
 					
 					<hr>
-					-->
+					
 				{% endblock %}
 				
 				<h4>{% trans 'Components' %}</h4>
@@ -112,6 +112,9 @@
 		function reloadPreview(){
 			$("#contentPreview").attr("data", "{{ preview_url }}");
 		}
+
+		$(".move-component-up").on("click", positionmanager.onMoveForward);
+		$(".move-component-down").on("click", positionmanager.onMoveBack);
 
 	</script>
 {% endblock %}

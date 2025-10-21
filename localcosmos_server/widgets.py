@@ -1,6 +1,8 @@
-from django.forms.widgets import FileInput, HiddenInput
+from django.forms.widgets import (FileInput, HiddenInput, TextInput, Textarea, MultiWidget, Select,
+                                  URLInput)
 from django.contrib.contenttypes.models import ContentType
 
+from localcosmos_server.models import EXTERNAL_MEDIA_TYPES
 
 class ImageInputWithPreview(FileInput):
 
@@ -122,7 +124,5 @@ class AjaxFileInput(FileInput):
         return context
     
 
-
 class TwoStepFileInput(AjaxFileInput):
-
     template_name = 'localcosmos_server/widgets/two_step_file_input.html'

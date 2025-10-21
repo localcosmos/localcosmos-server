@@ -18,6 +18,9 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
     
     contents = serializers.SerializerMethodField()
 
+    linkedTaxa = serializers.SerializerMethodField()
+    linkedTaxonProfiles = serializers.SerializerMethodField()
+
     template_definition = None
 
     def get_from_definition(self, localized_template_content, key):
@@ -165,12 +168,67 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                             component_definition, localized_template_content)
 
                         contents[component_key] = component_with_image_data
+            
+            
+            elif content_definition['type'] == 'stream' and content != None:
+                
+                stream_key = content_key
+
+                if stream_key in contents:
+
+                    stream_items = contents[stream_key]
+
+                    for stream_item_index, stream_item in enumerate(stream_items, 0):
+                        
+                        component_template_name = stream_item['templateName']
+                        
+                        if preview == True:
+                            component_template = primary_locale_template_content.template_content.get_component_template(
+                                stream_key, component_template_name)
+                        else:
+                            component_template = primary_locale_template_content.template_content.get_published_component_template(
+                                stream_key, component_template_name)
+                            
+                            
+                        component_definition = component_template.definition
+
+                        stream_item_with_image_data = self.add_image_data_to_component(stream_key, stream_item,
+                            component_definition, localized_template_content)
+
+                        stream_items[stream_item_index] = stream_item_with_image_data
+                    
+                    contents[stream_key] = stream_items
 
         return contents
 
+    # hasTaxonProfile might be a good addition for the api. it is also present in the built version
+    def get_linkedTaxa(self, localized_template_content):
+
+        linked_taxa = []
+        restrictions = localized_template_content.template_content.taxonomic_restrictions
+
+        for restriction in restrictions.all():
+            
+            taxon = restriction.taxon
+            taxon_data = {
+                'taxonSource': taxon.taxon_source,
+                'taxonLatname': taxon.taxon_latname,
+                'taxonAuthor': taxon.taxon_author,
+                'nameUuid': taxon.name_uuid,
+                'taxonNuid': taxon.taxon_nuid,
+            }
+            linked_taxa.append(taxon_data)
+
+        return linked_taxa
+    
+    # not implemented yet for the api. App Kits jsonbuilder has it already.
+    def get_linkedTaxonProfiles(self, localized_template_content):
+        return []
+
+
     class Meta:
         model = LocalizedTemplateContent
-        fields = ['title', 'templateName', 'templatePath', 'version', 'contents']
+        fields = ['title', 'templateName', 'templatePath', 'version', 'contents', 'linkedTaxa', 'linkedTaxonProfiles']
 
 
 # do not replace camelCase with underscore_case without adapting app_kit's ContentImageBuilder.build_licence

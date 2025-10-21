@@ -1,0 +1,54 @@
+{% load i18n template_content_tags %}
+<div class="col-12">
+
+    <div class="row">
+        <div class="col-12" id="stream-content-{{ content_key }}" data-store-positions-url="{% url 'store_component_order' widget.app.uid widget.localized_template_content.id widget.content_key %}">
+            {% for stream_item in widget.stream_items %}
+                <div id="streamitem-{{ stream_item.uuid }}" data-object-id="{{ stream_item.uuid }}" class="card mb-2">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-10 col-md-6">
+                                {% get_stream_item_preview_text widget.localized_template_content stream_item as preview_text %}
+                                {{ preview_text|safe }}
+                            </div>
+                            <div class="col-2 col-md-6 text-right">
+                                <div class="btn-group dropup mt-1">
+                                    <button class="btn btn-xs btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        {% trans 'modify' %}
+                                    <span class="caret"></span>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu-{{ content_key }}">
+                                        <a data-url="{% url 'manage_component' widget.app.uid widget.localized_template_content.id widget.content_key stream_item.uuid %}" class="dropdown-item xhr" ajax-target="LargeModalContent">
+                                            {% blocktrans %}edit{% endblocktrans %}
+                                        </a>
+                                        <a data-url="{% url 'delete_component' widget.app.uid widget.localized_template_content.id widget.content_key stream_item.uuid %}" class="dropdown-item xhr" ajax-target="ModalContent">
+                                            {% blocktrans %}delete{% endblocktrans %}
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-center move-component-up" data-targetid="streamitem-{{ stream_item.uuid }}">&#x25B2; {% trans 'Move up' %}</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item text-center move-component-down" data-targetid="streamitem-{{ stream_item.uuid }}">&#x25BC; {% trans 'Move down' %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="btn-group dropup mt-1">
+        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            {% trans 'Add content' %}
+        <span class="caret"></span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu-{{ content_key }}">
+            {% for component_template_name in widget.content_definition.allowedComponents %}
+                <a data-url="{% url 'add_component' widget.app.uid widget.localized_template_content.id widget.content_key component_template_name %}" class="dropdown-item xhr" ajax-target="LargeModalContent">
+                    {% blocktrans %}add {{ component_template_name }}{% endblocktrans %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>

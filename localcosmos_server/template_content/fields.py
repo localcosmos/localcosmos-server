@@ -1,6 +1,9 @@
 from django.forms import Field
 
-from .widgets import ComponentWidget
+from .widgets import ContentWithPreviewWidget, StreamContentWidget
 
 class ComponentField(Field):
-    widget = ComponentWidget
+    widget = ContentWithPreviewWidget
+
+class StreamField(Field):
+    widget = StreamContentWidget

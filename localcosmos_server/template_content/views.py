@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from django.conf import settings
 from django.views.generic import TemplateView, FormView
+from django.http import JsonResponse
 from django import forms
 
 from localcosmos_server.models import App
@@ -19,9 +20,11 @@ from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentFor
 
 from .utils import get_frontend_specific_url
 
+from .Templates import Template
+
 from urllib.parse import urljoin
 
-import uuid
+import uuid, json
 
 
 class TemplateContentList(AppMixin, TemplateView):
@@ -214,7 +217,7 @@ class ManageTemplateContentCommon:
 
         for content_key, content_definition in template_definition['contents'].items():
 
-            if content_definition['type'] in ['image', 'component']:
+            if content_definition['type'] in ['image', 'component', 'stream']:
                 if content_key in old_keys:
                     old_keys.remove(content_key)
 
@@ -325,14 +328,29 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         
         # load the component template
         self.component = {}
+        self.component_template_name = None
 
         if self.component_uuid:
             self.component = self.localized_template_content.get_component(self.content_key, self.component_uuid)
+            self.component_template_name = self.component.get('templateName', None)
+        
+        
+        if not self.component_template_name:
+            if 'component_template_name' in kwargs:
+                self.component_template_name = kwargs['component_template_name']
+            else:
+                page_template_definition = self.template_content.draft_template.definition
+                self.component_template_name = page_template_definition['contents'][self.content_key]['templateName']
+                
+        if not self.component_template_name:
+            raise ValueError('component_template_name is missing')
 
 
     def get_initial(self):
         # do not use super() because it would add contents of localized_template_content to initial
-        initial = {}
+        initial = {
+            'input_language': self.localized_template_content.language,
+        }
         if self.component:
             initial['uuid'] = self.component['uuid']
         else:
@@ -344,6 +362,7 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         context = super().get_context_data(**kwargs)
         context['content_key'] = self.content_key
         context['component'] = self.component
+        context['component_template_name'] = self.component_template_name
         return context
 
 
@@ -351,7 +370,8 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         if form_class is None:
             form_class = self.get_form_class()
 
-        return form_class(self.app, self.template_content, self.localized_template_content, self.content_key, self.component, **self.get_form_kwargs())
+        return form_class(self.app, self.template_content, self.localized_template_content, self.content_key, self.component_template_name,
+                          self.component, **self.get_form_kwargs())
 
 
     def form_valid(self, form):
@@ -359,12 +379,13 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         if not self.localized_template_content.draft_contents:
             self.localized_template_content.draft_contents = {}
 
-        component_template = self.template_content.get_component_template(self.content_key)
+        component_template = Template(self.app, self.component_template_name, 'component')
 
         updated_component = self.get_updated_content_dict(component_template.definition, self.component, form)
         if not form.cleaned_data['uuid']:
             raise ValueError('uuid is missing')
         updated_component['uuid'] = str(form.cleaned_data['uuid'])
+        updated_component['templateName'] = self.component_template_name
 
         self.localized_template_content.add_or_update_component(self.content_key, updated_component)
 
@@ -373,7 +394,7 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         context = self.get_context_data(**self.kwargs)
         context['success'] = True
         return self.render_to_response(context)
-
+        
 
 class DeleteComponent(AppMixin, TemplateView):
 
@@ -385,20 +406,31 @@ class DeleteComponent(AppMixin, TemplateView):
         return super().dispatch(request, *args, **kwargs)
 
     def set_component(self, **kwargs):
-        #self.app = App.objects.get(uid=kwargs['app_uid'])
         self.localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
         
         self.content_key = kwargs['content_key']
         self.component_uuid = kwargs['component_uuid']
         
-        self.component_template = self.localized_template_content.template_content.get_component_template(
-            self.content_key)
-        self.component_template_name = self.component_template.definition['templateName']
+        self.component = self.localized_template_content.get_component(self.content_key, self.component_uuid)
         
+        if not self.component:
+            raise ValueError(f'Component {self.component_uuid} not found')
+        
+        self.component_template_name = self.component.get('templateName', None)
+        
+        if not self.component_template_name:
+        
+            component_template = self.localized_template_content.template_content.get_component_template(
+                self.content_key)
+            
+            if component_template.definition['type'] == 'stream':
+                raise ValueError('Failed to get component_template_name.')
+            else:
+                self.component_template_name = component_template.definition['templateName']
+                
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #context['app'] = self.app
         context['localized_template_content'] = self.localized_template_content
         context['content_key'] = self.content_key
         context['component_uuid'] = self.component_uuid
@@ -415,6 +447,47 @@ class DeleteComponent(AppMixin, TemplateView):
         return self.render_to_response(context)
 
 
+
+class StoreComponentOrder(AppMixin, TemplateView):
+    
+    @method_decorator(ajax_required)
+    def post(self, request, *args, **kwargs):
+
+        success = False
+
+        order = request.POST.get('order', None)
+
+        if order:
+            
+            order = json.loads(order)
+            
+            localized_template_content = LocalizedTemplateContent.objects.get(pk=kwargs['localized_template_content_id'])
+            content_key = kwargs['content_key']
+            
+            content_definition = localized_template_content.template_content.draft_template.definition['contents'][content_key]
+            
+            if not content_definition or content_definition['type'] != 'stream':
+                return JsonResponse({'success':False, 'error':'Content is not a stream'})
+
+            existing_components = localized_template_content.draft_contents.get(content_key, [])
+
+            ordered_components = []
+            for component_uuid in order:
+                
+                for component in existing_components:
+                    if component['uuid'] == component_uuid:
+                        ordered_components.append(component)
+                        break
+                    
+            # make sure nothing gets lost
+            if len(ordered_components) != len(existing_components):
+                return JsonResponse({'success':False, 'error':'Components got lost.'})
+            
+            localized_template_content.draft_contents[content_key] = ordered_components
+            localized_template_content.save()
+            success = True
+        
+        return JsonResponse({'success':success})
 '''
     use the same form / template as for the primary language
     but display the primary language above the input fields
@@ -516,7 +589,6 @@ class DeleteTemplateContentImage(DeleteServerContentImage):
         return context
 
 
-
 '''
     Create the component with its uuid
     Upload the image
@@ -533,16 +605,18 @@ class ContextFromComponentIdentifier:
     def set_component(self):
         image_type = self.get_image_type()
         content_identifiers = image_type.split(':')
+        
         self.content_key = content_identifiers[-1]
         self.component_key = content_identifiers[0]
         self.component_uuid = content_identifiers[1]
+            
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self.set_component()
-        context['content_key'] = self.content_key
-        context['component_key'] = self.component_key
-        context['component_uuid'] = self.component_uuid
+        context['content_key'] = self.content_key # the field in page.contents
+        context['component_key'] = self.component_key # page.contents[content_key][component_key] - the key that holds the image
+        context['component_uuid'] = self.component_uuid # the uuid of the component instance
         return context
 
 
@@ -553,12 +627,15 @@ class ManageComponentImage(ContextFromComponentIdentifier, ManageTemplateContent
     def save_image(self, form):
         self.set_component()
         # check if component exits, and save if if not
+        
         component = self.content_instance.get_component(self.component_key, self.component_uuid)
 
         if not component:
             new_component = {
                 'uuid': self.component_uuid
             }
+
+            # add component to page contents -> we need a component_uuid
             self.content_instance.add_or_update_component(self.component_key, new_component)
         super().save_image(form)
 
@@ -919,7 +996,6 @@ class TranslateNavigation(AppMixin, FormView):
                         
                     localized_navigation_entry.link_name = link_name
                     localized_navigation_entry.save()
-    
 
     def form_valid(self, form):
 
@@ -932,4 +1008,3 @@ class TranslateNavigation(AppMixin, FormView):
         context = self.get_context_data(**self.kwargs)
         context['saved'] = True
         return self.render_to_response(context)
-        

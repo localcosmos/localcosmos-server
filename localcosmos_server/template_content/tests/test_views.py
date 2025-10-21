@@ -454,7 +454,7 @@ class TestManageLocalizedTemplateContent(WithTemplateContent, WithUser, WithApp,
 
 class TestManageComponent(WithTemplateContent, WithUser, WithApp, ViewTestMixin, TestCase):
     
-    url_name = 'manage_component'
+    url_name = 'add_component'
     view_class = ManageComponent
     content_key = 'component'
     
@@ -475,11 +475,25 @@ class TestManageComponent(WithTemplateContent, WithUser, WithApp, ViewTestMixin,
         
         return url_kwargs
     
+    
+    def get_post_data(self, language, uuid):
+        
+        post_data = {
+            'component_input_language': language,
+            'component_uuid': uuid,
+            'component_text': 'component text',
+            'component_link': self.primary_ltc.pk,
+        }
+        
+        return post_data
+        
+    
     def get_view(self):
         
         view = super().get_view()
         view.app = self.app
         view.set_template_content(**view.kwargs)
+        view.set_primary_language()
         view.set_component(**view.kwargs)
         
         return view
@@ -529,6 +543,30 @@ class TestManageComponent(WithTemplateContent, WithUser, WithApp, ViewTestMixin,
         form = view.get_form()
         
         self.assertTrue(isinstance(form, ManageComponentForm))
+        
+        
+    def get_expected_draft_contents(self, uuid):
+        
+        expected_draft_contents = {
+            'text': 'draft test text',
+            'longText': 'draft longer text',
+            'component': [
+                {
+                    'link': {
+                        'pk': str(self.primary_ltc.pk),
+                        'url': '/pages/TestPage/test-template-content/',
+                        'slug': 'test-template-content',
+                        'title': 'Test template content',
+                        'templateName': 'TestPage'
+                    },
+                    'text': 'component text',
+                    'uuid': str(uuid),
+                    'templateName': 'TestComponent'
+                }
+            ]
+        }
+        
+        return expected_draft_contents
     
     @test_settings
     def test_form_valid(self):
@@ -545,18 +583,15 @@ class TestManageComponent(WithTemplateContent, WithUser, WithApp, ViewTestMixin,
         
         initial = view.get_initial()
         
-        post_data = {
-            'input_language': self.primary_ltc.language,
-            'uuid': initial['uuid'],
-            'text': 'component text',
-            'link': self.primary_ltc.pk,
-        }
+        # the form uses add_prefix
+        post_data = self.get_post_data(view.primary_language, initial['uuid'])
+        
+        component_template_name = 'TestComponent'
         
         form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                   self.content_key, initial=initial, data=post_data)
+            self.content_key, component_template_name, initial=initial, data=post_data)
         
         form.is_valid()
-        
         self.assertEqual(form.errors, {})
         
         response = view.form_valid(form)
@@ -566,10 +601,48 @@ class TestManageComponent(WithTemplateContent, WithUser, WithApp, ViewTestMixin,
         
         self.primary_ltc.refresh_from_db()
         
+        expected_draft_contents = self.get_expected_draft_contents(initial['uuid'])
+
+        self.assertEqual(self.primary_ltc.draft_contents, expected_draft_contents)
+
+
+class TestAddStreamItem(TestManageComponent):
+    
+    url_name = 'add_component'
+    view_class = ManageComponent
+    content_key = 'stream'
+    
+    ajax = True
+    
+    def get_url_kwargs(self):
+        
+        url_kwargs = {
+            'app_uid' : self.app.uid,
+            'localized_template_content_id': self.primary_ltc.pk,
+            'content_key': self.content_key,
+            'component_template_name': 'TestComponent'
+        }
+        
+        return url_kwargs
+    
+    
+    def get_post_data(self, language, uuid):
+        
+        post_data = {
+            'stream_input_language': language,
+            'stream_uuid': uuid,
+            'stream_text': 'component text',
+            'stream_link': self.primary_ltc.pk,
+        }
+        
+        return post_data
+    
+    def get_expected_draft_contents(self, uuid):
+        
         expected_draft_contents = {
             'text': 'draft test text',
             'longText': 'draft longer text',
-            'component': [
+            'stream': [
                 {
                     'link': {
                         'pk': str(self.primary_ltc.pk),
@@ -579,12 +652,13 @@ class TestManageComponent(WithTemplateContent, WithUser, WithApp, ViewTestMixin,
                         'templateName': 'TestPage'
                     },
                     'text': 'component text',
-                    'uuid': str(initial['uuid'])
+                    'uuid': str(uuid),
+                    'templateName': 'TestComponent'
                 }
             ]
         }
-
-        self.assertEqual(self.primary_ltc.draft_contents, expected_draft_contents)
+        
+        return expected_draft_contents
     
     
 class WithExistingComponent:
@@ -647,6 +721,7 @@ class TestManageExistingComponent(WithExistingComponent, WithTemplateContent, Wi
         view = super().get_view()
         view.app = self.app
         view.set_template_content(**view.kwargs)
+        view.set_primary_language()
         view.set_component(**view.kwargs)
         
         return view
@@ -695,14 +770,16 @@ class TestManageExistingComponent(WithExistingComponent, WithTemplateContent, Wi
         initial = view.get_initial()
         
         post_data = {
-            'input_language': self.primary_ltc.language,
-            'uuid': initial['uuid'],
-            'text': 'component text updated',
-            'link': self.primary_ltc.pk,
+            'component_input_language': view.primary_language,
+            'component_uuid': initial['uuid'],
+            'component_text': 'component text updated',
+            'component_link': self.primary_ltc.pk,
         }
         
+        component_template_name = 'TestComponent'
+        
         form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                   self.content_key, initial=initial, data=post_data)
+            self.content_key, component_template_name, initial=initial, data=post_data)
         
         form.is_valid()
         
@@ -728,7 +805,8 @@ class TestManageExistingComponent(WithExistingComponent, WithTemplateContent, Wi
                         'templateName': 'TestPage'
                     },
                     'text': 'component text updated',
-                    'uuid': str(post_data['uuid'])
+                    'uuid': str(post_data['component_uuid']),
+                    'templateName': 'TestComponent'
                 }
             ]
         }
@@ -984,6 +1062,7 @@ class TestManageTemplateContentImage(WithTemplateContent, WithUser, WithApp, Vie
         view = super().get_view()
         view.app = self.app
         view.set_content_image(**view.kwargs)
+        view.set_primary_language()
         view.taxon = None
         
         return view
@@ -1036,6 +1115,7 @@ class TestManageExistingTemplateContentImage(WithTemplateContent, WithServerCont
         view = super().get_view()
         view.app = self.app
         view.set_content_image(**view.kwargs)
+        view.set_primary_language()
         view.taxon = None
         view.licence_registry_entry = {}
         
@@ -1134,6 +1214,7 @@ class TestManageComponentImage(WithTemplateContent, WithImageForForm,
         view = super().get_view()
         view.app = self.app
         view.set_content_image(**view.kwargs)
+        view.set_primary_language()
         view.taxon = None
         view.licence_registry_entry = {}
         
@@ -1185,6 +1266,7 @@ class TestManageComponentImage(WithTemplateContent, WithImageForForm,
         
         
         data = {
+            'input_language': view.primary_language,
             'creator_name' : 'Test name',
             'licence_0' : 'CC0',
             'licence_1' : '1.0',
@@ -1201,8 +1283,9 @@ class TestManageComponentImage(WithTemplateContent, WithImageForForm,
             'source_image': image
         }
         
-        form = form_class(data=data, files=file_dict)
-        
+        form_kwargs = view.get_form_kwargs()
+        form = form_class(data=data, files=file_dict, **form_kwargs)
+
         form.is_valid()
         self.assertEqual(form.errors, {})
         
@@ -1290,6 +1373,7 @@ class TestManageExistingComponentImage(WithExistingComponent, WithTemplateConten
         
         
         data = {
+            'input_language': self.primary_ltc.language,
             'creator_name' : 'Test name',
             'licence_0' : 'CC0',
             'licence_1' : '1.0',

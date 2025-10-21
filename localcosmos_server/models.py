@@ -642,6 +642,16 @@ class TaxonomicRestrictionBase(ModelWithRequiredTaxon):
     content = GenericForeignKey('content_type', 'object_id')
 
     restriction_type = models.CharField(max_length=100, choices=TAXONOMIC_RESTRICTION_TYPES, default='exists')
+    
+    def serialize(self):
+        return {
+            'taxonSource' : self.taxon_source,
+            'taxonLatname' : self.taxon_latname,
+            'taxonAuthor' : self.taxon_author,
+            'nameUuid' : self.name_uuid,
+            'taxonNuid' : self.taxon_nuid,
+            'restrictionType' : self.restriction_type,
+        }
 
     def __str__(self):
         return self.taxon_latname
@@ -1196,6 +1206,7 @@ class ExternalMediaAbstract(models.Model):
         ordering = ['position', 'id']
         unique_together = ('content_type', 'object_id', 'url')
         abstract = True
-        
+
+
 class ServerExternalMedia(ExternalMediaAbstract):
     pass

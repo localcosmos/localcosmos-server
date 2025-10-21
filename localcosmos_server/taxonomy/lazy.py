@@ -30,6 +30,7 @@ class LazyTaxonBase:
     def __init__(self, *args, **kwargs):
 
         self.instance = None # either ModelwithTaxon Subclass or a TaxonTree Subclass
+        self.origin = None # class name of the instance passed
 
         if 'instance' in kwargs:
 

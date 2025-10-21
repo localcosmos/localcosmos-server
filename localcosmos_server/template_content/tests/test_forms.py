@@ -137,8 +137,9 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         
         for content_key, content_definition in contents.items():
             
-            if content_definition.get('allowMultiple', False) == False:
-                content_type = content_definition['type']
+            content_type = content_definition['type']
+            
+            if content_definition.get('allowMultiple', False) == False and content_type != 'stream':
                 
                 instance = manager.get_instance(content_key, content_type)
 
@@ -146,7 +147,6 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
 
                 if content_type == 'image':
                     self.assertEqual(instance, content_image)
-                
                 else:
                     self.assertEqual(instance, self.primary_ltc.draft_contents[content_key])
     
@@ -170,9 +170,10 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         content_image = self.add_content_image('images')
         
         for content_key, content_definition in contents.items():
+            content_type = content_definition['type']
             
-            if content_definition.get('allowMultiple', False) == True:
-                content_type = content_definition['type']
+            if content_definition.get('allowMultiple', False) == True or content_type == 'stream':
+                
                 instances = manager.get_instances(content_key, content_type)
 
                 self.assertTrue(type(instances) == list)
@@ -368,6 +369,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
                 'component2' : 'Component2',
                 'text': 'Text',
                 'link': 'Link',
+                'stream': 'Stream',
             }
         }
         
@@ -559,7 +561,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
             'content_type': 'component',
             'instance': None,
             'definition': content_definition,
-            'data_url': '/app-admin/{0}/manage-component/{1}/component/'.format(
+            'data_url': '/app-admin/{0}/add-component/{1}/component/'.format(
                 self.app.uid, self.primary_ltc.pk),
             'delete_url': None,
             'preview_text': None
@@ -593,6 +595,24 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         }
         
         self.assertEqual(form_field.widget.attrs, expected_widget_attrs)
+        
+        
+    @test_settings
+    def test_get_stream_form_field(self):
+        
+        manager = TemplateContentFormFieldManager(self.app, self.template_content, 
+                                                  self.primary_ltc)
+        
+        contents = self.get_contents()
+        
+        content_key = 'stream'
+        content_definition = contents['stream']
+        
+        form_field = manager._get_stream_form_field(content_key, content_definition)
+        
+        self.assertEqual(form_field.__class__.__name__, 'StreamField')
+        
+        self.assertEqual(form_field.widget.__class__.__name__, 'StreamContentWidget')
     
     
     @test_settings
@@ -910,16 +930,17 @@ class TestManageComponentForm(WithTemplateContent, WithServerContentImage,
     def test_init(self):
         
         content_key = 'component'
+        component_template_name = 'TestComponent'
         
         with self.assertRaises(ValueError):
             form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                    content_key)
+                                    content_key, component_template_name)
         
         initial = {
             'uuid': uuid.uuid4()
         }
         form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                    content_key, initial=initial)
+                                    content_key, component_template_name, initial=initial)
         
         self.assertEqual(form.content_key, content_key)
         self.assertEqual(form.component, None)
@@ -931,7 +952,7 @@ class TestManageComponentForm(WithTemplateContent, WithServerContentImage,
             'uuid': component['uuid'],
         }
         form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                   content_key, component, initial=initial)
+                                   content_key, component_template_name, component, initial=initial)
         
         self.assertEqual(form.content_key, content_key)
         self.assertEqual(form.component, component)
@@ -941,12 +962,13 @@ class TestManageComponentForm(WithTemplateContent, WithServerContentImage,
     def test_set_template_definition(self):
         
         content_key = 'component'
+        component_template_name = 'TestComponent'
         
         initial = {
             'uuid': uuid.uuid4(),
         }
         form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                    content_key, initial=initial)
+                                    content_key, component_template_name, initial=initial)
         
         form.set_template_definition()
         
@@ -961,17 +983,19 @@ class TestManageComponentForm(WithTemplateContent, WithServerContentImage,
     def test_get_form_field_manager(self):
         
         content_key = 'component'
+        component_template_name = 'TestComponent'
         
         initial = {
             'uuid': uuid.uuid4(),
         }
+        
+        
         form = ManageComponentForm(self.app, self.template_content, self.primary_ltc,
-                                    content_key, initial=initial)
+                                    content_key, component_template_name, initial=initial)
         
         manager = form.get_form_field_manager()
         
         self.assertTrue(isinstance(manager, ComponentFormFieldManager))
-        
             
             
 class TestManageNavigationForm(WithTemplateContent, WithServerContentImage, WithMedia, WithUser,

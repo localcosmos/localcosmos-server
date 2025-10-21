@@ -1,5 +1,5 @@
 from django.test import TestCase
-
+from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.template_content.tests.mixins import (WithTemplateContent, TEST_TEMPLATE_NAME,
     PAGE_TEMPLATE_TYPE, WithNavigation)
@@ -12,6 +12,9 @@ from localcosmos_server.template_content.api.serializers import (LocalizedTempla
 
 
 from localcosmos_server.template_content.utils import get_component_image_type
+
+from localcosmos_server.models import TaxonomicRestriction
+from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
 import uuid
 
@@ -143,7 +146,11 @@ class LTCPreviewTestsMixin:
         image_data = serializer.get_image_data(image_definition, self.primary_ltc, content_key)
         
         expected_image_data = {
-            'imageUrl': content_image.image_url(),
+            'imageUrl': {
+                '1x': content_image.image_url(size=250),
+                '2x': content_image.image_url(size=500),
+                '4x': content_image.image_url(size=1000),
+            },
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -182,7 +189,11 @@ class LTCPreviewTestsMixin:
         image_data = serializer.get_image_data(image_definition, self.primary_ltc, content_key)
         
         expected_image_data = [{
-            'imageUrl': content_image.image_url(),
+            'imageUrl': {
+                '1x': content_image.image_url(size=250),
+                '2x': content_image.image_url(size=500),
+                '4x': content_image.image_url(size=1000),
+            },
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -249,7 +260,11 @@ class LTCPreviewTestsMixin:
                 'url': '/test-url-2/'
             },
             'image': {
-                'imageUrl': content_image.image_url(),
+                'imageUrl': {
+                    '1x': content_image.image_url(size=250),
+                    '2x': content_image.image_url(size=500),
+                    '4x': content_image.image_url(size=1000),
+                },
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -289,6 +304,11 @@ class LTCPreviewTestsMixin:
 
         multi_component_image = self.get_content_image(self.user, self.primary_ltc, multi_component_image_type)
         
+        stream_key = 'stream'
+        stream_item = self.primary_ltc.draft_contents[stream_key][0]
+        stream_item_image_type = get_component_image_type(stream_key, stream_item['uuid'], 'image')
+        stream_item_image = self.get_content_image(self.user, self.primary_ltc, stream_item_image_type)
+        
         serializer = LocalizedTemplateContentSerializer(self.primary_ltc, context=context)
         contents = serializer.get_contents(self.primary_ltc)
         
@@ -314,7 +334,11 @@ class LTCPreviewTestsMixin:
                         'url': '/test-url/'
                     },
                     'image': {
-                        'imageUrl': multi_component_image.image_url(),
+                        'imageUrl': {
+                            '1x': multi_component_image.image_url(size=250),
+                            '2x': multi_component_image.image_url(size=500),
+                            '4x': multi_component_image.image_url(size=1000),
+                        },
                         'licence': {
                             'licence': None,
                             'licenceVersion': '',
@@ -336,7 +360,11 @@ class LTCPreviewTestsMixin:
                     'url': '/test-url-2/'
                 },
                 'image': {
-                    'imageUrl': component_image.image_url(),
+                    'imageUrl': {
+                        '1x': component_image.image_url(size=250),
+                        '2x': component_image.image_url(size=500),
+                        '4x': component_image.image_url(size=1000),
+                    },
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -347,7 +375,11 @@ class LTCPreviewTestsMixin:
                 },
             },
             'image': {
-                'imageUrl': content_image.image_url(),
+                'imageUrl': {
+                    '1x': content_image.image_url(size=250),
+                    '2x': content_image.image_url(size=500),
+                    '4x': content_image.image_url(size=1000),
+                },
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -358,7 +390,11 @@ class LTCPreviewTestsMixin:
             },
             'images': [
                 {
-                    'imageUrl': content_image_multiple.image_url(),
+                    'imageUrl': {
+                        '1x': content_image_multiple.image_url(size=250),
+                        '2x': content_image_multiple.image_url(size=500),
+                        '4x': content_image_multiple.image_url(size=1000),
+                    },
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -367,12 +403,39 @@ class LTCPreviewTestsMixin:
                         'sourceLink': ''
                     }
                 }
+            ],
+            'stream': [
+                {
+                    'uuid': stream_item['uuid'],
+                    'templateName': 'TestComponent',
+                    'text': 'stream item text',
+                    'link': {
+                        'pk': str(self.primary_ltc.pk),
+                        'slug': 'test-template-content',
+                        'templateName': 'TestPage',
+                        'title': 'stream item link title',
+                        'url': '/test-url-3/'
+                    },
+                    'image': {
+                        'imageUrl': {
+                            '1x': stream_item_image.image_url(size=250),
+                            '2x': stream_item_image.image_url(size=500),
+                            '4x': stream_item_image.image_url(size=1000),
+                        },
+                        'licence': {
+                            'licence': None,
+                            'licenceVersion': '',
+                            'creatorName': '',
+                            'creatorLink': '',
+                            'sourceLink': ''
+                        }
+                    }
+                }
             ]
         }
         
         for key, value in expected_contents.items():
             self.assertEqual(expected_contents[key], contents[key])
-        
         self.assertEqual(contents, expected_contents)
         
     
@@ -386,6 +449,9 @@ class LTCPreviewTestsMixin:
         
         multi_component_key = 'component'
         multi_component = self.primary_ltc.draft_contents[multi_component_key][0]
+        
+        stream_key = 'stream'
+        stream_item = self.primary_ltc.draft_contents[stream_key][0]
         
         context = {
             'preview' : True
@@ -435,8 +501,25 @@ class LTCPreviewTestsMixin:
                     'image': None
                 },
                 'image': None,
-                'images': []
-            }
+                'images': [],
+                'stream': [
+                    {
+                        'uuid': stream_item['uuid'],
+                        'templateName': 'TestComponent',
+                        'text': 'stream item text',
+                        'link': {
+                            'pk': str(self.primary_ltc.pk),
+                            'slug': 'test-template-content',
+                            'templateName': 'TestPage',
+                            'title': 'stream item link title',
+                            'url': '/test-url-3/'
+                        },
+                        'image': None,
+                    }
+                ]
+            },
+            'linkedTaxa': [],
+            'linkedTaxonProfiles': [],
         }
         
         self.assertEqual(serializer.data, expected_data)
@@ -448,6 +531,51 @@ class LTCPreviewTestsMixin:
         self.prepare_template_content()
         # not supported
         pass
+    
+    @test_settings
+    def test_get_linked_taxa(self):
+        
+        self.prepare_template_content()
+        
+        test_taxon_kwargs = {
+            "taxon_source": "taxonomy.sources.col",
+            "name_uuid": "eb53f49f-1f80-4505-9d56-74216ac4e548",
+            "taxon_nuid": "006002009001005001001",
+            "taxon_latname": "Abies alba",
+            "taxon_author" : "Linnaeus",
+            "gbif_nubKey": 2685484,
+        }
+        lazy_taxon = LazyAppTaxon(**test_taxon_kwargs)
+        
+        template_content = self.primary_ltc.template_content
+        
+        restriction = TaxonomicRestriction(
+            taxon = lazy_taxon,
+            content_type = ContentType.objects.get_for_model(template_content),
+            object_id = template_content.id,
+        )
+
+        restriction.save()
+        
+        context = {
+            'preview' : True
+        }
+        
+        serializer = LocalizedTemplateContentSerializer(self.primary_ltc, context=context)
+
+        taxa = serializer.get_linkedTaxa(self.primary_ltc)
+
+        expected_taxa = [
+            {
+                'nameUuid': 'eb53f49f-1f80-4505-9d56-74216ac4e548',
+                'taxonAuthor': 'Linnaeus',
+                'taxonLatname': 'Abies alba',
+                'taxonNuid': '006002009001005001001',
+                'taxonSource': 'taxonomy.sources.col'
+            }
+        ]
+
+        self.assertEqual(taxa, expected_taxa)
 
 
 class TestPreviewLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, WithTemplateContent,
@@ -656,7 +784,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         image_data = serializer.get_image_data(image_definition, self.primary_ltc, content_key)
         
         expected_image_data = {
-            'imageUrl': content_image.image_url(),
+            'imageUrl': {
+                '1x': content_image.image_url(size=250),
+                '2x': content_image.image_url(size=500),
+                '4x': content_image.image_url(size=1000),
+            },
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -697,7 +829,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         image_data = serializer.get_image_data(image_definition, self.primary_ltc, content_key)
         
         expected_image_data = [{
-            'imageUrl': content_image.image_url(),
+            'imageUrl': {
+                '1x': content_image.image_url(size=250),
+                '2x': content_image.image_url(size=500),
+                '4x': content_image.image_url(size=1000),
+            },
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -766,7 +902,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 'url': '/test-url-2/'
             },
             'image': {
-                'imageUrl': content_image.image_url(),
+                'imageUrl': {
+                    '1x': content_image.image_url(size=250),
+                    '2x': content_image.image_url(size=500),
+                    '4x': content_image.image_url(size=1000),
+                },
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -838,7 +978,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                         'url': '/test-url-pc/'
                     },
                     'image': {
-                        'imageUrl': multi_component_image.image_url(),
+                        'imageUrl': {
+                            '1x': multi_component_image.image_url(size=250),
+                            '2x': multi_component_image.image_url(size=500),
+                            '4x': multi_component_image.image_url(size=1000),
+                        },
                         'licence': {
                             'licence': None,
                             'licenceVersion': '',
@@ -860,7 +1004,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                     'url': '/test-url-2-pc/'
                 },
                 'image': {
-                    'imageUrl': component_image.image_url(),
+                    'imageUrl': {
+                        '1x': component_image.image_url(size=250),
+                        '2x': component_image.image_url(size=500),
+                        '4x': component_image.image_url(size=1000),
+                    },
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -871,7 +1019,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 },
             },
             'image': {
-                'imageUrl': content_image.image_url(),
+                'imageUrl': {
+                    '1x': content_image.image_url(size=250),
+                    '2x': content_image.image_url(size=500),
+                    '4x': content_image.image_url(size=1000),
+                },
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -882,7 +1034,11 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
             },
             'images': [
                 {
-                    'imageUrl': content_image_multiple.image_url(),
+                    'imageUrl': {
+                        '1x': content_image_multiple.image_url(size=250),
+                        '2x': content_image_multiple.image_url(size=500),
+                        '4x': content_image_multiple.image_url(size=1000),
+                    },
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -967,7 +1123,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 },
                 'image': None,
                 'images': []
-            }
+            },
+            'linkedTaxa': [],
+            'linkedTaxonProfiles': [],
         }
         
         self.assertEqual(serializer.data, expected_data)

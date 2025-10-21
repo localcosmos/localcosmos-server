@@ -3,6 +3,9 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import slugify
 from django.core.files import File
+from django.contrib.contenttypes.fields import GenericRelation
+
+from localcosmos_server.taxonomy.generic import ModelWithTaxon
 
 from localcosmos_server.models import App, ServerContentImageMixin, TaxonomicRestriction
 
@@ -10,7 +13,7 @@ from django.utils import timezone
 
 import os, json, uuid, shutil
 
-from.Templates import Template
+from .Templates import Template
 
 from .utils import (get_component_image_type, get_published_image_type, PUBLISHED_IMAGE_TYPE_PREFIX,
                     get_frontend_specific_url)
@@ -24,6 +27,7 @@ TEMPLATE_CONTENT_TYPES = (
     'text',
     'image',
     'component',
+    'stream',
     'templateContentLink',
 )
 
@@ -156,7 +160,7 @@ class TemplateContentManager(models.Manager):
         return template_content
 
     
-    def filter_by_taxon(self, lazy_taxon, ascendants=False):
+    def filter_by_taxon(self, app, lazy_taxon, ascendants=False):
 
         template_contents = []
 
@@ -166,16 +170,15 @@ class TemplateContentManager(models.Manager):
 
             template_content_ids = template_content_links.values_list('object_id', flat=True)
 
-            template_contents = self.filter(pk__in=template_content_ids)
+            template_contents = self.filter(app=app, pk__in=template_content_ids)
 
 
         else:
-            # get for all nuids, not implemented yet
             template_content_links = TaxonomicRestriction.objects.get_for_taxon_branch(TemplateContent, lazy_taxon)
 
             template_content_ids = template_content_links.values_list('object_id', flat=True)
 
-            template_contents = self.filter(pk__in=template_content_ids)
+            template_contents = self.filter(app=app, pk__in=template_content_ids)
 
         
         return template_contents
@@ -214,6 +217,8 @@ class TemplateContent(PublicationMixin, models.Model):
 
     published_template = models.FileField(null=True, upload_to=get_published_page_template_path)
     published_template_definition = models.FileField(null=True, upload_to=get_published_page_template_definition_path)
+    
+    taxonomic_restrictions = GenericRelation(TaxonomicRestriction)
 
     objects = TemplateContentManager()
 
@@ -234,18 +239,21 @@ class TemplateContent(PublicationMixin, models.Model):
         return template
 
     # return different path for published pages
-    def get_component_template(self, content_key):
-
-        component_template_name = self.draft_template.definition['contents'][content_key]['templateName']
+    # stream items will provide component_template_name
+    # content_key is not suffucient for stream items, because different components share the same content_key)
+    def get_component_template(self, content_key, component_template_name=None):
+        
+        if not component_template_name:
+            component_template_name = self.draft_template.definition['contents'][content_key]['templateName']
         # load the component template
         component_template = Template(self.app, component_template_name, 'component')
 
         return component_template
 
 
-    def get_published_component_template(self, content_key):
-
-        component_template_name = self.template.definition['contents'][content_key]['templateName']
+    def get_published_component_template(self, content_key, component_template_name=None):
+        if not component_template_name:
+            component_template_name = self.template.definition['contents'][content_key]['templateName']
         
         published_component_template_definition_filepath = self.get_published_component_template_definition_filepath(component_template_name)
         published_component_template_filepath = self.get_published_component_template_filepath(component_template_name)
@@ -323,14 +331,28 @@ class TemplateContent(PublicationMixin, models.Model):
 
         # published_templates_root = get_published_template_content_root(self)
         # published_component_templates_root = os.path.join(published_templates_root, 'templates', 'component')
-
+        copied_component_template_names = []
+        
         for content_key, content_definition in template_definition['contents'].items():
+            
+            component_template_names = []
 
             if content_definition['type'] == 'component':
-
                 component_template_name = content_definition['templateName']
+            
+            elif content_definition['type'] == 'stream':
+                component_template_names += content_definition['allowedComponents']
+                
+            component_template_names = set(component_template_names)
 
-                component_template = self.get_component_template(content_key)
+            for component_template_name in component_template_names:
+
+                if component_template_name in copied_component_template_names:
+                    continue
+
+                copied_component_template_names.append(component_template_name)
+
+                component_template = self.get_component_template(content_key, component_template_name)
 
                 # does not exist
                 published_component_template_folder = self.get_published_component_template_folder(
@@ -549,6 +571,24 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
                             image_type = get_component_image_type(component_key, component_uuid, content_key)
 
                             self.publish_images(image_type, content_definition)
+                            
+                            
+            elif component_definition['type'] == 'stream':
+
+                stream_items = self.draft_contents.get(component_key, [])
+                for stream_item in stream_items:
+                    
+                    stream_item_uuid = stream_item['uuid']
+                    component_template_name = stream_item['templateName']
+                    component_template = self.template_content.get_component_template(component_key, component_template_name)
+                    
+                    for content_key, content_definition in component_template.definition['contents'].items():
+                        
+                        # publish the image and add the url to the component
+                        if content_definition['type'] == 'image':
+                            image_type = get_component_image_type(component_key, stream_item_uuid, content_key)
+
+                            self.publish_images(image_type, content_definition)
 
 
     def publish_images(self, image_type, content_definition):
@@ -644,8 +684,13 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
         template_definition = self.template_content.draft_template.definition
         
         if component_key in template_definition['contents']:
+            
             allow_multiple = template_definition['contents'][component_key].get(
                 'allowMultiple', False)
+            
+            # check for type "stream", which is always mutliple
+            if template_definition['contents'][component_key]['type'] == 'stream':
+                allow_multiple = True
 
             if self.draft_contents:
 
@@ -664,14 +709,18 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
         return component
 
-
     def add_or_update_component(self, component_key, component, save=True):
 
         if 'uuid' not in component or not component['uuid']:
             raise ValueError('Cannot add component without uuid')
+        
+        content_definition = self.template_content.draft_template.definition['contents'][component_key]
 
-        allow_multiple = self.template_content.draft_template.definition['contents'][component_key].get(
+        allow_multiple = content_definition.get(
             'allowMultiple', False)
+
+        if content_definition['type'] == 'stream':
+            allow_multiple = True
 
         if not self.draft_contents:
             self.draft_contents = {}
@@ -700,9 +749,14 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
 
     def remove_component(self, component_key, component_uuid, save=True):
+        
+        content_definition = self.template_content.draft_template.definition['contents'][component_key]
 
-        allow_multiple = self.template_content.draft_template.definition['contents'][component_key].get(
+        allow_multiple = content_definition.get(
             'allowMultiple', False)
+        
+        if content_definition['type'] == 'stream':
+            allow_multiple = True
 
         if not self.draft_contents:
             self.draft_contents = {}

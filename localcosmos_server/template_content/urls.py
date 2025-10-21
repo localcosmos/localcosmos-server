@@ -55,8 +55,8 @@ urlpatterns = [
    path('<str:app_uid>/translate-template-content-navigation/<int:pk>/<str:language>/', views.TranslateNavigation.as_view(),
       name='translate_template_content_navigation'),
    # components
-   path('<str:app_uid>/manage-component/<int:localized_template_content_id>/<str:content_key>/',
-      views.ManageComponent.as_view(), name='manage_component'),
+   path('<str:app_uid>/add-component/<int:localized_template_content_id>/<str:content_key>/',
+      views.ManageComponent.as_view(), name='add_component'),
    path('<str:app_uid>/manage-component/<int:localized_template_content_id>/<str:content_key>/<uuid:component_uuid>/',
       views.ManageComponent.as_view(), name='manage_component'),
    path('<str:app_uid>/delete-component/<int:localized_template_content_id>/<str:content_key>/<uuid:component_uuid>/',
@@ -68,6 +68,11 @@ urlpatterns = [
       views.ManageComponentImage.as_view(), name='manage_component_image'),
    path('<str:app_uid>/delete-component-image/<int:pk>/', views.DeleteComponentImage.as_view(),
       name='delete_component_image'),
+   # stream components
+   path('<str:app_uid>/add-component/<int:localized_template_content_id>/<str:content_key>/<str:component_template_name>/',
+      views.ManageComponent.as_view(), name='add_component'),
+   path('<str:app_uid>/store-component-order/<int:localized_template_content_id>/<str:content_key>/',
+      views.StoreComponentOrder.as_view(), name='store_component_order'),
    # translation, component view
    path('<str:app_uid>/translate-template-content/<int:template_content_id>/component-view/<str:content_key>/<uuid:component_uuid>/',
       views.ComponentContentView.as_view(), name='component_content_view'),

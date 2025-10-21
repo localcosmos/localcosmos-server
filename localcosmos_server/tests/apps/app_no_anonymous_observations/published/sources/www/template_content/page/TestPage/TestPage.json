@@ -53,6 +53,12 @@
       "type": "templateContentLink",
       "widget": "TextInput",
       "required": false
+    },
+    "stream": {
+      "type": "stream",
+      "allowedComponents": [
+        "TestComponent"
+      ]
     }
   }
 }

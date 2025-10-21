@@ -6,12 +6,13 @@ import uuid
 PAGE_TEMPLATE_TYPE = 'page'
 TEST_TEMPLATE_NAME = 'TestPage'
 
-TEST_PAGE_CONTENT_KEYS = ['image', 'longText', 'component', 'text']
+TEST_PAGE_CONTENT_KEYS = ['image', 'longText', 'component', 'text', 'stream']
 TEST_PAGE_CONTENT_TYPES = {
     'image': 'image',
     'longText': 'text',
     'component': 'component',
     'text': 'text',
+    'stream': 'stream',
 }
 
 class WithTemplateContent:
@@ -51,6 +52,8 @@ class WithTemplateContent:
         component_uuid = str(uuid.uuid4())
         component_2_uuid = str(uuid.uuid4())
         
+        stream_item_uuid = str(uuid.uuid4())
+        
         component = {
             'uuid': component_uuid,
             'text': 'component text',
@@ -75,6 +78,19 @@ class WithTemplateContent:
             }
         }
         
+        stream_item = {
+            'uuid': stream_item_uuid,
+            'templateName': 'TestComponent',
+            'text': 'stream item text',
+            'link': {
+                'pk': str(self.primary_ltc.pk),
+                'slug': self.primary_ltc.slug,
+                'templateName': self.primary_ltc.template_content.draft_template_name,
+                'title': 'stream item link title',
+                'url': '/test-url-3/', # just for testing
+            }
+        }
+        
         localized_template_content.draft_contents = {
             'longText': 'test text which is a bit longer',
             'text': 'short text',
@@ -89,6 +105,9 @@ class WithTemplateContent:
                 component,
             ],
             'component2': component_2,
+            'stream': [
+                stream_item,
+            ]
         }
         
         localized_template_content.save()

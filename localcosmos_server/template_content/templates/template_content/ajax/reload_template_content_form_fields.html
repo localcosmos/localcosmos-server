@@ -4,6 +4,8 @@ var url = "{% url 'get_template_content_form_fields' request.app.uid localized_t
 $.get(url, function(html){
     $(template_contents_container).html(html);
     ajaxify(template_contents_container.id);
+    $(".move-component-up").on("click", positionmanager.onMoveForward);
+    $(".move-component-down").on("click", positionmanager.onMoveBack);
 });
 
 reloadPreview();

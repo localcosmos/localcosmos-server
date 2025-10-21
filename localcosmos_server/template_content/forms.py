@@ -10,8 +10,9 @@ from .models import (NAVIGATION_LINK_NAME_MAX_LENGTH, TemplateContent, Navigatio
 
 from .Templates import Template, Templates
 
-from .fields import ComponentField
-from .widgets import ContentWithPreviewWidget, FileContentWidget, TextareaContentWidget, TextContentWidget
+from .fields import ComponentField, StreamField
+from .widgets import (ContentWithPreviewWidget, FileContentWidget, TextareaContentWidget, TextContentWidget,
+                      StreamContentWidget)
 
 from .utils import get_preview_text
 
@@ -104,7 +105,7 @@ class TemplateContentFormFieldManager:
                 image_type = self._get_image_type(content_key)
                 instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
 
-            elif content_type in ['component', 'text', 'templateContentLink'] and self.localized_template_content.draft_contents:
+            elif content_type in ['component', 'text', 'templateContentLink', 'stream'] and self.localized_template_content.draft_contents:
                 instances = self.localized_template_content.draft_contents.get(content_key, [])
 
         return instances
@@ -127,17 +128,34 @@ class TemplateContentFormFieldManager:
         return form_field
 
 
+    '''
+        {
+            "title": "Sample page",
+            "templateName": "Sample",
+            "templatePath": "/template_content/page/sample/sample.html",
+            "version": 1,
+            "contents": {
+                "stream": [
+                    {
+                        "templateName": "Video",
+                        "type": "component",
+                        (...other component fields...)
+                    }
+                ]
+            }
+        }
+    '''
     def get_form_fields(self, content_key, content_definition):
-
+        
         form_fields = []
-
+        
         content_type = content_definition['type']
         allow_multiple = content_definition.get('allowMultiple', False)
 
         field_getter_name = '_get_{0}_form_field'.format(content_type)
         field_getter = getattr(self, field_getter_name)
 
-        if allow_multiple == True:
+        if content_type != 'stream' and allow_multiple == True:
             instances = self.get_instances(content_key, content_definition['type'])
             max_number = content_definition.get('maxNumber', None)
 
@@ -310,15 +328,24 @@ class TemplateContentFormFieldManager:
 
         return form_field
 
-
     def _get_text_form_field(self, content_key, content_definition, instance=None):
 
         field_kwargs = self._get_common_field_kwargs(content_key, content_definition)
 
+        widget_name = content_definition.get('widget', None)
+        
         widget = TextareaContentWidget
-        if content_definition.get('widget', None) == 'TextInput':
+        field_class = forms.CharField
+        
+        if widget_name == 'TextInput':
             widget = TextContentWidget
-
+        elif widget_name == 'Select':
+            choices_definition = content_definition.get('choices', [])
+            choices = [(option, option) for option in choices_definition]
+            field_kwargs['choices'] = choices
+            widget = forms.Select
+            field_class = forms.ChoiceField
+            
         initial = ''
         if instance:
             initial = instance
@@ -328,7 +355,7 @@ class TemplateContentFormFieldManager:
             'initial' : initial,
         })
                                             
-        form_field = forms.CharField(**field_kwargs)
+        form_field = field_class(**field_kwargs)
 
         form_field = self._add_primary_locale_content_to_form_field(form_field, content_key)
         
@@ -358,7 +385,10 @@ class TemplateContentFormFieldManager:
 
             preview_text = get_preview_text(component_template, instance)
 
-        data_url = reverse('manage_component', kwargs=data_url_kwargs)
+        if instance:
+            data_url = reverse('manage_component', kwargs=data_url_kwargs)
+        else:
+            data_url = reverse('add_component', kwargs=data_url_kwargs)
 
         widget_attrs['data_url'] = data_url
         widget_attrs['delete_url'] = delete_url
@@ -377,6 +407,21 @@ class TemplateContentFormFieldManager:
 
         form_field = self._add_primary_locale_content_to_form_field(form_field, content_key)
 
+        return form_field
+    
+    
+    def _get_stream_form_field(self, content_key, content_definition, instance=None):
+        
+        field_kwargs = self._get_common_field_kwargs(content_key, content_definition)
+        
+        widget = StreamContentWidget(self.app, self.localized_template_content, content_key, content_definition)
+        
+        field_kwargs.update({
+            'widget' : widget,
+        })
+        
+        form_field = StreamField(**field_kwargs)
+        
         return form_field
 
 
@@ -414,6 +459,7 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
     manage_content_image_url_name = 'manage_component_image'
     delete_content_image_url_name = 'delete_component_image'
 
+    # component_uuid can be None for new components
     def __init__(self, app, template_content, localized_template_content, component_key, component_uuid, component={}):
         self.app = app
         self.template_content = template_content
@@ -530,26 +576,25 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
 
     localizeable_fields = []
 
-    def __init__(self, app, template_content, localized_template_content, content_key, component=None, *args, **kwargs):
+    def __init__(self, app, template_content, localized_template_content, content_key, component_template_name, component=None, *args, **kwargs):
         initial = kwargs.get('initial', {})
         
         if 'uuid' not in initial:
             raise ValueError("initial['uuid] is required")
-        
+
+        self.component_template_name = component_template_name
+
+
         self.content_key = content_key
         self.component = component
         
         super().__init__(app, template_content, localized_template_content, *args, **kwargs)
 
         self.fields.pop('draft_title')
-
+        
     def set_template_definition(self):
-        page_template_definition = self.template_content.draft_template.definition
-        self.component_template_name = page_template_definition['contents'][self.content_key]['templateName']
-
         # load the component template
         component_template = Template(self.app, self.component_template_name, 'component')
-
         self.template_definition = component_template.definition
 
     def get_form_field_manager(self):

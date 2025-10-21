@@ -29,6 +29,12 @@ var positionmanager = {
 		var order = [];
 
 		$parent.children().each(function(){
+			// check if data-object-id is a uuid or a integer
+			if ($(this).attr("data-object-id").indexOf("-") != -1){
+				order.push($(this).attr("data-object-id"));
+				return;
+			}
+			// otherwise assume integer
 			order.push(parseInt($(this).attr("data-object-id")));
 		});
 

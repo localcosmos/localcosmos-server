@@ -110,7 +110,8 @@ class TestTemplateContent(WithMedia, WithTemplateContent, WithUser, WithApp, Tes
     def test_init(self):
         # unpublished
         self.assertTrue(isinstance(self.template_content.draft_template, Template))
-        self.assertFalse(hasattr(self.template_content, 'template'))
+        self.assertTrue(hasattr(self.template_content, 'template'))
+        self.assertEqual(self.template_content.template, None)
 
         # published
         self.template_content.publish_assets()
@@ -124,6 +125,13 @@ class TestTemplateContent(WithMedia, WithTemplateContent, WithUser, WithApp, Tes
     def test_get_component_template(self):
         content_key = 'component'
         component_template = self.template_content.get_component_template(content_key)
+        self.assertTrue(isinstance(component_template, Template))
+        
+    @test_settings
+    def test_get_component_template_stream(self):
+        content_key = 'stream'
+
+        component_template = self.template_content.get_component_template(content_key, 'TestComponent')
         self.assertTrue(isinstance(component_template, Template))
 
     @test_settings
@@ -602,6 +610,19 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
             }
         }
         
+        stream_item = {
+            'uuid': str(uuid.uuid4()),
+            'templateName': 'TestComponent',
+            'text': 'stream item text',
+            'link': {
+                'pk': str(self.primary_ltc.pk),
+                'slug': self.primary_ltc.slug,
+                'templateName': self.primary_ltc.template_content.draft_template_name,
+                'title': self.primary_ltc.published_title,
+                'url': '/test-url-3/', # just for testing
+            }
+        }
+        
         self.primary_ltc.draft_contents = {
             'longText': 'test text which is a bit longer',
             'text': 'short text',
@@ -616,6 +637,9 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
                 component,
             ],
             'component2': component_2,
+            'stream': [
+                stream_item,
+            ]
         }
         
         self.primary_ltc.save()
@@ -628,8 +652,10 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         fetched_component_3 = self.primary_ltc.get_component('component3', str(uuid.uuid4()))
         self.assertEqual({}, fetched_component_3)
-    
-    
+        
+        fetched_stream_item = self.primary_ltc.get_component('stream', stream_item['uuid'])
+        self.assertEqual(stream_item, fetched_stream_item)
+
     @test_settings
     def test_add_or_update_component(self):
         
@@ -657,6 +683,19 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
                 'templateName': self.primary_ltc.template_content.draft_template_name,
                 'title': self.primary_ltc.published_title,
                 'url': '/test-url-2/', # just for testing
+            }
+        }
+        
+        stream_item = {
+            'uuid': str(uuid.uuid4()),
+            'templateName': 'TestComponent',
+            'text': 'stream item text',
+            'link': {
+                'pk': str(self.primary_ltc.pk),
+                'slug': self.primary_ltc.slug,
+                'templateName': self.primary_ltc.template_content.draft_template_name,
+                'title': self.primary_ltc.published_title,
+                'url': '/test-url-3/', # just for testing
             }
         }
         
@@ -689,6 +728,20 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         fetched_component_2 = self.primary_ltc.get_component('component2', component_2_uuid)
         self.assertEqual(fetched_component_2, component_2)
+        
+        # stream item
+        self.primary_ltc.add_or_update_component('stream', stream_item)
+        self.primary_ltc.refresh_from_db()
+        fetched_stream_item = self.primary_ltc.get_component('stream', stream_item['uuid'])
+        self.assertEqual(fetched_stream_item, stream_item)
+        
+        updated_stream_item = stream_item.copy()
+        updated_stream_item['text'] = 'updated stream item text'
+        
+        self.primary_ltc.add_or_update_component('stream', updated_stream_item)
+        self.primary_ltc.refresh_from_db()
+        fetched_stream_item = self.primary_ltc.get_component('stream', stream_item['uuid'])
+        self.assertEqual(fetched_stream_item['text'], 'updated stream item text')
             
     
     @test_settings
@@ -735,9 +788,23 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
             }
         }
         
+        stream_item = {
+            'uuid': str(uuid.uuid4()),
+            'templateName': 'TestComponent',
+            'text': 'stream item text',
+            'link': {
+                'pk': str(self.primary_ltc.pk),
+                'slug': self.primary_ltc.slug,
+                'templateName': self.primary_ltc.template_content.draft_template_name,
+                'title': self.primary_ltc.published_title,
+                'url': '/test-url-3/', # just for testing
+            }
+        }
+        
         self.primary_ltc.add_or_update_component('component', list_component)
         self.primary_ltc.add_or_update_component('component', list_component_2)
         self.primary_ltc.add_or_update_component('component2', single_component)
+        self.primary_ltc.add_or_update_component('stream', stream_item)
         
         self.primary_ltc.remove_component('component', list_component_uuid, save=False)
         self.primary_ltc.refresh_from_db()
@@ -781,7 +848,11 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
             single_component_uuid)
         self.assertEqual({}, fetched_single_component)
         
-    
+        # remove stream item
+        self.primary_ltc.remove_component('stream', stream_item['uuid'])
+        fetched_stream_item = self.primary_ltc.get_component('stream', stream_item['uuid'])
+        self.assertEqual({}, fetched_stream_item)
+        
     @test_settings
     def test_get_content_image_restrictions(self):
         
