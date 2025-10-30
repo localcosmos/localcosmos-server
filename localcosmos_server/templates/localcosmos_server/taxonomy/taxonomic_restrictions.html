@@ -1,6 +1,6 @@
 {% load i18n localcosmos_tags %}
 
-<form method="POST" action="{{ action_url }}" class="xhr">{% csrf_token %}
+<form id="taxonomic-restrictions-{{ content|ctype_id }}-{{ content.id }}" method="POST" action="{{ action_url }}" class="xhr">{% csrf_token %}
 
 	{% include 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html' %}
 

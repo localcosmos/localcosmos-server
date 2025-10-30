@@ -42,14 +42,19 @@ class SearchAppTaxon(TemplateView):
 '''
 class ManageTaxonomicRestrictionsCommon:
 
-    template_name = 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html'
+    template_name = 'localcosmos_server/taxonomy/taxonomic_restrictions.html'
     form_class= AddSingleTaxonForm
 
     restriction_model = TaxonomicRestriction
 
-
     def get_taxon_search_url(self):
         raise NotImplementedError('ManageTaxonomicRestrictionsCommon subclasses require a get_taxon_search_url method')
+    
+    def get_action_url(self):
+        return reverse(
+            'manage_app_taxonomic_restrictions',
+            args=[self.request.app.uid, self.content_type.id, self.content_instance.id]
+        )
 
 
     def get_prefix(self):
@@ -102,6 +107,8 @@ class ManageTaxonomicRestrictionsCommon:
         )
 
         context['restrictions'] = restrictions
+        
+        context['action_url'] = self.get_action_url()
         return context
 
 

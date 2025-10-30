@@ -802,9 +802,15 @@ class NavigationEntriesMixin:
         context = super().get_context_data(**kwargs)
         navigation = Navigation.objects.get(pk=self.kwargs['pk'])
         context['navigation'] = navigation
+        
+        
+        max_entries = navigation.settings.get('maxEntries', None)
 
         toplevel_entries = NavigationEntry.objects.filter(navigation=navigation, parent=None)
+        if max_entries:
+            toplevel_entries = toplevel_entries[:max_entries]
         context['navigation_entries'] = toplevel_entries
+        context['max_entries'] = max_entries
         return context
 
 

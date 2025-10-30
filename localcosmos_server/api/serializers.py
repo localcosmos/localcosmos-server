@@ -327,6 +327,79 @@ class ExternalMediaSerializer(serializers.Serializer):
     licence = serializers.CharField(allow_null=True, required=False, read_only=True)
     caption = serializers.CharField(allow_null=True, required=False, read_only=True)
     altText = serializers.CharField(allow_null=True, required=False, read_only=True)
+    
+
+class TaxonRelationshipTaxonSerializer(serializers.Serializer):
+    taxonSource = serializers.CharField(read_only=True)
+    taxonLatname = serializers.CharField(read_only=True)
+    taxonAuthor = serializers.CharField(read_only=True)
+    nameUuid = serializers.CharField(read_only=True)
+    taxonNuid = serializers.CharField(read_only=True)
+    image = ImageSerializer(read_only=True)
+    vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
+    hasTaxonProfile = serializers.BooleanField(read_only=True)
+    taxonProfileId = serializers.IntegerField(read_only=True, allow_null=True)
+    
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+        self.language = kwargs.get('language', self.app.primary_language if self.app else None)
+        
+    def get_taxon_profile(self, instance):
+        
+        taxon_profile = None
+        if instance['hasTaxonProfile'] == True and self.language:
+            features = self.app.get_features('published')
+            localized_taxon_profiles_path = features['TaxonProfiles']['localizedFiles'].get(self.language, {})
+            if localized_taxon_profiles_path:
+                root = self.app.get_installed_app_path('published')
+                taxon_profile_path = os.path.join(root, localized_taxon_profiles_path.lstrip('/'), instance['taxonSource'], instance['nameUuid'] + '.json')
+                print(taxon_profile_path)
+                if os.path.isfile(taxon_profile_path):
+                    with open(taxon_profile_path, 'r', encoding='utf-8') as f:
+                        taxon_profile = json.load(f)
+                
+        return taxon_profile
+
+    def to_representation(self, instance):
+        taxon = instance.copy()
+        
+        taxon_profile = self.get_taxon_profile(instance)
+        
+        if taxon_profile:
+            taxon['taxonProfileId'] = taxon_profile['taxonProfileId']
+        else:
+            taxon['taxonProfileId'] = None
+        
+        return taxon
+
+
+class TaxonRelationshipSerializer(serializers.Serializer):
+    taxon = TaxonRelationshipTaxonSerializer(read_only=True)
+    relatedTaxon = TaxonRelationshipTaxonSerializer(read_only=True)
+    description = serializers.CharField(allow_null=True, required=False, read_only=True)
+    
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+        
+    def to_representation(self, instance):
+        data = instance.copy()
+        data['taxon'] = TaxonRelationshipTaxonSerializer(instance['taxon'], app=self.app).data
+        data['relatedTaxon'] = TaxonRelationshipTaxonSerializer(instance['relatedTaxon'], app=self.app).data
+        return data
+
+
+class TaxonRelationshipTypeSerializer(serializers.Serializer):
+    name = serializers.CharField(read_only=True)
+    taxonRole = serializers.CharField(read_only=True, required=False, allow_null=True)
+    relatedTaxonRole = serializers.CharField(read_only=True, required=False, allow_null=True)
+
+
+class TaxonRelationshipsSerializer(serializers.Serializer):
+    relationshipType = TaxonRelationshipTypeSerializer(read_only=True)
+    relationships = serializers.ListField(child=TaxonRelationshipSerializer(read_only=True), read_only=True)
+
 
 class TaxonProfileSerializer(serializers.Serializer):
     taxonLatname = serializers.CharField(read_only=True)
@@ -347,6 +420,7 @@ class TaxonProfileSerializer(serializers.Serializer):
     tags = serializers.ListField(child=serializers.CharField(read_only=True), required=False, read_only=True)
     seo = SeoSerializer(read_only=True)
     externalMedia = serializers.ListField(child=ExternalMediaSerializer(read_only=True), required=False, read_only=True)
+    taxonRelationships = serializers.ListField(child=TaxonRelationshipsSerializer(read_only=True), required=False, read_only=True)
     isFeatured = serializers.BooleanField(read_only=True)
 
     def __init__(self, *args, app=None, **kwargs):
@@ -365,7 +439,27 @@ class TaxonProfileSerializer(serializers.Serializer):
         images = None
         if instance.get('images'):
             images = ImagesSerializer(instance['images'], app=self.app).data
-
+            
+        taxon_relationships = instance.get('taxonRelationships', [])
+        
+        taxon_relationships_serialized = []
+        for tr in taxon_relationships:
+            
+            tr_serialized = {
+                'relationshipType': TaxonRelationshipTypeSerializer(tr['relationshipType']).data,
+                'relationships': []
+            }
+            
+            for relation in tr['relationships']:
+                relation_serialized = TaxonRelationshipSerializer(
+                    relation,
+                    context=self.context,
+                    app=self.app
+                ).data
+                tr_serialized['relationships'].append(relation_serialized)
+                
+            taxon_relationships_serialized.append(tr_serialized)
+            
         data = {
             'taxonLatname': instance['taxonLatname'],
             'taxonAuthor': instance['taxonAuthor'],
@@ -385,6 +479,7 @@ class TaxonProfileSerializer(serializers.Serializer):
             'tags': instance['tags'],
             'seo': instance['seo'],
             'externalMedia': instance['externalMedia'],
+            'taxonRelationships': taxon_relationships_serialized,
             'isFeatured': instance['isFeatured'],
         }
 

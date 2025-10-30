@@ -37,7 +37,16 @@ def get_component_preview_text(localized_template_content, content_key, instance
     component_template = localized_template_content.template_content.get_component_template(content_key)
     return get_preview_text(component_template, instance)
 
+
 @register.simple_tag
 def get_stream_item_preview_text(localized_template_content, stream_item):
     component_template = Template(localized_template_content.template_content.app, stream_item['templateName'], 'component')
     return get_preview_text(component_template, stream_item)
+
+
+@register.simple_tag
+def get_stream_item_icon(localized_template_content, stream_item):
+    component_template = Template(localized_template_content.template_content.app, stream_item['templateName'], 'component')
+    icon = component_template.definition.get('icon', None)
+
+    return icon

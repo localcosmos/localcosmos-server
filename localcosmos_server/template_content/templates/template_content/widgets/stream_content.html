@@ -1,4 +1,4 @@
-{% load i18n template_content_tags %}
+{% load i18n static template_content_tags %}
 <div class="col-12">
 
     <div class="row">
@@ -7,11 +7,23 @@
                 <div id="streamitem-{{ stream_item.uuid }}" data-object-id="{{ stream_item.uuid }}" class="card mb-2">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-10 col-md-6">
+                            <div class="col-1">
+                                {% get_stream_item_icon widget.localized_template_content stream_item as icon %}
+                                {% if icon == 'video' %}
+                                    <img src="{% static 'phosphor-icons/video.svg' %}" class="phicon" />
+                                {% elif icon == 'image' %}
+                                    <img src="{% static 'phosphor-icons/image.svg' %}" class="phicon" />
+                                {% elif icon == 'text' %}
+                                    <img src="{% static 'phosphor-icons/article-ny-times.svg' %}" class="phicon" />
+                                {% elif icon == 'heading' %}
+                                    <img src="{% static 'phosphor-icons/text-h.svg' %}" class="phicon" />
+                                {% endif %}
+                            </div>
+                            <div class="col-9 col-md-6">
                                 {% get_stream_item_preview_text widget.localized_template_content stream_item as preview_text %}
                                 {{ preview_text|safe }}
                             </div>
-                            <div class="col-2 col-md-6 text-right">
+                            <div class="col-2 col-md-5 text-right">
                                 <div class="btn-group dropup mt-1">
                                     <button class="btn btn-xs btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         {% trans 'modify' %}

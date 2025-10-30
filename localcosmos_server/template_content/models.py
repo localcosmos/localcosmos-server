@@ -240,7 +240,7 @@ class TemplateContent(PublicationMixin, models.Model):
 
     # return different path for published pages
     # stream items will provide component_template_name
-    # content_key is not suffucient for stream items, because different components share the same content_key)
+    # content_key is not sufficient for stream items, because different components share the same content_key)
     def get_component_template(self, content_key, component_template_name=None):
         
         if not component_template_name:

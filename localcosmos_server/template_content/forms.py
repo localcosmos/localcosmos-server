@@ -236,8 +236,7 @@ class TemplateContentFormFieldManager:
 
     def _get_required(self, content_definition):
         return False
-
-
+    
     def _get_common_widget_attrs(self, content_key, content_definition, instance):
 
         widget_attrs = {
