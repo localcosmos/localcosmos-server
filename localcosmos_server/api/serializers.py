@@ -399,6 +399,23 @@ class TaxonRelationshipTypeSerializer(serializers.Serializer):
 class TaxonRelationshipsSerializer(serializers.Serializer):
     relationshipType = TaxonRelationshipTypeSerializer(read_only=True)
     relationships = serializers.ListField(child=TaxonRelationshipSerializer(read_only=True), read_only=True)
+    
+class TaxonSerializer(serializers.Serializer):
+    taxonLatname = serializers.CharField(read_only=True)
+    taxonAuthor = serializers.CharField(read_only=True)
+    taxonSource = serializers.CharField(read_only=True)
+    nameUuid = serializers.CharField(read_only=True)
+    taxonNuid = serializers.CharField(read_only=True)
+    
+    
+class MorphotypeProfileSerializer(serializers.Serializer):
+    taxonProfileId = serializers.IntegerField(read_only=True)
+    parentTaxonProfileId = serializers.IntegerField(read_only=True)
+    morphotype = serializers.CharField(read_only=True)
+    taxon = TaxonSerializer(read_only=True)
+    vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
+    image = ImageSerializer(read_only=True)
+    vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
 
 
 class TaxonProfileSerializer(serializers.Serializer):
@@ -421,6 +438,7 @@ class TaxonProfileSerializer(serializers.Serializer):
     seo = SeoSerializer(read_only=True)
     externalMedia = serializers.ListField(child=ExternalMediaSerializer(read_only=True), required=False, read_only=True)
     taxonRelationships = serializers.ListField(child=TaxonRelationshipsSerializer(read_only=True), required=False, read_only=True)
+    morphotypeProfiles = serializers.ListField(child=MorphotypeProfileSerializer(read_only=True), required=False, read_only=True)
     isFeatured = serializers.BooleanField(read_only=True)
 
     def __init__(self, *args, app=None, **kwargs):
@@ -480,6 +498,7 @@ class TaxonProfileSerializer(serializers.Serializer):
             'seo': instance['seo'],
             'externalMedia': instance['externalMedia'],
             'taxonRelationships': taxon_relationships_serialized,
+            'morphotypeProfiles': instance.get('morphotypeProfiles', []),
             'isFeatured': instance['isFeatured'],
         }
 

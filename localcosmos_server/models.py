@@ -90,6 +90,17 @@ class ServerContentImageMixin:
             return content_image
 
         return None
+    
+    def primary_image(self, image_type='image'):
+        
+        content_image = self._content_images(image_type=image_type)
+        primary_image = content_image.filter(is_primary=True).first()
+        
+        if primary_image:
+            return primary_image
+        
+        return content_image.first()
+        
 
     def image_url(self, size=400):
 
