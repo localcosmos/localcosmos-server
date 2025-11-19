@@ -9,8 +9,20 @@ from localcosmos_server.template_content.utils import get_component_image_type, 
 
 # do not replace camelCase with underscore_case without adapting app_kit's ContentImageBuilder.build_licence
 class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
+    
+    uuid = serializers.SerializerMethodField()
+    
+    language = serializers.SerializerMethodField()
 
     title = serializers.SerializerMethodField()
+    author = serializers.SerializerMethodField()
+    
+    slug = serializers.SerializerMethodField()
+    
+    createdAt = serializers.SerializerMethodField()
+    lastModified = serializers.SerializerMethodField()
+    publishedAt = serializers.SerializerMethodField()
+    
     templateName = serializers.SerializerMethodField()
     templatePath = serializers.SerializerMethodField()
     
@@ -36,12 +48,36 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
             else:
                 self.template_definition = localized_template_content.template_content.template.definition
         return self.template_definition
+    
+    def get_uuid(self, localized_template_content):
+        return str(localized_template_content.template_content.uuid)
+    
+    def get_language(self, localized_template_content):
+        return localized_template_content.language
 
     def get_title(self, localized_template_content):
         preview = self.context.get('preview', True)
         if preview == True:
             return localized_template_content.draft_title
         return localized_template_content.published_title
+    
+    def get_slug(self, localized_template_content):
+        return localized_template_content.slug
+    
+    def get_author(self, localized_template_content):
+        preview = self.context.get('preview', True)
+        if preview == True:
+            return localized_template_content.author
+        return localized_template_content.published_author
+    
+    def get_createdAt(self, localized_template_content):
+        return localized_template_content.created_at.isoformat()
+    
+    def get_lastModified(self, localized_template_content):
+        return localized_template_content.last_modified.isoformat()
+    
+    def get_publishedAt(self, localized_template_content):
+        return localized_template_content.published_at.isoformat()
 
     def get_templateName(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'templateName')
@@ -228,7 +264,8 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalizedTemplateContent
-        fields = ['title', 'templateName', 'templatePath', 'version', 'contents', 'linkedTaxa', 'linkedTaxonProfiles']
+        fields = ['title', 'templateName', 'templatePath', 'version', 'contents', 'linkedTaxa', 'linkedTaxonProfiles',
+                  'publishedAt', 'createdAt', 'lastModified', 'uuid', 'language', 'slug', 'author']
 
 
 # do not replace camelCase with underscore_case without adapting app_kit's ContentImageBuilder.build_licence

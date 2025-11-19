@@ -475,6 +475,11 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
     draft_version = models.IntegerField(default=1)
     published_version = models.IntegerField(null=True)
     published_at = models.DateTimeField(null=True)
+    
+    author = models.CharField(max_length=355, null=True, blank=True, 
+                             help_text=_("Author name for attribution (e.g., 'Dr. Jane Smith' or 'LocalCosmos Team')"))
+    
+    published_author = models.CharField(max_length=355, null=True, blank=True)
 
     objects = LocalizedTemplateContentManager()
 
@@ -632,6 +637,7 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
     def publish(self):
         # set title
         self.published_title = self.draft_title
+        self.published_author = self.author
         self.published_contents = self.draft_contents
 
         # currently, images are not translatable. This can change in the future

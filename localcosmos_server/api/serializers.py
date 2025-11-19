@@ -335,9 +335,13 @@ class TaxonRelationshipTaxonSerializer(serializers.Serializer):
     taxonAuthor = serializers.CharField(read_only=True)
     nameUuid = serializers.CharField(read_only=True)
     taxonNuid = serializers.CharField(read_only=True)
+    slug = serializers.CharField(read_only=True)
+    localizedSlug = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
+    gbifNubkey = serializers.IntegerField(read_only=True, allow_null=True)
     image = ImageSerializer(read_only=True)
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
     hasTaxonProfile = serializers.BooleanField(read_only=True)
+    shortProfile = serializers.CharField(allow_null=True, required=False, read_only=True)
     taxonProfileId = serializers.IntegerField(read_only=True, allow_null=True)
     
     def __init__(self, *args, app=None, **kwargs):
@@ -354,7 +358,7 @@ class TaxonRelationshipTaxonSerializer(serializers.Serializer):
             if localized_taxon_profiles_path:
                 root = self.app.get_installed_app_path('published')
                 taxon_profile_path = os.path.join(root, localized_taxon_profiles_path.lstrip('/'), instance['taxonSource'], instance['nameUuid'] + '.json')
-                print(taxon_profile_path)
+                
                 if os.path.isfile(taxon_profile_path):
                     with open(taxon_profile_path, 'r', encoding='utf-8') as f:
                         taxon_profile = json.load(f)
@@ -368,8 +372,10 @@ class TaxonRelationshipTaxonSerializer(serializers.Serializer):
         
         if taxon_profile:
             taxon['taxonProfileId'] = taxon_profile['taxonProfileId']
+            taxon['vernacular'] = taxon_profile['vernacular']
         else:
             taxon['taxonProfileId'] = None
+            taxon['vernacular'] = {}
         
         return taxon
 
@@ -409,6 +415,7 @@ class TaxonSerializer(serializers.Serializer):
     
     
 class MorphotypeProfileSerializer(serializers.Serializer):
+    
     taxonProfileId = serializers.IntegerField(read_only=True)
     parentTaxonProfileId = serializers.IntegerField(read_only=True)
     morphotype = serializers.CharField(read_only=True)
@@ -416,6 +423,17 @@ class MorphotypeProfileSerializer(serializers.Serializer):
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
     image = ImageSerializer(read_only=True)
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
+    link = serializers.CharField(read_only=True)
+    
+    def __init__(self, *args, app=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app = app
+        
+    def to_representation(self, instance):
+        data = instance.copy()
+        # this is just a placeholder and work in progress
+        data['link'] = 'https://www.beachexplorer.org/arten/tringa-nebularia-cranium/steckbrief'
+        return data
 
 
 class TaxonProfileSerializer(serializers.Serializer):
@@ -478,6 +496,11 @@ class TaxonProfileSerializer(serializers.Serializer):
                 
             taxon_relationships_serialized.append(tr_serialized)
             
+        morphotype_profiles = []
+        for mp in instance.get('morphotypeProfiles', []):
+            mp_serialized = MorphotypeProfileSerializer(mp, app=self.app).data
+            morphotype_profiles.append(mp_serialized)
+            
         data = {
             'taxonLatname': instance['taxonLatname'],
             'taxonAuthor': instance['taxonAuthor'],
@@ -498,7 +521,7 @@ class TaxonProfileSerializer(serializers.Serializer):
             'seo': instance['seo'],
             'externalMedia': instance['externalMedia'],
             'taxonRelationships': taxon_relationships_serialized,
-            'morphotypeProfiles': instance.get('morphotypeProfiles', []),
+            'morphotypeProfiles': morphotype_profiles,
             'isFeatured': instance['isFeatured'],
         }
 
