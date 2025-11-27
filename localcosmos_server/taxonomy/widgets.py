@@ -216,3 +216,26 @@ class SelectTaxonWidget(ListToLazyTaxon, MultiWidget):
             value = self.get_lazy_taxon(value)
         return value
 
+
+
+class HiddenTaxonWidget(MultiWidget):
+    def __init__(self, attrs=None, include_descendants=False):
+        widgets = [
+            HiddenInput(),  # taxon_source
+            HiddenInput(),  # taxon_latname
+            HiddenInput(),  # taxon_author
+            HiddenInput(),  # name_uuid
+            HiddenInput(),  # taxon_nuid
+        ]
+        if include_descendants:
+            widgets.append(HiddenInput())  # include_descendants
+        super().__init__(widgets, attrs)
+
+    def decompress(self, lazy_taxon):
+
+        if lazy_taxon:
+            data_list = [lazy_taxon.taxon_source, lazy_taxon.taxon_latname, lazy_taxon.taxon_author,
+                         str(lazy_taxon.name_uuid), lazy_taxon.taxon_nuid]
+            return data_list
+
+        return []

@@ -75,8 +75,11 @@ function ajaxify(container_id){
 			var contentType = 'application/x-www-form-urlencoded; charset=UTF-8';
 			var processData = true;
 		}
-
-		submit_button.attr('disabled','disabled');
+		
+		// only disable button if it has not the class nodisable
+		if (!submit_button.hasClass('nodisable')) {
+			submit_button.attr('disabled','disabled');
+		}
 
 		$.ajax({
 			type: form.attr('method'),

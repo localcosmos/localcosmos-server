@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
-from localcosmos_server.taxonomy.widgets import (TaxonAutocompleteWidget, SelectTaxonWidget, ListToLazyTaxon)
+from localcosmos_server.taxonomy.widgets import (TaxonAutocompleteWidget, SelectTaxonWidget, HiddenTaxonWidget, ListToLazyTaxon)
 
 '''
     A field that returns a LazyTaxon instance
@@ -100,3 +100,24 @@ class SelectTaxonField(LazyTaxonField, forms.MultiValueField):
 
         super().__init__(fields, *args, require_all_fields=True, **kwargs)
 
+
+
+class HiddenTaxonField(LazyTaxonField, forms.MultiValueField):
+
+    lazy_taxon_class = LazyAppTaxon
+
+    def __init__(self, *args, **kwargs):
+        
+        include_descendants = kwargs.pop('include_descendants', False)
+
+        self.widget = HiddenTaxonWidget(include_descendants=include_descendants)
+
+        fields = [
+            forms.CharField(), # taxon_source
+            forms.CharField(), # taxon_latname
+            forms.CharField(required=False), # taxon_author
+            forms.CharField(), # name_uuid
+            forms.CharField(), # taxon_nuid
+        ]
+
+        super().__init__(fields, *args, require_all_fields=True, **kwargs)
