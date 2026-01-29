@@ -206,6 +206,16 @@ class ContactUserSerializer(serializers.Serializer):
     subject = serializers.CharField()
     message = serializers.CharField(min_length=10)
     
+    
+class ContactStaffSerializer(serializers.Serializer):
+    
+    name = serializers.CharField()
+    email = serializers.EmailField()
+    subject = serializers.CharField(required=False, allow_blank=True)
+    message = serializers.CharField(min_length=10)
+    page = serializers.CharField(required=False)
+    website = serializers.CharField(required=False, allow_blank=True) # honeypot field
+    
 
 #################################################################################################
 #

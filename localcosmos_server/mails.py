@@ -7,7 +7,7 @@ from django.utils.translation import gettext as _
 
 FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
-from localcosmos_server.models import App
+from localcosmos_server.models import App, LocalcosmosUser
 
 import re 
 
@@ -102,3 +102,52 @@ def send_user_contact_email(app_uuid, sender, receiver, subject, message):
     msg.attach_alternative(html_message, 'text/html')
     
     msg.send()
+    
+    
+def send_staff_email(app_uuid, sender_name, sender_email, subject, message):
+    
+    app = App.objects.get(uuid=app_uuid)
+    frontend = app.get_frontend()
+    
+    staff_users = LocalcosmosUser.objects.filter(is_staff=True, is_active=True)
+    receivers = [u.email for u in staff_users]
+    
+    support_email = None
+    if frontend and 'configuration' in frontend['userContent'] and 'supportEmail' in frontend['userContent']['configuration']:
+        support_email = frontend['userContent']['configuration']['supportEmail']
+    
+    headers = {
+        'Reply-To': sender_email
+    }
+
+    legal_notice_url = reverse('legal_notice', kwargs={'app_uid':app.uid}, urlconf='localcosmos_server.urls')
+    privacy_statement_url = reverse('privacy_statement', kwargs={'app_uid':app.uid},
+                                    urlconf='localcosmos_server.urls')
+    
+    
+    ctx = {
+        'sender_name' : sender_name,
+        'sender_email' : sender_email,
+        'receiver' : receivers,
+        'app' : app,
+        'site' : Site.objects.get_current(),
+        'subject': subject,
+        'message': message,
+        'legal_notice_url' : legal_notice_url,
+        'privacy_statement_url' : privacy_statement_url,
+        'support_email': support_email,
+    }
+    
+    from_email = FROM_EMAIL
+    to = receivers
+
+    text_message = render_to_string('email/contact_staff.txt', ctx)
+    html_message = get_template('email/contact_staff.html').render(ctx)
+    
+    subject = '[{0}] {1}'.format(app.name, subject)
+
+    msg = EmailMultiAlternatives(subject, text_message, from_email=from_email, to=to, headers=headers)
+    msg.attach_alternative(html_message, 'text/html')
+    
+    msg.send()
+    

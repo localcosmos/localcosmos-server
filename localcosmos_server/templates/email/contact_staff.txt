@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load i18n %}
+{{ app.name }}
+
+{% blocktrans with username=sender_name %}Message from {{ username }}{% endblocktrans %}
+
+{{ subject }}
+
+---------------------------------------------------------------------------=
+------------
+{{ message }}
+
+---------------------------------------------------------------------------=
+------------
+{% blocktrans with username=sender_name email=sender_email %}Reply to {{ username }}: {{ email }}{% endblocktrans %}
+
+
+---------------------------------------------------------------------------=
+---------------------------
+{% trans 'Legal notice' %}: https://{{ site.domain }}{{ legal_notice_url }}
+{% trans 'Privacy statement' %}: https://{{ site.domain }}{{ privacy_statement_url }}

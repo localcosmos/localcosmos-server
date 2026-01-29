@@ -34,11 +34,12 @@ from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 from .serializers import (LocalcosmosUserSerializer, RegistrationSerializer, PasswordResetSerializer,
                             TokenObtainPairSerializerWithClientID, ServerContentImageSerializer,
                             LocalcosmosPublicUserSerializer, ContactUserSerializer, TaxonProfileSerializer,
-                            TaxonProfileMinimalSerializer)
+                            TaxonProfileMinimalSerializer, ContactStaffSerializer)
 
 from .permissions import OwnerOnly, AppMustExist, ServerContentImageOwnerOrReadOnly
 
-from localcosmos_server.mails import (send_registration_confirmation_email, send_user_contact_email)
+from localcosmos_server.mails import (send_registration_confirmation_email, send_user_contact_email,
+                                      send_staff_email)
 
 from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients
@@ -432,6 +433,35 @@ class ContactUser(APIView):
             # send mail
             send_user_contact_email(kwargs['app_uuid'], sending_user, receiving_user,
                                     serializer.data['subject'], serializer.data['message'])
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ContactStaff(APIView):
+    '''
+        Contact Localcosmos Staff
+        - [POST] delivers an email to the staff
+    '''
+
+    permission_classes = ()
+    parser_classes = (CamelCaseJSONParser,)
+    renderer_classes = (CamelCaseJSONRenderer,)
+    serializer_class = ContactStaffSerializer
+
+    def post(self, request, *args, **kwargs):
+
+        serializer = self.serializer_class(data=request.data)
+        
+        if serializer.is_valid():
+            
+            if serializer.data.get('website', '') != '':
+                # honeypot field filled
+                return Response('', status=status.HTTP_200_OK)
+            
+            # send mail
+            send_staff_email(kwargs['app_uuid'], serializer.data['name'], serializer.data['email'],
+                                    serializer.data.get('subject', ''), serializer.data['message'],)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

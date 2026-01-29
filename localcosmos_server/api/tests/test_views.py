@@ -861,8 +861,45 @@ class TestContactUser(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         authed_response = authed_client.post(url, post_data, format='json')
         
         self.assertEqual(authed_response.status_code, status.HTTP_200_OK)
+        
+        
+class TestContactStaff(WithUser, WithApp, APITestCase):
+    
+    @test_settings
+    def test_post(self):
+        
+        sender = self.create_user()
+        su = self.create_superuser()
+        
+        
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+        }        
+        url = reverse('api_contact_staff', kwargs=url_kwargs)
+        
+        post_data  = {
+            'name': 'Test User',
+            'email': 'testuser@example.com',
+            'subject': 'Hello Staff',
+            'message': 'This is a message to the staff. Please respond.',
+            'page' : '/some/page/on/site',
+            'website' : 'http://example.com', # honeypot field
+        }
+        response = self.client.post(url, post_data, format='json')
+        
+        # no serializer.data in the context
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content, b'""')
+        
+        del post_data['website']
+        response = self.client.post(url, post_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        expected_response = b'{"name":"Test User","email":"testuser@example.com","subject":"Hello Staff","message":"This is a message to the staff. Please respond.","page":"/some/page/on/site"}'
 
-
+        self.assertEqual(response.content, expected_response)
+        
+        
 class TestTaxonProfileDetail(GetJWTokenMixin, WithUser, WithApp, APITestCase):
 
     def setUp(self):

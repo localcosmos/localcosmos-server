@@ -15,6 +15,9 @@ urlpatterns = [
     # contact user
     path('<uuid:app_uuid>/contact-user/<uuid:user_uuid>/', views.ContactUser.as_view(),
          name='api_contact_user'),
+    # contact staff
+    path('<uuid:app_uuid>/contact-staff/', views.ContactStaff.as_view(),
+         name='api_contact_staff'),
     # JSON WebToken
     path('<uuid:app_uuid>/token/', views.TokenObtainPairViewWithClientID.as_view(), name='token_obtain_pair'),
     path('<uuid:app_uuid>/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
