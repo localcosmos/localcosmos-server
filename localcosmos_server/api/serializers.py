@@ -423,13 +423,12 @@ class TaxonSerializer(serializers.Serializer):
     nameUuid = serializers.CharField(read_only=True)
     taxonNuid = serializers.CharField(read_only=True)
     
-    
 class MorphotypeProfileSerializer(serializers.Serializer):
     
     taxonProfileId = serializers.IntegerField(read_only=True)
     parentTaxonProfileId = serializers.IntegerField(read_only=True)
     morphotype = serializers.CharField(read_only=True)
-    taxon = TaxonSerializer(read_only=True)
+    taxon = TaxonRelationshipTaxonSerializer(read_only=True)
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
     image = ImageSerializer(read_only=True)
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
@@ -443,6 +442,7 @@ class MorphotypeProfileSerializer(serializers.Serializer):
         data = instance.copy()
         # this is just a placeholder and work in progress
         data['link'] = 'https://www.beachexplorer.org/arten/tringa-nebularia-cranium/steckbrief'
+        data['taxon'] = TaxonRelationshipTaxonSerializer(instance['taxon'], app=self.app).data
         return data
 
 
