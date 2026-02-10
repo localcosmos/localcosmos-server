@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 install_requires = [
     'django==5.1.7',
     'djangorestframework==3.15.2',
-    'djangorestframework-simplejwt==5.4.0',
+    'djangorestframework-simplejwt==5.5.1',
     'djangorestframework-camel-case==1.4.2',
     'drf-spectacular==0.28.0',
     'django-imagekit==5.0.0',
