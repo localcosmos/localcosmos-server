@@ -104,7 +104,7 @@ def send_user_contact_email(app_uuid, sender, receiver, subject, message):
     msg.send()
     
     
-def send_staff_email(app_uuid, sender_name, sender_email, subject, message):
+def send_staff_email(app_uuid, sender_name, sender_email, subject, message, page=None):
     
     app = App.objects.get(uuid=app_uuid)
     frontend = app.get_frontend()
@@ -133,6 +133,7 @@ def send_staff_email(app_uuid, sender_name, sender_email, subject, message):
         'site' : Site.objects.get_current(),
         'subject': subject,
         'message': message,
+        'page': page,
         'legal_notice_url' : legal_notice_url,
         'privacy_statement_url' : privacy_statement_url,
         'support_email': support_email,

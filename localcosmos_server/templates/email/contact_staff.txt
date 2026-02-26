@@ -10,6 +10,12 @@
 ------------
 {{ message }}
 
+{% if page %}
+---------------------------------------------------------------------------=
+------------
+{% blocktrans with page=page %}The user has sent this message from the following page: {{ page }}{% endblocktrans %}
+{% endif %}
+
 ---------------------------------------------------------------------------=
 ------------
 {% blocktrans with username=sender_name email=sender_email %}Reply to {{ username }}: {{ email }}{% endblocktrans %}

@@ -461,7 +461,8 @@ class ContactStaff(APIView):
             
             # send mail
             send_staff_email(kwargs['app_uuid'], serializer.data['name'], serializer.data['email'],
-                                    serializer.data.get('subject', ''), serializer.data['message'],)
+                                    serializer.data.get('subject', ''), serializer.data['message'],
+                                    serializer.data.get('page',''))
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

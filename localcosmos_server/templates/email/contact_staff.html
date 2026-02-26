@@ -313,6 +313,9 @@
 								<tr>
 									<td class="aligncenter">
 										<h2>{% blocktrans with username=sender_name %}Message from {{ username }}{% endblocktrans %}</h2>
+										{% if page %}
+											<i>{% blocktrans with page=page %}The user has sent this message from the following page: <a href="{{ page }}">{{ page }}</a>{% endblocktrans %}</i>
+										{% endif %}
 									</td>
 								</tr>
 								<tr>
