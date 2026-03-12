@@ -98,7 +98,7 @@
 								let label = item.label;
 
 								if (item.verbose_taxon_source_name) {
-									label = `${label} <span class="badge badge-light">${item.verbose_taxon_source_name}</span>`
+									label = `${label} <span class="badge rounded-pill badge-light">${item.verbose_taxon_source_name}</span>`
 								}
 
 								var taxon_object = {

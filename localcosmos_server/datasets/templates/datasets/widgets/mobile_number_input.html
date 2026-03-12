@@ -2,11 +2,11 @@
 	<div class="col-10 col-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
 		<table class="mobilenumberinput">
 			<tr>
-				<td id="minus-{{ widget.attrs.id }}" class="text-right"><button type="button" class="btn btn-sm btn-secondary">-</button></td>
+				<td id="minus-{{ widget.attrs.id }}" class="text-end"><button type="button" class="btn btn-sm btn-secondary">-</button></td>
 				<td>
 					{% include 'django/forms/widgets/number.html' %}
 				</td>
-				<td id="plus-{{ widget.attrs.id }}" class="text-left"><button type="button" class="btn btn-sm btn-secondary">+</button></td>
+				<td id="plus-{{ widget.attrs.id }}" class="text-start"><button type="button" class="btn btn-sm btn-secondary">+</button></td>
 			</tr>
 		</table>
 	</div>

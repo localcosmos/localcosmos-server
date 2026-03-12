@@ -578,10 +578,10 @@ class App(models.Model):
 
         vernacular_name = None
 
-        if language not in features['BackboneTaxonomy']['vernacularLookup']:
+        if language not in features['BackboneTaxonomy'].get('vernacularLookup', {}):
             language = app_settings['PRIMARY_LANGUAGE']
         
-        if language in features['BackboneTaxonomy']['vernacularLookup']:
+        if language in features['BackboneTaxonomy'].get('vernacularLookup', {}):
             relpath = features['BackboneTaxonomy']['vernacularLookup'][language].lstrip('/')
 
             vernacular_lookup_path = os.path.join(self.published_version_path, relpath)

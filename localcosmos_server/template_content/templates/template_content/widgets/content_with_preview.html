@@ -13,7 +13,7 @@
 	
 	{% block modify_button %}
 	<div class="btn-group dropup">
-		<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle content-image-button" data-container-id="{{ widget.attrs.content_key }}-container" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle content-image-button" data-container-id="{{ widget.attrs.content_key }}-container" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			{% trans 'Modify' %}
 		</button>
 		<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">

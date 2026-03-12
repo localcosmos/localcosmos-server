@@ -12,7 +12,7 @@
 {% block script %}
 	{% if success %}
 		<script>
-			$("#Modal").modal("hide");
+			hideModal();
 			window.location.reload();
 		</script>
 	{% endif %}

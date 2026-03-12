@@ -1,44 +1,57 @@
 var positionmanager = {
 
 	onMoveForward : function(){
-		var $current = $("#" + $(this).attr("data-targetid"));
-		var tagname = $current.prop('tagName');
-		var $previous = $current.prev(tagname);
-		if($previous.length !== 0){
-			$current.insertBefore($previous);
+
+		const currentId = this.getAttribute("data-targetid");
+
+		const current = document.getElementById(currentId);
+		const tagname = current.tagName;
+		const previous = current.previousElementSibling;
+
+		if (previous != null && previous.tagName == tagname){
+			current.parentNode.insertBefore(current, previous);
 		}
-		positionmanager.store_positions($current);
-		return false;
+
+		positionmanager.store_positions(current);
 	},
 
 	onMoveBack : function(){
-		var $current = $("#" + $(this).attr("data-targetid"));
-		var tagname = $current.prop('tagName');
-		var $next = $current.next(tagname);
-		if($next.length !== 0){
-			$current.insertAfter($next);
+
+		const currentId = this.getAttribute("data-targetid");
+
+		const current = document.getElementById(currentId);
+		const tagname = current.tagName;
+		const next = current.nextElementSibling;
+
+		if (next != null && next.tagName == tagname){
+			current.parentNode.insertBefore(next, current);
 		}
-		positionmanager.store_positions($current);
-		return false;
+
+		positionmanager.store_positions(current);
 	},
 
-	store_positions : function($current){
-		
-		var $parent = $current.parent(); 
+	store_positions : function(itemElement){
 
-		var order = [];
+		const parentElement = itemElement.parentElement;
 
-		$parent.children().each(function(){
-			// check if data-object-id is a uuid or a integer
-			if ($(this).attr("data-object-id").indexOf("-") != -1){
-				order.push($(this).attr("data-object-id"));
-				return;
+		const order = [];
+
+		// iterate over all children of parentElement, and push their data-object-id into order[]
+		const children = parentElement.children;
+
+		for (let i = 0; i < children.length; i++) {
+			const child = children[i];
+			const dataObjectId = child.getAttribute("data-object-id");
+			if (dataObjectId.indexOf("-") != -1) {
+				order.push(dataObjectId);
+			} else {
+				order.push(parseInt(dataObjectId));
 			}
-			// otherwise assume integer
-			order.push(parseInt($(this).attr("data-object-id")));
-		});
+		}
 
-		$.post($parent.attr("data-store-positions-url"), {"order":JSON.stringify(order)}, function(){
+		const url = parentElement.getAttribute("data-store-positions-url");
+
+		$.post(url, {"order":JSON.stringify(order)}, function(){
 		});
 	},
 	
@@ -108,7 +121,7 @@ var positionmanager = {
 		
 		// store positions
 		var element = sorted_elements[0];
-		positionmanager.store_positions($(element));
+		positionmanager.store_positions(element);
 	}
 
 };

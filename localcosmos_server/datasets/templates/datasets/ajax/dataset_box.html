@@ -23,9 +23,9 @@
 		<p class="card-text">
 			{% if dataset.validation_step == 'completed' %}
 				{% if dataset.is_valid %}
-					<span class="badge badge-success">{% trans 'valid' %}</span>
+					<span class="badge rounded-pill bg-success">{% trans 'valid' %}</span>
 				{% else %}
-					<span class="badge badge-danger">{% trans 'invalid' %}</span>
+					<span class="badge rounded-pill bg-danger">{% trans 'invalid' %}</span>
 				{% endif %}
 			{% else %}
 				

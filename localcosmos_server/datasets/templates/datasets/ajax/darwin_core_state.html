@@ -4,9 +4,9 @@
         <div>
             <b>{% trans 'Darwin Core status' %}:</b>
             {% if darwin_core_view_exists %}
-                <span class="badge badge-success">{% trans 'enabled' %}</span>
+                <span class="badge rounded-pill bg-success">{% trans 'enabled' %}</span>
             {% else %}
-                <span class="badge badge-danger">{% trans 'disabled' %}</span>
+                <span class="badge rounded-pill bg-danger">{% trans 'disabled' %}</span>
             {% endif %}
         </div>
         {% if darwin_core_view_exists %}

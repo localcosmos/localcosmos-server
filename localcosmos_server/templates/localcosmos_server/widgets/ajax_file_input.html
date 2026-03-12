@@ -9,7 +9,7 @@
 		</label>
 
 		{% if instance %}
-			<div class="text-left">
+			<div class="text-start">
 				<button id="{{ widget.attrs.id }}-delete" type="button" class="btn btn-xs btn-danger xhr" data-url="{% url delete_url_name content_type.id instance.pk %}" ajax-target="ModalContent">{% trans 'delete' %}</button>
 			</div>
 		{% endif %}

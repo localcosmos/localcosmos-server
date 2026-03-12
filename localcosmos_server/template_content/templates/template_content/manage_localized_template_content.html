@@ -13,15 +13,15 @@
 					{% if localized_template_content %}
 						{{ localized_template_content.draft_title }} <img src="{% static 'localcosmos_server/images/countries/' %}{{ localized_template_content.language }}.gif" />
 						
-						<small><span class="badge badge-info">version {{ localized_template_content.draft_version }}</span></small>
+						<small><span class="badge rounded-pill bg-info">version {{ localized_template_content.draft_version }}</span></small>
 
 						{% if localized_template_content.published_version == localized_template_content.draft_version %}
-							<small><span class="badge badge-success">{% trans 'published' %}</span></small>
+							<small><span class="badge rounded-pill bg-success">{% trans 'published' %}</span></small>
 						{% else %}
 							{% if localized_template_content.published_version %}
-								<small><span class="badge badge-warning">{% trans 'unpublished changes' %}</span></small>
+								<small><span class="badge rounded-pill bg-warning">{% trans 'unpublished changes' %}</span></small>
 							{% else %}
-								<small><span class="badge badge-warning">{% trans 'not published' %}</span></small>
+								<small><span class="badge rounded-pill bg-warning">{% trans 'not published' %}</span></small>
 							{% endif %}
 						{% endif %}
 					{% endif %}
@@ -30,9 +30,9 @@
 						{% if localized_template_content.published_version == localized_template_content.draft_version %}
 						{% else %}
 							{% if localized_template_content.translation_ready %}
-								<small><span class="badge badge-info">{% trans 'ready for translation' %}</span></small>
+								<small><span class="badge rounded-pill bg-info">{% trans 'ready for translation' %}</span></small>
 							{% else %}
-								<small><span class="badge badge-warning">{% trans 'not ready for translation' %}</span></small>
+								<small><span class="badge rounded-pill bg-warning">{% trans 'not ready for translation' %}</span></small>
 							{% endif %}
 						{% endif %}
 					{% endif %}

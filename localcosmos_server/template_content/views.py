@@ -353,8 +353,10 @@ class ManageComponent(ManageTemplateContentCommon, AppMixin, WithLocalizedTempla
         }
         if self.component:
             initial['uuid'] = self.component['uuid']
+            initial['templateName'] = self.component_template_name
         else:
             initial['uuid'] = uuid.uuid4()
+            initial['templateName'] = self.component_template_name
         return initial
 
 
@@ -606,9 +608,15 @@ class ContextFromComponentIdentifier:
         image_type = self.get_image_type()
         content_identifiers = image_type.split(':')
         
-        self.content_key = content_identifiers[-1]
         self.component_key = content_identifiers[0]
         self.component_uuid = content_identifiers[1]
+        self.content_key = content_identifiers[-1]
+        
+        self.component_template_name = None
+        
+        #if not 'content_image_id' in self.kwargs:
+        if 'component_template_name' in self.kwargs:
+            self.component_template_name = self.kwargs['component_template_name']
             
 
     def get_context_data(self, **kwargs):
@@ -617,22 +625,26 @@ class ContextFromComponentIdentifier:
         context['content_key'] = self.content_key # the field in page.contents
         context['component_key'] = self.component_key # page.contents[content_key][component_key] - the key that holds the image
         context['component_uuid'] = self.component_uuid # the uuid of the component instance
+        context['component_template_name'] = self.component_template_name
         return context
 
 
 class ManageComponentImage(ContextFromComponentIdentifier, ManageTemplateContentImage):
+    
     template_name = 'template_content/ajax/manage_component_image.html'
 
     # if the user uploads an image before saving the component, save the component here
+    # uuid and templateName are required for the component
     def save_image(self, form):
         self.set_component()
-        # check if component exits, and save if if not
         
+        # check if component exits, and save if if not
         component = self.content_instance.get_component(self.component_key, self.component_uuid)
 
         if not component:
             new_component = {
-                'uuid': self.component_uuid
+                'uuid': self.component_uuid,
+                'templateName': self.component_template_name,
             }
 
             # add component to page contents -> we need a component_uuid

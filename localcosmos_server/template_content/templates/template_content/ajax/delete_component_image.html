@@ -2,7 +2,9 @@
 
 {% block success_js %}
 	<script>
-		$("#Modal").modal("hide");
+
+		hideModal();
+
 		{% if deleted %}
 		
 			{% with content_key=component_key %}
@@ -13,7 +15,12 @@
 			$.get(url, function(html){
 				$("#LargeModalContent").html(html);
 				ajaxify("LargeModalContent");
-				$("#LargeModal").modal("show");
+				
+				let largeModalEl = document.getElementById("LargeModal");
+				if (largeModalEl) {
+					let largeModal = bootstrap.Modal.getOrCreateInstance(largeModalEl);
+					largeModal.show();
+				}
 			});
 			reloadPreview();
 			

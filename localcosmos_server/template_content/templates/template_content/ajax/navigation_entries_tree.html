@@ -3,13 +3,13 @@
     <div id="entries-{{ navigation_entries.0.id }}" data-store-positions-url="{% url 'store_object_order' app.uid navigation_entries.0|ctype_id %}">
         {% for entry in navigation_entries %}
             <div id="ctype-{{ entry|ctype_id }}-{{ entry.id }}" class="row" data-object-id="{{ entry.id }}">
-                <div class="col-12 {% if entry.parent %}pl-5{% endif %}">
+                <div class="col-12 {% if entry.parent %}ps-5{% endif %}">
                     <div class="card mb-2">
                         <div class="card-body">
                             {{ entry }}
 
                             <div class="btn-group dropup">
-                                <button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     {% trans 'Manage' %}
                                 </button>
                                 <div class="dropdown-menu">

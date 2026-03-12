@@ -64,7 +64,7 @@ urlpatterns = [
    # component images
    path('<str:app_uid>/manage-component-image/<int:content_image_id>/', views.ManageComponentImage.as_view(),
       name='manage_component_image'),
-   path('<str:app_uid>/manage-component-image/<int:content_type_id>/<int:object_id>/<str:image_type>/',
+   path('<str:app_uid>/manage-component-image/<int:content_type_id>/<int:object_id>/<str:image_type>/<str:component_template_name>/',
       views.ManageComponentImage.as_view(), name='manage_component_image'),
    path('<str:app_uid>/delete-component-image/<int:pk>/', views.DeleteComponentImage.as_view(),
       name='delete_component_image'),

@@ -23,9 +23,9 @@
                                 {% get_stream_item_preview_text widget.localized_template_content stream_item as preview_text %}
                                 {{ preview_text|safe }}
                             </div>
-                            <div class="col-2 col-md-5 text-right">
+                            <div class="col-2 col-md-5 text-end">
                                 <div class="btn-group dropup mt-1">
-                                    <button class="btn btn-xs btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <button class="btn btn-xs btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         {% trans 'modify' %}
                                     <span class="caret"></span>
                                     </button>
@@ -51,7 +51,7 @@
     </div>
 
     <div class="btn-group dropup mt-1">
-        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" id="dropdownMenu-{{ content_key }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             {% trans 'Add content' %}
         <span class="caret"></span>
         </button>

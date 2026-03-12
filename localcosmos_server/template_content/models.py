@@ -238,13 +238,24 @@ class TemplateContent(PublicationMixin, models.Model):
             
         return template
 
+
+    def get_component_template_name(self, content_key):
+        content_reference = self.draft_template.definition['contents'][content_key]
+        content_type = content_reference['type']
+        
+        if content_type != 'component' and content_type != 'stream':
+            raise ValueError('Content with the key "{0}" is not of type "component" or "stream"'.format(content_key))
+        
+        component_template_name = content_reference['templateName']
+        return component_template_name
+    
     # return different path for published pages
     # stream items will provide component_template_name
     # content_key is not sufficient for stream items, because different components share the same content_key)
     def get_component_template(self, content_key, component_template_name=None):
         
         if not component_template_name:
-            component_template_name = self.draft_template.definition['contents'][content_key]['templateName']
+            component_template_name = self.get_component_template_name(content_key)
         # load the component template
         component_template = Template(self.app, component_template_name, 'component')
 
@@ -253,7 +264,7 @@ class TemplateContent(PublicationMixin, models.Model):
 
     def get_published_component_template(self, content_key, component_template_name=None):
         if not component_template_name:
-            component_template_name = self.template.definition['contents'][content_key]['templateName']
+            component_template_name = self.get_component_template_name(content_key)
         
         published_component_template_definition_filepath = self.get_published_component_template_definition_filepath(component_template_name)
         published_component_template_filepath = self.get_published_component_template_filepath(component_template_name)
@@ -719,6 +730,9 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
         if 'uuid' not in component or not component['uuid']:
             raise ValueError('Cannot add component without uuid')
+        
+        if 'templateName' not in component or not component['templateName']:
+            raise ValueError('Cannot add component without templateName')
         
         content_definition = self.template_content.draft_template.definition['contents'][component_key]
 

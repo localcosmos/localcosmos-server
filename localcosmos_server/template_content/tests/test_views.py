@@ -1204,6 +1204,7 @@ class TestManageComponentImage(WithTemplateContent, WithImageForForm,
             'content_type_id': self.content_type.pk,
             'object_id': self.primary_ltc.pk,
             'image_type': self.image_type,
+            'component_template_name': 'TestComponent',
         }
         
         return url_kwargs
@@ -1296,7 +1297,8 @@ class TestManageComponentImage(WithTemplateContent, WithImageForForm,
         expected_draft_contents = {
             'component': [
                 {
-                    'uuid': self.component_uuid
+                    'uuid': self.component_uuid,
+                    'templateName': 'TestComponent',
                 }
             ]
         }

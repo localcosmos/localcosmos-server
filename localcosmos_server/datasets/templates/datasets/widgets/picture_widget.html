@@ -12,17 +12,17 @@
 {% if not widget.attrs.readonly %}
 	<div class="row mb-5">
 		<div class="col">
-			<a data-toggle="popover" data-placement="top" data-content="{% trans 'In your app this button opens the camera.' %}">
+			<a data-bs-toggle="popover" data-bs-placement="top" data-bs-content="{% trans 'In your app this button opens the camera.' %}">
 				<img class="appbutton" src="{% static 'app_kit/buttons/camera.svg' %}"width="40" height="auto" />
 			</a>
-			<a data-toggle="popover" data-placement="top" data-content="{% trans 'In your app this button opens the photo album.' %}">
+			<a data-bs-toggle="popover" data-bs-placement="top" data-bs-content="{% trans 'In your app this button opens the photo album.' %}">
 				<img class="appbutton" src="{% static 'app_kit/buttons/album.svg' %}" width="40" height="auto"/>
 			</a>
 		</div>
 	</div>
 {% endif %}
 <script>
-	$(function () {
-		$('[data-toggle="popover"]').popover();
+	document.querySelectorAll('[data-bs-toggle="popover"]').forEach((element) => {
+		bootstrap.Popover.getOrCreateInstance(element);
 	});
 </script>

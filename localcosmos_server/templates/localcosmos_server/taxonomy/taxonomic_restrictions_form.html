@@ -11,8 +11,8 @@
 					{% for restriction in restrictions %}
 						<li id="ctype-{{ restriction|ctype_id }}-{{ restriction.id }}">
 							{{ restriction.taxon_latname }}
-							{% if restriction.taxon_include_descendants %}<span class="badge badge-info">{% trans 'with descendants' %}</span>{% endif %}
-							{% if restriction.restriction_type == 'exists' %}{% else %}<span class="badge badge-info">{{ restriction.restriction_type }}</span>{% endif %}
+							{% if restriction.taxon_include_descendants %}<span class="badge rounded-pill bg-info">{% trans 'with descendants' %}</span>{% endif %}
+							{% if restriction.restriction_type == 'exists' %}{% else %}<span class="badge rounded-pill bg-info">{{ restriction.restriction_type }}</span>{% endif %}
 							{% if restriction_class == 'AppContentTaxonomicRestriction' %}
 								<button type="button" class="btn btn-xs btn-danger xhr" data-url="{% url 'remove_taxonomic_restriction' restriction.id %}" ajax-target="ModalContent">{% trans 'Remove' %}</button>
 							{% elif restriction_class == 'TaxonomicRestriction' %}
@@ -32,7 +32,7 @@
 <div>
 	{% block form %}
 		{% for field in form %}
-		<div class="form-group {% if field.errors %}has-error{% endif %}">
+			<div class="{% if field.errors %}has-error{% endif %}">
 				{{ field }}
 				{% if field.help_text %}
 					<small class="form-text text-muted">{{ field.help_text }}</small>

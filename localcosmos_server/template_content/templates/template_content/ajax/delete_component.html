@@ -22,8 +22,7 @@
 
                 {% include 'template_content/ajax/reload_template_content_form_fields.html' %}
 
-                $("#Modal").modal("hide");
-                $("#ModalContent").empty();
+                hideModal();
 
             {% endif %}
         })();

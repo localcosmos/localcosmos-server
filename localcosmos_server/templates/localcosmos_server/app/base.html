@@ -9,14 +9,15 @@
 		<title>{{ app.name }}</title>
 
 		<!-- Bootstrap core CSS -->
-		<link href="{% static 'localcosmos_server/bootstrap-4.3.1-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link href="{% static 'localcosmos_server/bootstrap-5.3.8-dist/css/bootstrap.min.css' %}" rel="stylesheet">
 
 		<link href="{% static 'localcosmos_server/css/localcosmos_server.css' %}" rel="stylesheet">
 		<link href="{% static 'fonts/fonts.css' %}" rel="stylesheet">
 
 		<script src="{% static 'localcosmos_server/jquery-3.3.1.min.js' %}"></script>
-		<script src="{% static 'localcosmos_server/js/popper.min.js' %}"></script>
-		<script src="{% static 'localcosmos_server/bootstrap-4.3.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+		<script src="{% static 'localcosmos_server/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js' %}"></script>
+
+		<script type="text/javascript" src="{% static 'localcosmos_server/js/localcosmos-server.js' %}"></script>
 
 
 		{% block extra_head_script %}{% endblock %}

@@ -664,6 +664,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         component = {
             'uuid': component_uuid,
+            'templateName': 'TestComponent',
             'text': 'component text',
             'link': {
                 'pk': str(self.primary_ltc.pk),
@@ -676,6 +677,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         component_2 = {
             'uuid': component_2_uuid,
+            'templateName': 'TestComponent',
             'text': 'component text 2',
             'link': {
                 'pk': str(self.primary_ltc.pk),
@@ -754,6 +756,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         list_component = {
             'uuid': list_component_uuid,
+            'templateName': 'TestComponent',
             'text': 'component text',
             'link': {
                 'pk': str(self.primary_ltc.pk),
@@ -766,6 +769,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         list_component_2 = {
             'uuid': list_component_2_uuid,
+            'templateName': 'TestComponent',
             'text': 'component text',
             'link': {
                 'pk': str(self.primary_ltc.pk),
@@ -778,6 +782,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         single_component = {
             'uuid': single_component_uuid,
+            'templateName': 'TestComponent',
             'text': 'component text 2',
             'link': {
                 'pk': str(self.primary_ltc.pk),
@@ -798,7 +803,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
                 'templateName': self.primary_ltc.template_content.draft_template_name,
                 'title': self.primary_ltc.published_title,
                 'url': '/test-url-3/', # just for testing
-            }
+            },
         }
         
         self.primary_ltc.add_or_update_component('component', list_component)

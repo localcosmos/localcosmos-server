@@ -15,7 +15,8 @@
 		<link href="{% static 'fonts/fonts.css' %}" rel="stylesheet">
 
 		<!-- Bootstrap core CSS -->
-		<link href="{% static 'localcosmos_server/bootstrap-4.3.1-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link href="{% static 'localcosmos_server/bootstrap-5.3.8-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+		<script src="{% static 'localcosmos_server/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js' %}"></script>
 
 		<link href="{% static 'localcosmos_server/css/localcosmos_server.css' %}" rel="stylesheet">
 
@@ -24,27 +25,31 @@
 		<script type="text/javascript" src="{% static 'localcosmos_server/interactive-image-field/InteractiveImageField.js' %}"></script>
 		<link href="{% static 'localcosmos_server/interactive-image-field/InteractiveImageField.css' %}" rel="stylesheet">
 
+		<script type="text/javascript" src="{% static 'localcosmos_server/js/localcosmos-server.js' %}"></script>
+
 		{% block extrahead %}{% endblock extrahead %}
 
 	</head>
 	<body>
 		{% block nav %}
 			<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-				<a class="navbar-brand" href="{% url 'scp:home' %}"><img src="{% static 'images/lclogo32.png' %}" alt="LocalCosmos Logo small" height="30" width="auto"/> LocalCosmos Server</a>
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+				<div class="container-fluid">
+					<a class="navbar-brand" href="{% url 'scp:home' %}"><img src="{% static 'images/lclogo32.png' %}" alt="LocalCosmos Logo small" height="30" width="auto"/> LocalCosmos Server</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
 
-				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav mr-auto">
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav me-autoauto">
+							
+							<li class="nav-item">
+								<a class="nav-link" href="{% url 'scp:home' %}">{% trans 'Server Control Panel' %}</a>
+							</li>
+
+						</ul>
+
 						
-						<li class="nav-item">
-							<a class="nav-link" href="{% url 'scp:home' %}">{% trans 'Server Control Panel' %}</a>
-						</li>
-
-					</ul>
-
-					
+					</div>
 				</div>
 			</nav>
 		{% endblock %}
@@ -58,13 +63,13 @@
 			</div>
 		</div>
 
-		<div id="main-content" class="mb-5">
+		<div id="main-content" class="mb-5 pb-5">
 			{% block content %}{% endblock %}
 		</div>
 
 		<script type="text/javascript" src="{% static 'localcosmos_server/js/django-ajax.js' %}"></script>
 		<script src="{% static 'localcosmos_server/jquery-3.3.1.min.js' %}" type="text/javascript"></script>
-		<script src="{% static 'localcosmos_server/bootstrap-4.3.1-dist/js/bootstrap.bundle.js' %}" type="text/javascript"></script>
+		<!--<script src="{% static 'localcosmos_server/bootstrap-5.3.8-dist/js/bootstrap.bundle.js' %}" type="text/javascript"></script>-->
 		<script type="text/javascript" src="{% static 'localcosmos_server/js/django-ajax-csrf.js' %}"></script>
 		<script type="text/javascript">
 			

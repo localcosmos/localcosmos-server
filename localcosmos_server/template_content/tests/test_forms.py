@@ -272,6 +272,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         for component_uuid in component_uuids:
             component = {
                 'uuid': component_uuid,
+                'templateName': 'TestComponent',
                 'text': 'component text',
                 'link': {
                     'pk': str(self.primary_ltc.pk),
@@ -677,18 +678,20 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         component_key = 'component'
         component = self.primary_ltc.draft_contents[component_key][0]
         component_uuid = component['uuid']
+        component_template_name = self.primary_ltc.template_content.get_component_template_name(component_key)
         
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid, component)
+                                            component_key, component_uuid, component_template_name, component)
         
         self.assertEqual(manager.template_content, self.template_content)
         self.assertEqual(manager.localized_template_content, self.primary_ltc)
         self.assertEqual(manager.component_key, component_key)
         self.assertEqual(manager.component_uuid, component_uuid)
         self.assertEqual(manager.component, component)
+        self.assertEqual(manager.component_template_name, component_template_name)
         
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid)
+                                            component_key, component_uuid, component_template_name)
         
         self.assertEqual(manager.component, {})
     
@@ -702,9 +705,10 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         component_key = 'component'
         component = self.primary_ltc.draft_contents[component_key][0]
         component_uuid = component['uuid']
+        component_template_name = self.primary_ltc.template_content.get_component_template_name(component_key)
         
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid, component)
+                                            component_key, component_uuid, component_template_name, component)
         
         content_key = 'image'
         image_type = manager._get_image_type(content_key)
@@ -722,9 +726,10 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         component_key = 'component'
         component = self.primary_ltc.draft_contents[component_key][0]
         component_uuid = component['uuid']
+        component_template_name = self.primary_ltc.template_content.get_component_template_name(component_key)
         
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid)
+                                            component_key, component_uuid, component_template_name)
         
         content_key = 'text'
         content_type = 'text'
@@ -734,7 +739,7 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         
         # with component
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid, component)
+                                            component_key, component_uuid, component_template_name, component)
         
         
         instance = manager.get_instance(content_key, content_type)
@@ -757,9 +762,10 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         component_key = 'component'
         component = self.primary_ltc.draft_contents[component_key][0]
         component_uuid = component['uuid']
+        component_template_name = self.primary_ltc.template_content.get_component_template_name(component_key)
         
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid)
+                                            component_key, component_uuid, component_template_name)
         
         content_key = 'text'
         content_type = 'text'
@@ -769,7 +775,7 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         
         # with component
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid, component)
+                                            component_key, component_uuid, component_template_name, component)
         
         
         instances = manager.get_instances(content_key, content_type)
@@ -792,9 +798,10 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         component_key = 'component'
         component = self.primary_ltc.draft_contents[component_key][0]
         component_uuid = component['uuid']
+        component_template_name = self.primary_ltc.template_content.get_component_template_name(component_key)
         
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid)
+                                            component_key, component_uuid, component_template_name)
         
         content_key = 'text'
         self.assertEqual(manager.get_primary_locale_content(content_key), [])
@@ -816,8 +823,10 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         component = self.primary_ltc.draft_contents[component_key][0]
         component_uuid = component['uuid']
         
+        component_template_name = self.primary_ltc.template_content.get_component_template_name(component_key)
+        
         manager = ComponentFormFieldManager(self.app, self.template_content, self.primary_ltc,
-                                            component_key, component_uuid)
+                                            component_key, component_uuid, component_template_name)
         
         content_definition = contents['text']
         

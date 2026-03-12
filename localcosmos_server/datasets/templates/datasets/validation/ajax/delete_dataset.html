@@ -6,6 +6,6 @@
 		var object = $("#ctype-{{ content_type.id }}-{{ deleted_object_id }}");
 		object.html('<div class="alert alert-danger">{% trans "Observation has been deleted." %}</div>');
 
-		$("#Modal").modal("hide");
+		hideModal();
 	</script>
 {% endblock %}

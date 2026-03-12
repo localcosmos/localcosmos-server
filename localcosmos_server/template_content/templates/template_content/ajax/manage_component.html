@@ -15,6 +15,10 @@
     {% endif %}
 {% endblock %}
 
+{% block form_attrs %}
+	novalidate
+{% endblock %}
+
 {% block footer %}
 	{% include 'localcosmos_server/modals/footers/save_close.html' %}
 {% endblock %}
@@ -24,9 +28,8 @@
 		<script>
 			{% include 'template_content/ajax/reload_template_content_form_fields.html' %}
 
-			$("#LargeModal").modal("hide");
-			$("#LargeModalContent").empty();
-			
+			hideLargeModal();
+						
 		</script>
 	{% endif %}
 	<script>

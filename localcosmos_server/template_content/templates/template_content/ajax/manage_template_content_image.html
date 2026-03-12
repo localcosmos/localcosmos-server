@@ -4,7 +4,7 @@
 {% block base_url %}{% if content_image %}{% url 'manage_template_content_image' request.app.uid content_image.id %}{% else %}{% url 'manage_template_content_image' request.app.uid content_type.id content_instance.id image_type %}{% endif %}{% endblock %}
 
 {% block footer %}
-	<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Cancel' %}</button>
+	<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
 	<button type="submit" class="btn btn-outline-primary">{% trans 'Save' %}</button>
 {% endblock %}
 
@@ -18,8 +18,7 @@
 
 				{% include 'template_content/ajax/reload_template_content_form_fields.html' %}
 
-				$("#LargeModal").modal("hide");
-				$("#LargeModalContent").empty();
+				hideLargeModal();
 
 			{% else %}
 				{% include 'localcosmos_server/snippets/ckeditor_js_snippet.html' %}

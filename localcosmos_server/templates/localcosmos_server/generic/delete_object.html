@@ -7,7 +7,7 @@
 			if (object.length){
 				object.remove();
 			}
-			$("#Modal").modal("hide");
+			hideModal();
 		</script>
 	{% endblock %}
 	{% block extra_success_js %}{% endblock %}
@@ -17,9 +17,7 @@
 
 		<div class="modal-header">
 			<h5 class="modal-title">{% block title %}{% blocktrans %}Delete {{ verbose_name }}{% endblocktrans %}{% endblock %}</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">×</span>
-			</button>
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 		</div>
 		<div class="modal-body">
 			<p>
@@ -34,15 +32,15 @@
 		</div>
 		<div class="modal-footer">
 			{% block footer %}
-				<button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
 				<button type="submit" class="btn btn-danger">{% trans 'Delete' %}</button>
 			{% endblock %}
 		</div>
 	</form>
 	{% block script %}
 		<script>
-			$("#LargeModal").modal("hide");
-			$("#Modal").modal("show");
+			hideLargeModal();
+			showModal();
 		</script>
 	{% endblock %}
 {% endif %}

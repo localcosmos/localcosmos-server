@@ -20,7 +20,8 @@
 {% block script %}
 	{% if success %}
 		<script>
-			$("#Modal").modal("hide");
+			hideModal();
+
 			$.get("{% url 'get_template_content_navigation_entries' app.uid navigation.pk %}", function(html){
                 var container_id = "navigation-entries";
                 $("#" + container_id).html(html);

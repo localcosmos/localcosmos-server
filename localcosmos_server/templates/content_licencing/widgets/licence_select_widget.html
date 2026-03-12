@@ -1,5 +1,5 @@
 {% load localcosmos_tags %}
-<div class="row no-gutters">
+<div class="row g-0">
 		{% spaceless %}{% for widget in widget.subwidgets %}<div class="col{% if forloop.last%}-3{% endif %}">{% include widget.template_name %}</div>{% endfor %}{% endspaceless %}
 </div>
 

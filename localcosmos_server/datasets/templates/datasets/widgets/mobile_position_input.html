@@ -1,11 +1,11 @@
 {% load i18n static %}
 
 <div id="{{ widget.attrs.id }}_map" style="height:400px;"></div>
-<div class="form-row">
+<div class="row mb-3">
 	<div class="col-12">
 		<div class="input-group">
 			{% if not widget.attrs.readonly %}
-				<div id="{{ widget.attrs.id }}_gpsbutton" class="input-group-prepend">
+				<div id="{{ widget.attrs.id }}_gpsbutton">
 					<div class="input-group-text bg-light">
 						<img src="{% static 'phosphor-icons/map-pin.svg' %}" class="phicon" />
 					</div>
@@ -16,7 +16,7 @@
 			<input id="{{ widget.attrs.id }}_1" name="{{ widget.name }}_1" type="hidden" class="form-control" {% if widget.value %}value="{{ widget.value.1 }}"{% endif %} />
 			
 			{% if not widget.attrs.readonly %}
-				<div id="{{ widget.attrs.id }}_delete" class="input-group-append">
+				<div id="{{ widget.attrs.id }}_delete">
 					<div class="input-group-text bg-danger">
 						<img src="{% static 'phosphor-icons/x.svg' %}" class="phicon" />
 					</div>

@@ -10,21 +10,19 @@
 
 	<div class="modal-header">
 		<h5 class="modal-title">{% trans 'Manage taxonomic restriction' %}</h5>
-	    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	    	<span aria-hidden="true">×</span>
-	    </button>
+	    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	</div>
 	
-	<div class="modal-body">
+	<div id="taxon-restriction-container" class="modal-body">
 		{% if is_available %}
-		<form method="POST" action="{% if typed == 'typed' %}{% url 'manage_modal_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id 'typed' %}{% else %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id %}{% endif %}" class="xhr" ajax-target="LargeModalContent">{% csrf_token %}
-			{% include 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html' %}
-		</form>
-	{% else %}
-		<div class="alert alert-danger">
-			{% trans 'You have to publish your app before being able to set taxonomic restrictions' %}
-		</div>
-	{% endif %}
+			<form method="POST" action="{% if typed == 'typed' %}{% url 'manage_modal_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id 'typed' %}{% else %}{% url 'manage_app_taxonomic_restrictions' request.app.uid content|ctype_id content.id %}{% endif %}" class="xhr" ajax-target="taxon-restriction-container">{% csrf_token %}
+				{% include 'localcosmos_server/taxonomy/taxonomic_restrictions_form.html' %}
+			</form>
+		{% else %}
+			<div class="alert alert-danger">
+				{% trans 'You have to publish your app before being able to set taxonomic restrictions' %}
+			</div>
+		{% endif %}
 	</div>
 	<div class="modal-footer">
 		{% include 'localcosmos_server/modals/footers/close.html' %}

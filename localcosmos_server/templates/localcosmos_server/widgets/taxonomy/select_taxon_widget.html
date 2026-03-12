@@ -8,10 +8,10 @@
 			{% include widget.template_name %}
 		{% endfor %}
 	{% endspaceless %}
-	<div class="form-row mt-2">
+	<div class="row mt-2 mb-3">
 		<div class="col-12 col-md-6 col-lg-4">
 			<label for="{{ widget.attrs.id }}_select">State</label>
-			<select id="{{ widget.attrs.id }}_select" class="custom-select" required>
+			<select id="{{ widget.attrs.id }}_select" class="form-select" required>
 				{% for choice in choices %}
 					<option value="{{ choice.0 }}">{{ choice.1 }}</option>
 				{% endfor %}

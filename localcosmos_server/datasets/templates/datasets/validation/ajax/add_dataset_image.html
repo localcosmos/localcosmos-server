@@ -22,7 +22,8 @@
 {% block script %}
     {% if success %}
         <script>
-            $("#LargeModal").modal("hide");
+
+            hideLargeModal();
 
             const base_url = "{% url 'datasets:load_form_field_images' request.app.uid dataset.id %}";
             

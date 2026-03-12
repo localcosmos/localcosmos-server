@@ -267,6 +267,11 @@ class TemplateContentFormFieldManager:
 
     def _get_image_type(self, content_key):
         return content_key
+    
+    
+    def _get_image_url_kwargs(self, data_url_kwargs):
+        return data_url_kwargs
+        
 
     def _get_image_form_field(self, content_key, content_definition, current_image=None):
 
@@ -304,8 +309,10 @@ class TemplateContentFormFieldManager:
                     'app_uid' : self.app.uid,
                     'content_type_id' : ltc_content_type.id,
                     'object_id' : self.localized_template_content.id,
-                    'image_type' : image_type
+                    'image_type' : image_type,
                 }
+                
+                data_url_kwargs = self._get_image_url_kwargs(data_url_kwargs)
 
                 data_url = reverse(self.manage_content_image_url_name, kwargs=data_url_kwargs)
             
@@ -459,20 +466,27 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
     delete_content_image_url_name = 'delete_component_image'
 
     # component_uuid can be None for new components
-    def __init__(self, app, template_content, localized_template_content, component_key, component_uuid, component={}):
+    def __init__(self, app, template_content, localized_template_content, component_key, component_uuid, component_template_name, component={}):
         self.app = app
         self.template_content = template_content
         self.localized_template_content = localized_template_content
         self.primary_locale_template_content = template_content.get_locale(app.primary_language)
         self.component_key = component_key
         self.component_uuid = component_uuid
+        self.component_template_name = component_template_name
         self.component = component
 
     # component_key:uuid:content_key
     def _get_image_type(self, content_key):
         return get_component_image_type(self.component_key, self.component_uuid, content_key)
 
-
+    def _get_image_url_kwargs(self, data_url_kwargs):
+        data_url_kwargs.update({
+            'component_template_name': self.component_template_name,
+        })
+        
+        return data_url_kwargs
+    
     def get_instance(self, content_key, content_type):
         
         instance = None
@@ -579,7 +593,7 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
         initial = kwargs.get('initial', {})
         
         if 'uuid' not in initial:
-            raise ValueError("initial['uuid] is required")
+            raise ValueError("initial['uuid'] is required")
 
         self.component_template_name = component_template_name
 
@@ -599,7 +613,7 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
     def get_form_field_manager(self):
         component_uuid = self.initial['uuid']
         return ComponentFormFieldManager(self.app, self.template_content, self.localized_template_content, self.content_key,
-                                        component_uuid, self.component)
+                                        component_uuid, self.component_template_name, self.component)
         
     def add_prefix(self, field_name):
         # look up field name; return original if not found

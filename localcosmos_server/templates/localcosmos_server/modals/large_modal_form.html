@@ -2,7 +2,7 @@
 {% load localcosmos_tags %}
 
 {% block above %}
-	<form method="POST" action="{% block action %}{% endblock %}" enctype="{% block enctype %}application/x-www-form-urlencoded{% endblock %}" class="xhr">{% csrf_token %}
+	<form method="POST" action="{% block action %}{% endblock %}" enctype="{% block enctype %}application/x-www-form-urlencoded{% endblock %}" {% block form_attrs %}{% endblock %} class="xhr">{% csrf_token %}
 {% endblock %}
 
 {% block body %}

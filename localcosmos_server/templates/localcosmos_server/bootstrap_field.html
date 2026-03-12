@@ -3,18 +3,16 @@
 	{{ field }}
 {% else %}
 
-	<div id="field-{{ field.id_for_label }}-container" class="form-group {% if field.errors %}has-error{% endif %} {{ field.field.widget|widget_class }}">
+	<div id="field-{{ field.id_for_label }}-container" class="mb-3 {% if field.errors %}has-error{% endif %} {{ field.field.widget|widget_class }}">
 		{% if field.field.widget|widget_class == "CheckboxSelectMultiple" %}
 
 			{{ field.label_tag }}
 			
 			{% if field.field.choices %}
 				{% for choice in field.field.choices %}
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" name="{{ field.name }}" value="{{ choice.0 }}" {% if choice.0 in field.value %}checked{% endif %}>
-							{{ choice.1 }}
-						</label>
+					<div class="form-check">
+						<input type="checkbox" class="form-check-input" id="{{ field.id_for_label }}_{{ choice.0 }}" name="{{ field.name }}" value="{{ choice.0 }}" {% if choice.0 in field.value %}checked{% endif %}>
+						<label class="form-check-label" for="{{ field.id_for_label }}_{{ choice.0 }}">{{ choice.1 }}</label>
 					</div>
 				{% endfor %}
 			{% else %}
@@ -30,9 +28,9 @@
 			</div>
 		{% elif field.field.widget|widget_class == "RadioSelect" %}
 			{% for choice in field.field.choices %}
-				<div class="custom-control custom-radio">
-					<input id="{{ field.id_for_label }}_{{ choice.0 }}" type="radio" name="{{ field.name }}" value="{{ choice.0 }}" {% if choice.0 in field.value %}selected{% endif %} class="custom-control-input">
-					<label for="{{ field.id_for_label }}_{{ choice.0 }}" class="custom-control-label">{{ choice.1 }}</label>
+				<div class="form-check">
+					<input id="{{ field.id_for_label }}_{{ choice.0 }}" type="radio" name="{{ field.name }}" value="{{ choice.0 }}" {% if choice.0 in field.value %}checked{% endif %} class="form-check-input">
+					<label for="{{ field.id_for_label }}_{{ choice.0 }}" class="form-check-label">{{ choice.1 }}</label>
 				</div>
 			{% endfor %}
 		{% elif field.field.widget|widget_class == "CropImageInput" %}

@@ -31,8 +31,8 @@
 							<div class="card-header">
 								<small>{% trans 'App' %}</small>
 								{% if localcosmos_private %}
-									<div class="dropdown float-right d-inline-block">
-										<button class="btn btn-xs btn-outline-secondary dropdown-toggle" type="button"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+									<div class="dropdown float-start d-inline-block">
+										<button class="btn btn-xs btn-outline-secondary dropdown-toggle" type="button"  data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
 										<div class="dropdown-menu">
 											<a class="dropdown-item" href="{% url 'scp:edit_app' app.uid %}">{% trans 'Edit' %}</a>
 											<a class="dropdown-item" href="{% url 'scp:update_app' app.uid %}">{% trans 'Update' %}</a>
@@ -49,7 +49,7 @@
 								</div>
 
 								{% if app.published_version %}
-									<span class="badge badge-info">{% trans 'version' %}: {{ app.published_version }}</span>
+									<span class="badge rounded-pill bg-info">{% trans 'version' %}: {{ app.published_version }}</span>
 									<p class="card-text">
 										<div>
 											<a href="{% if localcosmos_private %}{% else %}{{ request.scheme }}://{% endif %}{{ app.get_admin_url }}" class="btn btn-sm btn-outline-primary">{% trans 'App admin' %}</a> 
@@ -64,7 +64,7 @@
 													<a href="{{ request.scheme }}://{{ app.get_url }}" target="_blank">{{ request.scheme }}://{{ app.get_url }}</a>
 												{% endif %}
 											{% else %}
-												<span class="badge badge-danger">{% trans 'not available' %}</span>
+												<span class="badge rounded-pill bg-danger">{% trans 'not available' %}</span>
 											{% endif %}
 										</div>
 										<hr>
@@ -79,7 +79,7 @@
 												{% if app.apk_url %}
 													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.apk_url }}" download>{% trans 'Download' %}</a>
 												{% else %}
-													<span class="badge badge-danger">{% trans 'not available' %}</span>
+													<span class="badge rounded-pill bg-danger">{% trans 'not available' %}</span>
 												{% endif %}
 											</div>
 											<div>
@@ -87,13 +87,13 @@
 												{% if app.ipa_url %}
 													<a href="{{ request.scheme }}://{{ request.get_host }}{{ app.ipa_url }}" download>{% trans 'Download' %}</a>
 												{% else %}
-													<span class="badge badge-danger">{% trans 'not available' %}</span>
+													<span class="badge rounded-pill bg-danger">{% trans 'not available' %}</span>
 												{% endif %}
 											</div>
 										{% endif %}
 									</p>
 								{% else %}
-									<span class="badge badge-info">{% trans 'draft' %}</span>
+									<span class="badge rounded-pill bg-info">{% trans 'draft' %}</span>
 									<p class="card-text mt-2">
 										<small>{% trans 'More information will be avaibale when this app has been published.' %}</small>
 									</p>

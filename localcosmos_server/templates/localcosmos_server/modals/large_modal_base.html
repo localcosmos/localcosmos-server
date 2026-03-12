@@ -8,9 +8,13 @@
 
 {% block open_modal %}
 	<script>
-		var modal = $("#LargeModal");
-		if (!modal.hasClass("show")){
-			modal.modal("show");
-		}
+		(function(){
+			let largeModalEl = document.getElementById("LargeModal");
+			if (largeModalEl && !largeModalEl.classList.contains("show")) {
+				const largeModal = bootstrap.Modal.getOrCreateInstance(largeModalEl);
+				largeModal.show();
+			}
+		})();
+
 	</script>
 {% endblock %}

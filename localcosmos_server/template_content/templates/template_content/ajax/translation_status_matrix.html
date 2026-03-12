@@ -12,28 +12,28 @@
 
                 <div>
                     {% if locale.published_version %}
-                    <span class="badge badge-success">{% blocktrans with version=locale.published_version %}published version: {{ version }}{% endblocktrans %}</span>
+                    <span class="badge rounded-pill bg-success">{% blocktrans with version=locale.published_version %}published version: {{ version }}{% endblocktrans %}</span>
                     {% else %}
-                        <span class="badge badge-warning">{% trans 'not published' %}</span>
+                        <span class="badge rounded-pill bg-warning">{% trans 'not published' %}</span>
                     {% endif %}
                 </div>
                 <div>
-                    <span class="badge badge-info">{% blocktrans with version=locale.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
+                    <span class="badge rounded-pill bg-info">{% blocktrans with version=locale.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
                 </div>
 
                 {% if locale.language in app.secondary_languages %}
                     {% if locale.translation_is_complete %}
                         {% if locale.draft_version != primary_locale.draft_version %}
-                            <span class="badge badge-warning">{% trans 'old version' %}</span>
+                            <span class="badge rounded-pill bg-warning">{% trans 'old version' %}</span>
                         {% else %}
-                            <span class="badge badge-success">{% trans 'translation complete' %}</span>
+                            <span class="badge rounded-pill bg-success">{% trans 'translation complete' %}</span>
                         {% endif %}
                     {% else %}
-                        <span class="badge badge-warning">{% trans 'translation incomplete' %}</span>
+                        <span class="badge rounded-pill bg-warning">{% trans 'translation incomplete' %}</span>
                     {% endif %}
                 {% endif %}
             {% else %}
-                <span class="badge badge-danger">{% trans 'missing' %}</span>
+                <span class="badge rounded-pill bg-danger">{% trans 'missing' %}</span>
             {% endif %}
         </div>
     </div>
