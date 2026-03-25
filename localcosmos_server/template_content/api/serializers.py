@@ -82,8 +82,9 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
     def get_templateName(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'templateName')
 
+    # this is not the version defined in the template definition, but the published version of the template content. it is present in the built version, but not in the app kit's jsonbuilder yet. it might be a good addition to the app kit as well.
     def get_version(self, localized_template_content):
-        return self.get_from_definition(localized_template_content, 'version')
+        return localized_template_content.published_version
 
     def get_templatePath(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'templatePath')

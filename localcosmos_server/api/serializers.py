@@ -222,18 +222,23 @@ class ContactStaffSerializer(serializers.Serializer):
 # Taxon Profile Serializers
 #
 #################################################################################################
+class AppUrlSerializerMixin:
 
-class ImageUrlSerializer(serializers.Serializer):
-    _1x = serializers.CharField(source='1x', read_only=True)
-    _2x = serializers.CharField(source='2x', read_only=True)
-    _4x = serializers.CharField(source='4x', read_only=True)
-    
     def __init__(self, *args, app=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.app = app
+        
         self.app_url = None
         if self.app:
             self.app_url = app.get_url()
+            
+            
+
+
+class ImageUrlSerializer(AppUrlSerializerMixin, serializers.Serializer):
+    _1x = serializers.CharField(source='1x', read_only=True)
+    _2x = serializers.CharField(source='2x', read_only=True)
+    _4x = serializers.CharField(source='4x', read_only=True)
 
     def to_representation(self, instance):
         data = instance.copy()
@@ -256,16 +261,12 @@ class LicenceSerializer(serializers.Serializer):
     creatorLink = serializers.CharField(allow_null=True, required=False)
     sourceLink = serializers.CharField(allow_null=True, required=False)
 
-class ImageSerializer(serializers.Serializer):
+class ImageSerializer(AppUrlSerializerMixin, serializers.Serializer):
     text = serializers.CharField(allow_null=True, required=False, read_only=True)
     altText = serializers.CharField(allow_null=True, required=False, read_only=True)
     title = serializers.CharField(allow_null=True, required=False, read_only=True)
     imageUrl = ImageUrlSerializer(read_only=True)
     licence = LicenceSerializer(read_only=True)
-
-    def __init__(self, *args, app=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.app = app
         
     def get_licence(self, instance):
         
@@ -288,26 +289,49 @@ class ImageSerializer(serializers.Serializer):
         data['licence'] = self.get_licence(instance)
         return data
 
-class TextSerializer(serializers.Serializer):
+class TextSerializer(AppUrlSerializerMixin, serializers.Serializer):
+    
     taxonTextType = serializers.CharField(read_only=True)
     shortText = serializers.CharField(allow_null=True, required=False, read_only=True)
     shortTextKey = serializers.CharField(allow_null=True, required=False, read_only=True)
     longText = serializers.CharField(allow_null=True, required=False, read_only=True)
     longTextKey = serializers.CharField(allow_null=True, required=False, read_only=True)
+    images = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
     
-class CategorizedTextSerializer(serializers.Serializer):
+        
+    def to_representation(self, instance):
+        data = instance.copy()
+        images = instance.get('images', [])
+        serialized_images = []
+        for img in images:
+            serialized_image = ImageSerializer(img, app=self.app).data
+            serialized_images.append(serialized_image)
+                    
+        data['images'] = serialized_images
+        return data
+    
+    
+    
+class CategorizedTextSerializer(AppUrlSerializerMixin, serializers.Serializer):
     category = serializers.CharField(read_only=True)
     texts = TextSerializer(many=True, read_only=True)
     
-class ImagesSerializer(serializers.Serializer):
+    def to_representation(self, instance):
+        data = instance.copy()
+        texts = instance.get('texts', [])
+        serialized_texts = []
+        for text in texts:
+            serialized_text = TextSerializer(text, app=self.app).data
+            serialized_texts.append(serialized_text)
+                    
+        data['texts'] = serialized_texts
+        return data
+    
+class ImagesSerializer(AppUrlSerializerMixin,serializers.Serializer):
     primary = ImageSerializer(read_only=True)
     taxonProfileImages = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
     nodeImages = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
     taxonImages = serializers.ListField(child=ImageSerializer(read_only=True), required=False, read_only=True)
-
-    def __init__(self, *args, app=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.app = app
 
     def to_representation(self, instance):
         data = {}
@@ -386,18 +410,19 @@ class TaxonRelationshipTaxonSerializer(serializers.Serializer):
         else:
             taxon['taxonProfileId'] = None
             taxon['vernacular'] = {}
+            
+        image = None
+        if instance.get('image'):
+            image = ImageSerializer(instance['image'], app=self.app).data
+        taxon['image'] = image
         
         return taxon
 
 
-class TaxonRelationshipSerializer(serializers.Serializer):
+class TaxonRelationshipSerializer(AppUrlSerializerMixin, serializers.Serializer):
     taxon = TaxonRelationshipTaxonSerializer(read_only=True)
     relatedTaxon = TaxonRelationshipTaxonSerializer(read_only=True)
     description = serializers.CharField(allow_null=True, required=False, read_only=True)
-    
-    def __init__(self, *args, app=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.app = app
         
     def to_representation(self, instance):
         data = instance.copy()
@@ -423,7 +448,7 @@ class TaxonSerializer(serializers.Serializer):
     nameUuid = serializers.CharField(read_only=True)
     taxonNuid = serializers.CharField(read_only=True)
     
-class MorphotypeProfileSerializer(serializers.Serializer):
+class MorphotypeProfileSerializer(AppUrlSerializerMixin, serializers.Serializer):
     
     taxonProfileId = serializers.IntegerField(read_only=True)
     parentTaxonProfileId = serializers.IntegerField(read_only=True)
@@ -433,16 +458,17 @@ class MorphotypeProfileSerializer(serializers.Serializer):
     image = ImageSerializer(read_only=True)
     vernacular = serializers.DictField(child=serializers.CharField(read_only=True), read_only=True)
     link = serializers.CharField(read_only=True)
-    
-    def __init__(self, *args, app=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.app = app
         
     def to_representation(self, instance):
         data = instance.copy()
         # this is just a placeholder and work in progress
         data['link'] = 'https://www.beachexplorer.org/arten/tringa-nebularia-cranium/steckbrief'
         data['taxon'] = TaxonRelationshipTaxonSerializer(instance['taxon'], app=self.app).data
+        
+        image = None
+        if instance.get('image'):
+            image = ImageSerializer(instance['image'], app=self.app).data
+        data['image'] = image
         return data
 
 
@@ -511,6 +537,18 @@ class TaxonProfileSerializer(serializers.Serializer):
             mp_serialized = MorphotypeProfileSerializer(mp, app=self.app).data
             morphotype_profiles.append(mp_serialized)
             
+            
+        texts = []
+        for text in instance.get('texts', []):
+            text_serialized = TextSerializer(text, app=self.app).data
+            texts.append(text_serialized)
+            
+        
+        categorized_texts = []
+        for ct in instance.get('categorizedTexts', []):
+            ct_serialized = CategorizedTextSerializer(ct, app=self.app).data
+            categorized_texts.append(ct_serialized)
+            
         data = {
             'taxonLatname': instance['taxonLatname'],
             'taxonAuthor': instance['taxonAuthor'],
@@ -523,8 +561,8 @@ class TaxonProfileSerializer(serializers.Serializer):
             'taxonProfileId': instance['taxonProfileId'],
             'vernacular': instance['vernacular'],
             'allVernacularNames': instance['allVernacularNames'],
-            'texts': instance['texts'],
-            'categorizedTexts': instance['categorizedTexts'],
+            'texts': texts,
+            'categorizedTexts': categorized_texts,
             'images': images,
             'synonyms': instance['synonyms'],
             'tags': instance['tags'],

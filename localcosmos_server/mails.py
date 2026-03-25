@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.mail import send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string, get_template
 from django.contrib.sites.models import Site
 from django.urls import reverse
@@ -110,45 +110,50 @@ def send_staff_email(app_uuid, sender_name, sender_email, subject, message, page
     frontend = app.get_frontend()
     
     staff_users = LocalcosmosUser.objects.filter(is_staff=True, is_active=True)
-    receivers = [u.email for u in staff_users]
-    
-    support_email = None
-    if frontend and 'configuration' in frontend['userContent'] and 'supportEmail' in frontend['userContent']['configuration']:
-        support_email = frontend['userContent']['configuration']['supportEmail']
-    
-    headers = {
-        'Reply-To': sender_email
-    }
+    receivers = [u.email for u in staff_users if u.email]
 
-    legal_notice_url = reverse('legal_notice', kwargs={'app_uid':app.uid}, urlconf='localcosmos_server.urls')
-    privacy_statement_url = reverse('privacy_statement', kwargs={'app_uid':app.uid},
-                                    urlconf='localcosmos_server.urls')
-    
-    
-    ctx = {
-        'sender_name' : sender_name,
-        'sender_email' : sender_email,
-        'receiver' : receivers,
-        'app' : app,
-        'site' : Site.objects.get_current(),
-        'subject': subject,
-        'message': message,
-        'page': page,
-        'legal_notice_url' : legal_notice_url,
-        'privacy_statement_url' : privacy_statement_url,
-        'support_email': support_email,
-    }
-    
-    from_email = FROM_EMAIL
-    to = receivers
+    if receivers:
+        
+        support_email = None
+        if frontend and 'configuration' in frontend['userContent'] and 'supportEmail' in frontend['userContent']['configuration']:
+            support_email = frontend['userContent']['configuration']['supportEmail']
+        
+        headers = {
+            'Reply-To': sender_email
+        }
 
-    text_message = render_to_string('email/contact_staff.txt', ctx)
-    html_message = get_template('email/contact_staff.html').render(ctx)
-    
-    subject = '[{0}] {1}'.format(app.name, subject)
+        legal_notice_url = reverse('legal_notice', kwargs={'app_uid':app.uid}, urlconf='localcosmos_server.urls')
+        privacy_statement_url = reverse('privacy_statement', kwargs={'app_uid':app.uid},
+                                        urlconf='localcosmos_server.urls')
+        
+        
+        ctx = {
+            'sender_name' : sender_name,
+            'sender_email' : sender_email,
+            'receiver' : receivers,
+            'app' : app,
+            'site' : Site.objects.get_current(),
+            'subject': subject,
+            'message': message,
+            'page': page,
+            'legal_notice_url' : legal_notice_url,
+            'privacy_statement_url' : privacy_statement_url,
+            'support_email': support_email,
+        }
+        
+        from_email = FROM_EMAIL
+        to = receivers
 
-    msg = EmailMultiAlternatives(subject, text_message, from_email=from_email, to=to, headers=headers)
-    msg.attach_alternative(html_message, 'text/html')
-    
-    msg.send()
-    
+        text_message = render_to_string('email/contact_staff.txt', ctx)
+        send_html_alternative = False
+        if send_html_alternative:
+            html_message = get_template('email/contact_staff.html').render(ctx)
+        
+        subject = '[{0}] {1}'.format(app.name, subject)
+
+        msg = EmailMultiAlternatives(subject, text_message, from_email=from_email, to=to, headers=headers)
+        if send_html_alternative:
+            msg.attach_alternative(html_message, 'text/html')
+        
+        msg.send()
+        
