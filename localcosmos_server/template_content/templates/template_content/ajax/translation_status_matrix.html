@@ -12,7 +12,7 @@
 
                 <div>
                     {% if locale.published_version %}
-                    <span class="badge rounded-pill bg-success">{% blocktrans with version=locale.published_version %}published version: {{ version }}{% endblocktrans %}</span>
+                        <span class="badge rounded-pill bg-success">{% blocktrans with version=locale.published_version %}published version: {{ version }}{% endblocktrans %}</span>
                     {% else %}
                         <span class="badge rounded-pill bg-warning">{% trans 'not published' %}</span>
                     {% endif %}
@@ -20,6 +20,11 @@
                 <div>
                     <span class="badge rounded-pill bg-info">{% blocktrans with version=locale.draft_version %}current version: {{ version }}{% endblocktrans %}</span>
                 </div>
+                {% if locale.published_version and locale.draft_version > locale.published_version %}
+                    <div>
+                        <span class="badge rounded-pill bg-warning">{% trans 'new version not published yet' %}</span>
+                    </div>
+                {% endif %}
 
                 {% if locale.language in app.secondary_languages %}
                     {% if locale.translation_is_complete %}

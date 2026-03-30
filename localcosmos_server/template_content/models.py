@@ -355,8 +355,6 @@ class TemplateContent(PublicationMixin, models.Model):
                 component_template_names += content_definition['allowedComponents']
                 
             component_template_names = set(component_template_names)
-            
-            print('component_template_names', component_template_names)
 
             for component_template_name in component_template_names:
 
