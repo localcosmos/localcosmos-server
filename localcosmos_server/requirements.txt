@@ -10,6 +10,6 @@ django-el-pagination==3.3.0
 django-countries==7.5
 django-cors-headers==3.13.0
 drf-spectacular==0.24.*
-djangorestframework-simplejwt==5.2.*
+djangorestframework-simplejwt==5.5.*
 Pillow
 matplotlib
