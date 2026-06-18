@@ -1,0 +1,27 @@
+{% extends 'localcosmos_server/modals/modal_form.html' %}
+{% load i18n %}
+
+{% block title %}{% if point_rule %}{% blocktrans with name=point_rule.name %}Manage {{ name }}{% endblocktrans %}{% else %}{% blocktrans %}Create Point Rule{% endblocktrans %}{% endif %}{% endblock %}
+
+{% block action %}
+    {% if point_rule %}
+        {% url 'achievements:edit_point_rule' app.uid point_rule.id %}
+    {% else %}
+        {% url 'achievements:add_point_rule' app.uid %}
+    {% endif %}
+{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/save_close.html' %}
+{% endblock %}
+
+{% block script %}
+    {% if success is True %}
+        {% include 'achievements/snippets/reload_point_rule_list.html' %}
+        <script>
+            setTimeout(function() {
+                hideModal();
+            }, 200);
+        </script>
+    {% endif %}
+{% endblock %}

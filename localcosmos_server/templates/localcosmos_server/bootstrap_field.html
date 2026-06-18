@@ -61,6 +61,19 @@
 			<div>
 				{{ field }}
 			</div>
+		{% elif field.field.widget|widget_class == "DateInput" or field.field.widget|widget_class == "DateTimeInput" %}
+
+			{{ field.label_tag }} {% if field.field.required %}{% else %}<small>({% trans 'optional' %})</small>{% endif %}
+
+			{% if field.field.language %}
+				<img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+			{% endif %}
+
+			{{ field }}
+
+			{% if field.help_text %}
+				<small class="form-text text-muted">{{ field.help_text|safe }}</small>
+			{% endif %}
 		{% else %}
 
 			{{ field.label_tag }} {% if field.field.required %}{% else %}<small>({% trans 'optional' %})</small>{% endif %} {% if field.field.widget|widget_class == "SelectDateWidget" %}<br>{% endif %}

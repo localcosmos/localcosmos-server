@@ -1,0 +1,72 @@
+{% load i18n localcosmos_tags %}
+<div id="point-rules-list" class="d-flex flex-column gap-2 justify-start align-items-stretch align-items-lg-start mb-3" data-store-positions-url="{% url 'store_object_order' app.uid point_rules_ctype.id %}">
+    {% for point_rule in point_rules %}
+        <div class="card point-rule-card" id="ctype-{{ point_rule|ctype_id }}-{{ point_rule.id }}" data-object-id="{{ point_rule.id }}">
+            <div class="card-body">
+                <div>
+                    <span class="fs-5">{{ point_rule.name }}</span>
+                    <span class="badge rounded-pill bg-primary">{{ point_rule.points }} {% trans 'points' %}</span>
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% trans 'manage' %}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item xhr" href="{% url 'achievements:edit_point_rule' app.uid point_rule.id %}" ajax-target="ModalContent">{% trans 'edit' %}</a>
+                            <a class="dropdown-item xhr" href="{% url 'achievements:delete_point_rule' app.uid point_rule.id %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-center move-pointrule-up-button" data-targetid="ctype-{{ point_rule|ctype_id }}-{{ point_rule.id }}">&#x25B2; {% trans 'Move up' %}</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-center move-pointrule-down-button" data-targetid="ctype-{{ point_rule|ctype_id }}-{{ point_rule.id }}">&#x25BC; {% trans 'Move down' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div class="fs-6">
+                        {% trans 'Conditions' %} <br>
+                        {% if point_rule.conditions.exists %}
+                            <span class="text-primary">{{ point_rule.match_mode_display }}</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% for condition in point_rule.conditions.all %}
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <div>{{ condition.content_type }} - {{ condition.object_id }}</div>
+                                    <div>{{ condition.value_json }}</div>
+                                    <div>
+                                        <a class="xhr btn btn-xs btn-outline-primary" href="{% url 'achievements:edit_condition' app.uid condition.id %}" ajax-target="ModalContent">{% trans 'edit' %}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="text-muted">{% trans 'You have no conditions configured yet' %}</div>
+                        {% endfor %}
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="btn-group dropup">
+                            <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans 'add condition' %}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item xhr" href="{% url 'achievements:add_dataset_condition' app.uid point_rule.id %}" ajax-target="ModalContent">{% trans 'dataset condition' %}</a>
+                                <a class="dropdown-item xhr" href="{% url 'achievements:add_taxon_condition' app.uid point_rule.id %}" ajax-target="ModalContent">{% trans 'taxon condition' %}</a>
+                                <a class="dropdown-item xhr" href="{% url 'achievements:add_geography_condition' app.uid point_rule.id %}" ajax-target="ModalContent">{% trans 'geography condition' %}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div>{% trans 'You have no point rules configured yet' %}</div>
+    {% endfor %}
+</div>
+<script>
+    (function(){
+        $("#point-rules-list .move-pointrule-up-button").on("click", positionmanager.onMoveForward);
+        $("#point-rules-list .move-pointrule-down-button").on("click", positionmanager.onMoveBack);
+    })();
+
+</script>

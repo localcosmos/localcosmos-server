@@ -25,3 +25,13 @@ html, body {
 .flex-gap {
 	gap: 10px;
 }
+
+#point-rules-list .point-rule-card {
+	width: 100%;
+}
+
+@media (min-width: 768px) {
+	#point-rules-list .point-rule-card {
+		width: 400px;
+	}
+}

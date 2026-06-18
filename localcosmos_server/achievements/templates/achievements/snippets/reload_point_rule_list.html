@@ -1,0 +1,23 @@
+<script>
+    (function() {
+        function loadPointRules() {
+            const url = "{% url 'achievements:point_rules_list' app.uid %}";
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin'
+            })
+                .then(response => response.text())
+                .then(html => {
+                    $('#point-rules-list').html(html);
+                    ajaxify("point-rules-list");
+                })
+                .catch(error => {
+                    console.error('Error loading point rules:', error);
+                });
+        }
+
+        loadPointRules();
+    })();
+</script>

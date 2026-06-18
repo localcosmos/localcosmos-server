@@ -379,6 +379,15 @@ class Dataset(ModelWithTaxon):
 
         if created == True:
             self.validate()
+
+            # avoid circular imports by importing the points awarder here, after the dataset is saved and validated
+            # Award achievements only for the initial dataset creation path.
+            from localcosmos_server.achievements.point_calculators.DatasetPointsAwarder import DatasetPointsAwarder
+
+            if self.user is not None:
+                app = self.get_app()
+                if app is not None:
+                    DatasetPointsAwarder(app=app).award_points(user=self.user, dataset=self)
             
             
     def get_app(self):

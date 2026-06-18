@@ -69,6 +69,12 @@
 								<a class="dropdown-item" href="{% url 'datasets:manage_darwin_core' request.app.uid %}">GBIF</a>
 							</div>
 						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'achievements:achievements_list' request.app.uid %}">{% trans 'Achievements' %}</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'geography:geography_overview' request.app.uid %}">{% trans 'Geographies' %}</a>
+						</li>
 					</ul>
 
 					<ul class="navbar-nav flex-row ms-md-auto d-md-flex">

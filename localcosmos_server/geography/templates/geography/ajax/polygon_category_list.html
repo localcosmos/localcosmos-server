@@ -1,0 +1,26 @@
+{% load i18n localcosmos_tags %}
+<div id="polygon-category-list" class="flex flex-col gap-2">
+    {% for category in categories %}
+        <div id="ctype-{{ category|ctype_id }}-{{ category.id }}" class="card mb-3">
+            <div class="card-header">
+                {{ category.name }}
+                <div class="btn-group dropup">
+                    <button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'manage' %}
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item xhr" href="{% url 'geography:edit_polygon_category' app.uid category.id %}" ajax-target="ModalContent">{% trans 'edit' %}</a>
+                        <a class="dropdown-item xhr" href="{% url 'geography:delete_polygon_category' app.uid category.id %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="category-{{ category.id }}-polygons" class="category-polygons endless_page_template"
+                     data-url="{% url 'geography:get_category_polygons' app.uid category.id %}">
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div>{% trans 'You have no geographic categories configured yet' %}</div>
+    {% endfor %}
+</div>

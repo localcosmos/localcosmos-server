@@ -1,0 +1,29 @@
+{% extends 'localcosmos_server/modals/modal_form.html' %}
+{% load i18n %}
+
+{% block title %}
+    {% if polygon_category %}
+        {% blocktrans with name=polygon_category.name %}Manage {{ name }}{% endblocktrans %}
+    {% else %}
+        {% blocktrans %}Create Polygon Category{% endblocktrans %}
+    {% endif %}
+{% endblock %}
+
+{% block action %}
+    {{ action_url }}
+{% endblock %}
+
+{% block footer %}
+	{% include 'localcosmos_server/modals/footers/save_close.html' %}
+{% endblock %}
+
+{% block script %}
+    {% if success is True %}
+        {% include 'geography/snippets/reload_category_list.html' %}
+        <script>
+            setTimeout(function() {
+                hideModal();
+            }, 200);
+        </script>
+    {% endif %}
+{% endblock %}

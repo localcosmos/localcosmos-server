@@ -178,6 +178,7 @@ class LocalcosmosUser(ServerContentImageMixin, AbstractUser):
     slug = models.SlugField(unique=True)
 
     details = models.JSONField(null=True, blank=True)
+    legacy_user_info = models.JSONField(null=True, blank=True)
     
     follows = models.ManyToManyField('self', blank=True)
 

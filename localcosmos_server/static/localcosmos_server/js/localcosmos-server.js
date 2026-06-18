@@ -70,9 +70,9 @@ function each(data, onIter, onFinished){
 
 
 function hideModal () {
-	let modalEl = document.getElementById("Modal");
+	var modalEl = document.getElementById("Modal");
 	if (modalEl){
-		let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+		var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 		modal.hide();
 	}
 	/* this might break injected scripts, so maybe we can just leave the content in place and let it be overwritten when the next modal is shown
@@ -83,9 +83,9 @@ function hideModal () {
 }
 
 function hideLargeModal () {
-	let largeModalEl = document.getElementById("LargeModal");
+	var largeModalEl = document.getElementById("LargeModal");
 	if (largeModalEl){
-		let largeModal = bootstrap.Modal.getOrCreateInstance(largeModalEl);
+		var largeModal = bootstrap.Modal.getOrCreateInstance(largeModalEl);
 		largeModal.hide();
 	}
 	/* this might break injected scripts, so maybe we can just leave the content in place and let it be overwritten when the next modal is shown
@@ -96,17 +96,17 @@ function hideLargeModal () {
 }
 
 function showModal () {
-	const modalEl = document.getElementById("Modal");
+	var modalEl = document.getElementById("Modal");
 	if (modalEl){
-		let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+		var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 		modal.show();
 	}
 }
 
 function showLargeModal () {
-	let largeModalEl = document.getElementById("LargeModal");
+	var largeModalEl = document.getElementById("LargeModal");
 	if (largeModalEl){
-		let largeModal = bootstrap.Modal.getOrCreateInstance(largeModalEl);
+		var largeModal = bootstrap.Modal.getOrCreateInstance(largeModalEl);
 		largeModal.show();
 	}
 }

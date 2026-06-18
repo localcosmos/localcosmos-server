@@ -12,6 +12,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 
+from localcosmos_server.achievements.factor_types import FACTOR_DATASET_CREATED
+from localcosmos_server.achievements.models import PointRule, PointRuleCondition, UserPoints
 from localcosmos_server.datasets.validation.base import DatasetValidatorBase
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
@@ -103,6 +105,39 @@ class TestDataset(WithValidationRoutine, WithObservationForm, WithApp, WithUser,
 
         self.assertEqual(dataset.user, None)
         self.assertEqual(dataset.validation_errors, None)
+
+    @test_settings
+    def test_save_awards_points_for_dataset_created_rule_once(self):
+
+        user = self.create_user()
+
+        rule = PointRule.objects.create(
+            app=self.app,
+            name='Dataset created',
+            points=1,
+            awarded_for='Dataset created',
+        )
+        PointRuleCondition.objects.create(
+            rule=rule,
+            factor_type=FACTOR_DATASET_CREATED,
+            operator='equals',
+            value_json=True,
+        )
+
+        observation_form = self.create_observation_form(observation_form_json=self.observation_form_point_json)
+        dataset = self.create_dataset(observation_form=observation_form, user=user)
+
+        self.assertEqual(UserPoints.objects.filter(user=user, awarded_for='Dataset created').count(), 1)
+
+        dataset.data = dataset.data
+        dataset.save()
+
+        self.assertEqual(UserPoints.objects.filter(user=user, awarded_for='Dataset created').count(), 1)
+
+        dataset.data = dataset.data
+        dataset.save()
+
+        self.assertEqual(UserPoints.objects.filter(user=user, awarded_for='Dataset created').count(), 1)
 
 
     # in this case, the first (and only) validation step is a human interaction step

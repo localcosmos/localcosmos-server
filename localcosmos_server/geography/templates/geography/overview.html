@@ -1,0 +1,29 @@
+{% extends 'app_admin/base.html' %}
+{% load i18n static %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-12 mt-4">
+            <h1>{% trans 'Geographies for' %} {{ app.name }}</h1>
+            <div id="polygon-category-list"></div>
+            <div>
+                <button type="button" class="xhr btn btn-outline-primary" data-url="{% url 'geography:add_polygon_category' app.uid %}" ajax-target="ModalContent">
+                    {% trans 'Create Polygon Category' %}
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_head_script %}
+	<script src="{% static 'openlayers/v7.3.0/dist/ol.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'openlayers/v7.3.0/ol.css' %}">
+{% endblock %}
+
+{% block extra_script %}
+{% include 'geography/snippets/reload_category_list.html' %}
+{% endblock %}

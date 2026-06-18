@@ -1,0 +1,38 @@
+{% extends 'app_admin/base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-12 mt-4">
+            <h1>{% trans 'Achievements for' %} {{ app.name }}</h1>
+            <ul>
+                {% for achievement in achievements %}
+                    <li>{{ achievement.name }} ({{ achievement.code }})</li>
+                {% empty %}
+                    <li>{% trans 'You have no achievements configured yet' %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+		<div class="col-12 mt-4">
+            <h1>{% trans 'Point rules for' %} {{ app.name }}</h1>
+            <div id="point-rules-list">
+                
+            </div>
+            <div>
+                
+                <button type="button" class="xhr btn btn-outline-primary" data-url="{% url 'achievements:add_point_rule' app.uid %}" ajax-target="ModalContent">
+                    {% trans 'Create Point Rule' %}
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_script %}
+{% include 'achievements/snippets/reload_point_rule_list.html' %}
+{% endblock %}

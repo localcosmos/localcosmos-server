@@ -27,7 +27,7 @@
 
 	{% block open_modal %}
 		<script>
-			let modalEl = document.getElementById("Modal");
+			var modalEl = document.getElementById("Modal");
 			if (modalEl && !modalEl.classList.contains("show")) {
 				const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 				modal.show();

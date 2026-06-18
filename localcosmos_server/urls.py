@@ -15,6 +15,8 @@ urlpatterns = [
     path('app-admin/', include('localcosmos_server.template_content.urls')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.datasets.urls', namespace='datasets')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.taxonomy.urls')), # cannot have the namespace appadmin
+    path('app-admin/', include('localcosmos_server.achievements.urls', namespace='achievements')), # cannot have the namespace appadmin
+    path('app-admin/', include('localcosmos_server.geography.urls', namespace='geography')), # cannot have the namespace appadmin
     
     # generic object order
     path('app-admin/<str:app_uid>/store-object-order/<int:content_type_id>/',
