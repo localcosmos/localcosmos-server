@@ -15,6 +15,46 @@ TEST_PAGE_CONTENT_TYPES = {
     'stream': 'stream',
 }
 
+
+
+def _collect_nested_differences(expected, actual, path='root'):
+    differences = []
+
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        expected_keys = set(expected.keys())
+        actual_keys = set(actual.keys())
+
+        for missing_key in sorted(expected_keys - actual_keys):
+            differences.append(f"{path}.{missing_key}: missing in actual")
+
+        for extra_key in sorted(actual_keys - expected_keys):
+            differences.append(f"{path}.{extra_key}: unexpected in actual")
+
+        for key in sorted(expected_keys & actual_keys):
+            next_path = f"{path}.{key}"
+            differences.extend(_collect_nested_differences(expected[key], actual[key], next_path))
+
+        return differences
+
+    if isinstance(expected, list) and isinstance(actual, list):
+        if len(expected) != len(actual):
+            differences.append(
+                f"{path}: list length differs (expected {len(expected)}, actual {len(actual)})"
+            )
+
+        for index, (expected_item, actual_item) in enumerate(zip(expected, actual)):
+            next_path = f"{path}[{index}]"
+            differences.extend(_collect_nested_differences(expected_item, actual_item, next_path))
+
+        return differences
+
+    if expected != actual:
+        differences.append(f"{path}: expected {expected!r}, actual {actual!r}")
+
+    return differences
+
+
+
 class WithTemplateContent:
 
     def setUp(self):
@@ -28,7 +68,7 @@ class WithTemplateContent:
         
     def get_contents(self):
         template = self.primary_ltc.template_content.draft_template
-        template.load_template_and_definition_from_files()
+        template.load_template_definition_from_file()
         contents = template.definition['contents']
         
         return contents

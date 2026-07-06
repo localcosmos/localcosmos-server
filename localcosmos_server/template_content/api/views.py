@@ -74,3 +74,62 @@ class GetNavigationPreview(GetNavigation, GenericAPIView):
         context = super().get_serializer_context()
         context['preview'] = True
         return context
+    
+    
+    
+class AppSpecificTemplateContentMixin:
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        app = App.objects.get(uuid=self.kwargs['app_uuid'])
+        queryset = queryset.filter(template_content__app=app)
+        return queryset
+
+
+class PreviewContextMixin(AppSpecificTemplateContentMixin):
+    
+    queryset = LocalizedTemplateContent.objects.all()
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['preview'] = True
+        return context
+
+
+class LiveContextMixin(AppSpecificTemplateContentMixin):
+    
+    queryset = LocalizedTemplateContent.objects.filter(published_version__isnull=False)
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['preview'] = False
+        return context
+    
+    
+class GetTemplateContentByTemplate(LiveContextMixin, mixins.ListModelMixin, GenericAPIView):
+    
+    serializer_class = LocalizedTemplateContentSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        template_name = self.kwargs['template_name']
+        # draft_template_name is not only for drafts, name is because of historic reasons
+        queryset = queryset.filter(template_content__draft_template_name=template_name)
+        return queryset
+
+
+class GetTemplateContentByTemplatePreview(PreviewContextMixin, GetTemplateContentByTemplate):
+    
+    serializer_class = LocalizedTemplateContentSerializer
+    
+
+''' TODO
+class GetTemplateContentByTag(LiveContextMixin, mixins.RetrieveModelMixin,GenericAPIView):
+    pass
+
+
+class GetTemplateContentByTagPreview(PreviewContextMixin, mixins.RetrieveModelMixin, GetTemplateContentByTag):
+    pass
+'''

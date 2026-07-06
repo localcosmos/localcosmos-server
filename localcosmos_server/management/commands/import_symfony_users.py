@@ -249,42 +249,25 @@ class Command(BaseCommand):
 
     def _connect_legacy_db(self, legacy_db_config):
         try:
-            import psycopg
+            import psycopg2
+        except ImportError as exc:
+            raise CommandError(
+                'psycopg2 is not installed in this environment.'
+            ) from exc
 
-            connect_kwargs = {
-                'host': legacy_db_config['host'],
-                'port': legacy_db_config['port'],
-                'dbname': legacy_db_config['dbname'],
-                'user': legacy_db_config['user'],
-                'password': legacy_db_config['password'],
-                'connect_timeout': 10,
-            }
+        connect_kwargs = {
+            'host': legacy_db_config['host'],
+            'port': legacy_db_config['port'],
+            'dbname': legacy_db_config['dbname'],
+            'user': legacy_db_config['user'],
+            'password': legacy_db_config['password'],
+            'connect_timeout': 10,
+        }
 
-            if legacy_db_config.get('sslmode'):
-                connect_kwargs['sslmode'] = legacy_db_config['sslmode']
+        if legacy_db_config.get('sslmode'):
+            connect_kwargs['sslmode'] = legacy_db_config['sslmode']
 
-            return psycopg.connect(**connect_kwargs)
-        except ImportError:
-            try:
-                import psycopg2
-
-                connect_kwargs = {
-                    'host': legacy_db_config['host'],
-                    'port': legacy_db_config['port'],
-                    'dbname': legacy_db_config['dbname'],
-                    'user': legacy_db_config['user'],
-                    'password': legacy_db_config['password'],
-                    'connect_timeout': 10,
-                }
-
-                if legacy_db_config.get('sslmode'):
-                    connect_kwargs['sslmode'] = legacy_db_config['sslmode']
-
-                return psycopg2.connect(**connect_kwargs)
-            except ImportError as exc:
-                raise CommandError(
-                    'Neither psycopg (v3) nor psycopg2 is installed in this environment.'
-                ) from exc
+        return psycopg2.connect(**connect_kwargs)
 
     def _fetch_symfony_users(self, legacy_db_config, limit=None, only_user_id=None):
         where_clauses = []

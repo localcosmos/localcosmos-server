@@ -817,7 +817,7 @@ class TestComponentFormFieldManager(WithTemplateContent, WithServerContentImage,
         
         component_template = self.template_content.get_component_template(component_key)
         
-        component_template.load_template_and_definition_from_files()
+        component_template.load_template_definition_from_file()
         contents = component_template.definition['contents']
         
         component = self.primary_ltc.draft_contents[component_key][0]
@@ -864,7 +864,7 @@ class TestManageLocalizedTemplateContentForm(WithTemplateContent, WithServerCont
         
         # init, no ltc
         form = ManageLocalizedTemplateContentForm(self.app, self.template_content)
-        self.assertEqual(len(form.fields), 2)
+        self.assertEqual(len(form.fields), 3)
         self.assertIn('input_language', form.fields)
         self.assertIn('draft_title', form.fields)
 
@@ -898,7 +898,7 @@ class TestManageLocalizedTemplateContentForm(WithTemplateContent, WithServerCont
         
         form = ManageLocalizedTemplateContentForm(self.app, self.template_content)
         
-        self.assertEqual(len(form.fields), 2)
+        self.assertEqual(len(form.fields), 3)
         self.assertIn('input_language', form.fields)
         self.assertIn('draft_title', form.fields)
         
@@ -915,7 +915,7 @@ class TestManageLocalizedTemplateContentForm(WithTemplateContent, WithServerCont
             
             field = bound_field.field
             
-            if bound_field.name in ['input_language', 'draft_title']:
+            if bound_field.name in ['input_language', 'draft_title', 'author']:
                 continue            
             
             self.assertEqual(field.language, self.primary_ltc.language)
@@ -983,7 +983,7 @@ class TestManageComponentForm(WithTemplateContent, WithServerContentImage,
         
         component_template = self.template_content.get_component_template(content_key)
         
-        component_template.load_template_and_definition_from_files()
+        component_template.load_template_definition_from_file()
         
         self.assertEqual(component_template.definition, form.template_definition)
     

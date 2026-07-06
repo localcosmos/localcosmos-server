@@ -3,7 +3,7 @@
 {% load i18n localcosmos_tags %}
 
 {% block above %}
-	<form method="POST" action="{% block base_url %}{% url 'manage_server_content_image' content_type.id content_instance.id image_type %}{% endblock %}?{% if new %}new=1&{% endif %}{% if content_image_taxon %}taxon_source={{ content_image_taxon.taxon_source }}&taxon_latname={{ content_image_taxon.taxon_latname }}&taxon_author={{ content_image_taxon.taxon_author }}{% endif %}" enctype="multipart/form-data" class="xhr">{% csrf_token %}
+	<form method="POST" action="{% block base_url %}{% if content_image %}{% url 'manage_server_content_image' content_image.id %}{% else %}{% url 'manage_server_content_image' content_type.id content_instance.id image_type %}{% endif %}{% endblock %}?{% if new %}new=1&{% endif %}{% if content_image_taxon %}taxon_source={{ content_image_taxon.taxon_source }}&taxon_latname={{ content_image_taxon.taxon_latname }}&taxon_author={{ content_image_taxon.taxon_author }}{% endif %}" enctype="multipart/form-data" class="xhr">{% csrf_token %}
 {% endblock %}
 
 {% block title %}

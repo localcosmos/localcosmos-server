@@ -27,7 +27,7 @@ KNOWN_POINT_FACTOR_TYPES = set(DATASET_EVENT_FACTORS)
 
 FACTOR_TYPE_LABELS = {
     FACTOR_DATASET: 'Dataset',
-    FACTOR_GEOGRAPHY: 'Geography',
+    FACTOR_GEOGRAPHY: 'Inside Geography',
     FACTOR_TAXON: 'Taxon',
     FACTOR_IS_FIRST_DATASET_FOR_USER: 'Is first dataset for user',
     FACTOR_IS_FIRST_SPECIES_IN_POLYGON_FOR_USER: 'Is first species in any polygon',

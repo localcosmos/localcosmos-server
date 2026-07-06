@@ -4,8 +4,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-from localcosmos_server.achievements.factor_types import FACTOR_TYPE_CHOICES
-from localcosmos_server.achievements.factor_types import KNOWN_POINT_FACTOR_TYPES
+from localcosmos_server.achievements.factor_types import FACTOR_TYPE_CHOICES, KNOWN_POINT_FACTOR_TYPES, FACTOR_TYPE_LABELS
 
 from localcosmos_server.models import App
 
@@ -53,6 +52,24 @@ MATCH_MODE_CHOICES = (
     ('all', 'All conditions must match'),
     ('any', 'At least one condition must match'),
 )
+
+
+CONDITION_INTERSECTS = 'intersects'
+CONDITION_EQUALS = 'equals'
+
+GEOGRAPHY_CONDITION_OPERATORS = {
+    CONDITION_INTERSECTS: 'Is inside geography',
+}
+
+TAXON_CONDITION_OPERATORS = {
+    'equals': 'Is this taxon',
+    'in': 'Is in this list of taxa',
+}
+
+DATASET_CONDITION_OPERATORS = {
+    'equals': 'Is this dataset',
+    'in': 'Is in this list of datasets',
+}
 
 
 CONDITION_OPERATOR_CHOICES = (
@@ -148,5 +165,6 @@ class PointRuleCondition(models.Model):
             })
 
     def __str__(self):
-        return f"{self.rule.name}:{self.factor_type}:{self.operator}"
+        label = FACTOR_TYPE_LABELS.get(self.factor_type, self.factor_type)
+        return f"{label}"
 

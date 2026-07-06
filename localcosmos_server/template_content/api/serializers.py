@@ -24,7 +24,6 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
     publishedAt = serializers.SerializerMethodField()
     
     templateName = serializers.SerializerMethodField()
-    templatePath = serializers.SerializerMethodField()
     
     version = serializers.SerializerMethodField()
     
@@ -74,21 +73,24 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
         return localized_template_content.created_at.isoformat()
     
     def get_lastModified(self, localized_template_content):
-        return localized_template_content.last_modified.isoformat()
+        if localized_template_content.last_modified:
+            return localized_template_content.last_modified.isoformat()
+        return None
     
     def get_publishedAt(self, localized_template_content):
-        return localized_template_content.published_at.isoformat()
-
+        if localized_template_content.published_at:
+            return localized_template_content.published_at.isoformat()
+        return None
+    
     def get_templateName(self, localized_template_content):
         return self.get_from_definition(localized_template_content, 'templateName')
 
     # this is not the version defined in the template definition, but the published version of the template content. it is present in the built version, but not in the app kit's jsonbuilder yet. it might be a good addition to the app kit as well.
     def get_version(self, localized_template_content):
-        return localized_template_content.published_version
-
-    def get_templatePath(self, localized_template_content):
-        return self.get_from_definition(localized_template_content, 'templatePath')
-
+        if localized_template_content.published_version:
+            return localized_template_content.published_version
+        return localized_template_content.draft_version
+    
     def get_image_data(self, content_definition, localized_template_content, image_type):
 
         preview = self.context.get('preview', True)
@@ -265,7 +267,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalizedTemplateContent
-        fields = ['title', 'templateName', 'templatePath', 'version', 'contents', 'linkedTaxa', 'linkedTaxonProfiles',
+        fields = ['title', 'templateName', 'version', 'contents', 'linkedTaxa', 'linkedTaxonProfiles',
                   'publishedAt', 'createdAt', 'lastModified', 'uuid', 'language', 'slug', 'author']
 
 
@@ -285,6 +287,9 @@ class ContentLicenceSerializer(serializers.ModelSerializer):
 class ContentImageSerializer(serializers.Serializer):
     
     imageUrl = serializers.SerializerMethodField()
+    title = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()
+    altText = serializers.SerializerMethodField()
     licence = serializers.SerializerMethodField()
 
     def get_imageUrl(self, content_image):
@@ -298,6 +303,15 @@ class ContentImageSerializer(serializers.Serializer):
         serializer = ContentLicenceSerializer(licence)
 
         return serializer.data
+    
+    def get_title(self, content_image):
+        return content_image.title
+    
+    def get_text(self, content_image):
+        return content_image.text
+    
+    def get_altText(self, content_image):
+        return content_image.alt_text
     
     
 class LocalizedNavigationSerializer(serializers.ModelSerializer):

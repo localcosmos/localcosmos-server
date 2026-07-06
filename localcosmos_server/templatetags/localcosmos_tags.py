@@ -10,6 +10,14 @@ from localcosmos_server.utils import get_taxon_search_url
 from localcosmos_server.taxonomy.forms import AddSingleTaxonForm, TypedTaxonomicRestrictionForm
 from localcosmos_server.models import TaxonomicRestriction
 from localcosmos_server.template_content.models import TemplateContent
+from localcosmos_server.achievements.factor_types import (
+    FACTOR_DATASET,
+    FACTOR_DATASET_CREATED,
+    FACTOR_GEOGRAPHY,
+    FACTOR_IS_FIRST_DATASET_FOR_USER,
+    FACTOR_IS_FIRST_SPECIES_IN_POLYGON_FOR_USER,
+    FACTOR_TAXON,
+)
 
 
 '''
@@ -168,3 +176,19 @@ def content_image_url(instance, image_type):
 @register.filter
 def is_ajax(request):
     return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
+
+@register.simple_tag
+def point_rule_condition_edit_url(app_uid, rule_id, condition):
+    factor_type = getattr(condition, 'factor_type', None)
+
+    if factor_type in (FACTOR_DATASET, FACTOR_DATASET_CREATED, FACTOR_IS_FIRST_DATASET_FOR_USER):
+        return reverse('achievements:edit_dataset_condition', args=[app_uid, rule_id, condition.id])
+
+    if factor_type in (FACTOR_GEOGRAPHY, FACTOR_IS_FIRST_SPECIES_IN_POLYGON_FOR_USER):
+        return reverse('achievements:edit_geography_condition', args=[app_uid, rule_id, condition.id])
+
+    if factor_type == FACTOR_TAXON:
+        return reverse('achievements:edit_taxon_condition', args=[app_uid, rule_id, condition.id])
+
+    return ''

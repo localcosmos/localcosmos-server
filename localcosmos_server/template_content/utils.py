@@ -11,7 +11,7 @@ def get_frontend_specific_url(app_settings, ltc):
 
     template = ltc.template_content.draft_template
     template_name = template.definition['templateName']
-
+    
     template_url = app_settings['templateContent']['urlPattern'].replace('{slug}', slug).replace('{templateName}', template_name)
     return template_url
 
@@ -23,8 +23,9 @@ def get_preview_text(component_template, instance):
         identifier_key = component_template.definition['identifierContent']
         preview_text = instance.get(identifier_key, None)
 
-        if isinstance(preview_text, dict):
+        if isinstance(preview_text, dict):            
             preview_text = preview_text.get('title', None)
+            
             
     if not preview_text:
         preview_text = component_template.definition['templateName']

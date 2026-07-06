@@ -8,6 +8,11 @@ import localcosmos_server.template_content.models
 import uuid
 
 
+# Keep upload path callables local to this migration so historical migrations
+# do not depend on application code that may change over time.
+def _legacy_published_template_upload_path(instance, filename):
+    return filename
+
 class Migration(migrations.Migration):
 
     initial = True
@@ -26,7 +31,7 @@ class Migration(migrations.Migration):
                 ('template_type', models.CharField(choices=[('page', 'Page')], max_length=20)),
                 ('tag', models.CharField(editable=False, max_length=100)),
                 ('draft_template_name', models.CharField(max_length=355)),
-                ('published_template', models.FileField(null=True, upload_to=localcosmos_server.template_content.models.get_published_page_template_path)),
+                ('published_template', models.FileField(null=True, upload_to=_legacy_published_template_upload_path)),
                 ('published_template_definition', models.FileField(null=True, upload_to=localcosmos_server.template_content.models.get_published_page_template_definition_path)),
                 ('app', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='localcosmos_server.app')),
             ],

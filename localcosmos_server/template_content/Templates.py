@@ -54,29 +54,27 @@ class TemplatePaths:
 class Template(TemplatePaths):
 
     # name is used to identify the folder of the template files
-    def __init__(self, app, name, template_type, template_filepath=None, template_definition_filepath=None):
+    def __init__(self, app, name, template_type, template_definition_filepath=None):
 
         self.app = app
         self.name = name
         self.template_type = template_type
 
-        self.template_filepath = None
         self.template_definition_filepath = None
         
         self.template_exists = True
 
-        if template_filepath and template_definition_filepath:
-            self.template_filepath = template_filepath
+        if template_definition_filepath:
             self.template_definition_filepath = template_definition_filepath
 
-            self.template, self.definition = self.read_template_files(self.template_filepath,
-                self.template_definition_filepath)
+            self.definition = self.read_template_definition_file(self.template_definition_filepath)
         
         else:
             try:
-                self.load_template_and_definition_from_files()
+                self.load_template_definition_from_file()
             except FileNotFoundError:
                 self.template_exists = False
+
                 
     @property
     def frontend_template_folder(self):
@@ -87,12 +85,9 @@ class Template(TemplatePaths):
         return os.path.join(self.uploaded_templates_path, self.name)
 
 
-    def get_template_filepaths(self, template_folder):
+    def get_template_definition_filepath(self, template_folder):
 
-        template_filepath = None
         template_definition_filepath = None
-
-        filecount = 0
 
         if os.path.isdir(template_folder):
             
@@ -102,84 +97,64 @@ class Template(TemplatePaths):
 
                 if os.path.isfile(filepath):
 
-                    filecount += 1
                     basename, ext = os.path.splitext(filepath)
 
+                    # only one json file is allowed
                     if ext == '.json':
                         template_definition_filepath = filepath
-                    else:
-                        template_filepath = filepath
+                        break
 
-        if filecount == 2:
-            return template_filepath, template_definition_filepath
+        return template_definition_filepath
 
-        return None, None
+    def read_template_definition_file(self, template_definition_filepath):
 
-    def read_template_files(self, template_filepath, template_definition_filepath):
-
-        template = None
         definition = None
 
-        if template_filepath and template_definition_filepath:
-
-            with open(template_filepath, 'r') as template_file:
-                template = template_file.read()
-
+        if template_definition_filepath:
 
             with open(template_definition_filepath, 'r') as template_definition_file:
                 definition = json.loads(template_definition_file.read())
 
         
-        return template, definition
+        return definition
 
     '''
         - first, look up the frontend template_content folder for the template
         - second, check uploaded templates, compare version with frontend's template
     '''  
-    def load_template_and_definition_from_files(self):
+    def load_template_definition_from_file(self):
 
-        template = None
         definition = None
-        template_filepath = None
         template_definition_filepath = None
 
-        frontend_template_filepath, frontend_template_definition_filepath = self.get_template_filepaths(
+        frontend_template_definition_filepath = self.get_template_definition_filepath(
             self.frontend_template_folder)
 
-        frontend_template, frontend_template_definition = self.read_template_files(frontend_template_filepath,
-            frontend_template_definition_filepath)
+        frontend_template_definition = self.read_template_definition_file(frontend_template_definition_filepath)
 
         
-        if frontend_template and frontend_template_definition:
-
-            template = frontend_template
+        if frontend_template_definition:
             definition = frontend_template_definition
-            template_filepath = frontend_template_filepath
             template_definition_filepath = frontend_template_definition_filepath
 
-        uploaded_template_filepath, uploaded_template_definition_filepath = self.get_template_filepaths(
+        uploaded_template_definition_filepath = self.get_template_definition_filepath(
             self.uploaded_template_folder)
 
-        uploaded_template, uploaded_template_definition = self.read_template_files(uploaded_template_filepath,
-            uploaded_template_definition_filepath)
+        uploaded_template_definition = self.read_template_definition_file(uploaded_template_definition_filepath)
 
-        if uploaded_template and uploaded_template_definition:
+        if uploaded_template_definition:
             
             if uploaded_template_definition['version'] > frontend_template_definition['version']:
-                template = uploaded_template
                 definition = uploaded_template_definition
-                template_filepath = uploaded_template_filepath
                 template_definition_filepath = uploaded_template_definition_filepath
 
-        if not template or not definition:
+        if not definition:
             msg = 'Template "{0}" not found. Looked in: {1} , {2}'.format(self.name, self.frontend_templates_path,
                 self.uploaded_templates_path)
             raise FileNotFoundError(msg)
 
-        self.template = template
         self.definition = definition
 
-        self.template_filepath = template_filepath
         self.template_definition_filepath = template_definition_filepath
 
 

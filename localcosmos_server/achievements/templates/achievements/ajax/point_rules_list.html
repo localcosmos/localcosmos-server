@@ -23,20 +23,39 @@
                 <hr>
                 <div>
                     <div class="fs-6">
-                        {% trans 'Conditions' %} <br>
+                        <strong>{% trans 'Conditions' %}</strong> <br>
                         {% if point_rule.conditions.exists %}
-                            <span class="text-primary">{{ point_rule.match_mode_display }}</span>
+                            <span class="text-muted">{{ point_rule.match_mode_display }}</span>
                         {% endif %}
                     </div>
                     <div>
                         {% for condition in point_rule.conditions.all %}
-                            <div class="card mb-2">
+                            <div id="ctype-{{ condition|ctype_id }}-{{ condition.id }}" class="card mb-2 text-bg-light">
                                 <div class="card-body">
-                                    <div>{{ condition.content_type }} - {{ condition.object_id }}</div>
-                                    <div>{{ condition.value_json }}</div>
+                                    {% point_rule_condition_edit_url app.uid point_rule.id condition as condition_edit_url %}
                                     <div>
-                                        <a class="xhr btn btn-xs btn-outline-primary" href="{% url 'achievements:edit_condition' app.uid condition.id %}" ajax-target="ModalContent">{% trans 'edit' %}</a>
+                                        {{ condition }}
                                     </div>
+                                    {% if condition.content_object %}
+                                        <div>
+                                            {{ condition.content_object }}
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="btn-group dropup">
+                                        <button type="button" class="btn btn-xs btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {% trans 'modify' %}
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item xhr" href="{{ condition_edit_url }}" ajax-target="ModalContent">{% trans 'edit' %}</a>
+                                            <a class="dropdown-item xhr" href="{% url 'achievements:delete_point_rule_condition' app.uid condition.id %}" ajax-target="ModalContent">{% trans 'delete' %}</a>
+                                        </div>
+                                    </div>
+
+                                    <!--
+                                        <div>{{ condition.content_type }} - {{ condition.object_id }}</div>
+                                        <div>{{ condition.value_json }}</div>
+                                    -->
                                 </div>
                             </div>
                         {% empty %}

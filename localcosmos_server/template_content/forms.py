@@ -132,7 +132,6 @@ class TemplateContentFormFieldManager:
         {
             "title": "Sample page",
             "templateName": "Sample",
-            "templatePath": "/template_content/page/sample/sample.html",
             "version": 1,
             "contents": {
                 "stream": [
@@ -439,7 +438,7 @@ class TemplateContentFormFieldManager:
 
         widget = forms.Select(widget_attrs)
 
-        queryset = LocalizedTemplateContent.objects.filter(published_version__isnull=False)
+        queryset = LocalizedTemplateContent.objects.filter(template_content__app=self.app)#filter(published_version__isnull=False)
 
         initial = None
 
@@ -527,6 +526,8 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
 
 
 class ManageLocalizedTemplateContentForm(TemplateContentFormCommon):
+    
+    author = forms.CharField(label=_('Author(s)'), max_length=255, required=False)
 
     def __init__(self, app, template_content, localized_template_content=None, *args, **kwargs):
 
@@ -604,6 +605,7 @@ class ManageComponentForm(ManageLocalizedTemplateContentForm):
         super().__init__(app, template_content, localized_template_content, *args, **kwargs)
 
         self.fields.pop('draft_title')
+        self.fields.pop('author')
         
     def set_template_definition(self):
         # load the component template

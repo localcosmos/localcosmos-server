@@ -198,6 +198,7 @@ class ManageTemplateContentCommon:
         if self.localized_template_content:
             initial = {
                 'draft_title' : self.localized_template_content.draft_title,
+                'author' : self.localized_template_content.author,
                 'input_language' : self.localized_template_content.language,
             }
 
@@ -242,7 +243,8 @@ class ManageTemplateContentCommon:
                         'pk': str(ltc.pk),
                         'slug': ltc.slug,
                         'templateName': template_name,
-                        'title': ltc.published_title,
+                        'title': ltc.published_title or ltc.draft_title,
+                        'author': ltc.author,
                         'url': url,
                     }
 
@@ -257,6 +259,7 @@ class ManageTemplateContentCommon:
     
     def save_localized_template_content(self, form):
         self.localized_template_content.draft_title = form.cleaned_data['draft_title']
+        self.localized_template_content.author = form.cleaned_data['author']
 
         if not self.localized_template_content.draft_contents:
             self.localized_template_content.draft_contents = {}

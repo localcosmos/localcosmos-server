@@ -1,6 +1,9 @@
 from django.test import TestCase
 from django.contrib.contenttypes.models import ContentType
 
+import difflib
+import json
+
 from localcosmos_server.template_content.tests.mixins import (WithTemplateContent, TEST_TEMPLATE_NAME,
     PAGE_TEMPLATE_TYPE, WithNavigation)
 
@@ -12,13 +15,38 @@ from localcosmos_server.template_content.api.serializers import (LocalizedTempla
 
 
 from localcosmos_server.template_content.utils import get_component_image_type
+from localcosmos_server.template_content.tests.mixins import _collect_nested_differences
 
 from localcosmos_server.models import TaxonomicRestriction
 from localcosmos_server.taxonomy.lazy import LazyAppTaxon
 
 import uuid
 
+
+
+
 class LTCPreviewTestsMixin:
+
+    def assert_serializer_data_equal(self, serializer_data, expected_data):
+        differences = _collect_nested_differences(expected_data, serializer_data)
+        if not differences:
+            return
+
+        expected_json = json.dumps(expected_data, indent=2, sort_keys=True, ensure_ascii=False)
+        actual_json = json.dumps(serializer_data, indent=2, sort_keys=True, ensure_ascii=False)
+
+        unified_diff = '\n'.join(
+            difflib.unified_diff(
+                expected_json.splitlines(),
+                actual_json.splitlines(),
+                fromfile='expected_data',
+                tofile='serializer.data',
+                lineterm='',
+            )
+        )
+
+        difference_lines = '\n'.join(f"- {difference}" for difference in differences)
+        self.fail(f"Serializer data mismatch:\n{difference_lines}\n\nUnified diff:\n{unified_diff}")
     
     def prepare_template_content(self):
         pass
@@ -57,7 +85,6 @@ class LTCPreviewTestsMixin:
         
         self.assertEqual(template_definition['templateName'], 'test-page')
         self.assertEqual(template_definition['type'], 'page')
-        self.assertEqual(template_definition['templatePath'], '/template_content/page/home/home.html')
         self.assertEqual(template_definition['version'], 1)
     
     
@@ -103,22 +130,7 @@ class LTCPreviewTestsMixin:
         
         version = serializer.get_version(self.primary_ltc)
         
-        self.assertEqual(version, 1)
-    
-    
-    @test_settings
-    def test_get_templatePath(self):
-        
-        self.prepare_template_content()
-        
-        context = {
-            'preview' : True
-        }
-        serializer = LocalizedTemplateContentSerializer(self.primary_ltc, context=context)
-        
-        template_path = serializer.get_templatePath(self.primary_ltc)
-        
-        self.assertEqual(template_path, '/template_content/page/home/home.html')
+        self.assertEqual(version, 1)  # since it's not published yet, the version should be the draft version
     
     
     @test_settings
@@ -462,7 +474,6 @@ class LTCPreviewTestsMixin:
         expected_data = {
             'title': 'Test template content',
             'templateName': 'test-page',
-            'templatePath': '/template_content/page/home/home.html',
             'version': 1,
             'contents': {
                 'longText': 'test text which is a bit longer',
@@ -520,9 +531,16 @@ class LTCPreviewTestsMixin:
             },
             'linkedTaxa': [],
             'linkedTaxonProfiles': [],
+            'publishedAt': self.primary_ltc.published_at.isoformat() if self.primary_ltc.published_at else None,
+            'createdAt': self.primary_ltc.created_at.isoformat() if self.primary_ltc.created_at else None,
+            'lastModified': self.primary_ltc.last_modified.isoformat() if self.primary_ltc.last_modified else None,
+            'uuid': str(self.primary_ltc.template_content.uuid),
+            'language': 'de',
+            'slug': 'test-template-content',
+            'author': None
         }
         
-        self.assertEqual(serializer.data, expected_data)
+        self.assert_serializer_data_equal(serializer.data, expected_data)
         
     
     @test_settings
@@ -697,7 +715,6 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         
         self.assertEqual(template_definition['templateName'], 'test-page')
         self.assertEqual(template_definition['type'], 'page')
-        self.assertEqual(template_definition['templatePath'], '/template_content/page/home/home.html')
         self.assertEqual(template_definition['version'], 1)
         
     
@@ -744,21 +761,6 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         version = serializer.get_version(self.primary_ltc)
         
         self.assertEqual(version, 1)
-        
-    
-    @test_settings
-    def test_get_published_templatePath(self):
-        
-        self.prepare_template_content()
-        
-        context = {
-            'preview' : False,
-        }
-        serializer = LocalizedTemplateContentSerializer(self.primary_ltc, context=context)
-        
-        template_path = serializer.get_templatePath(self.primary_ltc)
-        
-        self.assertEqual(template_path, '/template_content/page/home/home.html')
         
     
     @test_settings
@@ -1083,7 +1085,6 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         expected_data = {
             'title': 'Published title',
             'templateName': 'test-page',
-            'templatePath': '/template_content/page/home/home.html',
             'version': 1,
             'contents': {
                 'longText': 'published long test text which is a bit longer',
@@ -1126,9 +1127,16 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
             },
             'linkedTaxa': [],
             'linkedTaxonProfiles': [],
+            'publishedAt': self.primary_ltc.published_at.isoformat(),
+            'createdAt': self.primary_ltc.created_at.isoformat(),
+            'lastModified': self.primary_ltc.last_modified.isoformat() if self.primary_ltc.last_modified else None,
+            'uuid': str(self.primary_ltc.template_content.uuid),
+            'language': 'de',
+            'slug': 'test-template-content',
+            'author': None
         }
         
-        self.assertEqual(serializer.data, expected_data)
+        self.assert_serializer_data_equal(serializer.data, expected_data)
         
 
 class TestLocalizedNavigationSerializer(WithNavigation, WithUser, WithApp, TestCase):

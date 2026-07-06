@@ -45,13 +45,6 @@ def get_published_template_content_root(template_content):
 
     return path
 
-# store published template here
-def get_published_page_template_path(template_content, filename):
-    template_content_root = get_published_template_content_root(template_content)
-    unchanged_filename = os.path.basename(template_content.draft_template.template_filepath)
-    path = '/'.join([template_content_root, 'templates', 'page', unchanged_filename])
-
-    return path
 
 def get_published_page_template_definition_path(template_content, filename):
     template_content_root = get_published_template_content_root(template_content)
@@ -213,9 +206,8 @@ class TemplateContent(PublicationMixin, models.Model):
     # frontend specific assignment, e.g. home page or footer
     assignment = models.CharField(max_length=255, null=True)
 
-    draft_template_name = models.CharField(max_length=355) # stores the actual template (e.g. .html)
+    draft_template_name = models.CharField(max_length=355)
 
-    published_template = models.FileField(null=True, upload_to=get_published_page_template_path)
     published_template_definition = models.FileField(null=True, upload_to=get_published_page_template_definition_path)
     
     taxonomic_restrictions = GenericRelation(TaxonomicRestriction)
@@ -231,10 +223,10 @@ class TemplateContent(PublicationMixin, models.Model):
     def template(self):
         template = None
         
-        if self.published_template:
-            # the published template, use the template data (definition&template) stored in the db
+        if self.published_template_definition:
+            # the published template, use the template definition data stored in the db
             template = Template(self.app, self.name, self.template_type,
-                self.published_template.path, self.published_template_definition.path)
+                template_definition_filepath=self.published_template_definition.path)
             
         return template
 
@@ -267,10 +259,8 @@ class TemplateContent(PublicationMixin, models.Model):
             component_template_name = self.get_component_template_name(content_key)
         
         published_component_template_definition_filepath = self.get_published_component_template_definition_filepath(component_template_name)
-        published_component_template_filepath = self.get_published_component_template_filepath(component_template_name)
 
         component_template = Template(self.app, component_template_name, 'component',
-            template_filepath=published_component_template_filepath,
             template_definition_filepath=published_component_template_definition_filepath)
 
         return component_template
@@ -281,13 +271,6 @@ class TemplateContent(PublicationMixin, models.Model):
 
         published_component_template_folder = self.get_published_component_template_folder(component_template_name)
         filename = '{0}.json'.format(component_template_name)
-        return os.path.join(published_component_template_folder, filename)
-
-    # ths should be adjusted to support other files (see Templates.py)
-    def get_published_component_template_filepath(self, component_template_name):
-
-        published_component_template_folder = self.get_published_component_template_folder(component_template_name)
-        filename = '{0}.html'.format(component_template_name)
         return os.path.join(published_component_template_folder, filename)
 
 
@@ -312,9 +295,6 @@ class TemplateContent(PublicationMixin, models.Model):
         # relative to settings.MEDIA_ROOT as required by django
         published_templates_root = get_published_template_content_root(self)
 
-        if self.published_template.name and self.published_template.storage.exists(self.published_template.name):
-            self.published_template.storage.delete(self.published_template.name)
-
         if self.published_template_definition.name and self.published_template_definition.storage.exists(self.published_template_definition.name):
             self.published_template_definition.storage.delete(self.published_template_definition.name)
 
@@ -323,19 +303,13 @@ class TemplateContent(PublicationMixin, models.Model):
             shutil.rmtree(absolute_published_templates_root)
 
         # store TemplateContent.published_template and TemplateContent.published_template_definition
-        filepaths = [self.draft_template.template_filepath, self.draft_template.template_definition_filepath]
+        filepath = self.draft_template.template_definition_filepath
 
-        for filepath in filepaths:
-            
-            with open(filepath, 'r') as template_file:
-                filename = os.path.basename(filepath)
-                djangofile = File(template_file)
+        with open(filepath, 'r') as template_file:
+            filename = os.path.basename(filepath)
+            djangofile = File(template_file)
 
-                if filepath == self.draft_template.template_filepath:
-                    self.published_template.save(filename, djangofile)
-
-                if filepath == self.draft_template.template_definition_filepath:
-                    self.published_template_definition.save(filename, djangofile)
+            self.published_template_definition.save(filename, djangofile)
 
         # store components templates
         template_definition = self.draft_template.definition
@@ -372,15 +346,11 @@ class TemplateContent(PublicationMixin, models.Model):
                 if not os.path.isdir(published_component_template_folder):
                     os.makedirs(published_component_template_folder)
 
-                component_template_filename = os.path.basename(component_template.template_filepath)
                 component_template_definition_filename = os.path.basename(component_template.template_definition_filepath)
 
-                published_component_template_filepath = os.path.join(published_component_template_folder,
-                    component_template_filename)
                 published_component_template_definition_filepath = os.path.join(published_component_template_folder,
                     component_template_definition_filename)
 
-                shutil.copyfile(component_template.template_filepath, published_component_template_filepath)
                 shutil.copyfile(component_template.template_definition_filepath,
                     published_component_template_definition_filepath)
                 

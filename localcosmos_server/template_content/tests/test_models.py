@@ -8,7 +8,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from localcosmos_server.template_content.models import (get_published_template_content_root,
-    get_published_page_template_path, get_published_page_template_definition_path,
+    get_published_page_template_definition_path,
     get_published_component_templates_root, TemplateContent, LocalizedTemplateContent, Navigation,
     LocalizedNavigation, travel_tree, NavigationEntry, LocalizedNavigationEntry)
 
@@ -41,16 +41,6 @@ class TestHelperFunctions(WithTemplateContent, WithUser, WithApp, TestCase):
         #print(path)
         expected_tail = 'localcosmos-server/template-content/published/test-page-{0}'.format(self.template_content.pk)
         self.assertTrue(path.endswith(expected_tail))
-
-    @test_settings
-    def test_get_published_page_template_path(self):
-        
-        path = get_published_page_template_path(self.template_content, 'template.html')
-        # eg localcosmos-server/template-content/published/test-page-3/templates/page/TestPage.html
-        #print(path)
-        root = get_published_template_content_root(self.template_content)
-        expected_path = '{0}/templates/page/TestPage.html'.format(root)
-        self.assertEqual(path, expected_path)
 
     @test_settings
     def test_get_published_page_template_definition_path(self):
@@ -90,7 +80,6 @@ class TestTemplateContentManager(WithUser, WithApp, TestCase):
         self.assertEqual(template_content.template_type, PAGE_TEMPLATE_TYPE)
         self.assertEqual(template_content.assignment, None)
         self.assertEqual(template_content.draft_template_name, TEST_TEMPLATE_NAME)
-        self.assertEqual(template_content.published_template, None)
         self.assertEqual(template_content.published_template_definition, None)
 
 
@@ -153,16 +142,6 @@ class TestTemplateContent(WithMedia, WithTemplateContent, WithUser, WithApp, Tes
         self.assertTrue(os.path.isfile(path))
 
     @test_settings
-    def test_get_published_component_template_filepath(self):
-        self.template_content.publish_assets()
-        published_tc = TemplateContent.objects.get(pk=self.template_content.pk)
-        component_template_name = 'TestComponent'
-        path = published_tc.get_published_component_template_filepath(component_template_name)
-
-        self.assertTrue(path.endswith('TestComponent.html'))
-        self.assertTrue(os.path.isfile(path))
-
-    @test_settings
     def test_get_published_component_template_folder(self):
         
         self.template_content.publish_assets()
@@ -217,22 +196,16 @@ class TestTemplateContent(WithMedia, WithTemplateContent, WithUser, WithApp, Tes
 
         relative_definition_path = get_published_page_template_definition_path(self.template_content, 'TestPage.json')
         definition_path = os.path.join(settings.MEDIA_ROOT, relative_definition_path)
-        relative_template_path = get_published_page_template_path(self.template_content, 'TestPage.html')
-        template_path = os.path.join(settings.MEDIA_ROOT, relative_template_path)
 
         self.assertTrue(os.path.isdir(published_templates_root))
         self.assertTrue(os.path.isfile(definition_path))
-        self.assertTrue(os.path.isfile(template_path))
         self.assertTrue(definition_path.startswith(published_templates_root))
-        self.assertTrue(template_path.startswith(published_templates_root))
 
         # check if the component templates have been stored on disk
         published_component_template_folder = self.template_content.get_published_component_template_folder('TestComponent')
         component_definition_path = os.path.join(published_component_template_folder, 'TestComponent.json')
-        component_path = os.path.join(published_component_template_folder, 'TestComponent.html')
 
         self.assertTrue(os.path.isfile(component_definition_path))
-        self.assertTrue(os.path.isfile(component_path))
 
 
     @test_settings
@@ -466,7 +439,7 @@ class TestLocalizedTemplateContent(WithServerContentImage, WithMedia, WithTempla
         
         content_image = self.get_content_image(self.user, self.primary_ltc, image_type)
         template = self.primary_ltc.template_content.draft_template
-        template.load_template_and_definition_from_files()
+        template.load_template_definition_from_file()
         content_definition = template.definition['contents']['image']
         
         self.primary_ltc.publish_images(image_type, content_definition)
