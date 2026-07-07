@@ -539,7 +539,8 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
                 instances = []
 
                 if component_definition.get('allowMultiple', False) == True:
-                    instances = self.draft_contents.get(component_key, [])
+                    if self.draft_contents is not None:
+                        instances = self.draft_contents.get(component_key, [])
                 else:
                     instance = self.draft_contents.get(component_key, None)
                     if instance:

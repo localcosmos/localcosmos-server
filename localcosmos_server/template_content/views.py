@@ -472,7 +472,9 @@ class StoreComponentOrder(AppMixin, TemplateView):
             content_definition = localized_template_content.template_content.draft_template.definition['contents'][content_key]
             
             if not content_definition or content_definition['type'] != 'stream':
-                return JsonResponse({'success':False, 'error':'Content is not a stream'})
+                allow_multiple = content_definition.get('allowMultiple', False)
+                if not allow_multiple:
+                    return JsonResponse({'success':False, 'error':'Content is not a stream or does not allow multiple components.'})
 
             existing_components = localized_template_content.draft_contents.get(content_key, [])
 

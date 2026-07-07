@@ -243,6 +243,7 @@ class TemplateContentFormFieldManager:
             'content_type' : content_definition['type'],
             'instance': instance,
             'definition': content_definition,
+            'allow_multiple': content_definition.get('allowMultiple', False),
         }
 
         return widget_attrs

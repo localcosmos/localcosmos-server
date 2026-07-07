@@ -1,14 +1,38 @@
 {% load i18n static %}
-{% for field in form %}
+<div id="template-content-form">
+    {% for field in form %}
 
-    {% if field.field.content_definition %}
+        {% if field.field.content_definition %}
 
-        {% if field.field.allow_multiple == True %}
+            {% if field.field.allow_multiple == True %}
 
-            {% if field.field.is_first %}
+                {% if field.field.is_first %}
+                    <div class="row field-label">
+                        <div class="col-12">
+                            {{ field.label }}
+                        </div>
+                        {% if field.help_text %}
+                            <div class="col-12">
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div id="{{ field.field.content_key }}-container" data-store-positions-url="{% url 'store_component_order' app.uid localized_template_content.id field.field.content_key %}" class="row">
+                {% endif %}
+
+
+                    {{ field }}
+
+                {% if field.field.is_last %}
+                    </div>
+                {% endif %}
+            {% else %}
                 <div class="row field-label">
                     <div class="col-12">
-                        {{ field.label }}
+                        {{ field.label }}&nbsp;
+                        {% if field.field.language %}
+                            <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
+                        {% endif %}
                     </div>
                     {% if field.help_text %}
                         <div class="col-12">
@@ -17,37 +41,15 @@
                     {% endif %}
                 </div>
                 <div id="{{ field.field.content_key }}-container" class="row">
-            {% endif %}
 
+                    {{ field }}
 
-                {{ field }}
-
-            {% if field.field.is_last %}
                 </div>
             {% endif %}
+
         {% else %}
-            <div class="row field-label">
-                <div class="col-12">
-                    {{ field.label }}&nbsp;
-                    {% if field.field.language %}
-                        <img src="{% static 'localcosmos_server/images/countries/' %}{{ field.field.language }}.gif" /> {{ field.field.language }}
-                    {% endif %}
-                </div>
-                {% if field.help_text %}
-                    <div class="col-12">
-                        <small class="form-text text-muted">{{ field.help_text }}</small>
-                    </div>
-                {% endif %}
-            </div>
-            <div id="{{ field.field.content_key }}-container" class="row">
-
-                {{ field }}
-
-            </div>
+                {% include 'localcosmos_server/bootstrap_field.html' %}
         {% endif %}
 
-    {% else %}
-            {% include 'localcosmos_server/bootstrap_field.html' %}
-    {% endif %}
-
-{% endfor %}
+    {% endfor %}
+</div>

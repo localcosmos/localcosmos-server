@@ -8,7 +8,12 @@ var positionmanager = {
 		const tagname = current.tagName;
 		const previous = current.previousElementSibling;
 
-		if (previous != null && previous.tagName == tagname){
+		let previousHasInstance = false;
+		if (previous != null){
+			previousHasInstance = previous.hasAttribute("data-object-id");
+		}
+
+		if (previous != null && previous.tagName == tagname && previousHasInstance){
 			current.parentNode.insertBefore(current, previous);
 		}
 
@@ -23,7 +28,13 @@ var positionmanager = {
 		const tagname = current.tagName;
 		const next = current.nextElementSibling;
 
-		if (next != null && next.tagName == tagname){
+		let nextHasInstance = false;
+
+		if (next != null){
+			nextHasInstance = next.hasAttribute("data-object-id");
+		}
+
+		if (next != null && next.tagName == tagname && nextHasInstance){
 			current.parentNode.insertBefore(next, current);
 		}
 
@@ -41,6 +52,10 @@ var positionmanager = {
 
 		for (let i = 0; i < children.length; i++) {
 			const child = children[i];
+			// ignore those who do not have a data-object-id attribute
+			if (!child.hasAttribute("data-object-id")) {
+				continue;
+			}
 			const dataObjectId = child.getAttribute("data-object-id");
 			if (dataObjectId.indexOf("-") != -1) {
 				order.push(dataObjectId);

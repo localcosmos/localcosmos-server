@@ -85,9 +85,66 @@ class Command(BaseCommand):
             default=os.environ.get('LEGACY_DB_SSLMODE'),
             help='Optional PostgreSQL sslmode for legacy DB connection.',
         )
+        parser.add_argument(
+            '--run-id',
+            default=None,
+            help=(
+                'Optional identifier for a real import run. If omitted in --commit mode, '
+                'a timestamp-based run id is generated and printed.'
+            ),
+        )
+        parser.add_argument(
+            '--list-not-migrated',
+            action='store_true',
+            help=(
+                'List Localcosmos users imported from Symfony whose password/auth migration '
+                'status is not django_password_migrated. This is a read-only report.'
+            ),
+        )
+        parser.add_argument(
+            '--list-not-imported-by-run',
+            default=None,
+            help=(
+                'List legacy pd_user rows that were not imported/updated by the given run id. '
+                'Requires legacy DB connection settings.'
+            ),
+        )
+        parser.add_argument(
+            '--list-missing-in-target',
+            action='store_true',
+            help=(
+                'List legacy pd_user rows that are not present in LocalcosmosUser. '
+                'Match is done by legacy symfony id first, then by username/email.'
+            ),
+        )
 
     def handle(self, *args, **options):
         user_model = get_user_model()
+
+        if options['list_not_migrated']:
+            self._report_not_migrated_users(user_model)
+            return
+
+        if options['list_not_imported_by_run']:
+            legacy_db_config = self._get_legacy_db_config(options)
+            self._report_not_imported_by_run(
+                user_model=user_model,
+                legacy_db_config=legacy_db_config,
+                run_id=options['list_not_imported_by_run'],
+                limit=options['limit'],
+                only_user_id=options['only_user_id'],
+            )
+            return
+
+        if options['list_missing_in_target']:
+            legacy_db_config = self._get_legacy_db_config(options)
+            self._report_missing_in_target(
+                user_model=user_model,
+                legacy_db_config=legacy_db_config,
+                limit=options['limit'],
+                only_user_id=options['only_user_id'],
+            )
+            return
 
         if options['commit'] and options['dry_run']:
             raise CommandError('Use either --commit or --dry-run, not both.')
@@ -107,6 +164,9 @@ class Command(BaseCommand):
         # Default mode is dry-run unless --commit is provided.
         commit = options['commit'] and not options['dry_run']
         update_existing = options['update_existing']
+        run_id = options.get('run_id')
+        if commit and not run_id:
+            run_id = timezone.now().strftime('%Y%m%dT%H%M%S%fZ')
 
         stats = {
             'processed': 0,
@@ -116,12 +176,15 @@ class Command(BaseCommand):
             'skipped_invalid': 0,
             'errors': 0,
         }
+        conflict_details = []
 
         mode = 'COMMIT' if commit else 'DRY-RUN'
         self.stdout.write(
             f"Using legacy DB source {legacy_db_config['host']}:{legacy_db_config['port']}/{legacy_db_config['dbname']}"
         )
         self.stdout.write(f'Starting import_symfony_users in {mode} mode for {len(rows)} rows.')
+        if commit:
+            self.stdout.write(f'Run id: {run_id}')
 
         for row in rows:
             stats['processed'] += 1
@@ -138,7 +201,7 @@ class Command(BaseCommand):
                 )
                 continue
 
-            legacy_info = self._build_legacy_user_info(row)
+            legacy_info = self._build_legacy_user_info(row, run_id=run_id)
 
             existing_by_username = user_model.objects.filter(username=username).first()
             existing_by_email = user_model.objects.filter(email=email).first()
@@ -148,10 +211,35 @@ class Command(BaseCommand):
                 if existing_user:
                     if not update_existing:
                         stats['skipped_conflict'] += 1
+                        conflict_details.append(
+                            {
+                                'pd_user_id': row['id'],
+                                'username': username,
+                                'email': email,
+                                'existing_by_username_pk': (
+                                    existing_by_username.pk if existing_by_username else None
+                                ),
+                                'existing_by_email_pk': (
+                                    existing_by_email.pk if existing_by_email else None
+                                ),
+                            }
+                        )
+
+                        conflict_reasons = []
+                        if existing_by_username:
+                            conflict_reasons.append(
+                                f"username -> existing pk={existing_by_username.pk}"
+                            )
+                        if existing_by_email:
+                            conflict_reasons.append(
+                                f"email -> existing pk={existing_by_email.pk}"
+                            )
+                        reason_text = '; '.join(conflict_reasons) if conflict_reasons else 'unknown'
+
                         self.stdout.write(
                             self.style.WARNING(
                                 f"Skipping pd_user id={row['id']}: user exists "
-                                f"(username={username}, email={email})"
+                                f"(username={username}, email={email}; {reason_text})"
                             )
                         )
                         continue
@@ -193,9 +281,154 @@ class Command(BaseCommand):
         for key, value in stats.items():
             self.stdout.write(f'  {key}: {value}')
 
+        if conflict_details:
+            self.stdout.write('')
+            self.stdout.write(self.style.WARNING('Conflict details:'))
+            for conflict in conflict_details:
+                self.stdout.write(
+                    '  pd_user id={pd_user_id}, username={username}, email={email}, '
+                    'existing_by_username_pk={existing_by_username_pk}, '
+                    'existing_by_email_pk={existing_by_email_pk}'.format(**conflict)
+                )
+
         if not commit:
             self.stdout.write(
                 self.style.WARNING('Dry-run only. Re-run with --commit to persist changes.')
+            )
+
+    def _report_not_imported_by_run(self, user_model, legacy_db_config, run_id, limit=None, only_user_id=None):
+        rows = self._fetch_symfony_users(
+            legacy_db_config=legacy_db_config,
+            limit=limit,
+            only_user_id=only_user_id,
+        )
+
+        users_in_run = user_model.objects.filter(
+            legacy_user_info__provider='symfony',
+            legacy_user_info__import_run_id=run_id,
+        )
+
+        imported_legacy_ids = set()
+        for user in users_in_run:
+            legacy_info = user.legacy_user_info or {}
+            symfony_info = legacy_info.get('symfony') or {}
+            legacy_id = symfony_info.get('id')
+            if legacy_id is not None:
+                imported_legacy_ids.add(legacy_id)
+
+        not_imported_rows = [
+            row for row in rows
+            if row.get('id') not in imported_legacy_ids
+        ]
+
+        self.stdout.write(
+            f'Legacy users not imported by run_id={run_id}: {len(not_imported_rows)} '
+            f'(out of {len(rows)} checked pd_user rows)'
+        )
+
+        if not not_imported_rows:
+            return
+
+        for row in not_imported_rows:
+            username = (row.get('username') or '').strip()
+            email = (row.get('email') or '').strip()
+
+            reason = 'not imported in that run'
+            if not username or not email:
+                reason = 'missing username/email in legacy row'
+            else:
+                existing_by_username = user_model.objects.filter(username=username).first()
+                existing_by_email = user_model.objects.filter(email=email).first()
+                if existing_by_username or existing_by_email:
+                    reason = 'conflict with existing Localcosmos user'
+
+            self.stdout.write(
+                f"- pd_user id={row.get('id')}, username={username}, email={email}, reason={reason}"
+            )
+
+    def _report_not_migrated_users(self, user_model):
+        users = user_model.objects.filter(
+            legacy_user_info__provider='symfony',
+            legacy_user_info__auth_migration__isnull=False,
+        ).exclude(
+            legacy_user_info__auth_migration__status='django_password_migrated'
+        ).order_by('pk')
+
+        total = users.count()
+        self.stdout.write(
+            'Users with pending/unfinished password migration '
+            f'(provider=symfony): {total}'
+        )
+
+        if total == 0:
+            return
+
+        for user in users:
+            legacy_info = user.legacy_user_info or {}
+            auth_migration = legacy_info.get('auth_migration') or {}
+            symfony_info = legacy_info.get('symfony') or {}
+
+            status = auth_migration.get('status') or 'unknown'
+            failed_attempts = auth_migration.get('failed_legacy_login_attempts')
+            last_failed = auth_migration.get('last_failed_legacy_login_at')
+            password_migrated_at = auth_migration.get('password_migrated_at')
+            legacy_id = symfony_info.get('id')
+
+            self.stdout.write(
+                f'- pk={user.pk}, username={user.username}, email={user.email}, '
+                f'legacy_id={legacy_id}, status={status}, '
+                f'failed_legacy_login_attempts={failed_attempts}, '
+                f'last_failed_legacy_login_at={last_failed}, '
+                f'password_migrated_at={password_migrated_at}'
+            )
+
+    def _report_missing_in_target(self, user_model, legacy_db_config, limit=None, only_user_id=None):
+        rows = self._fetch_symfony_users(
+            legacy_db_config=legacy_db_config,
+            limit=limit,
+            only_user_id=only_user_id,
+        )
+
+        missing_rows = []
+
+        for row in rows:
+            legacy_id = row.get('id')
+            username = (row.get('username') or '').strip()
+            email = (row.get('email') or '').strip()
+
+            found_by_legacy_id = user_model.objects.filter(
+                legacy_user_info__provider='symfony',
+                legacy_user_info__symfony__id=legacy_id,
+            ).exists()
+
+            if found_by_legacy_id:
+                continue
+
+            found_by_username = bool(username) and user_model.objects.filter(username=username).exists()
+            found_by_email = bool(email) and user_model.objects.filter(email=email).exists()
+
+            if found_by_username or found_by_email:
+                continue
+
+            missing_rows.append(
+                {
+                    'id': legacy_id,
+                    'username': username,
+                    'email': email,
+                }
+            )
+
+        self.stdout.write(
+            f'Legacy users missing in target DB: {len(missing_rows)} '
+            f'(out of {len(rows)} checked pd_user rows)'
+        )
+
+        if not missing_rows:
+            return
+
+        for row in missing_rows:
+            self.stdout.write(
+                f"- pd_user id={row.get('id')}, username={row.get('username')}, email={row.get('email')}"
             )
 
     def _apply_user_fields(self, user, row, legacy_info):
@@ -204,12 +437,13 @@ class Command(BaseCommand):
 
         user.legacy_user_info = legacy_info
 
-    def _build_legacy_user_info(self, row):
+    def _build_legacy_user_info(self, row, run_id=None):
         return {
             'source': 'beachexplorer',
             'provider': 'symfony',
             'scheme': 'unknown',
             'imported_at': timezone.now().isoformat(),
+            'import_run_id': run_id,
             'auth_migration': {
                 'status': 'legacy_pending_password_migration',
                 'failed_legacy_login_attempts': 0,
