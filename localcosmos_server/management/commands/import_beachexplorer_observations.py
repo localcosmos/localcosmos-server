@@ -31,23 +31,15 @@ from localcosmos_server.datasets.models import Dataset, ObservationForm
 
 from localcosmos_server.achievements.models import UserPoints
 
-# a map for taxa that do not exist 1:1 in the new database. For example morphotypes, dead specimens, etc. 
-TAXA_MAP = {
-    '(eggs)' : {
-        
-    },
-    '(t)' : {
-        'Zustand': 'tot',
-    }
-}
-
+ 
 AWARDED_FOR_MAPPING = {
     'point.description.bonus': 'Bonuspunkte',
     'point.description.normal': 'Fundmeldung',
 }
 
+# Klammer-Anhängsel in Artnamen
 LEGACY_MORPHOTYPES = [
-    '(†)',
+    '(†)', # duplikat siehe tot, †, t
     '(13./14. Jh)', # probably no morphotype
     '(15./18. Jh)', # probably no morphotype
     '(17./18. Jh)', # probably no morphotype
@@ -61,7 +53,7 @@ LEGACY_MORPHOTYPES = [
     '(ala iuvenilis)',
     '(ala masculi)',
     '(ala, var)',
-    '(auris)',
+    '(auris)', # duplikat siehe Auris
     '(Auris)',
     '(bill)',
     '(bones)',
@@ -75,7 +67,7 @@ LEGACY_MORPHOTYPES = [
     '(coloration)',
     '(Costa)',
     '(cranial parts)',
-    '(cranium)',
+    '(cranium)', # duplikat siehe Cranium
     '(Cranium)',
     '(cuttlebone)',
     '(damage)',
@@ -87,7 +79,7 @@ LEGACY_MORPHOTYPES = [
     '(eggs)',
     '(erosion)',
     '(Exuvie)',
-    '(faeces)',
+    '(faeces)', # duplikat siehe Faeces
     '(Faeces)',
     '(feet)',
     '(foam)',
@@ -102,12 +94,12 @@ LEGACY_MORPHOTYPES = [
     '(holes, young)',
     '(Humerus)',
     '(Hyoid)',
-    '(juvenil)',
+    '(juvenil)', # duplikat siehe juvenile
     '(juvenile)',
     '(juv pile)',
     '(Kokon)',
     '(large hole)',
-    '(larva)',
+    '(larva)', # duplikat siehe Larva
     '(Larva)',
     '(Larvae)',
     '(Laterna)',
@@ -161,13 +153,13 @@ LEGACY_MORPHOTYPES = [
     '(solid)',
     '(spiculae)',
     '(Sternum)',
-    '(t)',
+    '(t)', # duplikat siehe tot, †, t
     '(tail)',
     '(tail feathers)',
     '(Tergit)',
     '(tertials)',
     '(Torf)',
-    '(tot)',
+    '(tot)', # duplikat siehe tot, †, t
     '(track)',
     '(tracks)',
     '(transmitter)',
@@ -182,6 +174,25 @@ LEGACY_MORPHOTYPES = [
     '(vertebral disc)',
     '(Vertrebrae)',
 ]
+
+NO_MORPHOTYPES = [
+    '(13./14. Jh)', # probably no morphotype
+    '(15./18. Jh)', # probably no morphotype
+    '(17./18. Jh)', # probably no morphotype
+]
+
+MORPHOTYPE_MAP = {
+
+}
+
+
+STATE_DEAD = 'tot'
+
+STATE_MAP = {
+    '(t)': STATE_DEAD,
+    '(tot)': STATE_DEAD,
+    '(†)': STATE_DEAD,
+}
 
 TARGET_OBSERVATION_FORM_NAME = 'Fundmeldung'
 

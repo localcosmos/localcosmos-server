@@ -30,6 +30,7 @@ from .json_schemas import OBSERVATION_FORM_SCHEMA
 
 # a list of usable dataset validation classes
 DATASET_VALIDATION_CLASSPATHS = getattr(settings, 'DATASET_VALIDATION_CLASSES', ())
+LOCALCOSMOS_SERVER_ACHIEVEMENTS_ENABLED = getattr(settings, 'LOCALCOSMOS_SERVER_ACHIEVEMENTS_ENABLED', False)
 
 
 def import_module(module):
@@ -379,15 +380,18 @@ class Dataset(ModelWithTaxon):
 
         if created == True:
             self.validate()
+            
+            # make it configurable in settings
+            if LOCALCOSMOS_SERVER_ACHIEVEMENTS_ENABLED == True:
 
-            # avoid circular imports by importing the points awarder here, after the dataset is saved and validated
-            # Award achievements only for the initial dataset creation path.
-            from localcosmos_server.achievements.point_calculators.DatasetPointsAwarder import DatasetPointsAwarder
+                # avoid circular imports by importing the points awarder here, after the dataset is saved and validated
+                # Award achievements only for the initial dataset creation path.
+                from localcosmos_server.achievements.point_calculators.DatasetPointsAwarder import DatasetPointsAwarder
 
-            if self.user is not None:
-                app = self.get_app()
-                if app is not None:
-                    DatasetPointsAwarder(app=app).award_points(user=self.user, dataset=self)
+                if self.user is not None:
+                    app = self.get_app()
+                    if app is not None:
+                        DatasetPointsAwarder(app=app).award_points(user=self.user, dataset=self)
             
             
     def get_app(self):

@@ -25,7 +25,7 @@
 					<div class="dropdown-menu">
 						{% if template_content.draft_template.template_exists %}
 							<a class="dropdown-item" href="{% url 'manage_localized_template_content' app.uid localized_template_content.pk %}">{% trans 'Edit' %}</a>
-							<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="template-content-{{ template_content.id }}">{% trans 'Publish' %}</a>
+							<a href="{% url 'publish_template_content' app.uid template_content.pk %}" class="dropdown-item xhr" ajax-target="ctype-{{ template_content_ctype.id }}-{{ template_content.id }}">{% trans 'Publish' %}</a>
 							{% for language in app.secondary_languages %}
 								<a class="dropdown-item" href="{% url 'translate_template_content' app.uid template_content.id language %}">{% blocktrans %}Translate into {{ language }} {% endblocktrans %} <img src="{% static 'localcosmos_server/images/countries/' %}{{ language }}.gif" /></a>
 							{% endfor %}
@@ -34,6 +34,9 @@
 								<a class="dropdown-item xhr" href="{% url 'unpublish_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Unpublish' %}</a>
 								<div class="dropdown-divider"></div>
 							{% endif %}
+							<a class="dropdown-item text-center move-template-content-up-button" data-targetid="ctype-{{ template_content_ctype.id }}-{{ template_content.id }}">&#x25C0; {% trans 'Move left' %}</a>
+							<a class="dropdown-item text-center move-template-content-down-button" data-targetid="ctype-{{ template_content_ctype.id }}-{{ template_content.id }}">&#x25B6; {% trans 'Move right' %}</a>
+							<div class="dropdown-divider"></div>
 						{% endif %}
 						<a class="dropdown-item xhr" href="{% url 'delete_template_content' app.uid template_content.id %}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
 					</div>

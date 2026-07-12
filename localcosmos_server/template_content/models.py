@@ -205,6 +205,8 @@ class TemplateContent(PublicationMixin, models.Model):
 
     # frontend specific assignment, e.g. home page or footer
     assignment = models.CharField(max_length=255, null=True)
+    
+    position = models.IntegerField(default=1)
 
     draft_template_name = models.CharField(max_length=355)
 
@@ -782,6 +784,7 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
 
     class Meta:
         unique_together=('template_content', 'language')
+        ordering = ['template_content__position', 'pk']
 
 
 

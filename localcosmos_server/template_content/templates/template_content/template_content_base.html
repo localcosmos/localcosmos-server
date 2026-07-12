@@ -52,23 +52,27 @@
 						{% endif %}
 					</div>
 				</div>
-
+				<hr>
 				<div class="row mt-5">
 					<div class="col-12">
 						<h4>{% trans 'Pages' %}</h4>
-						{% if localized_template_contents %}
-							<div class="row">
-								{% for localized_template_content in localized_template_contents %}
-									{% with template_content=localized_template_content.template_content %}
-										<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4 mb-4">
-											{% include 'template_content/template_content_list_entry.html' %}
-										</div>
-									{% endwith %}
-								{% endfor %}
+
+						<div class="row mb-3">
+							<div class="col-12">
+								<div class="btn-group" role="group" aria-label="{% trans 'Page filters' %}">
+									<input type="radio" class="btn-check" name="template-content-filter" id="template-content-filter-all" autocomplete="off" value="all" checked>
+									<label class="btn btn-outline-primary" for="template-content-filter-all">{% trans 'All' %}</label>
+									{% for template_choice in template_choices %}
+										<input type="radio" class="btn-check" name="template-content-filter" id="template-content-filter-{{ forloop.counter }}" value="{{ template_choice.0 }}" autocomplete="off">
+										<label class="btn btn-outline-primary" for="template-content-filter-{{ forloop.counter }}">{{ template_choice.1 }}</label>
+									{% endfor %}
+								</div>
 							</div>
-						{% else %}
-							{% trans 'You do not have any online pages for this app yet.' %}
-						{% endif %}
+						</div>
+						<hr>
+						<div id="template-content-list-container">
+							{% include 'template_content/ajax/template_content_list.html' %}
+						</div>
 						<br>
 						<div class="row mt-3">
 							<div class="col-12">
@@ -154,4 +158,30 @@
 </div>
 {% endblock %}
 
-{% block extra_script %}{% endblock %}
+{% block extra_script %}
+	<script>
+		$(".move-template-content-up-button").on("click", positionmanager.onMoveForward);
+		$(".move-template-content-down-button").on("click", positionmanager.onMoveBack);
+
+		const templateContentHomeUrl = "{% url 'template_content_home' app.uid %}";
+
+			const initializeTemplateContentPagination = () => {
+				if ($.fn.endlessPaginate) {
+					$("#template-content-list-container .endless_page_template").endlessPaginate();
+				}
+			};
+
+			initializeTemplateContentPagination();
+
+		$("input[name='template-content-filter']").on("change", function() {
+			const templateName = $(this).val();
+			const url = templateName ? `${templateContentHomeUrl}?template=${encodeURIComponent(templateName)}` : templateContentHomeUrl;
+
+			$.get(url, function(responseHtml) {
+				$("#template-content-list-container").html(responseHtml);
+					initializeTemplateContentPagination();
+				ajaxify('template-content-list-container');
+			});
+		});
+	</script>
+{% endblock %}

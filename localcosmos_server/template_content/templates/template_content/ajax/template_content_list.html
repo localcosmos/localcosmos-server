@@ -1,0 +1,20 @@
+{% load i18n el_pagination_tags %}
+{% if localized_template_contents %}
+    <div class="endless_page_template">
+        {% paginate 10 localized_template_contents %}
+
+        {% show_pages %}
+
+        <div class="row" data-store-positions-url="{% url 'store_object_order' app.uid template_content_ctype.id %}">
+            {% for localized_template_content in localized_template_contents %}
+                {% with template_content=localized_template_content.template_content %}
+                    <div id="ctype-{{ template_content_ctype.id }}-{{ template_content.id }}" class="col-12 col-md-4 mb-4" data-object-id="{{ template_content.id }}">
+                        {% include 'template_content/template_content_list_entry.html' %}
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    {% trans 'You do not have any online pages for this app yet.' %}
+{% endif %}

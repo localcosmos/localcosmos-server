@@ -150,7 +150,8 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
             if localized_template_content.draft_contents:
                 contents = localized_template_content.draft_contents.copy()
         else:
-            contents = localized_template_content.published_contents.copy()
+            if localized_template_content.published_contents:
+                contents = localized_template_content.published_contents.copy()
 
         template_definition = self.get_template_definition(localized_template_content)
 

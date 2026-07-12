@@ -3,6 +3,7 @@ from django.conf import settings
 from django.views.generic import TemplateView, FormView
 from django.http import JsonResponse
 from django import forms
+from django.contrib.contenttypes.models import ContentType
 
 from localcosmos_server.models import App
 from localcosmos_server.generic_views import AjaxDeleteView
@@ -20,7 +21,7 @@ from .forms import (CreateTemplateContentForm, ManageLocalizedTemplateContentFor
 
 from .utils import get_frontend_specific_url
 
-from .Templates import Template
+from .Templates import Template, Templates
 
 from urllib.parse import urljoin
 
@@ -30,6 +31,15 @@ import uuid, json
 class TemplateContentList(AppMixin, TemplateView):
 
     template_name = 'template_content/template_content_base.html'
+    ajax_template_name = 'template_content/ajax/template_content_list.html'
+    
+    
+    def dispatch(self, request, *args, **kwargs):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            self.template_name = self.ajax_template_name
+        return super().dispatch(request, *args, **kwargs)
+    
+       
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -44,7 +54,11 @@ class TemplateContentList(AppMixin, TemplateView):
         context['supports_navigations'] = supports_navigations
         
         localized_template_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
-            template_content__template_type='page', language=self.app.primary_language, template_content__assignment=None).order_by('pk')
+            template_content__template_type='page', language=self.app.primary_language, template_content__assignment=None)
+        
+        template_filter = self.request.GET.get('template', None)
+        if template_filter and template_filter != 'all':
+            localized_template_contents = localized_template_contents.filter(template_content__draft_template_name=template_filter)
         
         found_template_content_ids = list(localized_template_contents.values_list('template_content__pk', flat=True))
         
@@ -86,10 +100,27 @@ class TemplateContentList(AppMixin, TemplateView):
 
         # unsupported template contents
         unsupported_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app, template_content__template_type='page',
-            language=self.app.primary_language).exclude(template_content__pk__in=found_template_content_ids).order_by('pk')
+            language=self.app.primary_language).exclude(template_content__pk__in=found_template_content_ids)
             
         context['unsupported_contents'] = unsupported_contents
+        
+        context['template_content_ctype'] = ContentType.objects.get_for_model(TemplateContent)
+        
+        # buttons for filtering by template
+        templates = Templates(self.app, 'page')
+        available_templates = templates.get_all_templates()
 
+        template_choices = []
+
+        if available_templates:
+            for template_name, template in available_templates.items():
+                choice = (template_name, template.definition['templateName'])
+                template_choices.append(choice)
+                
+        # sort choices alphabetically by choice[1]
+        template_choices.sort(key=lambda choice: choice[1])
+
+        context['template_choices'] = template_choices
         return context
 
 
