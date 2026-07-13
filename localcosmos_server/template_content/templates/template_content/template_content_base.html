@@ -165,13 +165,17 @@
 
 		const templateContentHomeUrl = "{% url 'template_content_home' app.uid %}";
 
-			const initializeTemplateContentPagination = () => {
-				if ($.fn.endlessPaginate) {
-					$("#template-content-list-container .endless_page_template").endlessPaginate();
-				}
-			};
+		const initializeTemplateContentPagination = () => {
+			if ($.fn.endlessPaginate) {
+				$("#template-content-list-container .endless_page_template").endlessPaginate({
+					onCompleted: function() {
+						ajaxify('template-content-list-container');
+					}
+				});
+			}
+		};
 
-			initializeTemplateContentPagination();
+		initializeTemplateContentPagination();
 
 		$("input[name='template-content-filter']").on("change", function() {
 			const templateName = $(this).val();
@@ -179,7 +183,7 @@
 
 			$.get(url, function(responseHtml) {
 				$("#template-content-list-container").html(responseHtml);
-					initializeTemplateContentPagination();
+				initializeTemplateContentPagination();
 				ajaxify('template-content-list-container');
 			});
 		});

@@ -34,6 +34,10 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
     template_definition = None
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.linked_ltc_cache = {}
+
     def get_from_definition(self, localized_template_content, key):
         template_definition = self.get_template_definition(localized_template_content)
         return template_definition[key]
@@ -120,7 +124,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
             return None
     
-    def add_image_data_to_component(self, component_key, component, component_definition,
+    def hydrate_component_contents(self, component_key, component, component_definition,
         localized_template_content):
 
         if component:
@@ -136,8 +140,80 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                     image_data = self.get_image_data(component_content_definition, localized_template_content, image_type)
 
                     component[component_content_key] = image_data
+
+                elif component_content_definition['type'] == 'templateContentLink':
+
+                    preview = self.context.get('preview', True)
+                    linked_content = component.get(component_content_key, None)
+
+                    if type(linked_content) is list:
+                        hydrated_links = []
+                        for link_item in linked_content:
+                            hydrated_links.append(self.hydrate_template_content_link(
+                                link_item, localized_template_content, preview))
+                        component[component_content_key] = hydrated_links
+
+                    elif linked_content is not None:
+                        component[component_content_key] = self.hydrate_template_content_link(
+                            linked_content, localized_template_content, preview)
             
         return component
+
+    def get_linked_localized_template_content(self, linked_content, localized_template_content):
+        linked_ltc = None
+
+        linked_pk = linked_content.get('pk', None)
+        cache_key = str(linked_pk)
+
+        if cache_key in self.linked_ltc_cache:
+            return self.linked_ltc_cache[cache_key]
+
+        if linked_pk:
+            linked_ltc = LocalizedTemplateContent.objects.filter(pk=linked_pk).first()
+
+        # Fallback for older payloads without pk
+        if not linked_ltc:
+            linked_slug = linked_content.get('slug', None)
+            linked_template_name = linked_content.get('templateName', None)
+            if linked_slug and linked_template_name:
+                linked_ltc = LocalizedTemplateContent.objects.filter(
+                    template_content__app=localized_template_content.template_content.app,
+                    language=localized_template_content.language,
+                    slug=linked_slug,
+                    template_content__draft_template_name=linked_template_name,
+                ).first()
+
+        self.linked_ltc_cache[cache_key] = linked_ltc
+        return linked_ltc
+
+    def hydrate_template_content_link(self, linked_content, localized_template_content, preview):
+        if type(linked_content) is not dict:
+            return linked_content
+
+        linked_ltc = self.get_linked_localized_template_content(linked_content, localized_template_content)
+        if not linked_ltc:
+            return linked_content
+
+        linked_data = linked_content.copy()
+
+        if preview == True:
+            linked_data['title'] = linked_ltc.draft_title
+            linked_data['author'] = linked_ltc.author
+        else:
+            linked_data['title'] = linked_ltc.published_title or linked_ltc.draft_title
+            linked_data['author'] = linked_ltc.published_author or linked_ltc.author
+
+        template_name = linked_ltc.template_content.draft_template_name
+        linked_data['pk'] = str(linked_ltc.pk)
+        linked_data['slug'] = linked_ltc.slug
+        linked_data['templateName'] = template_name
+
+        app_settings = localized_template_content.template_content.app.get_settings()
+        if 'templateContent' in app_settings and 'urlPattern' in app_settings['templateContent']:
+            linked_data['url'] = app_settings['templateContent']['urlPattern'].replace(
+                '{slug}', linked_ltc.slug).replace('{templateName}', template_name)
+
+        return linked_data
 
 
     def get_contents(self, localized_template_content):
@@ -160,7 +236,6 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
         # add imageUrl to contents, according to the template definition
         for content_key, content_definition in template_definition['contents'].items():
-
             content = contents.get(content_key, None)
 
             if content_definition['type'] == 'image':
@@ -193,7 +268,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
                         for component_index, component in enumerate(components, 0):  
 
-                            component_with_image_data = self.add_image_data_to_component(component_key, component,
+                            component_with_image_data = self.hydrate_component_contents(component_key, component,
                                 component_definition, localized_template_content)
 
                             content[component_index] = component_with_image_data
@@ -204,7 +279,7 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                         
                         component = contents[component_key]
 
-                        component_with_image_data = self.add_image_data_to_component(component_key, component,
+                        component_with_image_data = self.hydrate_component_contents(component_key, component,
                             component_definition, localized_template_content)
 
                         contents[component_key] = component_with_image_data
@@ -232,12 +307,25 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
                             
                         component_definition = component_template.definition
 
-                        stream_item_with_image_data = self.add_image_data_to_component(stream_key, stream_item,
+                        stream_item_with_image_data = self.hydrate_component_contents(stream_key, stream_item,
                             component_definition, localized_template_content)
 
                         stream_items[stream_item_index] = stream_item_with_image_data
                     
                     contents[stream_key] = stream_items
+
+            elif content_definition['type'] == 'templateContentLink' and content != None:
+                if type(content) is list:
+                    link_items = []
+                    for link_item in content:
+                        hydrated_link = self.hydrate_template_content_link(link_item,
+                            localized_template_content, preview)
+                        link_items.append(hydrated_link)
+                    contents[content_key] = link_items
+                else:
+                    hydrated_link = self.hydrate_template_content_link(content,
+                        localized_template_content, preview)
+                    contents[content_key] = hydrated_link
 
         return contents
 

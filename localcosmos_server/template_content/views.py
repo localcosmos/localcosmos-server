@@ -274,8 +274,7 @@ class ManageTemplateContentCommon:
                         'pk': str(ltc.pk),
                         'slug': ltc.slug,
                         'templateName': template_name,
-                        'title': ltc.published_title or ltc.draft_title,
-                        'author': ltc.author,
+                        'title': ltc.draft_title,
                         'url': url,
                     }
 
