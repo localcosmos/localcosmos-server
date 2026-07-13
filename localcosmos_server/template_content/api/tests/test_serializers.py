@@ -163,6 +163,9 @@ class LTCPreviewTestsMixin:
                 '2x': content_image.image_url(size=500),
                 '4x': content_image.image_url(size=1000),
             },
+            'title': None,
+            'text': None,
+            'altText': None,
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -206,6 +209,9 @@ class LTCPreviewTestsMixin:
                 '2x': content_image.image_url(size=500),
                 '4x': content_image.image_url(size=1000),
             },
+            'title': None,
+            'text': None,
+            'altText': None,
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -219,7 +225,7 @@ class LTCPreviewTestsMixin:
     
     
     @test_settings
-    def test_add_image_data_to_component(self):
+    def test_hydrate_component_contents(self):
         
         self.prepare_template_content()
         
@@ -236,8 +242,8 @@ class LTCPreviewTestsMixin:
         component_template = self.primary_ltc.template_content.get_component_template(component_key)
         component_definition = component_template.definition
         
-        c_w_image_data = serializer.add_image_data_to_component(component_key, component, component_definition,
-                                               self.primary_ltc)
+        c_w_image_data = serializer.hydrate_component_contents(component_key, component, component_definition,
+                               self.primary_ltc)
         
         expected_output = {
             'uuid': component['uuid'],
@@ -246,8 +252,9 @@ class LTCPreviewTestsMixin:
                 'pk': str(self.primary_ltc.pk),
                 'slug': 'test-template-content',
                 'templateName': 'TestPage',
-                'title': 'component 2 link title',
-                'url': '/test-url-2/'
+                'title': 'Test template content',
+                'url': '/pages/TestPage/test-template-content/',
+                'author': None,
             },
             'image': None
         }
@@ -258,8 +265,8 @@ class LTCPreviewTestsMixin:
 
         content_image = self.get_content_image(self.user, self.primary_ltc, image_type)
         
-        c_w_image_data_2 = serializer.add_image_data_to_component(component_key, component, component_definition,
-                                               self.primary_ltc)
+        c_w_image_data_2 = serializer.hydrate_component_contents(component_key, component, component_definition,
+                               self.primary_ltc)
         
         expected_output_2 = {
             'uuid': component['uuid'],
@@ -268,8 +275,9 @@ class LTCPreviewTestsMixin:
                 'pk': str(self.primary_ltc.pk),
                 'slug': 'test-template-content',
                 'templateName': 'TestPage',
-                'title': 'component 2 link title',
-                'url': '/test-url-2/'
+                'title': 'Test template content',
+                'url': '/pages/TestPage/test-template-content/',
+                'author': None,
             },
             'image': {
                 'imageUrl': {
@@ -277,6 +285,9 @@ class LTCPreviewTestsMixin:
                     '2x': content_image.image_url(size=500),
                     '4x': content_image.image_url(size=1000),
                 },
+                'title': None,
+                'text': None,
+                'altText': None,
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -331,8 +342,9 @@ class LTCPreviewTestsMixin:
                 'pk': str(self.primary_ltc.pk),
                 'slug': 'test-template-content',
                 'templateName': 'TestPage',
-                'title': 'link title',
-                'url': '/test-url/'
+                'title': 'Test template content',
+                'url': '/pages/TestPage/test-template-content/',
+                'author': None,
             },
             'component': [
                 {
@@ -342,8 +354,9 @@ class LTCPreviewTestsMixin:
                         'pk': str(self.primary_ltc.pk),
                         'slug': 'test-template-content',
                         'templateName': 'TestPage',
-                        'title': 'component link title',
-                        'url': '/test-url/'
+                        'title': 'Test template content',
+                        'url': '/pages/TestPage/test-template-content/',
+                        'author': None,
                     },
                     'image': {
                         'imageUrl': {
@@ -351,6 +364,9 @@ class LTCPreviewTestsMixin:
                             '2x': multi_component_image.image_url(size=500),
                             '4x': multi_component_image.image_url(size=1000),
                         },
+                        'title': None,
+                        'text': None,
+                        'altText': None,
                         'licence': {
                             'licence': None,
                             'licenceVersion': '',
@@ -368,8 +384,9 @@ class LTCPreviewTestsMixin:
                     'pk': str(self.primary_ltc.pk),
                     'slug': 'test-template-content',
                     'templateName': 'TestPage',
-                    'title': 'component 2 link title',
-                    'url': '/test-url-2/'
+                    'title': 'Test template content',
+                    'url': '/pages/TestPage/test-template-content/',
+                    'author': None,
                 },
                 'image': {
                     'imageUrl': {
@@ -377,6 +394,9 @@ class LTCPreviewTestsMixin:
                         '2x': component_image.image_url(size=500),
                         '4x': component_image.image_url(size=1000),
                     },
+                    'title': None,
+                    'text': None,
+                    'altText': None,
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -392,6 +412,9 @@ class LTCPreviewTestsMixin:
                     '2x': content_image.image_url(size=500),
                     '4x': content_image.image_url(size=1000),
                 },
+                'title': None,
+                'text': None,
+                'altText': None,
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -407,6 +430,9 @@ class LTCPreviewTestsMixin:
                         '2x': content_image_multiple.image_url(size=500),
                         '4x': content_image_multiple.image_url(size=1000),
                     },
+                    'title': None,
+                    'text': None,
+                    'altText': None,
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -425,8 +451,9 @@ class LTCPreviewTestsMixin:
                         'pk': str(self.primary_ltc.pk),
                         'slug': 'test-template-content',
                         'templateName': 'TestPage',
-                        'title': 'stream item link title',
-                        'url': '/test-url-3/'
+                        'title': 'Test template content',
+                        'url': '/pages/TestPage/test-template-content/',
+                        'author': None,
                     },
                     'image': {
                         'imageUrl': {
@@ -434,6 +461,9 @@ class LTCPreviewTestsMixin:
                             '2x': stream_item_image.image_url(size=500),
                             '4x': stream_item_image.image_url(size=1000),
                         },
+                        'title': None,
+                        'text': None,
+                        'altText': None,
                         'licence': {
                             'licence': None,
                             'licenceVersion': '',
@@ -482,8 +512,9 @@ class LTCPreviewTestsMixin:
                     'pk': str(self.primary_ltc.pk),
                     'slug': 'test-template-content',
                     'templateName': 'TestPage',
-                    'title': 'link title',
-                    'url': '/test-url/'
+                    'title': 'Test template content',
+                    'url': '/pages/TestPage/test-template-content/',
+                    'author': None,
                 },
                 'component': [
                     {
@@ -493,8 +524,9 @@ class LTCPreviewTestsMixin:
                             'pk': str(self.primary_ltc.pk),
                             'slug': 'test-template-content',
                             'templateName': 'TestPage',
-                            'title': 'component link title',
-                            'url': '/test-url/'
+                            'title': 'Test template content',
+                            'url': '/pages/TestPage/test-template-content/',
+                            'author': None,
                         },
                         'image': None
                     }
@@ -506,8 +538,9 @@ class LTCPreviewTestsMixin:
                         'pk': str(self.primary_ltc.pk),
                         'slug': 'test-template-content',
                         'templateName': 'TestPage',
-                        'title': 'component 2 link title',
-                        'url': '/test-url-2/'
+                        'title': 'Test template content',
+                        'url': '/pages/TestPage/test-template-content/',
+                        'author': None,
                     },
                     'image': None
                 },
@@ -522,8 +555,9 @@ class LTCPreviewTestsMixin:
                             'pk': str(self.primary_ltc.pk),
                             'slug': 'test-template-content',
                             'templateName': 'TestPage',
-                            'title': 'stream item link title',
-                            'url': '/test-url-3/'
+                            'title': 'Test template content',
+                            'url': '/pages/TestPage/test-template-content/',
+                            'author': None,
                         },
                         'image': None,
                     }
@@ -791,6 +825,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 '2x': content_image.image_url(size=500),
                 '4x': content_image.image_url(size=1000),
             },
+            'title': None,
+            'text': None,
+            'altText': None,
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -836,6 +873,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 '2x': content_image.image_url(size=500),
                 '4x': content_image.image_url(size=1000),
             },
+            'title': None,
+            'text': None,
+            'altText': None,
             'licence': {
                 'licence': None,
                 'licenceVersion': '',
@@ -849,7 +889,7 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
     
        
     @test_settings
-    def test_add_published_image_data_to_component(self):
+    def test_hydrate_published_component_contents(self):
         
         self.prepare_template_content()
         
@@ -866,8 +906,8 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         component_template = self.primary_ltc.template_content.get_component_template(component_key)
         component_definition = component_template.definition
         
-        c_w_image_data = serializer.add_image_data_to_component(component_key, component, component_definition,
-                                               self.primary_ltc)
+        c_w_image_data = serializer.hydrate_component_contents(component_key, component, component_definition,
+                               self.primary_ltc)
         
         expected_output = {
             'uuid': component['uuid'],
@@ -876,8 +916,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 'pk': str(self.primary_ltc.pk),
                 'slug': 'test-template-content',
                 'templateName': 'TestPage',
-                'title': 'component 2 link title',
-                'url': '/test-url-2/'
+                'title': 'Published title',
+                'url': '/pages/TestPage/test-template-content/',
+                'author': None,
             },
             'image': None
         }
@@ -890,8 +931,8 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
         
         self.primary_ltc.template_content.publish(language=self.primary_ltc.language)
         
-        c_w_image_data_2 = serializer.add_image_data_to_component(component_key, component, component_definition,
-                                               self.primary_ltc)
+        c_w_image_data_2 = serializer.hydrate_component_contents(component_key, component, component_definition,
+                               self.primary_ltc)
         
         expected_output_2 = {
             'uuid': component['uuid'],
@@ -900,8 +941,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 'pk': str(self.primary_ltc.pk),
                 'slug': 'test-template-content',
                 'templateName': 'TestPage',
-                'title': 'component 2 link title',
-                'url': '/test-url-2/'
+                'title': 'Published title',
+                'url': '/pages/TestPage/test-template-content/',
+                'author': None,
             },
             'image': {
                 'imageUrl': {
@@ -909,6 +951,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                     '2x': content_image.image_url(size=500),
                     '4x': content_image.image_url(size=1000),
                 },
+                'title': None,
+                'text': None,
+                'altText': None,
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -965,8 +1010,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                 'pk': str(self.primary_ltc.pk),
                 'slug': 'test-template-content',
                 'templateName': 'TestPage',
-                'title': 'published link title',
-                'url': '/test-url-published/'
+                'title': 'Published title',
+                'url': '/pages/TestPage/test-template-content/',
+                'author': None,
             },
             'component': [
                 {
@@ -976,8 +1022,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                         'pk': str(self.primary_ltc.pk),
                         'slug': 'test-template-content',
                         'templateName': 'TestPage',
-                        'title': 'component link title published',
-                        'url': '/test-url-pc/'
+                        'title': 'Published title',
+                        'url': '/pages/TestPage/test-template-content/',
+                        'author': None,
                     },
                     'image': {
                         'imageUrl': {
@@ -985,6 +1032,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                             '2x': multi_component_image.image_url(size=500),
                             '4x': multi_component_image.image_url(size=1000),
                         },
+                        'title': None,
+                        'text': None,
+                        'altText': None,
                         'licence': {
                             'licence': None,
                             'licenceVersion': '',
@@ -1002,8 +1052,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                     'pk': str(self.primary_ltc.pk),
                     'slug': 'test-template-content',
                     'templateName': 'TestPage',
-                    'title': 'component 2 link published title',
-                    'url': '/test-url-2-pc/'
+                    'title': 'Published title',
+                    'url': '/pages/TestPage/test-template-content/',
+                    'author': None,
                 },
                 'image': {
                     'imageUrl': {
@@ -1011,6 +1062,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                         '2x': component_image.image_url(size=500),
                         '4x': component_image.image_url(size=1000),
                     },
+                    'title': None,
+                    'text': None,
+                    'altText': None,
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -1026,6 +1080,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                     '2x': content_image.image_url(size=500),
                     '4x': content_image.image_url(size=1000),
                 },
+                'title': None,
+                'text': None,
+                'altText': None,
                 'licence': {
                     'licence': None,
                     'licenceVersion': '',
@@ -1041,6 +1098,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                         '2x': content_image_multiple.image_url(size=500),
                         '4x': content_image_multiple.image_url(size=1000),
                     },
+                    'title': None,
+                    'text': None,
+                    'altText': None,
                     'licence': {
                         'licence': None,
                         'licenceVersion': '',
@@ -1093,8 +1153,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                     'pk': str(self.primary_ltc.pk),
                     'slug': 'test-template-content',
                     'templateName': 'TestPage',
-                    'title': 'published link title',
-                    'url': '/test-url-published/'
+                    'title': 'Published title',
+                    'url': '/pages/TestPage/test-template-content/',
+                    'author': None,
                 },
                 'component': [
                     {
@@ -1104,8 +1165,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                             'pk': str(self.primary_ltc.pk),
                             'slug': 'test-template-content',
                             'templateName': 'TestPage',
-                            'title': 'component link title published',
-                            'url': '/test-url-pc/'
+                            'title': 'Published title',
+                            'url': '/pages/TestPage/test-template-content/',
+                            'author': None,
                         },
                         'image': None
                     }
@@ -1117,8 +1179,9 @@ class TestPublishedLocalizedTemplateContentSerializer(LTCPreviewTestsMixin, With
                         'pk': str(self.primary_ltc.pk),
                         'slug': 'test-template-content',
                         'templateName': 'TestPage',
-                        'title': 'component 2 link published title',
-                        'url': '/test-url-2-pc/'
+                        'title': 'Published title',
+                        'url': '/pages/TestPage/test-template-content/',
+                        'author': None,
                     },
                     'image': None
                 },

@@ -73,20 +73,22 @@ class TestGetTemplateContentPreview(WithTemplateContent, WithServerContentImage,
             'contents' : {
                 'link' : {
                     'pk' : str(self.primary_ltc.pk),
-                    'url' : '/test-url/',
+                    'url' : '/pages/TestPage/test-template-content/',
                     'slug' : 'test-template-content',
-                    'title' : 'link title',
-                    'templateName' : 'TestPage'
+                    'title' : 'Test template content',
+                    'templateName' : 'TestPage',
+                    'author': None,
                 },
                 'text' : 'short text',
                 "stream":[
                     {
                         "link":{
                             "pk": stream_item['link']['pk'],
-                            "url": stream_item['link']['url'],
+                            "url": '/pages/TestPage/test-template-content/',
                             "slug": stream_item['link']['slug'],
-                            "title": stream_item['link']['title'],
-                            "templateName": stream_item['link']['templateName']
+                            "title": 'Test template content',
+                            "templateName": stream_item['link']['templateName'],
+                            "author": None,
                         },
                         "text": stream_item['text'],
                         "uuid": stream_item['uuid'],
@@ -99,10 +101,11 @@ class TestGetTemplateContentPreview(WithTemplateContent, WithServerContentImage,
                     {
                         'link' : {
                             'pk' : str(self.primary_ltc.pk),
-                            'url' : '/test-url/',
+                            'url' : '/pages/TestPage/test-template-content/',
                             'slug' : 'test-template-content',
-                            'title' : 'component link title',
-                            'templateName' : 'TestPage'
+                            'title' : 'Test template content',
+                            'templateName' : 'TestPage',
+                            'author': None,
                         },
                         'text' : 'component text',
                         'uuid' : multi_component['uuid'],
@@ -112,10 +115,11 @@ class TestGetTemplateContentPreview(WithTemplateContent, WithServerContentImage,
                 'component2' : {
                     'link' : {
                         'pk' : str(self.primary_ltc.pk),
-                        'url' : '/test-url-2/',
+                        'url' : '/pages/TestPage/test-template-content/',
                         'slug' : 'test-template-content',
-                        'title' : 'component 2 link title',
-                        'templateName' : 'TestPage'
+                        'title' : 'Test template content',
+                        'templateName' : 'TestPage',
+                        'author': None,
                     },
                     'text' : 'component text 2',
                     'uuid' : component['uuid'],

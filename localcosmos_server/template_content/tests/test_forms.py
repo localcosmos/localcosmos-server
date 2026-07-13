@@ -341,6 +341,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
                 'content_type' : content_definition['type'],
                 'instance': None,
                 'definition': content_definition,
+                'allow_multiple': content_definition.get('allowMultiple', False),
             }
             
             self.assertEqual(widget_attrs, expected_widget_attrs)
@@ -416,6 +417,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
             'content_type': 'image',
             'instance': None,
             'definition': content_definition,
+            'allow_multiple': content_definition.get('allowMultiple', False),
             'data_url': '/app-admin/{0}/manage-template-content-image/{1}/{2}/image/'.format(
                 self.app.uid, ltc_content_type.id, self.primary_ltc.pk),
             'delete_url': None,
@@ -450,6 +452,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
             'content_type': 'image',
             'instance': content_image,
             'definition': content_definition,
+            'allow_multiple': content_definition.get('allowMultiple', False),
             'data_url': '/app-admin/{0}/manage-template-content-image/{1}/'.format(
                 self.app.uid, content_image.pk),
             'delete_url': '/app-admin/{0}/delete-template-content-image/{1}/'.format(
@@ -480,6 +483,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
             'content_type': 'image',
             'instance': None,
             'definition': content_definition,
+            'allow_multiple': content_definition.get('allowMultiple', False),
             'data_url': '/app-admin/{0}/manage-template-content-image/{1}/{2}/images/'.format(
                 self.app.uid, ltc_content_type.id, self.primary_ltc.pk),
             'delete_url': None,
@@ -562,6 +566,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
             'content_type': 'component',
             'instance': None,
             'definition': content_definition,
+            'allow_multiple': content_definition.get('allowMultiple', False),
             'data_url': '/app-admin/{0}/add-component/{1}/component/'.format(
                 self.app.uid, self.primary_ltc.pk),
             'delete_url': None,
@@ -588,6 +593,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
             'content_type': 'component',
             'instance': primary_locale_content,
             'definition': content_definition,
+            'allow_multiple': content_definition.get('allowMultiple', False),
             'data_url': '/app-admin/{0}/manage-component/{1}/component/{2}/'.format(
                 self.app.uid, self.primary_ltc.pk, component_uuid),
             'delete_url': '/app-admin/{0}/delete-component/{1}/component/{2}/'.format(
