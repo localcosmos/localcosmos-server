@@ -4,6 +4,8 @@ from django import template
 from localcosmos_server.template_content.Templates import Template
 from localcosmos_server.template_content.utils import get_preview_text
 
+from django.utils.text import camel_case_to_spaces, capfirst
+
 register = template.Library()
 
 @register.simple_tag
@@ -50,3 +52,11 @@ def get_stream_item_icon(localized_template_content, stream_item):
     icon = component_template.definition.get('icon', None)
 
     return icon
+
+
+
+@register.filter
+def verbose_content_key(content_key):
+    uncamelized_key = camel_case_to_spaces(str(content_key))
+    spaced_key = uncamelized_key.replace('-', ' ')
+    return capfirst(spaced_key)

@@ -53,7 +53,8 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
 
         if available_templates:
             for template_name, template in available_templates.items():
-                choice = (template_name, template.definition['templateName'])
+                choice_label = ' '.join(template.definition['templateName'].split('-')).capitalize()
+                choice = (template_name, choice_label)
                 choices.append(choice)
         self.fields['template_name'].choices = choices
         
@@ -103,7 +104,7 @@ class TemplateContentFormFieldManager:
         if self.localized_template_content:
             if content_type == 'image':
                 image_type = self._get_image_type(content_key)
-                instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
+                instances = list(self.localized_template_content.images(image_type=image_type))
 
             elif content_type in ['component', 'text', 'templateContentLink', 'stream'] and self.localized_template_content.draft_contents:
                 instances = self.localized_template_content.draft_contents.get(content_key, [])
@@ -331,6 +332,7 @@ class TemplateContentFormFieldManager:
             primary_locale_images = self.primary_locale_template_content.images(image_type=content_key).order_by('pk').last()
 
         form_field.primary_locale_content = primary_locale_images
+        form_field.is_image_field = True
 
         return form_field
 
@@ -511,7 +513,7 @@ class ComponentFormFieldManager(TemplateContentFormFieldManager):
             
             if content_type == 'image':
                 image_type = self._get_image_type(content_key)
-                instances = list(self.localized_template_content.images(image_type=image_type).order_by('pk'))
+                instances = list(self.localized_template_content.images(image_type=image_type))
 
             elif content_type in ['component', 'text', 'templateContentLink']:
                 instances = self.component.get(content_key, [])

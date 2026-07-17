@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 
-from localcosmos_server.models import App
+from localcosmos_server.models import App, ServerContentImage
 from localcosmos_server.generic_views import AjaxDeleteView
 from localcosmos_server.views import ManageServerContentImageWithText, DeleteServerContentImage
 from localcosmos_server.view_mixins import AppMixin, FormLanguageMixin
@@ -114,13 +114,30 @@ class TemplateContentList(AppMixin, TemplateView):
 
         if available_templates:
             for template_name, template in available_templates.items():
-                choice = (template_name, template.definition['templateName'])
+                choice_label = ' '.join(template.definition['templateName'].split('-')).capitalize()
+                choice = (template_name, choice_label)
                 template_choices.append(choice)
                 
         # sort choices alphabetically by choice[1]
         template_choices.sort(key=lambda choice: choice[1])
 
         context['template_choices'] = template_choices
+        
+        # search for updated templates
+        updated_templates = {}
+        template_contents = template_content = TemplateContent.objects.filter(app=self.app, template_type='page')
+        for template_content in template_contents:
+            if template_content.published_template:
+                published_template_version = template_content.published_template_definition_version
+                draft_template_version = template_content.draft_template_definition_version
+
+                if draft_template_version > published_template_version:
+                    template_name = template_content.draft_template_name
+                    if template_name not in updated_templates:
+                        updated_templates[template_name] = template_content.draft_template_name
+                
+        context['updated_templates'] = updated_templates
+        
         return context
 
 
@@ -196,6 +213,7 @@ class ManageTemplateContentCommon:
         context['template_content'] = self.template_content
         context['preview_url'] = self.get_preview_url()
         context['language'] = self.language
+        context['server_content_image_content_type'] = ContentType.objects.get_for_model(ServerContentImage)
         return context
 
     def get_preview_url(self):

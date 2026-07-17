@@ -76,7 +76,7 @@ class ServerContentImageMixin:
         ContentImageModel = self.get_model()
 
         self.content_images = ContentImageModel.objects.filter(
-            content_type=content_type, object_id=self.pk)
+            content_type=content_type, object_id=self.pk).order_by('position')
 
         return self.content_images
 
@@ -987,6 +987,9 @@ class ContentImageProcessing:
 class ServerContentImage(ContentImageProcessing, ContentImageAbstract):
 
     image_store = models.ForeignKey(ServerImageStore, on_delete=models.CASCADE)
+    
+    class Meta:
+        ordering = ['position']
     
 
 '''--------------------------------------------------------------------------------------------------------------

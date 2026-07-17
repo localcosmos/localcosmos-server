@@ -35,7 +35,7 @@ class TestCreateTemplateContentForm(WithUser, WithApp, TestCase):
         self.assertEqual(form.app, self.app)
         self.assertEqual(form.assignment, None)
     
-        self.assertEqual(form.fields['template_name'].choices, [('TestPage', 'test-page')])
+        self.assertEqual(form.fields['template_name'].choices, [('TestPage', 'Test page')])
         
         form = CreateTemplateContentForm(self.app, assignment='home')
         
@@ -430,6 +430,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         self.assertEqual(image_form_field.help_text, content_definition['helpText'])
         
         self.assertEqual(image_form_field.primary_locale_content, None)
+        self.assertTrue(image_form_field.is_image_field)
     
     @test_settings
     def test_get_image_form_field_w_image(self):
@@ -461,6 +462,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         }
         
         self.assertEqual(expected_widget_attrs, image_form_field.widget.attrs)
+        self.assertTrue(image_form_field.is_image_field)
     
     
     @test_settings
@@ -504,6 +506,7 @@ class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContent
         image_form_field = manager._get_image_form_field(content_key, content_definition)
         self.assertEqual(image_form_field.primary_locale_content,
                          [content_image_2, content_image_3])
+        self.assertTrue(image_form_field.is_image_field)
                 
         
     @test_settings

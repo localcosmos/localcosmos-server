@@ -17,7 +17,13 @@
                             </div>
                         {% endif %}
                     </div>
-                    <div id="{{ field.field.content_key }}-container" data-store-positions-url="{% url 'store_component_order' app.uid localized_template_content.id field.field.content_key %}" class="row">
+                    {# image fields need a different store object order url #}
+                    {% if field.field.is_image_field %}
+                        <div id="{{ field.field.content_key }}-container" data-store-positions-url="{% url 'store_object_order' app.uid server_content_image_content_type.id %}" class="row">
+
+                    {% else %}
+                        <div id="{{ field.field.content_key }}-container" data-store-positions-url="{% url 'store_component_order' app.uid localized_template_content.id field.field.content_key %}" class="row">
+                    {% endif %}
                 {% endif %}
 
 

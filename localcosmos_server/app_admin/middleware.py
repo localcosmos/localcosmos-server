@@ -15,12 +15,12 @@ class AppAdminMiddleware(MiddlewareMixin):
 
         # the admin has to use localcosmos_server.urls to not conflict with the commercial installation
         # template_content needs the correct urlconf
-        if '/app-admin/' in request.path:
+        if '/app-admin/' in request.path or '/app-kit/template-content/' in request.path:
 
             request.is_appadmin = True
 
             if 'app_uid' not in view_kwargs:
-                raise ImproperlyConfigured('all app-admin urls require app_uid as an url kwarg')
+                raise ImproperlyConfigured('all app-admin urls require app_uid as url kwargs')
             
             app = App.objects.get(uid=view_kwargs['app_uid'])
             request.app = app

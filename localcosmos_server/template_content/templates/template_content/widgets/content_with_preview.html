@@ -1,4 +1,4 @@
-{% load i18n static imagekit %}
+{% load i18n static imagekit template_content_tags %}
 <div {% if widget.attrs.instance %}id="component-{{ widget.attrs.instance.uuid }}" data-object-id="{{ widget.attrs.instance.uuid }}"{% endif %} class="col-4 col-md-3 col-lg-2">
 
 	{% block preview %}
@@ -27,7 +27,7 @@
 					{% endif %}
 				{% else %}
 				
-					<a class="dropdown-item xhr" data-url="{{ widget.attrs.data_url }}?new=1" ajax-target="LargeModalContent">{% blocktrans with name=widget.attrs.content_key %}Add {{ name }}{% endblocktrans %}</a>
+					<a class="dropdown-item xhr" data-url="{{ widget.attrs.data_url }}?new=1" ajax-target="LargeModalContent">{% blocktrans with name=widget.attrs.content_key|verbose_content_key %}Add {{ name }}{% endblocktrans %}</a>
 					
 				{% endif %}
 			</div>

@@ -220,6 +220,10 @@ class TemplateContent(PublicationMixin, models.Model):
         super().__init__(*args, **kwargs)
         # use the templates on disk
         self.draft_template = Template(self.app, self.draft_template_name, self.template_type)
+        
+        self.published_template = None
+        if self.published_template_definition:
+            self.published_template = self.template
 
     @property
     def template(self):
@@ -371,7 +375,24 @@ class TemplateContent(PublicationMixin, models.Model):
     def is_published(self):
         return LocalizedTemplateContent.objects.filter(template_content=self,
                                                        published_version__isnull=False).exists()
-
+        
+    @property
+    def published_template_definition_version(self):
+        if self.published_template and self.published_template.template_exists:
+            return self.published_template.definition['version']
+        return None
+    
+    @property
+    def draft_template_definition_version(self):
+        if self.draft_template.template_exists:
+            return self.draft_template.definition['version']
+        return None
+    
+    @property
+    def has_updated_template_definition(self):
+        if self.published_template_definition_version and self.draft_template_definition_version:
+            return self.published_template_definition_version != self.draft_template_definition_version
+        return False
 
     def __str__(self):
 
@@ -656,6 +677,7 @@ class LocalizedTemplateContent(ServerContentImageMixin, models.Model):
                 # the localized_template_content has already been published. start new version
                 if self.published_version == self.draft_version:
                     self.draft_version += 1
+                    print(self.draft_version)
                     self.translation_ready = False
 
         super().save(*args, **kwargs)

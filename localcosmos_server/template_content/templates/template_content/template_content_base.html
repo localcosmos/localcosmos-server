@@ -53,13 +53,36 @@
 					</div>
 				</div>
 				<hr>
+
+				{% if updated_templates %}
+					<div class="row my-5">
+						<div class="col-12">
+							<h4>{% trans 'Template updates' %}</h4>
+							<div class="alert alert-info">
+								{% trans 'There are updates available for the following templates. It is recommended to review the pages using those templates.' %}
+							</div>
+							<div class="row">
+								<div class="col-6 col-md-3 col-lg-2">
+									<ul class="list-group">
+										{% for template_name, template in updated_templates.items %}
+											<li class="list-group-item list-group-item-warning">
+												{{ template_name|verbose_content_key }}
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr>
+				{% endif %}
 				<div class="row mt-5">
 					<div class="col-12">
 						<h4>{% trans 'Pages' %}</h4>
 
 						<div class="row mb-3">
 							<div class="col-12">
-								<div class="btn-group" role="group" aria-label="{% trans 'Page filters' %}">
+								<div class="d-flex flex-wrap gap-2" role="group" aria-label="{% trans 'Page filters' %}">
 									<input type="radio" class="btn-check" name="template-content-filter" id="template-content-filter-all" autocomplete="off" value="all" checked>
 									<label class="btn btn-outline-primary" for="template-content-filter-all">{% trans 'All' %}</label>
 									{% for template_choice in template_choices %}
@@ -71,7 +94,7 @@
 						</div>
 						<hr>
 						<div id="template-content-list-container">
-							{% include 'template_content/ajax/template_content_list.html' %}
+							<div class="text-muted">{% trans 'Loading pages...' %}</div>
 						</div>
 						<br>
 						<div class="row mt-3">
@@ -160,10 +183,53 @@
 
 {% block extra_script %}
 	<script>
-		$(".move-template-content-up-button").on("click", positionmanager.onMoveForward);
-		$(".move-template-content-down-button").on("click", positionmanager.onMoveBack);
+		$(document)
+			.off("click.templateContentMoveUp", "#template-content-list-container .move-template-content-up-button")
+			.on("click.templateContentMoveUp", "#template-content-list-container .move-template-content-up-button", positionmanager.onMoveForward);
+		$(document)
+			.off("click.templateContentMoveDown", "#template-content-list-container .move-template-content-down-button")
+			.on("click.templateContentMoveDown", "#template-content-list-container .move-template-content-down-button", positionmanager.onMoveBack);
 
 		const templateContentHomeUrl = "{% url 'template_content_home' app.uid %}";
+		const templateContentListContainer = $("#template-content-list-container");
+		const buildTemplateContentUrl = (templateName) => {
+			if (templateName && templateName !== "all") {
+				return `${templateContentHomeUrl}?template=${encodeURIComponent(templateName)}`;
+			}
+
+			return templateContentHomeUrl;
+		};
+
+		const setSelectedTemplateFilterFromUrl = () => {
+			const params = new URLSearchParams(window.location.search);
+			const templateParam = params.get("template") || "all";
+			let foundMatchingFilter = false;
+
+			$("input[name='template-content-filter']").each(function() {
+				if ($(this).val() === templateParam) {
+					$(this).prop("checked", true);
+					foundMatchingFilter = true;
+					return false;
+				}
+			});
+
+			if (!foundMatchingFilter) {
+				$("#template-content-filter-all").prop("checked", true);
+			}
+		};
+
+		const fetchTemplateContentList = (templateName = null) => {
+			const selectedTemplateName = templateName !== null
+				? templateName
+				: $("input[name='template-content-filter']:checked").val();
+			const requestUrl = buildTemplateContentUrl(selectedTemplateName);
+
+			$.get(requestUrl, function(responseHtml) {
+				templateContentListContainer.html(responseHtml);
+				initializeTemplateContentPagination();
+				ajaxify('template-content-list-container');
+			});
+		};
 
 		const initializeTemplateContentPagination = () => {
 			if ($.fn.endlessPaginate) {
@@ -175,17 +241,26 @@
 			}
 		};
 
-		initializeTemplateContentPagination();
+		setSelectedTemplateFilterFromUrl();
+		fetchTemplateContentList();
+
+		window.addEventListener("pageshow", function(event) {
+			if (event.persisted) {
+				setSelectedTemplateFilterFromUrl();
+				fetchTemplateContentList();
+			}
+		});
+
+		window.addEventListener("popstate", function() {
+			setSelectedTemplateFilterFromUrl();
+			fetchTemplateContentList();
+		});
 
 		$("input[name='template-content-filter']").on("change", function() {
 			const templateName = $(this).val();
-			const url = templateName ? `${templateContentHomeUrl}?template=${encodeURIComponent(templateName)}` : templateContentHomeUrl;
-
-			$.get(url, function(responseHtml) {
-				$("#template-content-list-container").html(responseHtml);
-				initializeTemplateContentPagination();
-				ajaxify('template-content-list-container');
-			});
+			const browserUrl = buildTemplateContentUrl(templateName);
+			window.history.pushState({ template: templateName }, "", browserUrl);
+			fetchTemplateContentList(templateName);
 		});
 	</script>
 {% endblock %}

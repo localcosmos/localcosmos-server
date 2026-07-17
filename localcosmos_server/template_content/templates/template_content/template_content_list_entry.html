@@ -2,7 +2,7 @@
 
 	<div id="ctype-{{ template_content|ctype_id }}-{{ template_content.id }}" class="card" style="width: 100%;">
 		<div class="card-header">
-			{{ template_content.name }}
+			{{ template_content.name|verbose_content_key }}
 		</div>
 		<div class="card-body">
 			<h5 class="card-title">
@@ -15,6 +15,7 @@
 			{% with localizeable_instance=template_content %}
 				{% include 'template_content/ajax/translation_status_matrix.html' %}
 			{% endwith %}
+
 			<hr>
 			{% include 'template_content/ajax/publication_feedback.html' %}
 			

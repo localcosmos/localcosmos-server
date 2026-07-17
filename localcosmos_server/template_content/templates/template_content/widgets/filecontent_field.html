@@ -1,8 +1,32 @@
-{% extends 'template_content/widgets/content_with_preview.html' %}
-{% load static %}
+{% load i18n static imagekit template_content_tags %}
 
-{% block preview %}
-	<div class="tc-preview" style="background-image:url({% if widget.attrs.instance %}{{ widget.attrs.instance.image_url }}{% else %}{% static 'localcosmos_server/images/add_image.svg' %}{% endif %});">
-		<span>&nbsp;</span>
+<div {% if widget.attrs.instance %}id="component-image-{{ widget.attrs.instance.id }}" data-object-id="{{ widget.attrs.instance.id }}"{% endif %} class="col-4 col-md-3 col-lg-2">
+
+<div class="tc-preview" style="background-image:url({% if widget.attrs.instance %}{{ widget.attrs.instance.image_url }}{% else %}{% static 'localcosmos_server/images/add_image.svg' %}{% endif %});">
+	<span>&nbsp;</span>
+</div>
+
+<div class="btn-group dropup">
+	<button id="dropdown-{{ widget.attrs.id }}" class="btn btn-outline-primary btn-xs dropdown-toggle content-image-button" data-container-id="{{ widget.attrs.content_key }}-container" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		{% trans 'Modify' %}
+	</button>
+	<div class="dropdown-menu" aria-labelledby="dropdown-{{ widget.attrs.id }}">
+		{% if widget.attrs.instance %}
+			<a class="dropdown-item xhr" data-url="{{ widget.attrs.data_url }}" ajax-target="LargeModalContent">{% blocktrans with name=widget.attrs.content_key %}Change {{ name }}{% endblocktrans %}</a>
+			<a class="dropdown-item xhr" data-url="{{ widget.attrs.delete_url }}" ajax-target="ModalContent">{% trans 'Delete' %}</a>
+			{% if widget.attrs.allow_multiple %}
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item text-center move-component-up" data-targetid="component-image-{{ widget.attrs.instance.id }}">&#x25C0; {% trans 'Move left' %}</a>
+				<a class="dropdown-item text-center move-component-down" data-targetid="component-image-{{ widget.attrs.instance.id }}">&#x25B6; {% trans 'Move right' %}</a>
+			{% endif %}
+		{% else %}
+		
+			<a class="dropdown-item xhr" data-url="{{ widget.attrs.data_url }}?new=1" ajax-target="LargeModalContent">{% blocktrans with name=widget.attrs.content_key|verbose_content_key %}Add {{ name }}{% endblocktrans %}</a>
+			
+		{% endif %}
 	</div>
-{% endblock %}
+</div>
+
+		
+</div>
+
