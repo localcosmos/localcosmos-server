@@ -210,7 +210,8 @@ class TemplateContent(PublicationMixin, models.Model):
 
     draft_template_name = models.CharField(max_length=355)
 
-    published_template_definition = models.FileField(null=True, upload_to=get_published_page_template_definition_path)
+    published_template_definition = models.FileField(max_length=500, null=True,
+        upload_to=get_published_page_template_definition_path)
     
     taxonomic_restrictions = GenericRelation(TaxonomicRestriction)
 

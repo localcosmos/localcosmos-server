@@ -17,30 +17,31 @@ class AppAdminMiddleware(MiddlewareMixin):
         # template_content needs the correct urlconf
         if '/app-admin/' in request.path or '/app-kit/template-content/' in request.path:
 
-            request.is_appadmin = True
-
             if 'app_uid' not in view_kwargs:
                 raise ImproperlyConfigured('all app-admin urls require app_uid as url kwargs')
             
             app = App.objects.get(uid=view_kwargs['app_uid'])
             request.app = app
-
-            login_path = reverse('log_in')
             
-            if login_path not in request.path:
+            if '/app-admin/' in request.path:
+                request.is_appadmin = True
 
-                user = request.user
-                if not user.is_authenticated:
-                    url = '{0}?next={1}'.format(reverse('log_in'), request.path)
-                    return redirect(url)
+                login_path = reverse('log_in')
+                
+                if login_path not in request.path:
 
-                has_access = user.has_perm('app_admin.has_access', app)
-                if not has_access:
-                    raise PermissionDenied
+                    user = request.user
+                    if not user.is_authenticated:
+                        url = '{0}?next={1}'.format(reverse('log_in'), request.path)
+                        return redirect(url)
+
+                    has_access = user.has_perm('app_admin.has_access', app)
+                    if not has_access:
+                        raise PermissionDenied
 
 
-            request.urlconf = 'localcosmos_server.urls'
-            set_urlconf('localcosmos_server.urls')
+                request.urlconf = 'localcosmos_server.urls'
+                set_urlconf('localcosmos_server.urls')
         
         return None
         

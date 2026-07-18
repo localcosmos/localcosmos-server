@@ -989,7 +989,7 @@ class ServerContentImage(ContentImageProcessing, ContentImageAbstract):
     image_store = models.ForeignKey(ServerImageStore, on_delete=models.CASCADE)
     
     class Meta:
-        ordering = ['position']
+        ordering = ['position', 'pk']
     
 
 '''--------------------------------------------------------------------------------------------------------------
