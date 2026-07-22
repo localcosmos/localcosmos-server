@@ -174,6 +174,19 @@ class LazyTaxonBase:
             return False
         
         return True
+    
+    @property
+    def ancestor_nuids(self):
+        
+        nuids = []
+        
+        # nuids are 3-digit strings like 001002001
+        self_nuid = self.taxon_nuid
+        while len(self_nuid) > 3:
+            self_nuid = self_nuid[:-3]
+            nuids.append(self_nuid)
+        
+        return nuids
 
 
     # default str output

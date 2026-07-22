@@ -786,6 +786,18 @@ class ContentImageAbstract(models.Model):
     
     
     def save(self, *args, **kwargs):
+
+        # New images are appended to the end of their image group unless an
+        # explicit position was provided.
+        if not self.pk and self.position == 0:
+            last_image = self.__class__.objects.filter(
+                content_type=self.content_type,
+                object_id=self.object_id,
+                image_type=self.image_type,
+            ).order_by('-position', '-pk').first()
+
+            if last_image:
+                self.position = last_image.position + 1
         
         if self.is_primary == True:
             

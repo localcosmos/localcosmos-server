@@ -122,7 +122,10 @@
 			afterSelect : function(item){
 
 				// set visible value
-				const verbose_value = `${item.taxon_latname} ${item.taxon_author}`;
+				let verbose_value = `${item.taxon_latname}` 
+				if (item.taxon_author){
+					verbose_value += ` ${item.taxon_author}`;
+				}
 				taxon_verbose_input.val(verbose_value);
 				
 				// set hidden input values
