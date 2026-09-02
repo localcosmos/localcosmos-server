@@ -31,168 +31,21 @@ from localcosmos_server.datasets.models import Dataset, ObservationForm
 
 from localcosmos_server.achievements.models import UserPoints
 
+
+from app_kit.models import MetaApp
+# app kit is required for the backbone taxonomy lookup and object classes mapping
+from app_kit.taxonomy.models import TaxonomyModelRouter
+
+taxonomy_models = TaxonomyModelRouter('taxonomy.sources.custom')
+# callable with .objects
+custom_tree_model = taxonomy_models.TaxonTreeModel
+
+from app_kit.features.object_classes.models import ObjectClasses, ObjectClass, ObjectClassTaxon 
+
  
-AWARDED_FOR_MAPPING = {
-    'point.description.bonus': 'Bonuspunkte',
-    'point.description.normal': 'Fundmeldung',
-}
-
-# Klammer-Anhängsel in Artnamen
-LEGACY_MORPHOTYPES = [
-    '(†)', # duplikat siehe tot, †, t
-    '(13./14. Jh)', # probably no morphotype
-    '(15./18. Jh)', # probably no morphotype
-    '(17./18. Jh)', # probably no morphotype
-    '(aculeus)',
-    '(ad pile)',
-    '(adult)',
-    '(ala)',
-    '(Alae)',
-    '(ala feminae)',
-    '(ala forma obscura)',
-    '(ala iuvenilis)',
-    '(ala masculi)',
-    '(ala, var)',
-    '(auris)', # duplikat siehe Auris
-    '(Auris)',
-    '(bill)',
-    '(bones)',
-    '(burrow)',
-    '(Caninus)',
-    '(Carapax)',
-    '(Chela)',
-    '(Clavicula)',
-    '(closed)',
-    '(colony)',
-    '(coloration)',
-    '(Costa)',
-    '(cranial parts)',
-    '(cranium)', # duplikat siehe Cranium
-    '(Cranium)',
-    '(cuttlebone)',
-    '(damage)',
-    '(Dens)',
-    '(Dentale)',
-    '(Digitus)',
-    '(discoloration)',
-    '(Duplikatur)',
-    '(eggs)',
-    '(erosion)',
-    '(Exuvie)',
-    '(faeces)', # duplikat siehe Faeces
-    '(Faeces)',
-    '(feet)',
-    '(foam)',
-    '(fossil)',
-    '(fossil spine)',
-    '(Fraktur)',
-    '(gaul)',
-    '(gills)',
-    '(Gladius)',
-    '(hole)',
-    '(holes)',
-    '(holes, young)',
-    '(Humerus)',
-    '(Hyoid)',
-    '(juvenil)', # duplikat siehe juvenile
-    '(juvenile)',
-    '(juv pile)',
-    '(Kokon)',
-    '(large hole)',
-    '(larva)', # duplikat siehe Larva
-    '(Larva)',
-    '(Larvae)',
-    '(Laterna)',
-    '(leg)',
-    '(Lux)',
-    '(male)',
-    '(Mandibulae)',
-    '(Mandibulare)',
-    '(Margarita)',
-    '(= mariae)',
-    '(mariae)',
-    '(marking)',
-    '(Molar)',
-    '(monstrosity)',
-    '(Operculum)',
-    '(Os penis)',
-    '(Ossa)',
-    '(Ossa longa)',
-    '(Otolith)',
-    '(ovum)',
-    '(Ovum)',
-    '(Parasit)',
-    '(pellets)',
-    '(Pelvis)',
-    '(phylloid)',
-    '(pigment)',
-    '(pile)',
-    '(plastron)',
-    '(Plumulae)',
-    '(Polyp)',
-    '(Praeoperculare)',
-    '(primaries)',
-    '(primary coverts)',
-    '(Quadratum)',
-    '(rest)',
-    '(rhizoid)',
-    '((rhizome)',
-    '(Ring)',
-    '(scales)',
-    '(Scapula)',
-    '(Scoliosis)',
-    '(Scutum)',
-    '(seaball)',
-    '(secondaries)',
-    '(secondary coverts)',
-    '(septemradiatum)',
-    '(Sipho)',
-    '(small, shaggy)',
-    '(small, smooth)',
-    '(small, wharty)',
-    '(solid)',
-    '(spiculae)',
-    '(Sternum)',
-    '(t)', # duplikat siehe tot, †, t
-    '(tail)',
-    '(tail feathers)',
-    '(Tergit)',
-    '(tertials)',
-    '(Torf)',
-    '(tot)', # duplikat siehe tot, †, t
-    '(track)',
-    '(tracks)',
-    '(transmitter)',
-    '(tube)',
-    '(tube shell)',
-    '(tubular)',
-    '(Tunica)',
-    '(tunnel)',
-    '(varieties)',
-    '(variety)',
-    '(Vertebrae)',
-    '(vertebral disc)',
-    '(Vertrebrae)',
-]
-
-NO_MORPHOTYPES = [
-    '(13./14. Jh)', # probably no morphotype
-    '(15./18. Jh)', # probably no morphotype
-    '(17./18. Jh)', # probably no morphotype
-]
-
-MORPHOTYPE_MAP = {
-
-}
+from .beachexplorer_mapping import AWARDED_FOR_MAPPING, TAXA_MAP, OBJECT_CLASS_UNKNOWN, OBJECT_CLASS_NAMES
 
 
-STATE_DEAD = 'tot'
-
-STATE_MAP = {
-    '(t)': STATE_DEAD,
-    '(tot)': STATE_DEAD,
-    '(†)': STATE_DEAD,
-}
 
 TARGET_OBSERVATION_FORM_NAME = 'Fundmeldung'
 
@@ -221,6 +74,15 @@ class Command(BaseCommand):
             '--dry-run',
             action='store_true',
             help='Run without writing changes. This is the default behavior unless --commit is provided.',
+        )
+        parser.add_argument(
+            '--check-taxa',
+            action='store_true',
+            help=(
+                'Check taxonomic validity only. For every distinct sciencename in the legacy DB, '
+                'verify that a taxon (and, where applicable, object class) can be resolved. '
+                'Does not import anything.'
+            ),
         )
         parser.add_argument(
             '--app-name',
@@ -273,6 +135,31 @@ class Command(BaseCommand):
 
         legacy_db_config = self._get_legacy_db_config(options)
         app = self._get_target_app(options['app_name'])
+        meta_app = MetaApp.objects.filter(app=app).first()
+        if not meta_app:
+            raise CommandError(
+                f'Could not find MetaApp for App "{app.name}" (uid={app.uid}). '
+                'Ensure the app is installed and has a MetaApp.'
+            )
+            
+        object_classes = meta_app.get_generic_content_links(ObjectClasses).first()
+        if not object_classes:
+            raise CommandError(
+                f'Could not find ObjectClasses for MetaApp "{meta_app.name}". '
+                'Ensure the app is installed and has ObjectClasses.'
+            )
+        object_classes_feature = object_classes.generic_content
+
+        if options['check_taxa']:
+            self.stdout.write(f'Target app: {app.name} (uid={app.uid})')
+            self._run_check_taxa(
+                legacy_db_config=legacy_db_config,
+                object_classes_feature=object_classes_feature,
+                limit=options['limit'],
+                only_legacy_user_id=options['only_legacy_user_id'],
+            )
+            return
+
         observation_form = self._get_observation_form(options['observation_form_name'])
         observation_field_map = self._build_observation_form_field_map(observation_form)
 
@@ -346,8 +233,8 @@ class Command(BaseCommand):
                 }
 
                 taxon_payload = self.lookup_species_in_backbone_taxonomy(
-                    app=app,
                     legacy_species_payload=legacy_species_payload,
+                    object_classes=object_classes_feature,
                 )
 
                 if not taxon_payload:
@@ -748,44 +635,255 @@ class Command(BaseCommand):
 
         return created_points
 
-    def lookup_species_in_backbone_taxonomy(self, app, legacy_species_payload):
-        
-        errors = []
-        
-        app_features = app.get_features(app_state='review')
-        
-        review_app_path = app.get_installed_app_path('review')
-        
-        backbonetaxonomy = app_features['backbonetaxonomy']
-        
-        # search/taxon_latname
-        alphabet_folder = backbonetaxonomy['search']['taxon_latname']
-        
-        start_letter = legacy_species_payload['sciencename'][0].upper()
-        
-        filename = f"{start_letter}.json"
-        
-        search_filepath = os.path.join(review_app_path, alphabet_folder, filename)
-        
-        
-        try:
-            with open(search_filepath, 'r', encoding='utf-8') as f:
-                search_data = json.load(f)
-        except Exception as exc:
-            errors.append(f"Failed to load backbone taxonomy search file: {search_filepath}. Error: {exc}")
-            self.stdout.write(self.style.ERROR(errors[-1]))
+    def lookup_species_in_backbone_taxonomy(self, legacy_species_payload, object_classes=None):
+        sciencename = (legacy_species_payload.get('sciencename') or '').strip()
+        if not sciencename:
             return None
-        
-        # search for the species in the loaded search_data
-        for entry in search_data:
-            if entry['taxonLatname'].lower() == legacy_species_payload['sciencename'].lower():
+
+        # 1. Check TAXA_MAP first
+        taxa_map_entry = TAXA_MAP.get(sciencename)
+
+        if taxa_map_entry is not None:
+            lookup_name = taxa_map_entry.get('new_taxon')
+            if not lookup_name:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'TAXA_MAP entry for "{sciencename}" has no new_taxon set, skipping.'
+                    )
+                )
+                return None
+
+            taxon = custom_tree_model.objects.filter(taxon_latname=lookup_name).first()
+            if not taxon:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'TAXA_MAP maps "{sciencename}" -> "{lookup_name}" '
+                        'but that taxon was not found in taxonomy.sources.custom.'
+                    )
+                )
+                return None
+
+            # If the map specifies an object_class, verify it exists
+            mapped_object_class = taxa_map_entry.get('object_class')
+            if mapped_object_class is not None:
+                oc_qs = ObjectClass.objects.filter(scientific_name=mapped_object_class)
+                if object_classes is not None:
+                    oc_qs = oc_qs.filter(object_classes=object_classes)
+                if not oc_qs.exists():
+                    scope = f' in ObjectClasses "{object_classes}"' if object_classes else ''
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f'TAXA_MAP entry for "{sciencename}" references object_class '
+                            f'"{mapped_object_class}" which was not found{scope}.'
+                        )
+                    )
+                    return None
+
+            return {
+                'taxonSource': 'taxonomy.sources.custom',
+                'taxonNuid': taxon.taxon_nuid,
+                'taxonLatname': taxon.taxon_latname,
+                'taxonAuthor': taxon.taxon_author,
+                'nameUuid': str(taxon.name_uuid),
+            }
+
+        # 2. Not in TAXA_MAP — look up directly in taxonomy.sources.custom
+        taxon = custom_tree_model.objects.filter(taxon_latname=sciencename).first()
+        if taxon:
+            return {
+                'taxonSource': 'taxonomy.sources.custom',
+                'taxonNuid': taxon.taxon_nuid,
+                'taxonLatname': taxon.taxon_latname,
+                'taxonAuthor': taxon.taxon_author,
+                'nameUuid': str(taxon.name_uuid),
+            }
+
+        return None
+
+    # --check-taxa helpers
+
+    def _run_check_taxa(self, legacy_db_config, object_classes_feature, limit=None, only_legacy_user_id=None):
+        sciencenames = self._fetch_unique_sciencenames(
+            legacy_db_config=legacy_db_config,
+            limit=limit,
+            only_legacy_user_id=only_legacy_user_id,
+        )
+
+        self.stdout.write(f'Checking {len(sciencenames)} unique sciencenames...')
+        self.stdout.write('')
+
+        ok = []
+        failed = []
+
+        for sciencename in sciencenames:
+            result = self._check_single_taxon(sciencename, object_classes_feature)
+            if result['status'] == 'OK':
+                ok.append(result)
+            else:
+                failed.append(result)
+
+        for result in ok:
+            self.stdout.write(
+                self.style.SUCCESS(f"  OK    {result['sciencename']:<55} {result['detail']}")
+            )
+
+        if failed:
+            self.stdout.write('')
+            self.stdout.write('status;sciencename;new_taxon;detail')
+            for result in failed:
+                self.stdout.write(
+                    self.style.ERROR(f"FAIL;{result['sciencename']};{result.get('new_taxon', '')};{result['detail']}")
+                )
+
+        self.stdout.write('')
+        self.stdout.write(
+            f'Summary: {len(ok)} OK, {len(failed)} failed '
+            f'out of {len(sciencenames)} unique sciencenames.'
+        )
+
+    def _check_single_taxon(self, sciencename, object_classes_feature=None):
+        sciencename = (sciencename or '').strip()
+        if not sciencename:
+            return {'status': 'FAIL', 'sciencename': '(empty)', 'new_taxon': '', 'detail': 'empty sciencename'}
+
+        taxa_map_entry = TAXA_MAP.get(sciencename)
+
+        if taxa_map_entry is not None:
+            lookup_name = taxa_map_entry.get('new_taxon')
+            if not lookup_name:
                 return {
-                    'taxonSource': entry['taxonSource'],
-                    'taxonNuid': entry['taxonNuid'],
-                    'taxonLatname': entry['taxonLatname'],
-                    'taxonAuthor': entry.get('taxonAuthor'),
-                    'nameUuid': entry.get('nameUuid'),
+                    'status': 'FAIL',
+                    'sciencename': sciencename,
+                    'new_taxon': '',
+                    'detail': 'TAXA_MAP entry has no new_taxon set',
                 }
+
+            taxon = custom_tree_model.objects.filter(taxon_latname=lookup_name).first()
+            if not taxon:
+                return {
+                    'status': 'FAIL',
+                    'sciencename': sciencename,
+                    'new_taxon': lookup_name,
+                    'detail': f'TAXA_MAP -> "{lookup_name}": taxon not found in taxonomy.sources.custom',
+                }
+
+            mapped_object_class = taxa_map_entry.get('object_class')
+
+            if mapped_object_class == OBJECT_CLASS_UNKNOWN:
+                return {
+                    'status': 'FAIL',
+                    'sciencename': sciencename,
+                    'new_taxon': lookup_name,
+                    'detail': (
+                        f'TAXA_MAP -> "{lookup_name}": '
+                        'object_class is OBJECT_CLASS_UNKNOWN (placeholder) — needs to be set'
+                    ),
+                }
+
+            if mapped_object_class is not None:
+                if mapped_object_class not in OBJECT_CLASS_NAMES:
+                    return {
+                        'status': 'FAIL',
+                        'sciencename': sciencename,
+                        'new_taxon': lookup_name,
+                        'detail': (
+                            f'TAXA_MAP -> "{lookup_name}": '
+                            f'object_class "{mapped_object_class}" not in OBJECT_CLASS_NAMES'
+                        ),
+                    }
+
+                mapped_object_class_de = taxa_map_entry.get('object_class_de')
+                if mapped_object_class_de is not None:
+                    expected_de = OBJECT_CLASS_NAMES.get(mapped_object_class)
+                    if mapped_object_class_de != expected_de:
+                        return {
+                            'status': 'FAIL',
+                            'sciencename': sciencename,
+                            'new_taxon': lookup_name,
+                            'detail': (
+                                f'TAXA_MAP -> "{lookup_name}": '
+                                f'object_class_de "{mapped_object_class_de}" does not match '
+                                f'OBJECT_CLASS_NAMES["{mapped_object_class}"] = "{expected_de}"'
+                            ),
+                        }
+
+                oc_qs = ObjectClass.objects.filter(scientific_name=mapped_object_class)
+                if object_classes_feature is not None:
+                    oc_qs = oc_qs.filter(object_classes=object_classes_feature)
+                if not oc_qs.exists():
+                    scope = f' in "{object_classes_feature}"' if object_classes_feature else ''
+                    return {
+                        'status': 'FAIL',
+                        'sciencename': sciencename,
+                        'new_taxon': lookup_name,
+                        'detail': (
+                            f'TAXA_MAP -> "{lookup_name}": '
+                            f'object_class "{mapped_object_class}" not found{scope}'
+                        ),
+                    }
+
+            detail_parts = [f'TAXA_MAP -> "{lookup_name}"']
+            if mapped_object_class:
+                detail_parts.append(f'object_class: {mapped_object_class} OK')
+            morphotype = taxa_map_entry.get('morphotype')
+            if morphotype:
+                detail_parts.append(f'morphotype: {morphotype}')
+
+            return {
+                'status': 'OK',
+                'sciencename': sciencename,
+                'new_taxon': lookup_name,
+                'detail': ' | '.join(detail_parts),
+            }
+
+        # Not in TAXA_MAP — direct lookup in taxonomy.sources.custom
+        taxon = custom_tree_model.objects.filter(taxon_latname=sciencename).first()
+        if taxon:
+            return {
+                'status': 'OK',
+                'sciencename': sciencename,
+                'new_taxon': sciencename,
+                'detail': 'direct lookup in taxonomy.sources.custom',
+            }
+
+        return {
+            'status': 'FAIL',
+            'sciencename': sciencename,
+            'new_taxon': '',
+            'detail': 'not in TAXA_MAP and not found in taxonomy.sources.custom',
+        }
+
+    def _fetch_unique_sciencenames(self, legacy_db_config, limit=None, only_legacy_user_id=None):
+        where_clauses = ['d.deletedat IS NULL', 's.sciencename IS NOT NULL']
+        params = []
+
+        if only_legacy_user_id is not None:
+            where_clauses.append('d.user_id = %s')
+            params.append(only_legacy_user_id)
+
+        where_sql = ' AND '.join(where_clauses)
+
+        sql = (
+            'SELECT DISTINCT s.sciencename '
+            'FROM be_determination d '
+            'LEFT JOIN be_species s ON s.id = d.species_id '
+            f'WHERE {where_sql} '
+            'ORDER BY s.sciencename ASC'
+        )
+
+        if limit is not None:
+            sql += ' LIMIT %s'
+            params.append(limit)
+
+        try:
+            with self._connect_legacy_db(legacy_db_config) as legacy_connection:
+                with legacy_connection.cursor() as cursor:
+                    cursor.execute(sql, params)
+                    return [row[0] for row in cursor.fetchall()]
+        except Exception as exc:
+            raise CommandError(
+                f'Could not read distinct sciencenames from legacy DB: {exc}.'
+            ) from exc
 
     def _get_legacy_db_config(self, options):
         config = {

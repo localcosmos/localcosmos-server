@@ -118,4 +118,4 @@ class TestPointRuleCondition(WithApp, TestCase):
 			position=1,
 		)
 
-		self.assertEqual(str(condition), 'Any dataset:dataset_created:equals')
+		self.assertEqual(str(condition), 'Dataset created')

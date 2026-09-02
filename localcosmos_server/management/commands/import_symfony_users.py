@@ -242,6 +242,15 @@ class Command(BaseCommand):
                                 f"(username={username}, email={email}; {reason_text})"
                             )
                         )
+
+                        if commit:
+                            self._annotate_conflict_on_existing_user(
+                                existing_user=existing_user,
+                                row=row,
+                                match_reason='username' if existing_by_username else 'email',
+                                run_id=run_id,
+                            )
+
                         continue
 
                     stats['updated'] += 1
@@ -430,6 +439,42 @@ class Command(BaseCommand):
             self.stdout.write(
                 f"- pd_user id={row.get('id')}, username={row.get('username')}, email={row.get('email')}"
             )
+
+    def _annotate_conflict_on_existing_user(self, existing_user, row, match_reason, run_id=None):
+        """
+        Store information about a Symfony pd_user that collided with this existing user.
+        Written into legacy_user_info['symfony_import_conflicts'] as a list so that
+        multiple import runs accumulate without overwriting each other.
+        """
+        legacy_info = existing_user.legacy_user_info or {}
+
+        conflicts = legacy_info.get('symfony_import_conflicts') or []
+        conflicts.append({
+            'symfony_id': row.get('id'),
+            'symfony_username': (row.get('username') or '').strip(),
+            'symfony_email': (row.get('email') or '').strip(),
+            'match_reason': match_reason,
+            'import_run_id': run_id,
+            'detected_at': timezone.now().isoformat(),
+        })
+
+        legacy_info['symfony_import_conflicts'] = conflicts
+
+        # Ensure legacy_user_info['symfony']['id'] is set so that a second
+        # importer (e.g. datasets) can look up this user with the same query
+        # used for fully-imported users: filter(legacy_user_info__symfony__id=X).
+        symfony_info = legacy_info.get('symfony') or {}
+        existing_symfony_id = symfony_info.get('id')
+        if existing_symfony_id is None:
+            symfony_info['id'] = row.get('id')
+            legacy_info['symfony'] = symfony_info
+        elif existing_symfony_id != row.get('id'):
+            # Existing user already has a different Symfony ID (imported earlier);
+            # keep the primary id intact — the conflict list holds the extra reference.
+            pass
+
+        existing_user.legacy_user_info = legacy_info
+        existing_user.save(update_fields=['legacy_user_info'])
 
     def _apply_user_fields(self, user, row, legacy_info):
         user.first_name = row.get('firstname') or ''

@@ -19,7 +19,11 @@ from localcosmos_server.datasets.models import Dataset
 from localcosmos_server.models import UserClients, ServerImageStore
 from django.contrib.auth import get_user_model
 
+from django_rest_passwordreset.models import ResetPasswordToken
+
 import json
+
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -234,6 +238,57 @@ class TestTokenObtainPairViewWithClientID(WithApp, WithObservationForm, WithUser
         dataset.refresh_from_db()
 
         self.assertEqual(dataset.user, user)
+
+    @test_settings
+    def test_post_pending_migration_wrong_password(self):
+        """
+        A migrated user who hasn't set a new password yet should receive a 401
+        with code='migration_password_reset_required' and a reset token via email.
+        """
+        from django_rest_passwordreset.models import ResetPasswordToken
+
+        user = self.create_user()
+        user.legacy_user_info = {
+            'auth_migration': {
+                'status': 'legacy_pending_password_migration',
+                'failed_legacy_login_attempts': 0,
+                'last_failed_legacy_login_at': None,
+                'password_migrated_at': None,
+            }
+        }
+        user.save()
+
+        post_data = self.get_post_data()
+        post_data['password'] = 'definitively_wrong_password'
+
+        url = reverse('token_obtain_pair', kwargs={'app_uuid': self.app.uuid})
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.data['code'], 'migration_password_reset_required')
+
+        # a reset token must have been created for the user
+        self.assertTrue(ResetPasswordToken.objects.filter(user=user).exists())
+
+    @test_settings
+    def test_post_wrong_password_non_migrated_user(self):
+        """
+        A normal (non-migrated) user with a wrong password should get the standard
+        401 response without any special code or reset token.
+        """
+        from django_rest_passwordreset.models import ResetPasswordToken
+
+        user = self.create_user()
+
+        post_data = self.get_post_data()
+        post_data['password'] = 'definitively_wrong_password'
+
+        url = reverse('token_obtain_pair', kwargs={'app_uuid': self.app.uuid})
+        response = self.client.post(url, post_data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertNotIn('code', response.data)
+        self.assertFalse(ResetPasswordToken.objects.filter(user=user).exists())
 
 
 class GetJWTokenMixin:
@@ -518,6 +573,111 @@ class TestPasswordResetRequest(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         self.assertEqual(authed_response.status_code, status.HTTP_400_BAD_REQUEST)
 
         self.assertFalse(authed_response.data['success'])
+
+
+class TestPasswordResetByToken(WithUser, WithApp, APITestCase):
+    """
+    Tests for the 6-digit token-based password reset flow via django-rest-passwordreset.
+    Endpoints are mounted at /<app_uuid>/password/reset-by-token/.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.superuser = self.create_superuser()
+        # Clear the throttle cache so each test starts with a clean rate-limit state.
+        cache.clear()
+
+    def tearDown(self):
+        cache.clear()
+        super().tearDown()
+
+    def get_request_url(self):
+        return reverse('password_reset:reset-password-request', kwargs={'app_uuid': self.app.uuid})
+
+    def get_validate_url(self):
+        return reverse('password_reset:reset-password-validate', kwargs={'app_uuid': self.app.uuid})
+
+    def get_confirm_url(self):
+        return reverse('password_reset:reset-password-confirm', kwargs={'app_uuid': self.app.uuid})
+
+    def _request_token(self, email):
+        """Helper: POST to the request endpoint and return the created token from the DB."""
+        
+        cache.clear()  # ensure no throttle state carries over from earlier in this test
+        url = self.get_request_url()
+        response = self.client.post(url, {'email': email}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'Token request was throttled or rejected')
+        return ResetPasswordToken.objects.filter(user__email=email).latest('created_at')
+
+    # --- request token ---
+
+    @test_settings
+    def test_request_token(self):
+        user = self.create_user()
+        url = self.get_request_url()
+        response = self.client.post(url, {'email': user.email}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'OK')
+
+    @test_settings
+    def test_request_token_missing_email(self):
+        url = self.get_request_url()
+        response = self.client.post(url, {}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @test_settings
+    def test_request_token_nonexistent_email(self):
+        # DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE=True → always 200
+        url = self.get_request_url()
+        response = self.client.post(url, {'email': 'nobody@example.com'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'OK')
+
+    # --- validate token ---
+
+    @test_settings
+    def test_validate_token(self):
+        user = self.create_user()
+        token = self._request_token(user.email)
+        url = self.get_validate_url()
+        response = self.client.post(url, {'token': token.key}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'OK')
+
+    @test_settings
+    def test_validate_token_invalid(self):
+        url = self.get_validate_url()
+        response = self.client.post(url, {'token': '000000'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    # --- confirm / set new password ---
+
+    @test_settings
+    def test_confirm_reset(self):
+        user = self.create_user()
+        token = self._request_token(user.email)
+        new_password = 'N3wS3cur3P@ssword!'
+        url = self.get_confirm_url()
+        response = self.client.post(url, {'token': token.key, 'password': new_password}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['status'], 'OK')
+        # verify the password was actually changed
+        user.refresh_from_db()
+        self.assertTrue(user.check_password(new_password))
+
+    @test_settings
+    def test_confirm_reset_invalid_token(self):
+        url = self.get_confirm_url()
+        response = self.client.post(url, {'token': '000000', 'password': 'N3wS3cur3P@ssword!'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    @test_settings
+    def test_confirm_reset_missing_password(self):
+        user = self.create_user()
+        token = self._request_token(user.email)
+        url = self.get_confirm_url()
+        response = self.client.post(url, {'token': token.key}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class TestManageServerContentImage(WithServerContentImage, GetJWTokenMixin, WithMedia, WithUser, WithApp, APITestCase):

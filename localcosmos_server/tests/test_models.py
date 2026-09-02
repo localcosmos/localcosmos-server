@@ -642,10 +642,10 @@ class TestServerExternalMedia(WithApp, TestCase):
             content_object=self.app,
             url='https://example.com/image.jpg',
             title='Test Image',
-            description='A test image description',
+            caption='A test image description',
             media_type='image',
             author='Test Author',
-            license='CC BY 4.0',
+            licence='CC BY 4.0',
             position=1,
         )
         media.save()
@@ -719,11 +719,11 @@ class TestServerExternalMedia(WithApp, TestCase):
         # Test without title (uses URL)
         media_without_title = ServerExternalMedia(
             content_object=self.app,
-            url='https://example.com/image.jpg',
+            url='https://example.com/image-without-title.jpg',
             media_type='image',
         )
         media_without_title.save()
-        self.assertEqual(str(media_without_title), 'https://example.com/image.jpg (image)')
+        self.assertEqual(str(media_without_title), 'https://example.com/image-without-title.jpg (image)')
 
     @test_settings
     def test_get_media_category_display_name(self):

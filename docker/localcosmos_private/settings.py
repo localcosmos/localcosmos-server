@@ -63,10 +63,11 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
-    'octicons',
     'imagekit',
 
     'django.forms',
+
+    'django_rest_passwordreset',
 ]
 
 MIDDLEWARE = [
@@ -179,7 +180,7 @@ admin_list = os.environ.get('LOCALCOSMOS_PRIVATE_ADMINS', [])
 ADMINS = []
 if admin_list:
     # 'name,email|name,email'
-    ADMINS = [tuple(admin.split(',')) for admin in admin_list.split('|')]
+    ADMINS = ['"{}" <{}>'.format(*admin.split(',', 1)) for admin in admin_list.split('|')]
 
 
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')

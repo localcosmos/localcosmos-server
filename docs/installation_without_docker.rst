@@ -188,7 +188,6 @@ Replace ``INSTALLED_APPS`` with the following:
 			'rest_framework',
 			'rest_framework.authtoken',
 
-			'octicons',
 			'imagekit',
 
 			'django.forms',

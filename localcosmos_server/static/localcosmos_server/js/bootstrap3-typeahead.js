@@ -572,7 +572,7 @@
 
     blur: function (e) {
       if (!this.mousedover && !this.mouseddown && this.shown) {
-        this.select();
+        //this.select();
         this.hide();
         this.focused = false;
         this.keyPressed = false;

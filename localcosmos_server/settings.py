@@ -40,7 +40,7 @@ SESSION_COOKIE_SAMESITE = None
 
 # corsheaders
 # the api has to allow queries from everywhere
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True
 # but only allow querying the api
 CORS_URLS_REGEX = r'^/api/.*$'
 # needed for anycluster cache
@@ -108,3 +108,16 @@ LOGIN_REDIRECT_URL = '/server/control-panel/'
 
 
 LOCALCOSMOS_SERVER_PUBLISH_INVALID_DATA = True
+
+LOCALCOSMOS_SERVER_ACHIEVEMENTS_ENABLED = True
+
+# django-rest-passwordreset: 6-digit numeric token
+DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
+    'CLASS': 'django_rest_passwordreset.tokens.RandomNumberTokenGenerator',
+    'OPTIONS': {
+        'min_number': 100000,
+        'max_number': 999999,
+    }
+}
+DJANGO_REST_MULTITOKENAUTH_RESET_TOKEN_EXPIRY_TIME = 0.25  # 15 minutes
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True

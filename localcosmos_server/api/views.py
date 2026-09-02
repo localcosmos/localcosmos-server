@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import serializers
 
 #from drf_spectacular.utils import inline_serializer, extend_schema
@@ -52,6 +53,13 @@ from drf_spectacular.utils import extend_schema, inline_serializer, extend_schem
 
 
 from .examples import get_taxon_profile_example
+
+
+# Signal receiver: send 6-digit reset token via email
+from django.dispatch import receiver
+from django_rest_passwordreset.signals import reset_password_token_created
+from django_rest_passwordreset.models import ResetPasswordToken
+from localcosmos_server.mails import send_password_reset_token_email
 
 import os
 import json
@@ -312,7 +320,7 @@ class ManageServerContentImage(APIView):
 
     
 
-# a user enters his email address or username and gets an email
+# a user enters his email address or username and gets an email with a reset link
 from django.contrib.auth.forms import PasswordResetForm
 class PasswordResetRequest(APIView):
     serializer_class = PasswordResetSerializer
@@ -359,10 +367,38 @@ class PasswordResetRequest(APIView):
         return Response(context, status=status.HTTP_200_OK)
 
 
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+    app_uuid = instance.request.resolver_match.kwargs.get('app_uuid')
+    app = None
+    if app_uuid:
+        app = App.objects.filter(uuid=app_uuid).first()
+    send_password_reset_token_email(reset_password_token.user, reset_password_token.key, app)
+
+
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 class TokenObtainPairViewWithClientID(ManageUserClient, TokenObtainPairView):
 
     serializer_class = TokenObtainPairSerializerWithClientID
+
+    def _is_pending_migration(self, user):
+        if not user.legacy_user_info:
+            return False
+        auth_migration = user.legacy_user_info.get('auth_migration', {})
+        return auth_migration.get('status') == 'legacy_pending_password_migration'
+
+    def _send_migration_reset_token(self, user, request, *args, **kwargs):
+        # Replace any existing tokens so the user always gets a fresh code
+        ResetPasswordToken.objects.filter(user=user).delete()
+        token = ResetPasswordToken.objects.create(
+            user=user,
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            ip_address=request.META.get('REMOTE_ADDR') or None,
+        )
+        app_uuid = kwargs.get('app_uuid')
+        app = App.objects.filter(uuid=app_uuid).first() if app_uuid else None
+        send_password_reset_token_email(user, token.key, app)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -371,6 +407,22 @@ class TokenObtainPairViewWithClientID(ManageUserClient, TokenObtainPairView):
             serializer.is_valid(raise_exception=True)
         except TokenError as e:
             raise InvalidToken(e.args[0])
+        except AuthenticationFailed:
+            username = request.data.get('username', '')
+            user = LocalcosmosUser.objects.filter(username=username).first()
+            if user and self._is_pending_migration(user):
+                self._send_migration_reset_token(user, request, *args, **kwargs)
+                return Response(
+                    {
+                        'detail': _(
+                            'Your account has been migrated to a new system. '
+                            'A password reset code has been sent to your registered email address.'
+                        ),
+                        'code': 'migration_password_reset_required',
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+            raise
 
         # serializer.user is available
         # user is authenticated now, and serializer.user is available

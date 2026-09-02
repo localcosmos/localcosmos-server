@@ -10,6 +10,7 @@ urlpatterns = [
     path('<uuid:app_uuid>/user/', views.ManageAccount.as_view(), name='api_manage_account'),
     path('<uuid:app_uuid>/user/register/', views.RegisterAccount.as_view(), name='api_register_account'),
     path('<uuid:app_uuid>/password/reset/', views.PasswordResetRequest.as_view(), name='api_password_reset'),
+    path('<uuid:app_uuid>/password/reset-by-token/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     # user profile
     path('<uuid:app_uuid>/user-profile/<uuid:uuid>/', views.GetUserProfile.as_view(), name='api_get_user_profile'),
     # contact user

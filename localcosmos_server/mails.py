@@ -55,6 +55,29 @@ def send_registration_confirmation_email(user, app_uuid):
     msg.send()
 
 
+def send_password_reset_token_email(user, token, app=None):
+
+    app_name = app.name if app else 'LocalCosmos'
+
+    ctx = {
+        'user': user,
+        'token': token,
+        'app': app,
+        'app_name': app_name,
+    }
+
+    subject = '{0} {1}'.format(app_name, _('Password reset code'))
+    from_email = FROM_EMAIL
+    to = user.email
+
+    text_message = render_to_string('email/password_reset_token.txt', ctx)
+    html_message = get_template('email/password_reset_token.html').render(ctx)
+
+    msg = EmailMultiAlternatives(subject, text_message, from_email=from_email, to=[to])
+    msg.attach_alternative(html_message, 'text/html')
+    msg.send()
+
+
 def send_user_contact_email(app_uuid, sender, receiver, subject, message):
     
     app = App.objects.get(uuid=app_uuid)

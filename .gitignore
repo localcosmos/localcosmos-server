@@ -4,6 +4,7 @@ demo-app
 build
 dist
 localcosmos_server.egg-info
+.venv
 
 # files
 *.pyc
