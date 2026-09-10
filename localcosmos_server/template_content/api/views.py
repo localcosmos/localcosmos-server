@@ -125,6 +125,22 @@ class GetTemplateContentByTemplatePreview(PreviewContextMixin, GetTemplateConten
     serializer_class = LocalizedTemplateContentSerializer
     
 
+class GetSlugsByAssignment(GenericAPIView):
+    """Return all published slugs for a given app and assignment."""
+
+    def get(self, request, app_uuid, assignment, *args, **kwargs):
+        from rest_framework.response import Response
+        app = App.objects.get(uuid=app_uuid)
+        slugs = list(
+            LocalizedTemplateContent.objects.filter(
+                template_content__app=app,
+                template_content__assignment=assignment,
+                published_version__isnull=False,
+            ).values_list('slug', flat=True)
+        )
+        return Response({'slugs': slugs})
+    
+    
 ''' TODO
 class GetTemplateContentByTag(LiveContextMixin, mixins.RetrieveModelMixin,GenericAPIView):
     pass

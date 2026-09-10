@@ -3,6 +3,7 @@ from rest_framework import status
 
 from localcosmos_server.datasets.api.tests.test_views import CreatedUsersMixin
 
+from localcosmos_server.template_content.models import TemplateContent
 from localcosmos_server.template_content.tests.mixins import WithTemplateContent, WithNavigation, _collect_nested_differences
 
 from localcosmos_server.tests.common import (test_settings,)
@@ -273,3 +274,92 @@ class TestGetNavigationPreview(CreatedUsersMixin, WithNavigation, WithApp, WithU
         response = self.client.get(url, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class TestGetSlugsByAssignment(WithTemplateContent, WithMedia, CreatedUsersMixin, WithApp, WithUser, APITestCase):
+
+    assignment = 'home'
+
+    def setUp(self):
+        super().setUp()
+        # assign the existing template content
+        self.template_content.assignment = self.assignment
+        self.template_content.save()
+
+        # a second template content with the same assignment but for a different locale
+        self.tc_secondary = TemplateContent.objects.create(
+            self.user, self.app, self.app.primary_language,
+            'Secondary page', 'TestPage', 'page', assignment=self.assignment,
+        )
+        self.secondary_ltc = self.tc_secondary.get_locale(self.app.primary_language)
+
+    @test_settings
+    def test_returns_only_published_slugs(self):
+        # nothing published yet — expect empty list
+        url = reverse('get_template_content_slugs_by_assignment', kwargs={
+            'app_uuid': str(self.app.uuid),
+            'assignment': self.assignment,
+        })
+
+        response = self.client.get(url, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), {'slugs': []})
+
+        # publish one of the two
+        self.template_content.publish(language=self.primary_ltc.language)
+        self.primary_ltc.refresh_from_db()
+
+        response = self.client.get(url, format='json')
+
+        data = json.loads(response.content)
+        self.assertEqual(data, {'slugs': [self.primary_ltc.slug]})
+
+    @test_settings
+    def test_returns_all_published_slugs(self):
+        self.template_content.publish(language=self.primary_ltc.language)
+        self.tc_secondary.publish(language=self.secondary_ltc.language)
+        self.primary_ltc.refresh_from_db()
+        self.secondary_ltc.refresh_from_db()
+
+        url = reverse('get_template_content_slugs_by_assignment', kwargs={
+            'app_uuid': str(self.app.uuid),
+            'assignment': self.assignment,
+        })
+
+        response = self.client.get(url, format='json')
+
+        data = json.loads(response.content)
+        self.assertCountEqual(data['slugs'], [self.primary_ltc.slug, self.secondary_ltc.slug])
+
+    @test_settings
+    def test_different_assignment_not_included(self):
+        self.template_content.publish(language=self.primary_ltc.language)
+        self.primary_ltc.refresh_from_db()
+
+        url = reverse('get_template_content_slugs_by_assignment', kwargs={
+            'app_uuid': str(self.app.uuid),
+            'assignment': 'other-assignment',
+        })
+
+        response = self.client.get(url, format='json')
+
+        data = json.loads(response.content)
+        self.assertEqual(data, {'slugs': []})
+
+    @test_settings
+    def test_different_app_not_included(self):
+        self.template_content.publish(language=self.primary_ltc.language)
+        self.primary_ltc.refresh_from_db()
+
+        other_app_uuid = '00000000-0000-0000-0000-000000000001'
+
+        url = reverse('get_template_content_slugs_by_assignment', kwargs={
+            'app_uuid': other_app_uuid,
+            'assignment': self.assignment,
+        })
+
+        response = self.client.get(url, format='json')
+
+        # App.objects.get raises DoesNotExist for an unknown uuid
+        self.assertNotEqual(response.status_code, status.HTTP_200_OK)

@@ -69,14 +69,16 @@ class TestTemplateContentList(WithUser, WithApp, ViewTestMixin, TestCase):
             'assignment' : 'home',
             'template_content' : None,
             'template_type': 'page',
+            'required': True,
         }
         required_footer_feature = {
             'assignment' : 'footer',
             'template_content' : None,
             'template_type': 'feature',
+            'required': True,
         }
         
-        self.assertEqual(context['required_offline_contents'], [required_home_page, required_footer_feature])
+        self.assertEqual(context['page_assignments'], [required_home_page, required_footer_feature])
         
         
     @test_settings
@@ -91,7 +93,7 @@ class TestTemplateContentList(WithUser, WithApp, ViewTestMixin, TestCase):
         self.assertEqual(list(context['navigations']), [])
         self.assertEqual(list(context['localized_template_contents']), [])
         
-        self.assertEqual(context['required_offline_contents'], [])
+        self.assertEqual(context['page_assignments'], [])
         
         
 class TestCreateTemplateContent(WithUser, WithApp, ViewTestMixin, TestCase):

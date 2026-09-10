@@ -1,0 +1,37 @@
+{% load i18n static el_pagination_tags %}
+{% if push_notification_logs %}
+    {% paginate 10 push_notification_logs %}
+    <ul class="list-group list-group-flush">
+        {% for log in push_notification_logs %}
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong>{{ log.title }}</strong>
+                        {% if log.language_code %}
+                            <img src="{% static 'localcosmos_server/images/countries/' %}{{ log.language_code }}.gif" alt="{{ log.language_code }}" class="ms-1" />
+                        {% endif %}
+                        <div>{{ log.body }}</div>
+                        <div class="text-muted small">
+                            {{ log.sent_at }} &middot; {{ log.recipients }} &middot; {{ log.sent_by }}
+                            {% if log.error_message %}
+                                &middot; <span class="text-danger">{{ log.error_message }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        {% if log.status == 'success' %}
+                            <span class="badge bg-success">{% trans 'success' %}</span>
+                        {% else %}
+                            <span class="badge bg-danger">{% trans 'failure' %}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="mt-3">
+        {% show_pages %}
+    </div>
+{% else %}
+    <p class="text-muted mb-0">{% trans 'No notifications sent yet.' %}</p>
+{% endif %}

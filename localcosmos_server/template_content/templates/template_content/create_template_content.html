@@ -7,7 +7,11 @@
 		<div class="col-12 col-md-6 mt-3">
 
 			{% if form.fields.template_name.choices %}
-				<h4>{% blocktrans %}Add new {{ template_type }}{% endblocktrans %}</h4>
+				{% if assignment %}
+					<h4>{% blocktrans %}Add {{ assignment }}{% endblocktrans %}</h4>
+				{% else %}
+					<h4>{% blocktrans %}Add new {{ template_type }}{% endblocktrans %}</h4>
+				{% endif %}
 				<form action="{% if assignment %}{% url 'create_template_content' app.uid template_type assignment %}{% else %}{% url 'create_template_content' app.uid template_type %}{% endif %}" method="POST">{% csrf_token %}
 					{% render_bootstrap_form form %}
 					<p class="text-center">

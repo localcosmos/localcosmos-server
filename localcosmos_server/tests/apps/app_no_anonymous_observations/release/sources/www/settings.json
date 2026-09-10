@@ -141,16 +141,18 @@
                 "maxLevels": 3
             }
         },
-        "requiredOfflineContents": {
+        "assignmentContents": {
             "home": {
                 "templateType": "page",
                 "allowedTemplates": [
                     "home"
-                ]
+                ],
+                "requiredFlag": true
             },
             "footer": {
                 "templateType": "feature",
-                "allowedTemplates": ["footer"]
+                "allowedTemplates": ["footer"],
+                "requiredFlag": true
             }
         }
     },

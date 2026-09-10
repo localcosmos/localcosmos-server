@@ -1,0 +1,53 @@
+{% load i18n localcosmos_tags %}
+{% if success %}
+    {% if fcm_has_failures %}
+        <div class="alert alert-danger" role="alert">
+            <strong>{% trans 'Some notifications could not be delivered:' %}</strong>
+            <ul class="mb-0 mt-1">
+                {% for log in fcm_result %}
+                    {% if log.status == 'failure' %}
+                        <li>{{ log.language_code }}: {{ log.error_message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div class="alert alert-success" role="alert">
+            {% trans 'Push notification sent successfully.' %}
+        </div>
+    {% endif %}
+    <div>
+        <button id="send-another" type="button" class="btn btn-outline-primary">{% trans 'Send Another' %}</button>
+    </div>
+    <script>
+        (function() {
+            document.getElementById('send-another').addEventListener('click', function() {
+                const url = "{% url 'push_notifications:send_push_notification' app.uid %}";
+                const container_id = 'send-push-notification-form-container';
+                const container = document.getElementById(container_id);
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(response => response.text())
+                    .then(html => {
+                        container.innerHTML = html;
+                        ajaxify(container_id);
+                    });
+            });
+
+            const logs_url = "{% url 'push_notifications:get_notification_logs' app.uid %}";
+            const logs_container_id = 'notification-logs-container';
+            const logs_container = document.getElementById(logs_container_id);
+            fetch(logs_url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(response => response.text())
+                .then(html => {
+                    logs_container.innerHTML = html;
+                    ajaxify(logs_container_id);
+                });
+        })();
+    </script>
+{% else %}
+    <form method="POST" action="{% url 'push_notifications:send_push_notification' app.uid %}" class="xhr">
+        {% csrf_token %}
+        {% render_bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">{% trans 'Send' %}</button>
+    </form>
+{% endif %}

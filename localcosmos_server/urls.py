@@ -17,6 +17,7 @@ urlpatterns = [
     path('app-admin/', include('localcosmos_server.taxonomy.urls')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.achievements.urls', namespace='achievements')), # cannot have the namespace appadmin
     path('app-admin/', include('localcosmos_server.geography.urls', namespace='geography')), # cannot have the namespace appadmin
+    path('app-admin/', include('localcosmos_server.push_notifications.urls', namespace='push_notifications')), # cannot have the namespace appadmin
     
     # generic object order
     path('app-admin/<str:app_uid>/store-object-order/<int:content_type_id>/',
@@ -26,6 +27,7 @@ urlpatterns = [
     path('api/', include('localcosmos_server.datasets.api.urls')),
     path('api/', include('localcosmos_server.template_content.api.urls')),
     path('api/', include('localcosmos_server.analytics.api.urls')),
+    path('api/', include('localcosmos_server.push_notifications.api.urls')),
 
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/doc/', SpectacularSwaggerView.as_view(template_name='swagger-ui.html', url_name='schema'), name='swagger-ui'),

@@ -49,10 +49,27 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
         templates = Templates(self.app, 'page')
         available_templates = templates.get_all_templates()
 
+        allowed_templates = None
+        dedicated_templates = set()
+        app_settings = self.app.get_settings()
+        assignment_contents = app_settings.get('templateContent', {}).get('assignmentContents', {})
+
+        if self.assignment:
+            assignment_def = assignment_contents.get(self.assignment, {})
+            allowed_templates = assignment_def.get('allowedTemplates', None)
+        else:
+            for definition in assignment_contents.values():
+                if definition.get('dedicatedTemplate', False):
+                    dedicated_templates.update(definition.get('allowedTemplates', []))
+
         choices = []
 
         if available_templates:
             for template_name, template in available_templates.items():
+                if allowed_templates is not None and template_name not in allowed_templates:
+                    continue
+                if not self.assignment and template_name in dedicated_templates:
+                    continue
                 choice_label = ' '.join(template.definition['templateName'].split('-')).capitalize()
                 choice = (template_name, choice_label)
                 choices.append(choice)

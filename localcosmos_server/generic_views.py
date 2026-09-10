@@ -1,7 +1,6 @@
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db import transaction, connection
 
 from localcosmos_server.decorators import ajax_required
 from localcosmos_server.forms import SeoParametersForm, ExternalMediaForm

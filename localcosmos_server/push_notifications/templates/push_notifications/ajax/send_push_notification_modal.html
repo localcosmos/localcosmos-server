@@ -1,0 +1,41 @@
+{% extends 'localcosmos_server/modals/large_modal_form.html' %}
+{% load i18n localcosmos_tags %}
+
+{% block action %}{% url 'push_notifications:send_push_notification_modal' app.uid %}{% endblock %}
+
+{% block title %}{% trans 'Send Push Notification' %}{% endblock %}
+
+{% block body %}
+    <div>
+        {% if success %}
+            {% if fcm_has_failures %}
+                <div class="alert alert-danger" role="alert">
+                    <strong>{% trans 'Some notifications could not be delivered:' %}</strong>
+                    <ul class="mb-0 mt-1">
+                        {% for log in fcm_result %}
+                            {% if log.status == 'failure' %}
+                                <li>{{ log.language_code }}: {{ log.error_message }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <div class="alert alert-success" role="alert">
+                    {% trans 'Push notification sent successfully.' %}
+                </div>
+            {% endif %}
+        {% else %}
+            {% render_bootstrap_form form %}
+        {% endif %}
+    </div>
+	
+{% endblock %}
+
+{% block footer %}
+    {% if success %}
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+    {% else %}
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="submit" class="btn btn-outline-primary">{% trans 'Send' %}</button>
+    {% endif %}
+{% endblock %}

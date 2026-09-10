@@ -22,11 +22,12 @@ install_requires = [
     'django-taggit==6.1.0', # used by app kit, potentiall used in the server in the future
     'google-cloud-vision',
     'django-rest-passwordreset==1.6.0',
+    'fcm-django==3.2.*',
 ]
 
 setup(
     name='localcosmos_server',
-    version='1.0.0',
+    version='1.1.0',
     description='LocalCosmos Private Server. Run your own server for localcosmos.org apps.',
     long_description=long_description,
     long_description_content_type="text/markdown",

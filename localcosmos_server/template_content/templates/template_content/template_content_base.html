@@ -105,12 +105,12 @@
 					</div>
 				</div>
 
-				{% if required_offline_contents %}
+				{% if page_assignments %}
 					<div class="row mt-5">
 						<div class="col-12">
-							<h4>{% trans 'Frontend requirements' %}</h4>
+							<h4>{% trans 'Page Assignments' %}</h4>
 							<div class="row">
-								{% for content in required_offline_contents %}
+								{% for content in page_assignments %}
 									{% if content.template_content %}
 										{% get_locale content.template_content app.primary_language as localized_template_content %}
 										{% with template_content=content.template_content %}
@@ -123,6 +123,7 @@
 											<div class="card" style="width: 100%;">
 												<div class="card-header">
 													{{ content.assignment }}
+													{% if content.required %}<span class="badge bg-warning text-dark ms-1">{% trans 'required' %}</span>{% endif %}
 												</div>
 												<div class="card-body">
 													<h5 class="card-title">

@@ -1,0 +1,72 @@
+{% extends 'app_admin/base.html' %}
+{% load i18n static el_pagination_tags localcosmos_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12 my-4">
+            <h1>{% trans 'Push Notifications' %}</h1>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-12 col-lg-8 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    {% trans 'Send Push Notification' %}
+                </div>
+                <div class="card-body">
+                    <div id="send-push-notification-form-container">
+                        {% include "push_notifications/ajax/send_push_notification_form.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    {% trans 'Registered Devices' %}
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for lang, count in devices_per_language %}
+                            <li class="list-group-item d-flex align-items-center gap-2">
+                                <img src="{% static 'localcosmos_server/images/countries/' %}{{ lang }}.gif" alt="{{ lang }}" />
+                                <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    {% trans 'Sent Notifications' %}
+                </div>
+                <div class="card-body">
+                    <div id="notification-logs-container">
+                        {% include "push_notifications/ajax/notification_logs.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_head_script %}
+
+{% endblock %}
+
+{% block extra_script %}
+{% endblock %}

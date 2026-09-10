@@ -179,8 +179,8 @@ SERVER_EMAIL = 'server@localcosmos-private'
 admin_list = os.environ.get('LOCALCOSMOS_PRIVATE_ADMINS', [])
 ADMINS = []
 if admin_list:
-    # 'name,email|name,email'
-    ADMINS = ['"{}" <{}>'.format(*admin.split(',', 1)) for admin in admin_list.split('|')]
+    # 'email,email'
+    ADMINS = admin_list
 
 
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')

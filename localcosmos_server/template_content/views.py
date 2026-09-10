@@ -67,17 +67,17 @@ class TemplateContentList(AppMixin, TemplateView):
         navigations = Navigation.objects.filter(app=self.app)
         context['navigations'] = navigations
 
-        required_offline_contents = []
+        page_assignments = []
         
-        # offline contents are always manged within the app kit
+        # assignment contents are always managed within the app kit
         if settings.LOCALCOSMOS_PRIVATE == False:
                         
             app_settings = self.app.get_settings()
             
             if 'templateContent' in app_settings:
 
-                required_contents = app_settings['templateContent'].get('requiredOfflineContents', {})
-                for assignment, definition in required_contents.items():
+                assignment_contents = app_settings['templateContent'].get('assignmentContents', {})
+                for assignment, definition in assignment_contents.items():
 
                     template_type = definition['templateType']
 
@@ -91,12 +91,13 @@ class TemplateContentList(AppMixin, TemplateView):
                         'assignment': assignment,
                         'template_content': template_content,
                         'template_type': template_type,
+                        'required': definition.get('requiredFlag', False),
                     }
 
-                    required_offline_contents.append(content)
+                    page_assignments.append(content)
             
         
-        context['required_offline_contents'] = required_offline_contents
+        context['page_assignments'] = page_assignments
 
         # unsupported template contents
         unsupported_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app, template_content__template_type='page',
@@ -110,10 +111,19 @@ class TemplateContentList(AppMixin, TemplateView):
         templates = Templates(self.app, 'page')
         available_templates = templates.get_all_templates()
 
+        dedicated_templates = {
+            t
+            for definition in frontend_settings.get('templateContent', {}).get('assignmentContents', {}).values()
+            if definition.get('dedicatedTemplate', False)
+            for t in definition.get('allowedTemplates', [])
+        }
+
         template_choices = []
 
         if available_templates:
             for template_name, template in available_templates.items():
+                if template_name in dedicated_templates:
+                    continue
                 choice_label = ' '.join(template.definition['templateName'].split('-')).capitalize()
                 choice = (template_name, choice_label)
                 template_choices.append(choice)
@@ -163,6 +173,7 @@ class CreateTemplateContent(AppMixin, FormView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs['language'] = self.app.primary_language
+        form_kwargs['assignment'] = self.kwargs.get('assignment', None)
         return form_kwargs
 
 

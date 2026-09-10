@@ -75,6 +75,9 @@
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'geography:geography_overview' request.app.uid %}">{% trans 'Geographies' %}</a>
 						</li>
+						<li>
+							<a class="nav-link" href="{% url 'push_notifications:manage_push_notifications' request.app.uid %}">{% trans 'Push Notifications' %}</a>
+						</li>
 					</ul>
 
 					<ul class="navbar-nav flex-row ms-md-auto d-md-flex">

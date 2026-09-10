@@ -12,6 +12,8 @@ urlpatterns = [
          name='get_template_content_navigation'),
     path('<uuid:app_uuid>/template-content-navigation-preview/<str:navigation_type>/<str:language>/', views.GetNavigationPreview.as_view(),
          name='get_template_content_navigation_preview'),
+    path('<uuid:app_uuid>/template-content-slugs-by-assignment/<str:assignment>/', views.GetSlugsByAssignment.as_view(),
+         name='get_template_content_slugs_by_assignment'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json',])

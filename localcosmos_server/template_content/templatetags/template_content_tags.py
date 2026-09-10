@@ -1,3 +1,5 @@
+import json
+
 from django.utils.html import format_html
 from django import template
 
@@ -60,3 +62,17 @@ def verbose_content_key(content_key):
     uncamelized_key = camel_case_to_spaces(str(content_key))
     spaced_key = uncamelized_key.replace('-', ' ')
     return capfirst(spaced_key)
+
+
+@register.simple_tag
+def template_content_push_notification_data(app, localized_template_content):
+    """Returns a JSON string for the push notification ?data= query param."""
+    tc = localized_template_content.template_content
+    payload = {
+        'type': 'templateContentLink',
+        'link': {
+            'slug': localized_template_content.slug,
+            'templateName': tc.draft_template_name,
+        },
+    }
+    return json.dumps(payload, ensure_ascii=False)
