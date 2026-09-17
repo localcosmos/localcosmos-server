@@ -46,7 +46,11 @@ test_settings = override_settings(
         'localcosmos_server.datasets.validation.ExpertReviewValidator',
         'localcosmos_server.datasets.validation.ReferenceFieldsValidator',
     ),
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend',
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        },
+    },
 )
 
 test_settings_app_kit = override_settings(
@@ -57,7 +61,11 @@ test_settings_app_kit = override_settings(
         'localcosmos_server.datasets.validation.ExpertReviewValidator',
         'localcosmos_server.datasets.validation.ReferenceFieldsValidator',
     ),
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend',
+    MAILERS = {
+        'default': {
+            'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        },
+    },
 )
 
 TEST_CLIENT_ID = '4cf82a1d-755b-49e5-b687-a38d78591df4'

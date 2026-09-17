@@ -794,7 +794,7 @@ class Command(BaseCommand):
 
                 mapped_object_class_de = taxa_map_entry.get('object_class_de')
                 if mapped_object_class_de is not None:
-                    expected_de = OBJECT_CLASS_NAMES.get(mapped_object_class)
+                    expected_de = OBJECT_CLASS_NAMES[mapped_object_class]['name']
                     if mapped_object_class_de != expected_de:
                         return {
                             'status': 'FAIL',

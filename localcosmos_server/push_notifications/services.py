@@ -117,11 +117,17 @@ class PushNotificationService:
                     ),
                 )
                 result = messaging.send_each_for_multicast(message)
-                success_count += result.success_count
-                failure_count += result.failure_count
-                errors.extend(
-                    str(r.exception) for r in result.responses if not r.success
-                )
+                unregistered_tokens = []
+                for j, response in enumerate(result.responses):
+                    if response.success:
+                        success_count += 1
+                    elif isinstance(response.exception, messaging.UnregisteredError):
+                        unregistered_tokens.append(batch[j])
+                    else:
+                        failure_count += 1
+                        errors.append(str(response.exception))
+                if unregistered_tokens:
+                    FCMDevice.objects.filter(registration_id__in=unregistered_tokens).update(active=False)
 
             if failure_count:
                 log.status = PushNotificationLog.STATUS_FAILURE

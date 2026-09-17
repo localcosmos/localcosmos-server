@@ -67,7 +67,7 @@ class Command(BaseCommand):
 
         # ── collect definitions from OBJECT_CLASS_NAMES ────────────────────
         definitions = {
-            k: v if v is not None else k
+            k: v['name']
             for k, v in OBJECT_CLASS_NAMES.items()
         }
 

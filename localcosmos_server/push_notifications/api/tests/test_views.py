@@ -23,7 +23,7 @@ class WithRegisteredDevice:
     def create_device(self, app, registration_id=TEST_REGISTRATION_ID,
                       client_id=TEST_CLIENT_ID, language_code='de'):
         fcm_device = FCMDevice.objects.create(
-            registration_id=registration_id, type='android', active=True
+            registration_id=registration_id, type='android', active=True, device_id=client_id
         )
         receiving_device = PushReceivingDevice.objects.create(
             app=app, client_id=client_id, fcm_device=fcm_device, language_code=language_code
@@ -67,6 +67,27 @@ class TestRegisterFCMDeviceView(WithUser, WithApp, APITestCase):
 
         response = self.client.post(self.get_url(), self.get_post_data(), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @test_settings
+    def test_post_re_registration_removes_old_fcm_device(self):
+        self.client.post(self.get_url(), self.get_post_data(), format='json')
+        self.assertTrue(FCMDevice.objects.filter(registration_id=TEST_REGISTRATION_ID).exists())
+
+        # same client registers again with a new token
+        self.client.post(self.get_url(), self.get_post_data(
+            registration_id=TEST_REGISTRATION_ID_2
+        ), format='json')
+
+        self.assertFalse(FCMDevice.objects.filter(registration_id=TEST_REGISTRATION_ID).exists())
+        new_device = FCMDevice.objects.get(registration_id=TEST_REGISTRATION_ID_2)
+        self.assertEqual(new_device.device_id, TEST_CLIENT_ID)
+
+    @test_settings
+    def test_post_sets_device_id_to_client_id(self):
+        self.client.post(self.get_url(), self.get_post_data(), format='json')
+
+        fcm_device = FCMDevice.objects.get(registration_id=TEST_REGISTRATION_ID)
+        self.assertEqual(fcm_device.device_id, TEST_CLIENT_ID)
 
     @test_settings
     def test_post_updates_language_code(self):

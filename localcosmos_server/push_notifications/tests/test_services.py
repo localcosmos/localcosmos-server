@@ -1,6 +1,8 @@
 from django.test import TestCase
 from unittest.mock import patch, MagicMock
 
+from firebase_admin import messaging as fbm
+
 from localcosmos_server.tests.common import test_settings
 from localcosmos_server.tests.mixins import WithApp, WithUser
 
@@ -62,6 +64,25 @@ class TestPushNotificationServiceSend(WithApp, WithUser, TestCase):
         self.assertEqual(log.status, PushNotificationLog.STATUS_FAILURE)
         self.assertIn('1 failure(s)', log.error_message)
         self.assertIn('token not registered', log.error_message)
+
+    @patch('firebase_admin.messaging.send_each_for_multicast')
+    def test_send_unregistered_device_does_not_fail_log(self, mock_send):
+        unregistered_exc = MagicMock(spec=fbm.UnregisteredError)
+        mock_send.return_value = mock_batch_response(
+            success_count=0, failure_count=1, failed_exceptions=[unregistered_exc]
+        )
+        (log,) = self.service.send('Hello', 'World')
+        self.assertEqual(log.status, PushNotificationLog.STATUS_SUCCESS)
+
+    @patch('firebase_admin.messaging.send_each_for_multicast')
+    def test_send_unregistered_device_deactivates_fcm_device(self, mock_send):
+        unregistered_exc = MagicMock(spec=fbm.UnregisteredError)
+        mock_send.return_value = mock_batch_response(
+            success_count=0, failure_count=1, failed_exceptions=[unregistered_exc]
+        )
+        self.service.send('Hello', 'World')
+        self.device.fcm_device.refresh_from_db()
+        self.assertFalse(self.device.fcm_device.active)
 
     @patch('firebase_admin.messaging.send_each_for_multicast')
     def test_send_creates_failure_log_on_exception(self, mock_send):

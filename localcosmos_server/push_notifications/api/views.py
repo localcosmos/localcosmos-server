@@ -31,9 +31,14 @@ class RegisterFCMDeviceView(APIView):
         language_code = serializer.validated_data['language_code']
 
         with transaction.atomic():
+            # remove stale devices for this client that carry a different token
+            FCMDevice.objects.filter(device_id=client_id).exclude(
+                registration_id=registration_id
+            ).delete()
+
             fcm_device, created = FCMDevice.objects.update_or_create(
                 registration_id=registration_id,
-                defaults={'type': device_type, 'active': True},
+                defaults={'type': device_type, 'active': True, 'device_id': client_id},
             )
             # delete any other device that was holding this token
             PushReceivingDevice.objects.filter(fcm_device=fcm_device).exclude(
@@ -46,7 +51,7 @@ class RegisterFCMDeviceView(APIView):
                 defaults={'fcm_device': fcm_device, 'language_code': language_code},
             )
 
-        return Response(status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+        return Response({'registered': True}, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
 
 class DeregisterFCMDeviceView(APIView):
@@ -68,4 +73,4 @@ class DeregisterFCMDeviceView(APIView):
 
         # CASCADE on fcm_device deletes receiving_device too
         receiving_device.fcm_device.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'registered': False}, status=status.HTTP_200_OK)

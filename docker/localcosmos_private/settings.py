@@ -183,12 +183,19 @@ if admin_list:
     ADMINS = admin_list
 
 
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_USE_TLS = bool(os.environ.get('EMAIL_USE_TLS', False))
-EMAIL_USE_SSL = bool(os.environ.get('EMAIL_USE_SSL', False))
-EMAIL_PORT = os.environ.get('EMAIL_PORT', 25)
+MAILERS = {
+    'default': {
+        'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+        'OPTIONS': {
+            'host': os.environ.get('EMAIL_HOST', 'localhost'),
+            'port': int(os.environ.get('EMAIL_PORT', 25)),
+            'username': os.environ.get('EMAIL_HOST_USER', ''),
+            'password': os.environ.get('EMAIL_HOST_PASSWORD', ''),
+            'use_tls': bool(os.environ.get('EMAIL_USE_TLS', False)),
+            'use_ssl': bool(os.environ.get('EMAIL_USE_SSL', False)),
+        },
+    },
+}
 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
