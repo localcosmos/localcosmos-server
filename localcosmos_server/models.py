@@ -196,7 +196,7 @@ class LocalcosmosUser(ServerContentImageMixin, AbstractUser):
 
             # delete all images of this dataset, also remove it from disk
             # this is due to legal implications
-            images = DatasetImages.objects.filter(dataset=dataset)
+            # images = DatasetImages.objects.filter(dataset=dataset)
 
             dataset.user = None
 
