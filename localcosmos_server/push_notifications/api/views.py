@@ -4,7 +4,7 @@ from rest_framework import status
 from localcosmos_server.models import App
 from django.db import transaction
 
-from .schemas import RegisterFCMDeviceSchema, DeregisterFCMDeviceSchema
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from .serializers import RegisterFCMDeviceSerializer, DeregisterFCMDeviceSerializer
 
@@ -13,9 +13,18 @@ from localcosmos_server.api.permissions import AppMustExist
 
 from fcm_django.models import FCMDevice
 
+@extend_schema(
+    request=RegisterFCMDeviceSerializer,
+    responses={
+        200: OpenApiResponse(description='FCM registration token updated for this device.'),
+        201: OpenApiResponse(description='FCM device registered for this device.'),
+        400: OpenApiResponse(description='Invalid request body.'),
+        401: OpenApiResponse(description='Authentication credentials were not provided.'),
+    },
+    operation_id='registerFCMDevice',
+)
 class RegisterFCMDeviceView(APIView):
     permission_classes = [AppMustExist]
-    schema = RegisterFCMDeviceSchema()
     serializer_class = RegisterFCMDeviceSerializer
 
     def post(self, request, *args, **kwargs):
@@ -54,9 +63,17 @@ class RegisterFCMDeviceView(APIView):
         return Response({'registered': True}, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
 
+@extend_schema(
+    request=DeregisterFCMDeviceSerializer,
+    responses={
+        200: OpenApiResponse(description='FCM device deregistered successfully.'),
+        401: OpenApiResponse(description='Authentication credentials were not provided.'),
+        404: OpenApiResponse(description='No FCM device registration found for this device.'),
+    },
+    operation_id='deregisterFCMDevice',
+)
 class DeregisterFCMDeviceView(APIView):
     permission_classes = [AppMustExist]
-    schema = DeregisterFCMDeviceSchema()
     serializer_class = DeregisterFCMDeviceSerializer
 
     def delete(self, request, *args, **kwargs):
