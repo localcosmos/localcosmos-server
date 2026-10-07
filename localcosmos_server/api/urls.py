@@ -36,6 +36,7 @@ urlpatterns = [
     path('<uuid:app_uuid>/taxon-profile/<int:pk>/', views.TaxonProfileDetail.as_view(), name='api_taxon_profile'),
     path('<uuid:app_uuid>/taxon-profiles/', views.TaxonProfileList.as_view(), name='api_taxon_profile_list'),
     path('<uuid:app_uuid>/taxon-profiles/all/', views.AllTaxonProfiles.as_view(), name='api_all_taxon_profiles'),
+    path('<uuid:app_uuid>/taxon-profiles/tags/', views.TaxonProfilesTagList.as_view(), name='api_taxon_profiles_tag_list'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json'])

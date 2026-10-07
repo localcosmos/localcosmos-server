@@ -334,24 +334,55 @@ class LocalizedTemplateContentSerializer(serializers.ModelSerializer):
 
         linked_taxa = []
         restrictions = localized_template_content.template_content.taxonomic_restrictions
+        
+        app = localized_template_content.template_content.app
 
         for restriction in restrictions.all():
             
             taxon = restriction.taxon
-            taxon_data = {
-                'taxonSource': taxon.taxon_source,
-                'taxonLatname': taxon.taxon_latname,
-                'taxonAuthor': taxon.taxon_author,
-                'nameUuid': taxon.name_uuid,
-                'taxonNuid': taxon.taxon_nuid,
-            }
-            linked_taxa.append(taxon_data)
+            
+            full_scientific_name = taxon.taxon_latname
+            if taxon.taxon_author:
+                full_scientific_name += f' ({taxon.taxon_author})'
+            
+            published_taxon_extended = app.get_taxon(taxon)
+            
+            if published_taxon_extended:
+                linked_taxa.append(published_taxon_extended)
+            else:
+                taxon_extended = {
+                    'taxonLatname' : taxon.taxon_latname,
+                    'taxonSource' : taxon.taxon_source,
+                    'taxonAuthor' : taxon.taxon_author,
+                    'nameUuid' : taxon.name_uuid,
+                    'taxonNuid' : taxon.taxon_nuid,
+                    'slug': None,
+                    'localizedSlug': {},
+                    'gbifNubkey': None,
+                    'image': None,
+                    'shortProfile': "",
+                    'hasTaxonProfile': False,
+                    'nameType': "scientific",
+                    'name': full_scientific_name,
+                    'isPreferredName': False,
+                    'acceptedNameUuid': None
+                }
+                linked_taxa.append(taxon_extended)
 
         return linked_taxa
     
-    # not implemented yet for the api. App Kits jsonbuilder has it already.
+    # read available taxon profiles from published app - even in preview mode
     def get_linkedTaxonProfiles(self, localized_template_content):
-        return []
+        
+        taxon_profiles_taxa = []
+        
+        taxa = self.get_linkedTaxa(localized_template_content)
+        
+        for extended_taxon in taxa:
+            if extended_taxon['hasTaxonProfile']:
+                taxon_profiles_taxa.append(extended_taxon)
+
+        return taxon_profiles_taxa
 
 
     class Meta:

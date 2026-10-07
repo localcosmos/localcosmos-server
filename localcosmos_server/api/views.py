@@ -794,6 +794,39 @@ class AllTaxonProfiles(TaxonProfilesAPIViewMixin, APIView):
         response_data = taxon_profiles
         
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+@extend_schema_view(
+    get=extend_schema(
+        responses=inline_serializer(
+            name='TaxonProfilesTagList',
+            fields={'tags': serializers.ListField(child=serializers.CharField())},
+        ),
+        examples=[
+            OpenApiExample(
+                'Tag List',
+                description='A list of all tags used across taxon profiles',
+                value=['neobiota', 'invasive'],
+            )
+        ]
+    )
+)
+class TaxonProfilesTagList(TaxonProfilesAPIViewMixin, APIView):
+
+    permission_classes = (AppMustExist,)
+
+    def get(self, request, *args, **kwargs):
+
+        id_to_taxon_map = self.get_id_to_taxon_map()
+        
+        tags = set([])
+
+        for taxon_profile_id, taxxon in id_to_taxon_map.items():
+            taxon_profile = self.get_app_taxon_profile_from_id(taxon_profile_id)
+            if taxon_profile is not None:
+                tags.update(taxon_profile.get('tags', []))
+
+        return Response(list(tags), status=status.HTTP_200_OK)
     
 
 ##################################################################################################################

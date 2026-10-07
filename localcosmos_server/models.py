@@ -473,6 +473,9 @@ class App(models.Model):
             root = self.get_installed_app_path(app_state)
             
             features_json_path = os.path.join(root, 'localcosmos', 'features.json')
+            
+            if os.path.isfile(features_json_path) == False:
+                return {}
 
             with open(features_json_path, 'r') as features_file:
                 features = json.loads(features_file.read())
@@ -596,6 +599,38 @@ class App(models.Model):
                         return vernacular_names['primary']
                 
         return vernacular_name
+    
+    # return a taxon with additional information from the published search files, includeing short profile and image
+    def get_taxon(self, taxon):
+        
+        extended_taxon = None
+        
+        if self.published_version_path:
+        
+            features = self.get_features(app_state='published')
+            
+            if 'BackboneTaxonomy' in features:
+                backbone_taxonomy = features['BackboneTaxonomy']
+                search_folder = backbone_taxonomy['search']['taxonLatname']
+                relpath = search_folder.lstrip('/')
+
+                start_letter = taxon.taxon_latname[0].upper()
+                filename = f'{start_letter}.json'
+                search_file = os.path.join(self.published_version_path, relpath, filename)
+                if os.path.isfile(search_file):
+                    with open(search_file, 'r') as f:
+                        search_data = json.loads(f.read())
+                        # it is a list of taxa
+                        for candidate in search_data:
+                            if candidate['taxonSource'] == taxon.taxon_source and candidate['taxonLatname'] == taxon.taxon_latname:
+                                taxon_data = candidate
+                                if taxon_data:
+                                    extended_taxon = taxon_data
+                                    break
+                
+        
+        return extended_taxon
+        
 
 
     # LC PRIVATE: remove all contents from disk

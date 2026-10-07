@@ -1158,3 +1158,25 @@ class TestAllTaxonProfiles(GetJWTokenMixin, WithUser, WithApp, APITestCase):
         ]
 
         self.assertEqual(response.data, expected_respoinse)
+
+
+class TestTaxonProfilesTagList(GetJWTokenMixin, WithUser, WithApp, APITestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        su = self.create_superuser()
+        self.authed_client = self.get_authenticated_client(self.user.username, self.test_password)
+        self.app.url = 'http://testserver'
+        self.app.save()
+
+    @test_settings
+    def test_get_taxon_profiles_tag_list(self):
+        url_kwargs = {
+            'app_uuid': str(self.app.uuid),
+        }
+        url = reverse('api_taxon_profiles_tag_list', kwargs=url_kwargs)
+        response = self.authed_client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsInstance(response.data, list)
+        self.assertIn('neobiota', response.data)

@@ -191,7 +191,7 @@ OBJECT_CLASS_UNKNOWN = 'please set object class'
 OBJECT_CLASS_NAMES = {
     'acervus': {
         'name': 'Haufen',
-        'taxa': [],
+        'taxa': ['Polychaeta', 'Talitrus saltator'],
         'taxa_observations': [
             'Corophium spp (juv pile)',
             'Arenicola defodiens (pile)',
