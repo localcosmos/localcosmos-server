@@ -1,5 +1,5 @@
 django==6.1.*
-djangorestframework==3.18.0
+djangorestframework==3.18.2
 djangorestframework-camel-case==1.4.2
 django-imagekit==6.1.*
 content-licencing
