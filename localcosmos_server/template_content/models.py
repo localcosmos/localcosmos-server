@@ -20,6 +20,7 @@ from .utils import (get_component_image_type, get_published_image_type, PUBLISHE
 
 TEMPLATE_TYPES = (
     ('page', _('Page')),
+    ('feature', _('Feature')),
     ('component', _('Component')),
 )
 
@@ -49,7 +50,7 @@ def get_published_template_content_root(template_content):
 def get_published_page_template_definition_path(template_content, filename):
     template_content_root = get_published_template_content_root(template_content)
     unchanged_filename = os.path.basename(template_content.draft_template.template_definition_filepath)
-    path = '/'.join([template_content_root, 'templates', 'page', unchanged_filename])
+    path = '/'.join([template_content_root, 'templates', template_content.template_type, unchanged_filename])
 
     return path
 

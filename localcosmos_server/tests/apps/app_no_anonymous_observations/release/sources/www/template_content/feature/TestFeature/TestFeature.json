@@ -1,0 +1,22 @@
+{
+  "templateName": "test-feature",
+  "type": "feature",
+  "templatePath": "/template_content/feature/TestFeature/TestFeature.html",
+  "version": 1,
+  "contents": {
+    "text": {
+      "type": "text",
+      "allowMultiple": false,
+      "widget": "TextInput",
+      "helpText": "Feature text",
+      "restrictions": {
+        "maxLength": 100
+      }
+    },
+    "image": {
+      "type": "image",
+      "allowMultiple": false,
+      "helpText": "Feature image"
+    }
+  }
+}

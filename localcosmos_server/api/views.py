@@ -679,7 +679,6 @@ class TaxonProfileList(TaxonProfilesAPIViewMixin, APIView):
     serializer_class = TaxonProfileSerializer
     
     DEFAULT_PAGE_SIZE = 20
-    MAX_PAGE_SIZE = 50
 
     def get(self, request, *args, **kwargs):
         
@@ -695,7 +694,6 @@ class TaxonProfileList(TaxonProfilesAPIViewMixin, APIView):
             page_size = int(request.GET.get('page_size', self.DEFAULT_PAGE_SIZE))
         except ValueError:
             page_size = self.DEFAULT_PAGE_SIZE
-        page_size = min(page_size, self.MAX_PAGE_SIZE)
 
         try:
             page = int(request.GET.get('page', 1))

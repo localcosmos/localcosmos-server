@@ -64,6 +64,12 @@ class TemplateContentList(AppMixin, TemplateView):
         
         context['localized_template_contents'] = localized_template_contents
 
+        localized_features = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
+            template_content__template_type='feature', language=self.app.primary_language,
+            template_content__assignment=None)
+        found_template_content_ids += list(localized_features.values_list('template_content__pk', flat=True))
+        context['localized_features'] = localized_features
+
         navigations = Navigation.objects.filter(app=self.app)
         context['navigations'] = navigations
 
@@ -99,8 +105,9 @@ class TemplateContentList(AppMixin, TemplateView):
         
         context['page_assignments'] = page_assignments
 
-        # unsupported template contents
-        unsupported_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app, template_content__template_type='page',
+        # unsupported template contents (pages and features not covered by assignment slots)
+        unsupported_contents = LocalizedTemplateContent.objects.filter(template_content__app=self.app,
+            template_content__template_type__in=['page', 'feature'],
             language=self.app.primary_language).exclude(template_content__pk__in=found_template_content_ids)
             
         context['unsupported_contents'] = unsupported_contents
@@ -135,7 +142,7 @@ class TemplateContentList(AppMixin, TemplateView):
         
         # search for updated templates
         updated_templates = {}
-        template_contents = template_content = TemplateContent.objects.filter(app=self.app, template_type='page')
+        template_contents = template_content = TemplateContent.objects.filter(app=self.app, template_type__in=['page', 'feature'])
         for template_content in template_contents:
             if template_content.published_template:
                 published_template_version = template_content.published_template_definition_version
@@ -173,6 +180,7 @@ class CreateTemplateContent(AppMixin, FormView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         form_kwargs['language'] = self.app.primary_language
+        form_kwargs['template_type'] = self.kwargs['template_type']
         form_kwargs['assignment'] = self.kwargs.get('assignment', None)
         return form_kwargs
 

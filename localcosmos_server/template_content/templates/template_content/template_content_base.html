@@ -104,11 +104,33 @@
 						</div>
 					</div>
 				</div>
-
+				<div class="row mt-5">
+					<div class="col-12">
+						<h4>{% trans 'Features' %}</h4>
+						{% if localized_features %}
+							<div class="row">
+								{% for localized_feature in localized_features %}
+									{% with template_content=localized_feature.template_content localized_template_content=localized_feature %}
+										<div id="template-content-{{ template_content.id }}" class="col-12 col-md-4 mb-4">
+											{% include 'template_content/template_content_list_entry.html' %}
+										</div>
+									{% endwith %}
+								{% endfor %}
+							</div>
+						{% else %}
+							<p class="text-muted">{% trans 'You do not have any standalone features for this app yet.' %}</p>
+						{% endif %}
+						<div class="row mt-3">
+							<div class="col-12">
+								<a href="{% url 'create_template_content' app.uid 'feature' %}" class="btn btn-outline-primary">{% trans 'Add new feature' %}</a>
+							</div>
+						</div>
+					</div>
+				</div>
 				{% if page_assignments %}
 					<div class="row mt-5">
 						<div class="col-12">
-							<h4>{% trans 'Page Assignments' %}</h4>
+							<h4>{% trans 'Assigned Content' %}</h4>
 							<div class="row">
 								{% for content in page_assignments %}
 									{% if content.template_content %}
@@ -122,12 +144,12 @@
 										<div class="col-12 col-md-4">
 											<div class="card" style="width: 100%;">
 												<div class="card-header">
-													{{ content.assignment }}
+												{{ content.assignment|verbose_content_key }}
 													{% if content.required %}<span class="badge bg-warning text-dark ms-1">{% trans 'required' %}</span>{% endif %}
 												</div>
 												<div class="card-body">
 													<h5 class="card-title">
-														{{ content.assignment|title }}
+													{{ content.assignment|verbose_content_key }}
 													</h5>
 													<div class="row">
 														<div class="col">
@@ -159,9 +181,9 @@
 				{% if unsupported_contents %}
 					<div class="row mt-5">
 						<div class="col-12">
-							<h4>{% trans 'Unsupported pages' %}</h4>
-							<div class="alert alert-danger">
-								{% trans 'These pages are not supported by your current frontend.' %}
+					<h4>{% trans 'Unsupported content' %}</h4>
+						<div class="alert alert-danger">
+							{% trans 'These pages and features are not supported by your current frontend.' %}
 							</div>
 							<div class="row">
 								{% for localized_template_content in unsupported_contents %}

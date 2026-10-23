@@ -6,6 +6,9 @@ import uuid
 PAGE_TEMPLATE_TYPE = 'page'
 TEST_TEMPLATE_NAME = 'TestPage'
 
+FEATURE_TEMPLATE_TYPE = 'feature'
+TEST_FEATURE_TEMPLATE_NAME = 'TestFeature'
+
 TEST_PAGE_CONTENT_KEYS = ['image', 'longText', 'component', 'text', 'stream']
 TEST_PAGE_CONTENT_TYPES = {
     'image': 'image',
@@ -151,6 +154,17 @@ class WithTemplateContent:
         }
         
         localized_template_content.save()
+
+
+class WithFeatureContent:
+
+    def setUp(self):
+        super().setUp()
+        self.feature_title = 'Test feature content'
+        self.feature_content = TemplateContent.objects.create(self.user, self.app,
+            self.app.primary_language, self.feature_title, TEST_FEATURE_TEMPLATE_NAME,
+            FEATURE_TEMPLATE_TYPE)
+        self.primary_lf = self.feature_content.get_locale(self.app.primary_language)
 
 
 class WithNavigation:

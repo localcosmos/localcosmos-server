@@ -21,15 +21,16 @@ from localcosmos_server.template_content.forms import (CreateTemplateContentForm
         ManageLocalizedTemplateContentForm, ManageComponentForm,
         TranslateTemplateContentForm)
 
-from localcosmos_server.template_content.models import (LocalizedTemplateContent, Navigation,
-    NavigationEntry, LocalizedNavigationEntry, LocalizedNavigation)
+from localcosmos_server.template_content.models import (TemplateContent, LocalizedTemplateContent,
+    Navigation, NavigationEntry, LocalizedNavigationEntry, LocalizedNavigation)
 
 from localcosmos_server.template_content.utils import get_component_image_type
 
 
 from django.contrib.contenttypes.models import ContentType
 
-from .mixins import WithTemplateContent, TEST_TEMPLATE_NAME, PAGE_TEMPLATE_TYPE
+from .mixins import (WithTemplateContent, WithFeatureContent, TEST_TEMPLATE_NAME,
+    PAGE_TEMPLATE_TYPE, TEST_FEATURE_TEMPLATE_NAME, FEATURE_TEMPLATE_TYPE)
 
 import uuid, json
 
@@ -92,10 +93,40 @@ class TestTemplateContentList(WithUser, WithApp, ViewTestMixin, TestCase):
         self.assertTrue(context['supports_navigations'])
         self.assertEqual(list(context['navigations']), [])
         self.assertEqual(list(context['localized_template_contents']), [])
-        
+        self.assertEqual(list(context['localized_features']), [])
         self.assertEqual(context['page_assignments'], [])
-        
-        
+
+    @test_settings
+    def test_get_context_data_with_standalone_feature(self):
+
+        feature = TemplateContent.objects.create(self.user, self.app,
+            self.app.primary_language, 'Test feature', TEST_FEATURE_TEMPLATE_NAME,
+            FEATURE_TEMPLATE_TYPE)
+        primary_lf = feature.get_locale(self.app.primary_language)
+
+        view = self.get_view()
+        view.app = self.app
+        context = view.get_context_data(**view.kwargs)
+
+        self.assertEqual(list(context['localized_features']), [primary_lf])
+        self.assertEqual(list(context['localized_template_contents']), [])
+
+    @test_settings
+    def test_standalone_feature_not_in_unsupported(self):
+        feature = TemplateContent.objects.create(self.user, self.app,
+            self.app.primary_language, 'Test feature', TEST_FEATURE_TEMPLATE_NAME,
+            FEATURE_TEMPLATE_TYPE)
+
+        view = self.get_view()
+        view.app = self.app
+        context = view.get_context_data(**view.kwargs)
+
+        self.assertNotIn(
+            feature.get_locale(self.app.primary_language),
+            list(context['unsupported_contents']),
+        )
+
+
 class TestCreateTemplateContent(WithUser, WithApp, ViewTestMixin, TestCase):
     
     url_name = 'create_template_content'
@@ -2385,4 +2416,68 @@ class TestTranslateNavigation(WithNavigation, WithTemplateContent, WithUser, Wit
         self.assertEqual(response.context_data['saved'], True)
         
         new_locale = self.navigation.get_locale('en')
-        self.assertEqual(new_locale.name, 'nav name en')
+
+
+class TestCreateTemplateContentFeature(WithUser, WithApp, ViewTestMixin, TestCase):
+
+    url_name = 'create_template_content'
+    view_class = CreateTemplateContent
+
+    def setUp(self):
+        self.superuser = self.create_superuser()
+        self.user = self.create_user()
+        super().setUp()
+
+    def get_url_kwargs(self):
+        return {
+            'app_uid': self.app.uid,
+            'template_type': FEATURE_TEMPLATE_TYPE,
+        }
+
+    @test_settings
+    def test_get_context_data(self):
+        view = self.get_view()
+        view.app = self.app
+        context = view.get_context_data()
+        self.assertEqual(context['template_type'], FEATURE_TEMPLATE_TYPE)
+        self.assertEqual(context['assignment'], None)
+
+    @test_settings
+    def test_get_form_kwargs(self):
+        view = self.get_view()
+        view.app = self.app
+        form_kwargs = view.get_form_kwargs()
+        self.assertEqual(form_kwargs['template_type'], FEATURE_TEMPLATE_TYPE)
+
+    @test_settings
+    def test_form_valid(self):
+        from localcosmos_server.template_content.forms import CreateTemplateContentForm as F
+        post_data = {
+            'draft_title': 'draft test feature',
+            'template_name': TEST_FEATURE_TEMPLATE_NAME,
+            'input_language': self.app.primary_language,
+        }
+        form = F(self.app, template_type=FEATURE_TEMPLATE_TYPE, data=post_data)
+        form.is_valid()
+        self.assertEqual(form.errors, {})
+
+        view = self.get_view()
+        view.app = self.app
+        response = view.form_valid(form)
+
+        ltc = LocalizedTemplateContent.objects.filter(
+            template_content__template_type=FEATURE_TEMPLATE_TYPE).last()
+
+        self.assertIsNotNone(ltc)
+        self.assertEqual(ltc.template_content.template_type, FEATURE_TEMPLATE_TYPE)
+        self.assertEqual(ltc.template_content.assignment, None)
+        self.assertEqual(ltc.draft_title, 'draft test feature')
+
+        url_kwargs = {
+            'app_uid': self.app.uid,
+            'localized_template_content_id': ltc.pk,
+        }
+        from django.urls import reverse as _reverse
+        expected_url = _reverse('manage_localized_template_content', kwargs=url_kwargs)
+        self.assertEqual(response['location'], expected_url)
+        self.assertEqual(response.status_code, 302)

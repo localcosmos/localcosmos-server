@@ -23,6 +23,8 @@
                         Maximum number of entries ({{ max_entries }}) reached.
                     {% endblocktrans %}
                 </div>
+            {% else %}
+                <button type="button" class="xhr btn btn-outline-primary" data-url="{% url 'create_template_content_navigation_entry' app.uid navigation.id %}" ajax-target="ModalContent">{% trans 'add entry' %}</button>
             {% endif %}
         {% endif %}
     </div>

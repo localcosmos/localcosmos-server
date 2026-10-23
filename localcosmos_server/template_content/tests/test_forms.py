@@ -11,7 +11,8 @@ from localcosmos_server.template_content.forms import (CreateTemplateContentForm
 from localcosmos_server.template_content.models import (TemplateContent, LocalizedTemplateContent,
                             Navigation, NavigationEntry, LocalizedNavigationEntry)
 
-from .mixins import WithTemplateContent, TEST_TEMPLATE_NAME, PAGE_TEMPLATE_TYPE
+from .mixins import (WithTemplateContent, TEST_TEMPLATE_NAME, PAGE_TEMPLATE_TYPE,
+    TEST_FEATURE_TEMPLATE_NAME, FEATURE_TEMPLATE_TYPE)
 
 from localcosmos_server.tests.common import (test_settings,)
 from localcosmos_server.tests.mixins import WithUser, WithApp, WithMedia, WithServerContentImage
@@ -77,6 +78,13 @@ class TestCreateTemplateContentForm(WithUser, WithApp, TestCase):
         expected_errors = {'__all__': ['A template content for "home" already exists']}
         
         self.assertEqual(form_3.errors, expected_errors)
+
+    @test_settings
+    def test_init_feature(self):
+        form = CreateTemplateContentForm(self.app, template_type=FEATURE_TEMPLATE_TYPE)
+        self.assertEqual(form.template_type, FEATURE_TEMPLATE_TYPE)
+        self.assertEqual(form.fields['template_name'].choices,
+                         [(TEST_FEATURE_TEMPLATE_NAME, 'Test feature')])
 
 
 class TestTemplateContentFormFieldManager(WithTemplateContent, WithServerContentImage, WithMedia,

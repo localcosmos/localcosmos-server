@@ -41,12 +41,13 @@ class CreateTemplateContentForm(TemplateContentFormCommon):
     def __init__(self, app, *args, **kwargs):
 
         self.app = app
+        self.template_type = kwargs.pop('template_type', 'page')
         self.assignment = kwargs.pop('assignment', None)
         
         super().__init__(*args, **kwargs)
 
         # load the template_choices
-        templates = Templates(self.app, 'page')
+        templates = Templates(self.app, self.template_type)
         available_templates = templates.get_all_templates()
 
         allowed_templates = None

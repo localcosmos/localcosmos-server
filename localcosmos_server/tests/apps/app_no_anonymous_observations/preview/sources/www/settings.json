@@ -136,12 +136,12 @@
         "assignmentContents": {
 			"home": {
                 "templateType": "page",
-				"allowedTemplates": ["home"],
+				"allowedTemplates": ["home", "TestPage"],
 				"requiredFlag": true
 			},
             "footer": {
                 "templateType": "feature",
-                "allowedTemplates": ["footer"],
+                "allowedTemplates": ["TestFeature"],
                 "requiredFlag": true
             }
 		}

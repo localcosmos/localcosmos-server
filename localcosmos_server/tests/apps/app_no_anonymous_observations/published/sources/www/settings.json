@@ -145,13 +145,14 @@
             "home": {
                 "templateType": "page",
                 "allowedTemplates": [
-                    "home"
+                    "home",
+                    "TestPage"
                 ],
                 "requiredFlag": true
             },
             "footer": {
                 "templateType": "feature",
-                "allowedTemplates": ["footer"],
+                "allowedTemplates": ["TestFeature"],
                 "requiredFlag": true
             }
         }
